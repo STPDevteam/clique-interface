@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { styled } from '@mui/material'
-import Header from '../components/Header'
+import Layouts from '../components/layouts/index'
 import Polling from '../components/essential/Polling'
 import Popups from '../components/essential/Popups'
 import Web3ReactManager from '../components/essential/Web3ReactManager'
@@ -9,6 +9,7 @@ import WarningModal from '../components/Modal/WarningModal'
 import ComingSoon from './ComingSoon'
 import { ModalProvider } from 'context/ModalContext'
 import Footer from 'components/Footer'
+import './App.css'
 
 const AppWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -51,17 +52,18 @@ export default function App() {
       <ModalProvider>
         <AppWrapper id="app">
           <ContentWrapper>
-            <Header />
-            <BodyWrapper id="body">
-              <Popups />
-              <Polling />
-              <WarningModal />
-              <Web3ReactManager>
-                <Switch>
-                  <Route exact strict path="/test1" component={ComingSoon} />
-                </Switch>
-              </Web3ReactManager>
-            </BodyWrapper>
+            <Layouts>
+              <BodyWrapper id="body">
+                <Popups />
+                <Polling />
+                <WarningModal />
+                <Web3ReactManager>
+                  <Switch>
+                    <Route exact strict path="/test1" component={ComingSoon} />
+                  </Switch>
+                </Web3ReactManager>
+              </BodyWrapper>
+            </Layouts>
             <Footer />
           </ContentWrapper>
         </AppWrapper>
