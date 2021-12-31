@@ -9,10 +9,18 @@ export function CloseIcon({ onClick }: { onClick?: () => void }) {
       onClick={onClick}
       size="large"
       sx={{
+        width: 40,
+        height: 40,
+        boxShadow: '9px 7px 13px rgb(174 174 174 / 30%), -3px -3px 8px rgb(255 255 255 / 80%)',
+        borderRadius: 20,
+        transform: 'rotate(-180deg)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         padding: 0,
         position: 'absolute',
-        top: '24px',
-        right: '24px',
+        top: '30px',
+        right: '50px',
         '&:hover $closeIcon': {
           color: theme => theme.palette.text.primary
         }

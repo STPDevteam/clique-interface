@@ -1,0 +1,92 @@
+@import url('../../assets/styles/util.less');
+
+.pc( {
+        .launching {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            .wrapper {
+                width: 410px;
+                height: 410px;
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .state {
+                &-launching {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    .wrapper {
+                        .outer {
+                            @keyframes spin {
+                                from {
+                                    transform: rotate(0);
+                                }
+
+                                to {
+                                    transform: rotate(360deg);
+                                }
+                            }
+
+                            animation: spin 3.2s linear infinite;
+                            width: 100%;
+                            object-fit: contain;
+                        }
+
+                        .inner {
+                            height: 143.1132049560547px;
+                            width: 143.1132049560547px;
+                            position: absolute;
+                            left: 50%;
+                            top: 50%;
+                            transform: translate(-50%, -50%);
+                        }
+                    }
+
+                    p {
+                        font-style: normal;
+                        font-weight: 600;
+                        font-size: 24px;
+                        line-height: 36px;
+                        color: #22304a;
+                        margin-top: 32px;
+                    }
+                }
+
+                &-done {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    .wrapper {
+                        img {
+                            width: 100%;
+                            object-fit: contain;
+                        }
+                        button {
+                            position: absolute;
+                            left: 50%;
+                            top: 50%;
+                            transform: translate(-50%, -50%);
+                        }
+                    }
+
+                    h3 {
+                        font-style: normal;
+                        font-weight: 600;
+                        font-size: 48px;
+                        line-height: 72px;
+                        color: #22304a;
+                    }
+                }
+            }
+        }
+    }
+
+);

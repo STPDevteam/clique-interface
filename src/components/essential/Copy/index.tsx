@@ -1,32 +1,42 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box } from '@mui/material'
-import { ReactComponent as CopyIcon } from 'assets/componentsIcon/copy_icon.svg'
-import CheckIcon from '@mui/icons-material/Check'
+// import { ReactComponent as CopyIcon } from 'assets/componentsIcon/copy_icon.svg'
+import { ReactComponent as IconCopy } from 'assets/images/icon-copy.svg'
+// import CheckIcon from '@mui/icons-material/Check'
 import useCopyClipboard from 'hooks/useCopyClipboard'
+import { StyledExtraBg } from 'components/styled'
+import { notification } from 'antd'
 
 interface Props {
   toCopy: string
   children?: React.ReactNode
+  size?: number
+  svgSize?: number
 }
 
 export default function Copy(props: Props) {
   const [isCopied, setCopied] = useCopyClipboard()
-  const { toCopy, children } = props
+  const { toCopy, children, size, svgSize } = props
+
+  useEffect(() => {
+    isCopied &&
+      notification.success({
+        message: 'Copy successfully',
+        top: 80
+      })
+  }, [isCopied])
 
   return (
     <Box
       sx={{
         display: 'flex',
-        cursor: 'pointer',
-        height: 17,
-        '& svg': {
-          width: 14,
-          mr: '10px'
-        }
+        cursor: 'pointer'
       }}
       onClick={() => setCopied(toCopy)}
     >
-      {isCopied ? <CheckIcon sx={{ opacity: 0.6, fontSize: 16 }} /> : <CopyIcon />}
+      <StyledExtraBg width={size || 30} height={size || 30} svgSize={svgSize}>
+        <IconCopy />
+      </StyledExtraBg>
       {children}
     </Box>
   )

@@ -1,0 +1,96 @@
+@import '../../assets/styles/util.less';
+
+.pc( {
+        .home {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 80px;
+
+            h1 {
+                margin-top: 84px;
+                font-style: normal;
+                font-weight: bold;
+                font-size: 40px;
+                line-height: 60px;
+                color: #22304a;
+            }
+
+            p {
+                margin-top: 16px;
+                max-width: 715px;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 16px;
+                line-height: 24px;
+                text-align: center;
+                color: #798488;
+            }
+
+            .btn-build {
+                margin-top: 32px;
+            }
+
+            .card-list {
+                display: flex;
+                margin-top: 32px;
+
+                .card-item {
+                    height: 423px;
+                    width: 285px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    background: #FFFFFF;
+                    border: 2px solid #FFFFFF;
+                    box-shadow: -1px -1px 4px #FFFFFF,
+                    0.5px 0.5px 0.5px rgba(0, 0, 0, 0.16),
+                    inset 2px 2px 7px rgba(73, 103, 134, 0.36),
+                    inset -3px -3px 4px rgba(255, 255, 255, 0.88);
+                    border-radius: 20px;
+                    padding: 32px 24px 55px 24px;
+
+                    .icon-frame {
+                        width: 106.67px;
+                        height: 106.67px;
+                        background: #E7F5FF;
+                        box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
+                        -3px -3px 8px rgba(255, 255, 255, 0.8);
+                        border-radius: 24.5px;
+
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    h2 {
+                        margin-top: 23px;
+                        font-style: normal;
+                        font-weight: bold;
+                        font-size: 24px;
+                        line-height: 36px;
+                        color: #22304a;
+                    }
+
+                    p {
+                        flex: 1;
+                        height: 100%;
+                        margin-top: 8px;
+                        font-style: normal;
+                        font-weight: normal;
+                        font-size: 14px;
+                        line-height: 20px;
+                        text-align: center;
+                        letter-spacing: -0.288889px;
+                        color: #798488;
+                    }
+
+                    &:nth-child(n + 2) {
+                        margin-left: 36px;
+                    }
+                }
+            }
+        }
+    }
+
+);

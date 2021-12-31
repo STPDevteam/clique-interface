@@ -1,4 +1,4 @@
-@plugin '~@/plugins/less/extend';
+@plugin '../../plugins/less/extend';
 
 @mobileNavHeight: 120px;
 @headerColor: #e1ab3b;
@@ -73,17 +73,17 @@
     }
 
     // 同级多有可能是弹窗一类组件，尽量给高层级
-    #root ~ div,
-    #root ~ section {
-        position: relative;
-        z-index: 10;
-    }
+    // #root ~ div,
+    // #root ~ section {
+    //     position: relative;
+    //     z-index: 10;
+    // }
 
     .container {
         overflow-x: hidden;
         display: flex;
         flex-direction: column;
-        background: linear-gradient(239.67deg, #eff7ff 1.66%, #d3edff 97.21%);
+        // background: linear-gradient(239.67deg, #eff7ff 1.66%, #d3edff 97.21%);
 
         .pc( {
                 max-width: 100vw;

@@ -1,0 +1,96 @@
+@import url('../../../../assets/styles/util.less');
+
+.pc( {
+        .loggedin {
+            .address {
+                display: grid;
+                align-items: center;
+                margin-top: 30px;
+                grid-template-columns: 1fr 48px;
+                grid-gap: 20px;
+
+                .ant-input {
+                    background: #FAFAFA;
+                    box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.5);
+                    border-radius: 8px;
+                    height: 80px;
+                    resize: none;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 16px;
+                    line-height: 26px;
+                    color: #767676;
+                }
+
+                .btn-copy {
+                    height: 48px;
+                    width: 48px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: #FFFFFF;
+                    border: 0.5px solid #D8D8D8;
+                    box-sizing: border-box;
+                    box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
+                    -3px -3px 8px rgba(255, 255, 255, 0.8);
+                    border-radius: 10px;
+
+                    img {
+                        width: 16px;
+                        object-fit: contain;
+                    }
+                }
+            }
+
+            .btn-group {
+                display: flex;
+                justify-content: space-between;
+
+                .ant-btn {
+                    margin-top: 16px;
+
+                    &.btn-01 {
+                        height: 40px;
+                        width: 200px;
+                    }
+
+                    &.btn-04 {
+                        height: 38.095237731933594px;
+                        width: 168.01170349121094px;
+                        font-style: normal;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 21px;
+                        color: #FF5F5B;
+                        border-color: #FF5F5B;
+                    }
+                }
+            }
+        }
+
+        .logout {
+            display: flex;
+            flex-direction: column;
+
+            .ant-btn {
+                height: 60px;
+                width: 407px;
+                background: #FFFFFF;
+                border: 0.5px solid #D8D8D8;
+                box-sizing: border-box;
+                box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
+                -3px -3px 8px rgba(255, 255, 255, 0.8);
+                border-radius: 8px;
+
+                &:first-child {
+                    margin-top: 28px;
+                }
+
+                &:nth-child(n + 2) {
+                    margin-top: 16px;
+                }
+            }
+        }
+    }
+
+);

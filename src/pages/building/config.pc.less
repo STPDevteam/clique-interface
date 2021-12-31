@@ -1,0 +1,124 @@
+@import url('../../assets/styles/util.less');
+@import url('./index.pc.less');
+
+.pc( {
+        .config {
+            display: flex;
+            flex-direction: column;
+            width: 880px;
+            max-width: 100%;
+            margin: 40px auto 0 auto;
+
+            .summary {
+                display: flex;
+                align-items: center;
+                height: 120px;
+                width: 100%;
+                border-radius: 8px;
+                background: #FAFAFA;
+                box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+                padding: 0 64px 0 67px;
+
+                img {
+                    height: 56px;
+                    object-fit: contain;
+                }
+
+                .name {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+
+                    span {
+                        &:first-child {
+                            font-style: normal;
+                            font-weight: 500;
+                            font-size: 20px;
+                            line-height: 30px;
+                            color: #798488;
+                        }
+
+                        &:last-child {
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 16px;
+                            line-height: 24px;
+                            color: #22304a;
+                        }
+                    }
+                }
+
+                .supply {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+
+                    span {
+                        &:first-child {
+                            font-style: normal;
+                            font-weight: 500;
+                            font-size: 14px;
+                            line-height: 21px;
+                            color: #798488;
+                        }
+
+                        &:last-child {
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 20px;
+                            line-height: 30px;
+                            color: #22304a;
+                        }
+                    }
+                }
+            }
+
+            .btn-add-more {
+                background: #FFFFFF;
+                border: 0.5px solid #D8D8D8;
+                box-sizing: border-box;
+                box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
+                -3px -3px 8px rgba(255, 255, 255, 0.8);
+                border-radius: 8px;
+                height: 48px;
+                width: 240px;
+
+                img, svg {
+                    margin-right: 10px;
+                }
+            }
+
+            .prefix-wrapper {
+                display: flex;
+                align-items: center;
+                position: relative;
+                flex-shrink: 0;
+
+                .input-common {
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 12px;
+                    line-height: 26px;
+                    text-align: center;
+                    letter-spacing: -0.288889px;
+                    color: #22304a;
+                }
+
+                img {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+
+                    &:first-child {
+                        left: 20px;
+                        width: 32px;
+                        object-fit: contain;
+                        z-index: 10;
+                    }
+                }
+            }
+        }
+    }
+
+);

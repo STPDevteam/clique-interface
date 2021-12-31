@@ -37,7 +37,11 @@ export default function Index() {
           Connect Wallet
         </Button>
       )}
-      {account && <Button className="btn-common btn-04 btn-connected">{shortenAddress(account)}</Button>}
+      {account && (
+        <Button className="btn-common btn-04 btn-connected" onClick={toggleWalletModal}>
+          {shortenAddress(account)}
+        </Button>
+      )}
     </div>
   )
 }

@@ -11,7 +11,7 @@ import { SUPPORTED_WALLETS } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useWalletModalToggle } from 'state/application/hooks'
-import AccountDetails from 'components/Modal/WalletModal/AccountDetails'
+import AccountDetails from 'components/Modal/WalletModal/STPAccount'
 
 import Modal from '../index'
 import Option from './Option'
@@ -27,8 +27,11 @@ const WALLET_VIEWS = {
 }
 
 export default function WalletModal({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   pendingTransactions,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   confirmedTransactions,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ENSName
 }: {
   pendingTransactions: string[] // hashes of pending
@@ -200,18 +203,19 @@ export default function WalletModal({
     }
     if (account && walletView === WALLET_VIEWS.ACCOUNT) {
       return (
-        <AccountDetails
-          toggleWalletModal={toggleWalletModal}
-          pendingTransactions={pendingTransactions}
-          confirmedTransactions={confirmedTransactions}
-          ENSName={ENSName}
-          openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
-        />
+        // <AccountDetails
+        //   toggleWalletModal={toggleWalletModal}
+        //   pendingTransactions={pendingTransactions}
+        //   confirmedTransactions={confirmedTransactions}
+        //   ENSName={ENSName}
+        //   openOptions={() => setWalletView(WALLET_VIEWS.OPTIONS)}
+        // />
+        <AccountDetails />
       )
     }
     return (
       <>
-        {walletView === WALLET_VIEWS.ACCOUNT && <Typography variant="h6">Connect to a wallet</Typography>}
+        {walletView === WALLET_VIEWS.ACCOUNT && <Typography variant="h6">Connect Wallet</Typography>}
 
         {walletView === WALLET_VIEWS.PENDING ? (
           <PendingView
@@ -241,8 +245,8 @@ export default function WalletModal({
   }
 
   return (
-    <Modal customIsOpen={walletModalOpen} customOnDismiss={toggleWalletModal} maxWidth="560px" closeIcon={true}>
-      <Box width={'100%'} padding="32px" display="flex" flexDirection="column" alignItems="center" gap={20}>
+    <Modal customIsOpen={walletModalOpen} customOnDismiss={toggleWalletModal} maxWidth="520px" closeIcon={true}>
+      <Box width={'100%'} display="flex" flexDirection="column" gap={20}>
         {getModalContent()}
       </Box>
     </Modal>

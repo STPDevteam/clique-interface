@@ -21,7 +21,7 @@ export default function DepositConfirmationModal({
 }) {
   return (
     <Modal closeIcon>
-      <Box display="grid" padding="40px" gap="28px" justifyItems="center" width="100%">
+      <Box display="grid" gap="28px" justifyItems="center" width="100%">
         {children}
         <Box justifySelf="start" width="100%">
           {fromChain && toChain && <SwapChain to={toChain} from={fromChain} />}

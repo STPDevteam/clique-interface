@@ -39,10 +39,17 @@ export default function Option({
     <>
       <OutlineButton
         key={id}
-        width="320px"
+        width="400px"
         onClick={onClick}
+        borderRadius="8px"
         color={active ? 'transparent' : undefined}
         disabled={!clickable || active}
+        style={{
+          border: '0.5px solid #D8D8D8',
+          boxShadow: active
+            ? 'inset 2px 2px 5px rgba(105, 141, 173, 0.5)'
+            : '5px 7px 13px rgba(174, 174, 174, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)'
+        }}
       >
         {active ? (
           <GreenCircle>

@@ -1,7 +1,8 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import Modal from 'components/Modal'
-import { ReactComponent as SuccessIcon } from 'assets/componentsIcon/statusIcon/success_icon.svg'
+// import { ReactComponent as SuccessIcon } from 'assets/componentsIcon/statusIcon/success_icon.svg'
+import { ReactComponent as SuccessIcon } from 'assets/svg/icon-success.svg'
 import { ReactComponent as FailureIcon } from 'assets/componentsIcon/statusIcon/failure_icon.svg'
 import { ReactComponent as SupportIcon } from 'assets/componentsIcon/statusIcon/support_icon.svg'
 import { ReactComponent as Error } from 'assets/componentsIcon/statusIcon/error_icon.svg'
@@ -23,7 +24,7 @@ export default function MessageBox({ type, children, width = '480px', header, ac
 
   const icon =
     type === 'success' ? (
-      <SuccessIcon height={40} width={40} />
+      <SuccessIcon height={96} width={96} />
     ) : type === 'failure' ? (
       <FailureIcon />
     ) : type === 'support' ? (
@@ -36,7 +37,7 @@ export default function MessageBox({ type, children, width = '480px', header, ac
 
   return (
     <Modal width={width}>
-      <Box display={'grid'} alignItems={'center'} padding={'40px'} justifyItems="center" gap="20px">
+      <Box display={'grid'} padding="20px 0 0 0" alignItems={'center'} justifyItems="center" gap="20px">
         <Box>{icon}</Box>
         {header && <Typography variant="h6">{header}</Typography>}
         <Box fontSize="18px" textAlign="center" display="grid" justifyItems="center" width="100%">

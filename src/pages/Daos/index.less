@@ -1,0 +1,163 @@
+.daos-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
+    width: 1256px;
+    padding: 60px 40px;
+    .dao-group-btn {
+        width: 282px;
+        height: 40px;
+        margin: auto;
+        border-radius: 8px;
+        box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
+        -3px -3px 8px rgba(255, 255, 255, 0.8);
+        > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #3898FC;
+            height: 100%;
+            line-height: 40px;
+        }
+        > .one {
+            border-radius: 8px 0px 0px 8px;
+        }
+        > .two {
+            border-radius: 0px 8px 8px 0px;
+            background: #3898FC;
+        }
+    }
+}
+.daos-header {
+    padding: 20px 40px;
+    background: #ffffff;
+    border: 0.5px solid #d8d8d8;
+    box-sizing: border-box;
+    box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
+        -3px -3px 8px rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    margin-bottom: 32px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    .header-info {
+        margin-bottom: 10px;
+        .title {
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 26px;
+            /* identical to box height, or 130% */
+
+            letter-spacing: -0.288889px;
+
+            color: #22304a;
+
+            margin-bottom: 9px;
+        }
+        .text {
+            font-family: Poppins;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 12px;
+            line-height: 18px;
+
+            color: #798488;
+            width: 450px;
+        }
+    }
+}
+.daos-list {
+    flex-wrap: wrap;
+    .dao-item {
+        padding: 23px 16px;
+        background: #ffffff;
+        border: 0.5px solid #d8d8d8;
+        box-sizing: border-box;
+        box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
+            -3px -3px 8px rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        width: 264px;
+        height: 230px;
+        .dao-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+            > img {
+                width: 58px;
+                height: 58px;
+                margin-right: 9px;
+                border: 1px solid #e5e5e5;
+                border-radius: 50%;
+            }
+            .header-info {
+                .title {
+                    font-family: Poppins;
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 24px;
+                    /* identical to box height */
+
+                    /* Navy Blue */
+
+                    color: #22304a;
+                    margin-bottom: 4px;
+                }
+                .value {
+                    font-family: Poppins;
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 14px;
+                    line-height: 21px;
+                    /* identical to box height */
+
+                    color: #798488;
+                }
+            }
+        }
+        .dao-data {
+            margin-bottom: 20px;
+            .dao-data-item {
+                &:first-child {
+                    margin-bottom: 10px;
+                }
+                display: flex;
+                justify-content: space-between;
+                .label {
+                    font-family: Poppins;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 12px;
+                    line-height: 18px;
+                    /* identical to box height */
+
+                    color: #798488;
+                }
+                .value {
+                    font-family: Poppins;
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 12px;
+                    line-height: 18px;
+                    /* identical to box height */
+
+                    text-align: right;
+
+                    /* Navy Blue */
+
+                    color: #22304a;
+                }
+            }
+        }
+        .btn-join {
+            margin: 0 auto;
+            width: 182px;
+            height: 32px;
+        }
+    }
+}

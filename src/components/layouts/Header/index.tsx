@@ -16,7 +16,11 @@ export default function Header() {
       </div>
       <div className="actions">
         <WalletStatus />
-        {account && <Button className="btn-common btn-01 btn-create">Create DAO</Button>}
+        {account && (
+          <Button className="btn-common btn-01 btn-create" onClick={() => history.push('/create')}>
+            Create DAO
+          </Button>
+        )}
       </div>
     </header>
   )

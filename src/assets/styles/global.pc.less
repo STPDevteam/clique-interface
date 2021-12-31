@@ -1,5 +1,11 @@
 @import './util.less';
 
+body {
+    color: #22304A;
+}
+.ant-notification {
+    z-index: 1301;
+}
 .pc( {
         .global();
 
@@ -281,7 +287,6 @@
                 font-weight: 600;
                 font-size: 14px;
                 line-height: 21px;
-                color: #798488;
                 margin-bottom: 8px;
             }
 
@@ -622,10 +627,111 @@
                 -3px -3px 8px rgba(255, 255, 255, 0.8);
                 border-radius: 8px;
             }
+
+            &[disabled] {
+                opacity: 0.6;
+            }
         }
     }
 
 );
+
+.input-assets-selector {
+    position: relative;
+
+    >img {
+        position: absolute;
+        left: 22px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 24px;
+        object-fit: contain;
+        z-index: 10;
+    }
+
+    .ant-select {
+        width: 100%;
+
+        .ant-select-arrow {
+            width: 24px;
+            height: 24px;
+            margin-top: -12px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
+                -3px -3px 8px rgba(255, 255, 255, 0.8);
+        }
+
+        .ant-select-selector {
+            height: 48px;
+            background: #FAFAFA;
+            box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+            border-radius: 8px;
+        }
+
+        .ant-select-selection-item {
+            font-style: normal;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 21px;
+            color: #22304a;
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
+.input-none-up-down {
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        appearance: none;
+        margin: 0;
+    }
+
+    input {
+        -moz-appearance: textfield;
+    }
+}
+
+.stp-table {
+    .ant-table-thead {
+        .ant-table-cell {
+            background: transparent;
+
+            &:before {
+                display: none;
+            }
+        }
+    }
+    table {
+        border-spacing: 0px 8px;
+    }
+    .ant-table-tbody {
+        .ant-table-cell {
+            padding: 12px;
+        }
+        tr {
+            td {
+                border-top: 0.5px solid #D8D8D8;
+                border-bottom: 0.5px solid #D8D8D8;
+                &:first-child {
+                    border-left: 0.5px solid #D8D8D8;
+                    border-radius: 8px 0 0 8px;
+                }
+                &:last-child {
+                    border-right: 0.5px solid #D8D8D8;
+                    border-radius: 0 8px 8px 0;
+                }
+            }
+        }
+    }
+}
+
+
 .custom-radio {
     .ant-radio-inner {
         width: 24px;
@@ -658,6 +764,9 @@
     }
     .ant-radio-wrapper {
         align-items: flex-start;
+    }
+    label.ant-radio-wrapper {
+        white-space: inherit;
     }
     .ant-radio {
         margin-right: 15px;

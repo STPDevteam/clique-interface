@@ -1,0 +1,142 @@
+@import url('../../assets/styles/util.less');
+@import url('./index.pc.less');
+
+.pc( {
+        .review {
+            width: 820px;
+            margin: 0 auto;
+
+            h1 {
+                font-style: normal;
+                font-weight: 600;
+                font-size: 40px;
+                line-height: 60px;
+                color: #22304a;
+                text-align: center;
+                margin-top: 30px;
+            }
+
+            .ant-collapse.collapse-common {
+                margin-top: 47px;
+                width: 100%;
+
+                .ant-collapse-item {
+                    background: #FFFFFF;
+                    box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+                    border-radius: 8px;
+                    overflow: hidden;
+                }
+
+                .ant-collapse-extra {
+                    position: absolute;
+                    right: 30px;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .ant-collapse-header {
+                    background: #FAFAFA;
+                    padding-left: 70px;
+                    box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+
+                    .icon-wrapper {
+                        background: #FFFFFF;
+                    }
+                }
+
+                .ant-collapse-content {
+                    background: #FFFFFF;
+                    box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+                }
+            }
+
+            .ant-collapse-content-box {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .panel-general {
+                width: 100%;
+                padding: 26px 83px;
+
+                .icon-token {
+                    background: #FFFFFF;
+                    border: 1px solid #D8D8D8;
+                    height: 57px;
+                    width: 57px;
+                    object-fit: contain;
+                    border-radius: 50%;
+                }
+
+                .input-item {
+                    .label {
+                        font-weight: 400;
+                        font-size: 14px;
+                        line-height: 26px;
+                        letter-spacing: -0.288889px;
+                        color: #798488;
+                        margin-bottom: 5px;
+                    }
+
+                    .value {
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 26px;
+                        letter-spacing: -0.288889px;
+                        color: #22304A;
+                    }
+                }
+            }
+
+            .panel-config {
+                width: 100%;
+
+                .ant-table-thead {
+                    .ant-table-cell {
+                        background: transparent;
+
+                        &:before {
+                            display: none;
+                        }
+                    }
+                }
+            }
+
+            .panel-rule {
+                padding: 26px 89px;
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+
+                .input-item {
+                    flex-basis: 50%;
+
+                    &.rules-agreement {
+                        flex-basis: 100%;
+                    }
+
+                    .label {
+                        font-style: normal;
+                        font-weight: normal;
+                        font-size: 14px;
+                        line-height: 26px;
+                        letter-spacing: -0.288889px;
+                        color: #798488;
+                        margin-bottom: 4px;
+                    }
+
+                    .value {
+                        font-style: normal;
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 26px;
+                        letter-spacing: -0.288889px;
+                        color: #22304a;
+                    }
+                }
+            }
+        }
+    }
+
+);

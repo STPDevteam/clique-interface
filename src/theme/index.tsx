@@ -66,7 +66,7 @@ export const theme = {
   palette: {
     primary: {
       light: '#16161650',
-      main: '#161616',
+      main: '#3898fc',
       dark: '#000000',
       contrastText: '#FFFFFF'
     },
@@ -94,7 +94,7 @@ export const theme = {
     },
     text: {
       primary: '#161616',
-      secondary: '#16161640',
+      secondary: '#3898fc',
       disabled: '#999999'
     },
     action: {
@@ -244,12 +244,12 @@ export const override: any = {
         fontSize: 12
       },
       h5: {
-        fontFamily: 'Futura PT',
+        // fontFamily: 'Futura PT',
         fontSize: 28
       },
       h6: {
-        fontFamily: 'Futura PT',
-        fontSize: 22
+        // fontFamily: 'Futura PT',
+        fontSize: 24
       },
       caption: {
         fontSize: 12,

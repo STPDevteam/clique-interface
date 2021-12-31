@@ -33,7 +33,7 @@ export default function Index() {
           <img src={IconDao} />
         </Button>
       ))}
-      <Button className="btn-add" onClick={() => history.push('/building')}>
+      <Button className="btn-add" onClick={() => history.push('/create')}>
         <img src={IconAdd} />
       </Button>
     </nav>

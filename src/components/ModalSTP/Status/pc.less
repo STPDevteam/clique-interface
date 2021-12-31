@@ -1,0 +1,70 @@
+@import url('../../../assets/styles/util.less');
+
+.pc( {
+
+        .op-status {
+            .ant-modal-body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            img {
+                margin-top: 50px;
+                width: 96px;
+                object-fit: contain;
+            }
+
+            h3 {
+                margin-top: 24px;
+                font-style: normal;
+                font-weight: 500;
+                font-size: 24px;
+                line-height: 36px;
+                color: #22304a;
+            }
+
+            .kv-wrapper {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                margin-top: 34px;
+
+                .kv {
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+
+                    &:nth-child(n + 2) {
+                        margin-top: 16px;
+                    }
+
+                    span {
+                        &:first-child {
+                            font-style: normal;
+                            font-weight: normal;
+                            font-size: 14px;
+                            line-height: 21px;
+                            color: #22304a;
+                        }
+
+                        &:last-child {
+                            font-style: normal;
+                            font-weight: 500;
+                            font-size: 14px;
+                            line-height: 21px;
+                            color: #22304a;
+                        }
+                    }
+                }
+            }
+
+            .btn-common.btn-done {
+                margin: 54px auto 55px auto;
+                height: 48px;
+                width: 240px;
+            }
+        }
+    }
+
+);

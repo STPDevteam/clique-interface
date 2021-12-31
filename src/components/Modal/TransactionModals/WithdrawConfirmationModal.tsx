@@ -34,7 +34,7 @@ export default function TransacitonPendingModal({
 }) {
   return (
     <Modal closeIcon customIsOpen={isOpen} customOnDismiss={onDismiss}>
-      <Box display="grid" padding="40px" gap="24px" justifyItems="center" width="100%">
+      <Box display="grid" padding="20px 0 0 0" gap="24px" justifyItems="center" width="100%">
         <Box
           style={{
             opacity: isStep3Active ? 0.5 : 1
