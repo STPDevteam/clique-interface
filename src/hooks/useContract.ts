@@ -3,7 +3,12 @@ import { abi as GOVERNANCE_ABI } from '../constants/abis/governance.json'
 import ANTIMATTER_ABI from '../constants/abis/antimatter.json'
 import ANTIMATTER_GOVERNANCE_ABI from '../constants/abis/governance.json'
 import { useMemo } from 'react'
-import { ANTIMATTER_ADDRESS, GOVERNANCE_ADDRESS, ANTIMATTER_GOVERNANCE_ADDRESS } from '../constants'
+import {
+  ANTIMATTER_ADDRESS,
+  GOVERNANCE_ADDRESS,
+  ANTIMATTER_GOVERNANCE_ADDRESS,
+  DAO_FACTORY_ADDRESS
+} from '../constants'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
@@ -14,6 +19,7 @@ import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
 import { ChainId } from '../constants/chain'
+import DAO_FACTORY_ABI from '../constants/abis/DAOFactory.json'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -96,4 +102,9 @@ export function useSocksController(): Contract | null {
 
 export function useAntiMatterGovernanceContract(): Contract | null {
   return useContract(ANTIMATTER_GOVERNANCE_ADDRESS, ANTIMATTER_GOVERNANCE_ABI, false)
+}
+
+export function useDaoFactoryContract(): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId ? DAO_FACTORY_ADDRESS[chainId] : undefined, DAO_FACTORY_ABI, true)
 }

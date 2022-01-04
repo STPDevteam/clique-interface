@@ -22,6 +22,7 @@ export const initialDaoDataState: CreateDaoData = {
     tokenName: '',
     tokenSymbol: '',
     tokenSupply: '',
+    tokenDecimals: 18,
     tokenPhoto: '',
     websiteLink: '',
     twitterLink: '',
@@ -32,23 +33,31 @@ export const initialDaoDataState: CreateDaoData = {
     reservedOpen: false,
     privateSale: [],
     privateSaleOpen: false,
-    privateReceivingToken: undefined,
+    privateReceivingToken: 'STEP',
     publicSale: {
       offeringAmount: '',
       price: undefined,
       pledgeLimitMin: undefined,
-      pledgeLimitMax: undefined,
-      startTime: undefined,
-      endTime: undefined,
-      aboutProduct: ''
+      pledgeLimitMax: undefined
     },
-    publicSaleOpen: false
+    publicSaleOpen: false,
+    startTime: undefined,
+    endTime: undefined,
+    aboutProduct: ''
   },
   rule: {
     minVotePer: 0,
     minCreateProposalPer: 0,
     minApprovalPer: 0,
-    rules: ''
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    rules: '',
+    votersCustom: false,
+    contractExecutor: '',
+    contractDays: 0,
+    contractHours: 0,
+    contractMinutes: 0
   }
 }
 

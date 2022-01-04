@@ -1,3 +1,6 @@
+import { Currency, CurrencyAmount, Token, TokenAmount } from 'constants/token'
+import { parseUnits } from 'ethers/lib/utils'
+import JSBI from 'jsbi'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
@@ -66,4 +69,33 @@ export function useRemovePopup(): (key: string) => void {
 export function useActivePopups(): AppState['application']['popupList'] {
   const list = useSelector((state: AppState) => state.application.popupList)
   return useMemo(() => list.filter(item => item.show), [list])
+}
+
+// try to parse a user entered amount for a given token
+export function tryParseAmount(value?: string, currency?: Currency): CurrencyAmount | undefined {
+  if (!value || !currency) {
+    return undefined
+  }
+  if (value.length > 60) {
+    throw new Error('Length is too long')
+  }
+  let curValue = value
+  const _value = value.split('.')
+  if (_value[1] && _value[1].length > currency.decimals) {
+    curValue = _value[0] + '.' + _value[1].substr(0, currency.decimals)
+  }
+
+  try {
+    const typedValueParsed = parseUnits(curValue, currency.decimals).toString()
+    if (typedValueParsed !== '0') {
+      return currency instanceof Token
+        ? new TokenAmount(currency, JSBI.BigInt(typedValueParsed))
+        : CurrencyAmount.ether(JSBI.BigInt(typedValueParsed))
+    }
+  } catch (error) {
+    // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
+    console.debug(`Failed to parse input amount: "${value}"`, error)
+  }
+  // necessary for all paths to return a value
+  return undefined
 }

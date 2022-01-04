@@ -1,26 +1,22 @@
 import './launching.pc.less'
 
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import IconToken from '../../assets/images/icon-token.svg'
 import IconLaunching from '../../assets/images/icon-launching.svg'
 import IconDone from '../../assets/images/icon-launched.svg'
 import { Button } from 'antd'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
+import { useIsTransactionPending } from 'state/transactions/hooks'
 
-type State = 'launching' | 'done'
-
-const Launching = () => {
-  const [state, setState] = useState<State>('launching')
+export default function Launching() {
   const history = useHistory()
+  const { hash } = useParams<{ hash: string }>()
 
-  const isDone = useMemo(() => state === ('done' as State), [state])
+  const isTransactionPending = useIsTransactionPending(hash)
 
-  // Mock
-  useEffect(() => {
-    setTimeout(() => {
-      setState('done')
-    }, 2000)
-  }, [])
+  const isDone = useMemo(() => {
+    return !isTransactionPending
+  }, [isTransactionPending])
 
   return (
     <main className="launching">
@@ -37,7 +33,7 @@ const Launching = () => {
         <div className="state-done">
           <div className="wrapper">
             <img src={IconDone} />
-            <Button className="btn-common btn-03" onClick={() => history.push(`/detail/1`)}>
+            <Button className="btn-common btn-03" onClick={() => history.replace(`/`)}>
               Get Start
             </Button>
           </div>
@@ -48,5 +44,3 @@ const Launching = () => {
     </main>
   )
 }
-
-export default Launching

@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 
-export default function Error({ msg }: { msg: string }) {
+export default function Error({ children }: { children: string | JSX.Element }) {
   return (
     <Box
       sx={{
@@ -10,7 +10,7 @@ export default function Error({ msg }: { msg: string }) {
       }}
     >
       <Typography color={'#FF5F5B'} textAlign={'center'}>
-        {msg}
+        {children}
       </Typography>
     </Box>
   )

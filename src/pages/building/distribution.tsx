@@ -4,12 +4,16 @@ import { Input, Button, Switch, Select, InputNumber, Tooltip } from 'antd'
 import IconToken from '../../assets/images/icon-token.svg'
 import { ReactComponent as IconAdd } from '../../assets/images/icon-upload.svg'
 import { ReactComponent as IconDelete } from '../../assets/svg/icon-delete.svg'
-import { privateReceivingTokens, useBuildingData } from 'state/building/hooks'
+import {
+  privateReceivingTokens,
+  useBuildingDataCallback,
+  useCurrentUsedTokenAmount,
+  useRemainderTokenAmount
+} from 'state/building/hooks'
 import { ZERO_ADDRESS } from '../../constants'
-import { Box, Typography } from '@mui/material'
+import { Box, styled, Typography } from '@mui/material'
 import DatePicker from 'components/DatePicker'
 import TextArea from 'antd/lib/input/TextArea'
-import ErrorAlert from 'components/Alert'
 import IconDownArrow from 'components/ModalSTP/assets/icon-down-arrow.svg'
 import { isAddress } from 'utils'
 import {
@@ -18,9 +22,29 @@ import {
   CreateDaoDataDistributionPublicSale,
   CreateDaoDataDistributionReservedToken
 } from 'state/building/actions'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { StyledExtraBg } from 'components/styled'
-import { calcTotalAmount, getAmountForPer, getPerForAmount, toFormatGroup } from 'utils/dao'
+import { toFormatGroup } from 'utils/dao'
+import {
+  calcTotalAmountValue,
+  getAmountForPer,
+  getPerForAmount,
+  getCurrentInputMaxAmount,
+  getCurrentInputMaxPer,
+  isValidAmount
+} from './function'
+import BigNumber from 'bignumber.js'
+import AlertError from 'components/Alert/index'
+
+const MaxTag = styled('span')({
+  display: 'inline-block',
+  padding: '0px 5px',
+  backgroundColor: '#3898fc',
+  cursor: 'pointer',
+  marginLeft: 3,
+  borderRadius: '2px',
+  whiteSpace: 'normal'
+})
 
 const defaultReservedHolder: CreateDaoDataDistributionReservedToken = {
   address: '',
@@ -33,8 +57,7 @@ const defaultPrivateHolder: CreateDaoDataDistributionPrivateSale = {
   address: '',
   tokenNumber: undefined,
   per: undefined,
-  price: undefined,
-  pledgedOfValue: undefined
+  price: undefined
 }
 
 type CreateDaoDataDistributionKey = keyof CreateDaoDataDistribution
@@ -44,9 +67,11 @@ type CreateDaoDataDistributionPublicSaleKey = keyof CreateDaoDataDistributionPub
 
 const { Option } = Select
 
-export default function Distribution() {
-  const { updateDistribution, buildingDaoData } = useBuildingData()
+export default function Distribution({ goNext, goBack }: { goNext: () => void; goBack: () => void }) {
+  const { updateDistribution, buildingDaoData } = useBuildingDataCallback()
   const { basic, distribution } = buildingDaoData
+  const currentUsedTokenAmount = useCurrentUsedTokenAmount()
+  const remainderTokenAmount = useRemainderTokenAmount()
 
   const updateDistributionCall = useCallback(
     (key: CreateDaoDataDistributionKey, value: any) => {
@@ -117,500 +142,675 @@ export default function Distribution() {
   )
 
   const updatePublicSaleCall = useCallback(
-    (key: CreateDaoDataDistributionPublicSaleKey, value: string | undefined | number) => {
+    (key: CreateDaoDataDistributionPublicSaleKey, value: any) => {
       const _val = Object.assign({ ...distribution.publicSale }, { [key]: value })
       updateDistributionCall('publicSale', _val)
     },
     [distribution.publicSale, updateDistributionCall]
   )
 
-  return (
-    <section className="config">
-      <div className="summary">
-        <img src={basic.tokenPhoto || IconToken} />
-        <div className="name">
-          <span>{basic.daoName}</span>
-          <span>{basic.tokenName}</span>
-        </div>
-        <div className="supply">
-          <span>Total Supply</span>
-          <span>{toFormatGroup(basic.tokenSupply, 0)}</span>
-        </div>
-      </div>
+  const verifyMsg = useMemo(() => {
+    if (distribution.reservedOpen) {
+      for (const item of distribution.reservedTokens) {
+        if (!item.address) return 'Reserved tokens address required'
+        if (!isValidAmount(item.tokenNumber)) return 'Reserved tokens number required'
+        if (!item.lockdate) return 'Reserved tokens lock date required'
+      }
+    }
+    if (distribution.privateSaleOpen) {
+      for (const item of distribution.privateSale) {
+        if (!item.address) return 'Private sale tokens address required'
+        if (!isValidAmount(item.tokenNumber)) return 'Private sale tokens number required'
+        if (!Number(item.price)) return 'Private sale tokens price required'
+      }
+    }
+    if (distribution.publicSaleOpen) {
+      const _publicSaleData = distribution.publicSale
+      if (!isValidAmount(_publicSaleData.offeringAmount)) return 'Public sale offering amount required'
+      if (!Number(_publicSaleData.price)) return 'Public sale price required'
+      // if (!isValidAmount(_publicSaleData.pledgeLimitMin) || !isValidAmount(_publicSaleData.pledgeLimitMax))
+      //   return 'Public sale pledge limit required'
+    }
 
-      <Box
-        mt={20}
-        sx={{
-          paddingBottom: 15,
-          borderBottom: '1px solid #D2D2D2'
-        }}
-      >
-        <Box display={'flex'} justifyContent={'space-between'} gap={15}>
-          <Box>
-            <Typography fontSize={16} fontWeight={500}>
-              Reserved Tokens
-            </Typography>
-            <Typography color={'#798488'} fontSize={12}>
-              You can choose to set aside a portion of your tokens, and if you set a time lock on the address, the total
-              number of tokens locked will not be counted as votes.
-            </Typography>
+    if (!distribution.startTime) return 'Start time required'
+    if (!distribution.endTime) return 'End time required'
+
+    if (Number(distribution.startTime >= Number(distribution.endTime))) return 'Start time must be less than end time'
+
+    if (isValidAmount(remainderTokenAmount)) return '有剩余代币未被使用，请配置完成后点击下一步'
+
+    return undefined
+  }, [
+    distribution.endTime,
+    distribution.privateSale,
+    distribution.privateSaleOpen,
+    distribution.publicSale,
+    distribution.publicSaleOpen,
+    distribution.reservedOpen,
+    distribution.reservedTokens,
+    distribution.startTime,
+    remainderTokenAmount
+  ])
+
+  return (
+    <>
+      <section className="config">
+        <div className="summary">
+          <img src={basic.tokenPhoto || IconToken} />
+          <div className="name">
+            <span>{basic.daoName}</span>
+            <span>{basic.tokenName}</span>
+          </div>
+          <div className="supply">
+            <span>Total Supply</span>
+            <span>{toFormatGroup(basic.tokenSupply, 0)}</span>
+          </div>
+        </div>
+
+        <Box
+          mt={20}
+          sx={{
+            paddingBottom: 15,
+            borderBottom: '1px solid #D2D2D2'
+          }}
+        >
+          <Box display={'flex'} justifyContent={'space-between'} gap={15}>
+            <Box>
+              <Typography fontSize={16} fontWeight={500}>
+                Reserved Tokens
+              </Typography>
+              <Typography color={'#798488'} fontSize={12}>
+                You can choose to set aside a portion of your tokens, and if you set a time lock on the address, the
+                total number of tokens locked will not be counted as votes.
+              </Typography>
+            </Box>
+            <Switch
+              checked={distribution.reservedOpen}
+              onChange={status => updateDistributionCall('reservedOpen', status)}
+            />
           </Box>
-          <Switch
-            checked={distribution.reservedOpen}
-            onChange={status => updateDistributionCall('reservedOpen', status)}
-          />
-        </Box>
-        {distribution.reservedOpen && (
-          <Box mt={16} display={'grid'} gap={15}>
-            <Box
-              display={'grid'}
-              gap={8}
-              sx={{
-                '&>div': {
-                  gridTemplateColumns: '417fr 104fr 80fr 201fr 32fr',
-                  alignItems: 'center'
-                }
-              }}
-            >
+          {distribution.reservedOpen && (
+            <Box mt={16} display={'grid'} gap={15}>
               <Box
                 display={'grid'}
-                gap={10}
+                gap={8}
                 sx={{
-                  '& p': {
-                    color: '#798488'
+                  '&>div': {
+                    gridTemplateColumns: '417fr 104fr 80fr 201fr 32fr',
+                    alignItems: 'center'
                   }
                 }}
               >
-                <Typography variant="body1">Addresses</Typography>
-                <Typography variant="body1">Token Number</Typography>
-                <Typography variant="body1">Per</Typography>
-                <Typography variant="body1">Lock date</Typography>
-              </Box>
-              {distribution.reservedTokens.map((item, index) => (
-                <Box display={'grid'} gap={10} key={index}>
-                  <div className="prefix-wrapper">
-                    <img src={IconToken} />
-                    <Input
-                      className="input-common"
-                      style={{ paddingLeft: 50 }}
-                      placeholder={ZERO_ADDRESS}
-                      maxLength={ZERO_ADDRESS.length}
-                      value={item.address}
-                      onChange={e => updateReservedHolder(index, 'address', e?.target?.value)}
-                      onBlur={() => {
-                        if (item.address && !isAddress(item.address)) updateReservedHolder(index, 'address', '')
-                      }}
-                    />
-                  </div>
-                  <Tooltip placement="top" title={toFormatGroup(item.tokenNumber || 0, 0)}>
-                    <Input
-                      className="input-common token-number"
-                      placeholder="1,111"
-                      maxLength={basic.tokenSupply.length}
-                      value={item.tokenNumber}
-                      onChange={val => {
-                        const reg = new RegExp('^[0-9]*$')
-                        const _val = val?.toString() || ''
-                        if (reg.test(_val)) {
-                          updateReservedHolder(index, 'tokenNumber', _val)
-                        }
-                      }}
-                      onBlur={() =>
-                        updateReservedHolder(index, 'per', getPerForAmount(basic.tokenSupply, item.tokenNumber))
-                      }
-                    />
-                  </Tooltip>
-
-                  <InputNumber
-                    className="input-number-common"
-                    placeholder="100%"
-                    min={0}
-                    max={100}
-                    value={item.per}
-                    formatter={value => `${value}%`}
-                    parser={value => value?.replace('%', '') || ''}
-                    maxLength={5}
-                    onChange={val => {
-                      let _val = val?.toString() || ''
-                      if (isNaN(Number(_val))) return
-                      const reg = new RegExp('^[0-9.]*$')
-                      if (reg.test(_val)) {
-                        if (Number(val) > 100) {
-                          _val = '100'
-                        }
-                        updateReservedHolder(index, 'per', _val)
-                      }
-                    }}
-                    onBlur={() =>
-                      updateReservedHolder(index, 'tokenNumber', getAmountForPer(basic.tokenSupply, item.per))
+                <Box
+                  display={'grid'}
+                  gap={10}
+                  sx={{
+                    '& p': {
+                      color: '#798488'
                     }
-                  />
-                  <DatePicker
-                    valueStamp={item?.lockdate}
-                    disabledPassTime={new Date()}
-                    onChange={timeStamp => updateReservedHolder(index, 'lockdate', timeStamp)}
-                  />
-                  <StyledExtraBg width={32} height={36} svgSize={16} onClick={() => removeReservedItem(index)}>
-                    <IconDelete />
-                  </StyledExtraBg>
-                </Box>
-              ))}
-            </Box>
-            <Button
-              className="btn-common btn-add-more"
-              disabled={distribution.reservedTokens.length >= 5}
-              onClick={addReservedMore}
-            >
-              <IconAdd />
-              Add More
-            </Button>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography fontSize={16} fontWeight={500}>
-                Reserved amount
-              </Typography>
-              <Typography fontSize={16} fontWeight={500}>
-                50,000,000
-              </Typography>
-            </Box>
-          </Box>
-        )}
-      </Box>
-
-      <Box
-        mt={20}
-        sx={{
-          paddingBottom: 15,
-          borderBottom: '1px solid #D2D2D2'
-        }}
-      >
-        <Box display={'flex'} justifyContent={'space-between'} gap={15}>
-          <Box>
-            <Typography fontSize={16} fontWeight={500}>
-              Private sale
-            </Typography>
-            <Typography color={'#798488'} fontSize={12}>
-              You can set up both whitelist crowdfunding and public crowdfunding. Whitelisted crowdfunders need to
-              redeem their tokens at once. If the whitelist crowdfunding or public crowdfunding does not reach the
-              specified condiftions, the cowdfunding will fail and user can redeem their toekns back by themselves.
-            </Typography>
-          </Box>
-          <Switch
-            checked={distribution.privateSaleOpen}
-            onChange={status => updateDistributionCall('privateSaleOpen', status)}
-          />
-        </Box>
-        {distribution.privateSaleOpen && (
-          <Box mt={16} display={'grid'} gap={15}>
-            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-              <Typography fontSize={16} fontWeight={500}>
-                Receiving Tokens
-              </Typography>
-              <Box className="input-assets-selector" width={220}>
-                <Select
-                  value={distribution.privateReceivingToken}
-                  suffixIcon={<img src={IconDownArrow} />}
-                  onChange={val => {
-                    updateDistributionCall('privateReceivingToken', val)
                   }}
                 >
-                  {privateReceivingTokens.map(item => (
-                    <Option value={item.value} key={item.value}>
-                      <Box
-                        display={'flex'}
-                        alignItems={'center'}
-                        gap={5}
-                        sx={{
-                          '& img, & svg': {
-                            width: 20,
-                            height: 20
+                  <Typography variant="body1">Addresses</Typography>
+                  <Typography variant="body1">Token Number</Typography>
+                  <Typography variant="body1">Per</Typography>
+                  <Typography variant="body1">Lock date</Typography>
+                </Box>
+                {distribution.reservedTokens.map((item, index) => (
+                  <Box display={'grid'} gap={10} key={index}>
+                    <div className="prefix-wrapper">
+                      <img src={IconToken} />
+                      <Input
+                        className="input-common"
+                        style={{ paddingLeft: 50 }}
+                        placeholder={ZERO_ADDRESS}
+                        maxLength={ZERO_ADDRESS.length}
+                        value={item.address}
+                        onChange={e => updateReservedHolder(index, 'address', e?.target?.value)}
+                        onBlur={() => {
+                          if (item.address && !isAddress(item.address)) updateReservedHolder(index, 'address', '')
+                        }}
+                      />
+                    </div>
+                    <Tooltip
+                      placement="top"
+                      title={
+                        <Box textAlign={'center'}>
+                          <Typography>Current tokens: {toFormatGroup(item.tokenNumber || 0, 0)}</Typography>
+                          <Typography>
+                            Remaining tokens: {toFormatGroup(remainderTokenAmount, 0)}
+                            {!!Number(remainderTokenAmount) && (
+                              <MaxTag
+                                onClick={() => {
+                                  updateReservedHolder(
+                                    index,
+                                    'tokenNumber',
+                                    new BigNumber(remainderTokenAmount).plus(item.tokenNumber || 0).toString()
+                                  )
+                                  const el = document.getElementById('reservedInput' + index)
+                                  el?.focus()
+                                  setTimeout(() => el?.blur())
+                                }}
+                              >
+                                Max
+                              </MaxTag>
+                            )}
+                          </Typography>
+                        </Box>
+                      }
+                    >
+                      <Input
+                        className="input-common token-number"
+                        placeholder="1,111"
+                        maxLength={basic.tokenSupply.length}
+                        id={'reservedInput' + index}
+                        value={item.tokenNumber}
+                        onChange={e => {
+                          const reg = new RegExp('^[0-9]*$')
+                          const _val = e.target.value
+                          if (reg.test(_val)) {
+                            // check max value
+                            const input = getCurrentInputMaxAmount(remainderTokenAmount, item.tokenNumber || '0', _val)
+                            updateReservedHolder(index, 'tokenNumber', input)
                           }
                         }}
-                      >
-                        {item.logo}
-                        {item.name}
-                      </Box>
-                    </Option>
-                  ))}
-                </Select>
+                        onBlur={() =>
+                          updateReservedHolder(index, 'per', getPerForAmount(basic.tokenSupply, item.tokenNumber))
+                        }
+                      />
+                    </Tooltip>
+
+                    <InputNumber
+                      className="input-number-common"
+                      placeholder="100%"
+                      min={0}
+                      max={100}
+                      value={item.per}
+                      formatter={value => `${value}%`}
+                      parser={value => value?.replace('%', '') || ''}
+                      maxLength={6}
+                      onChange={val => {
+                        let _val = val?.toString() || ''
+                        if (isNaN(Number(_val))) return
+                        const reg = new RegExp('^[0-9.]*$')
+                        if (reg.test(_val)) {
+                          if (Number(val) > 100) {
+                            _val = '100'
+                          }
+                          const maxPer = getCurrentInputMaxPer(
+                            basic.tokenSupply,
+                            remainderTokenAmount,
+                            item.tokenNumber || '0',
+                            Number(_val)
+                          )
+                          updateReservedHolder(index, 'per', maxPer)
+                        }
+                      }}
+                      onBlur={() =>
+                        updateReservedHolder(index, 'tokenNumber', getAmountForPer(basic.tokenSupply, item.per))
+                      }
+                    />
+                    <DatePicker
+                      valueStamp={item?.lockdate}
+                      disabledPassTime={new Date()}
+                      onChange={timeStamp => updateReservedHolder(index, 'lockdate', timeStamp)}
+                    />
+                    <StyledExtraBg width={32} height={36} svgSize={16} onClick={() => removeReservedItem(index)}>
+                      <IconDelete />
+                    </StyledExtraBg>
+                  </Box>
+                ))}
+              </Box>
+              <Button
+                className="btn-common btn-add-more"
+                disabled={distribution.reservedTokens.length >= 20}
+                onClick={addReservedMore}
+              >
+                <IconAdd />
+                Add More
+              </Button>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Typography fontSize={16} fontWeight={500}>
+                  Reserved amount
+                </Typography>
+                <Typography fontSize={16} fontWeight={500}>
+                  {toFormatGroup(currentUsedTokenAmount.reservedAmount, 0)} {basic.tokenSymbol}
+                </Typography>
               </Box>
             </Box>
-            <Box
-              display={'grid'}
-              gap={8}
-              sx={{
-                '&>div': {
-                  gridTemplateColumns: '417fr 104fr 80fr 80fr 110fr 32fr',
-                  alignItems: 'center'
-                }
-              }}
-            >
+          )}
+        </Box>
+
+        <Box
+          mt={20}
+          sx={{
+            paddingBottom: 15,
+            borderBottom: '1px solid #D2D2D2'
+          }}
+        >
+          <Box display={'flex'} justifyContent={'space-between'} gap={15}>
+            <Box>
+              <Typography fontSize={16} fontWeight={500}>
+                Private sale
+              </Typography>
+              <Typography color={'#798488'} fontSize={12}>
+                You can set up both whitelist crowdfunding and public crowdfunding. Whitelisted crowdfunders need to
+                redeem their tokens at once. If the whitelist crowdfunding or public crowdfunding does not reach the
+                specified condiftions, the cowdfunding will fail and user can redeem their toekns back by themselves.
+              </Typography>
+            </Box>
+            <Switch
+              checked={distribution.privateSaleOpen}
+              onChange={status => updateDistributionCall('privateSaleOpen', status)}
+            />
+          </Box>
+          {distribution.privateSaleOpen && (
+            <Box mt={16} display={'grid'} gap={15}>
+              <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                <Typography fontSize={16} fontWeight={500}>
+                  Receiving Tokens
+                </Typography>
+                <Box className="input-assets-selector" width={220}>
+                  <Select
+                    value={distribution.privateReceivingToken}
+                    suffixIcon={<img src={IconDownArrow} />}
+                    onChange={val => {
+                      updateDistributionCall('privateReceivingToken', val)
+                    }}
+                  >
+                    {privateReceivingTokens.map(item => (
+                      <Option value={item.value} key={item.value}>
+                        <Box
+                          display={'flex'}
+                          alignItems={'center'}
+                          gap={5}
+                          sx={{
+                            '& img, & svg': {
+                              width: 20,
+                              height: 20
+                            }
+                          }}
+                        >
+                          {item.logo}
+                          {item.name}
+                        </Box>
+                      </Option>
+                    ))}
+                  </Select>
+                </Box>
+              </Box>
               <Box
                 display={'grid'}
-                gap={10}
+                gap={8}
                 sx={{
-                  '& p': {
-                    color: '#798488'
+                  '&>div': {
+                    gridTemplateColumns: '417fr 104fr 80fr 80fr 110fr 32fr',
+                    alignItems: 'center'
                   }
                 }}
               >
-                <Typography variant="body1">Addresses</Typography>
-                <Typography variant="body1">Token Number</Typography>
-                <Typography variant="body1">Per</Typography>
-                <Typography variant="body1">Price</Typography>
-                <Typography variant="body1">Pledged of value</Typography>
-              </Box>
-              {distribution.privateSale.map((item, index) => (
-                <Box display={'grid'} gap={10} key={index}>
-                  <div className="prefix-wrapper">
-                    <img src={IconToken} />
-                    <Input
-                      className="input-common"
-                      style={{ paddingLeft: 50 }}
-                      placeholder={ZERO_ADDRESS}
-                      maxLength={ZERO_ADDRESS.length}
-                      value={item.address}
-                      onChange={e => updatePrivateHolder(index, 'address', e?.target?.value)}
-                      onBlur={() => {
-                        if (item.address && !isAddress(item.address)) updatePrivateHolder(index, 'address', '')
-                      }}
-                    />
-                  </div>
-                  <Tooltip placement="top" title={toFormatGroup(item.tokenNumber || 0, 0)}>
-                    <Input
-                      className="input-common token-number"
-                      placeholder="1,111"
-                      maxLength={basic.tokenSupply.length}
-                      value={item.tokenNumber}
-                      onChange={e => {
-                        const reg = new RegExp('^[0-9]*$')
-                        const _val = e.target.value
-                        if (!_val || reg.test(_val)) updatePrivateHolder(index, 'tokenNumber', _val)
+                <Box
+                  display={'grid'}
+                  gap={10}
+                  sx={{
+                    '& p': {
+                      color: '#798488'
+                    }
+                  }}
+                >
+                  <Typography variant="body1">Addresses</Typography>
+                  <Typography variant="body1">Token Number</Typography>
+                  <Typography variant="body1">Per</Typography>
+                  <Typography variant="body1">Price</Typography>
+                  <Typography variant="body1">Pledged of value</Typography>
+                </Box>
+                {distribution.privateSale.map((item, index) => (
+                  <Box display={'grid'} gap={10} key={index}>
+                    <div className="prefix-wrapper">
+                      <img src={IconToken} />
+                      <Input
+                        className="input-common"
+                        style={{ paddingLeft: 50 }}
+                        placeholder={ZERO_ADDRESS}
+                        maxLength={ZERO_ADDRESS.length}
+                        value={item.address}
+                        onChange={e => updatePrivateHolder(index, 'address', e?.target?.value)}
+                        onBlur={() => {
+                          if (item.address && !isAddress(item.address)) updatePrivateHolder(index, 'address', '')
+                        }}
+                      />
+                    </div>
+                    <Tooltip
+                      placement="top"
+                      title={
+                        <Box textAlign={'center'}>
+                          <Typography>Current tokens: {toFormatGroup(item.tokenNumber || 0, 0)}</Typography>
+                          <Typography>
+                            Remaining tokens: {toFormatGroup(remainderTokenAmount, 0)}
+                            {!!Number(remainderTokenAmount) && (
+                              <MaxTag
+                                onClick={() => {
+                                  updatePrivateHolder(
+                                    index,
+                                    'tokenNumber',
+                                    new BigNumber(remainderTokenAmount).plus(item.tokenNumber || 0).toString()
+                                  )
+                                  const el = document.getElementById('privateInput' + index)
+                                  el?.focus()
+                                  setTimeout(() => el?.blur())
+                                }}
+                              >
+                                Max
+                              </MaxTag>
+                            )}
+                          </Typography>
+                        </Box>
+                      }
+                    >
+                      <Input
+                        className="input-common token-number"
+                        placeholder="1,111"
+                        maxLength={basic.tokenSupply.length}
+                        value={item.tokenNumber}
+                        id={'privateInput' + index}
+                        onChange={e => {
+                          const reg = new RegExp('^[0-9]*$')
+                          const _val = e.target.value
+                          if (reg.test(_val)) {
+                            const input = getCurrentInputMaxAmount(remainderTokenAmount, item.tokenNumber || '0', _val)
+                            updatePrivateHolder(index, 'tokenNumber', input)
+                          }
+                        }}
+                        onBlur={() =>
+                          updatePrivateHolder(index, 'per', getPerForAmount(basic.tokenSupply, item.tokenNumber))
+                        }
+                      />
+                    </Tooltip>
+                    <InputNumber
+                      className="input-number-common"
+                      placeholder="100%"
+                      min={0}
+                      max={100}
+                      value={item.per}
+                      formatter={value => `${value}%`}
+                      parser={value => value?.replace('%', '') || ''}
+                      maxLength={6}
+                      onChange={val => {
+                        let _val = val?.toString() || ''
+                        if (isNaN(Number(_val))) return
+                        const reg = new RegExp('^[0-9.]*$')
+                        if (reg.test(_val)) {
+                          if (Number(val) > 100) {
+                            _val = '100'
+                          }
+                          const maxPer = getCurrentInputMaxPer(
+                            basic.tokenSupply,
+                            remainderTokenAmount,
+                            item.tokenNumber || '0',
+                            Number(_val)
+                          )
+                          updatePrivateHolder(index, 'per', maxPer)
+                        }
                       }}
                       onBlur={() =>
-                        updatePrivateHolder(index, 'per', getPerForAmount(basic.tokenSupply, item.tokenNumber))
+                        updatePrivateHolder(index, 'tokenNumber', getAmountForPer(basic.tokenSupply, item.per))
                       }
                     />
-                  </Tooltip>
-                  <InputNumber
-                    className="input-number-common"
-                    placeholder="100%"
-                    min={0}
-                    max={100}
-                    value={item.per}
-                    formatter={value => `${value}%`}
-                    parser={value => value?.replace('%', '') || ''}
-                    maxLength={5}
-                    onChange={val => {
-                      let _val = val?.toString() || ''
-                      if (isNaN(Number(_val))) return
-                      const reg = new RegExp('^[0-9.]*$')
-                      if (reg.test(_val)) {
-                        if (Number(val) > 100) {
-                          _val = '100'
-                        }
-                        updatePrivateHolder(index, 'per', _val)
+                    <Tooltip placement="top" title={`${item.price || '0'} ${distribution.privateReceivingToken}/token`}>
+                      <Input
+                        className="input-common"
+                        placeholder="1.00"
+                        maxLength={8}
+                        value={item.price}
+                        onChange={e => {
+                          const _val = e.target.value
+                          if (isNaN(Number(_val))) return
+                          const reg = new RegExp('^[0-9.]*$')
+                          if (reg.test(_val)) updatePrivateHolder(index, 'price', _val)
+                        }}
+                      />
+                    </Tooltip>
+                    <Typography fontSize={14} fontWeight={500} display={'flex'} alignItems={'center'}>
+                      {toFormatGroup(calcTotalAmountValue(item.tokenNumber, item.price), 0)}{' '}
+                      {distribution.privateReceivingToken}
+                    </Typography>
+                    <StyledExtraBg width={32} height={36} svgSize={16} onClick={() => removePrivateSaleItem(index)}>
+                      <IconDelete />
+                    </StyledExtraBg>
+                  </Box>
+                ))}
+              </Box>
+              <Button
+                className="btn-common btn-add-more"
+                disabled={distribution.privateSale.length >= 20}
+                onClick={addPrivateSaleMore}
+              >
+                <IconAdd />
+                Add More
+              </Button>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Typography fontSize={16} fontWeight={500}>
+                  Private sale total
+                </Typography>
+                <Typography fontSize={16} fontWeight={500}>
+                  {toFormatGroup(currentUsedTokenAmount.privateSaleTotal, 0)} {basic.tokenSymbol}
+                </Typography>
+              </Box>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Typography fontSize={16} fontWeight={500}>
+                  Equivalent estimate
+                </Typography>
+                <Typography fontSize={16} fontWeight={500}>
+                  {toFormatGroup(currentUsedTokenAmount.privateEquivalentEstimate, 0)}{' '}
+                  {distribution.privateReceivingToken}
+                </Typography>
+              </Box>
+            </Box>
+          )}
+        </Box>
+
+        <Box
+          mt={20}
+          display={'grid'}
+          gap={15}
+          sx={{
+            paddingBottom: 15,
+            borderBottom: '1px solid #D2D2D2'
+          }}
+        >
+          <Box display={'flex'} justifyContent={'space-between'} gap={15}>
+            <Box>
+              <Typography fontSize={16} fontWeight={500}>
+                Public sale
+              </Typography>
+            </Box>
+            <Switch
+              checked={distribution.publicSaleOpen}
+              onChange={status => updateDistributionCall('publicSaleOpen', status)}
+            />
+          </Box>
+          {distribution.publicSaleOpen && (
+            <>
+              <Box display={'flex'} justifyContent={'space-between'} gap={15} mt={5}>
+                <Box display={'flex'} gap={25}>
+                  <Box display={'grid'} gap={5}>
+                    <Typography color={'#798488'}>Offering Amount</Typography>
+                    <Tooltip
+                      placement="top"
+                      title={
+                        <Box textAlign={'center'}>
+                          <Typography>
+                            Current tokens: {toFormatGroup(distribution.publicSale.offeringAmount || 0, 0)}
+                          </Typography>
+                          <Typography>
+                            Remaining tokens: {toFormatGroup(remainderTokenAmount, 0)}
+                            {!!Number(remainderTokenAmount) && (
+                              <MaxTag
+                                onClick={() =>
+                                  updatePublicSaleCall(
+                                    'offeringAmount',
+                                    new BigNumber(remainderTokenAmount)
+                                      .plus(distribution.publicSale.offeringAmount || 0)
+                                      .toString()
+                                  )
+                                }
+                              >
+                                Max
+                              </MaxTag>
+                            )}
+                          </Typography>
+                        </Box>
                       }
-                    }}
-                    onBlur={() =>
-                      updatePrivateHolder(index, 'tokenNumber', getAmountForPer(basic.tokenSupply, item.per))
-                    }
-                  />
-                  <Tooltip placement="top" title={`${item.price || '0'} ${distribution.privateReceivingToken}/token`}>
+                    >
+                      <Input
+                        style={{ width: 120 }}
+                        className="input-common"
+                        placeholder="100"
+                        maxLength={basic.tokenSupply.length}
+                        value={distribution.publicSale.offeringAmount}
+                        onChange={e => {
+                          const reg = new RegExp('^[0-9]*$')
+                          const _val = e.target.value
+                          if (reg.test(_val)) {
+                            const input = getCurrentInputMaxAmount(
+                              remainderTokenAmount,
+                              distribution.publicSale.offeringAmount || '0',
+                              _val
+                            )
+                            updatePublicSaleCall('offeringAmount', input)
+                          }
+                        }}
+                      />
+                    </Tooltip>
+                  </Box>
+                  <Box display={'grid'} gap={5}>
+                    <Typography color={'#798488'}>Price</Typography>
                     <Input
+                      style={{ width: 130 }}
                       className="input-common"
                       placeholder="1.00"
-                      maxLength={7}
-                      value={item.price}
+                      maxLength={8}
+                      value={distribution.publicSale.price}
+                      suffix={distribution.privateReceivingToken}
                       onChange={e => {
                         const _val = e.target.value
                         if (isNaN(Number(_val))) return
                         const reg = new RegExp('^[0-9.]*$')
-                        if (reg.test(_val)) updatePrivateHolder(index, 'price', _val)
+                        if (reg.test(_val)) updatePublicSaleCall('price', _val)
                       }}
                     />
-                  </Tooltip>
-                  <Typography fontSize={14} display={'flex'} alignItems={'center'}>
-                    {toFormatGroup(calcTotalAmount(item.tokenNumber, item.price), 0)}{' '}
-                    {distribution.privateReceivingToken}
-                  </Typography>
-                  <StyledExtraBg width={32} height={36} svgSize={16} onClick={() => removePrivateSaleItem(index)}>
-                    <IconDelete />
-                  </StyledExtraBg>
+                  </Box>
                 </Box>
-              ))}
-            </Box>
-            <Button
-              className="btn-common btn-add-more"
-              disabled={distribution.privateSale.length >= 5}
-              onClick={addPrivateSaleMore}
-            >
-              <IconAdd />
-              Add More
-            </Button>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography fontSize={16} fontWeight={500}>
-                Private sale total
-              </Typography>
-              <Typography fontSize={16} fontWeight={500}>
-                10,000,000 DCC
-              </Typography>
-            </Box>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography fontSize={16} fontWeight={500}>
-                Equivalent estimate
-              </Typography>
-              <Typography fontSize={16} fontWeight={500}>
-                10,000,000 DCC
-              </Typography>
-            </Box>
-          </Box>
-        )}
-      </Box>
+                <Box display={'grid'} gap={5}>
+                  <Typography color={'#798488'}>Pledge limit (optional)</Typography>
+                  <Box display={'flex'} gap={8}>
+                    <Input
+                      style={{ width: 80 }}
+                      className="input-common"
+                      placeholder="min"
+                      maxLength={basic.tokenSupply.length}
+                      value={distribution.publicSale.pledgeLimitMin}
+                      onChange={e => {
+                        const reg = new RegExp('^[0-9]*$')
+                        const _val = e.target.value
+                        if (reg.test(_val)) updatePublicSaleCall('pledgeLimitMin', _val)
+                      }}
+                    />
+                    <Typography display={'flex'} alignItems={'center'}>
+                      ----
+                    </Typography>
+                    <Input
+                      style={{ width: 80 }}
+                      className="input-common"
+                      placeholder="max"
+                      maxLength={basic.tokenSupply.length}
+                      value={distribution.publicSale.pledgeLimitMax}
+                      onChange={e => {
+                        const reg = new RegExp('^[0-9]*$')
+                        const _val = e.target.value
+                        if (reg.test(_val)) updatePublicSaleCall('pledgeLimitMax', _val)
+                      }}
+                    />
+                  </Box>
+                </Box>
+              </Box>
 
-      <Box mt={20} display={'grid'} gap={15}>
-        <Box display={'flex'} justifyContent={'space-between'} gap={15}>
-          <Box>
-            <Typography fontSize={16} fontWeight={500}>
-              Public sale
-            </Typography>
-          </Box>
-          <Switch
-            checked={distribution.publicSaleOpen}
-            onChange={status => updateDistributionCall('publicSaleOpen', status)}
-          />
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Typography fontSize={16} fontWeight={500}>
+                  Public sale total
+                </Typography>
+                <Typography fontSize={16} fontWeight={500}>
+                  {toFormatGroup(currentUsedTokenAmount.publicSaleTotal, 0)} {basic.tokenSymbol}
+                </Typography>
+              </Box>
+              <Box display={'flex'} justifyContent={'space-between'}>
+                <Typography fontSize={16} fontWeight={500}>
+                  Equivalent estimate
+                </Typography>
+                <Typography fontSize={16} fontWeight={500}>
+                  {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate, 0)}{' '}
+                  {distribution.privateReceivingToken}
+                </Typography>
+              </Box>
+            </>
+          )}
         </Box>
-        {distribution.publicSaleOpen && (
-          <>
-            <Box display={'flex'} justifyContent={'space-between'} gap={15} mt={5}>
-              <Box display={'flex'} gap={25}>
-                <Box display={'grid'} gap={5}>
-                  <Typography color={'#798488'}>Offering Amount</Typography>
-                  <Input
-                    style={{ width: 120 }}
-                    className="input-common"
-                    placeholder="100"
-                    value={distribution.publicSale.offeringAmount}
-                    onChange={e => {
-                      const reg = new RegExp('^[0-9]*$')
-                      const _val = e.target.value
-                      if (reg.test(_val)) updatePublicSaleCall('offeringAmount', _val)
-                    }}
-                  />
-                </Box>
-                <Box display={'grid'} gap={5}>
-                  <Typography color={'#798488'}>Price</Typography>
-                  <Input
-                    style={{ width: 104 }}
-                    className="input-common"
-                    placeholder="$0.2"
-                    value={distribution.publicSale.price}
-                    onChange={e => {
-                      const _val = e.target.value
-                      if (isNaN(Number(_val))) return
-                      const reg = new RegExp('^[0-9.]*$')
-                      if (reg.test(_val)) updatePublicSaleCall('price', _val)
-                    }}
-                  />
-                </Box>
-              </Box>
-              <Box display={'grid'} gap={5}>
-                <Typography color={'#798488'}>Pledge limit (optional)</Typography>
-                <Box display={'flex'} gap={8}>
-                  <Input
-                    style={{ width: 80 }}
-                    className="input-common"
-                    placeholder="min"
-                    value={distribution.publicSale.pledgeLimitMin}
-                    onChange={e => {
-                      const reg = new RegExp('^[0-9]*$')
-                      const _val = e.target.value
-                      if (reg.test(_val)) updatePublicSaleCall('pledgeLimitMin', _val)
-                    }}
-                  />
-                  <Typography display={'flex'} alignItems={'center'}>
-                    ----
-                  </Typography>
-                  <Input
-                    style={{ width: 80 }}
-                    className="input-common"
-                    placeholder="max"
-                    value={distribution.publicSale.pledgeLimitMax}
-                    onChange={e => {
-                      const reg = new RegExp('^[0-9]*$')
-                      const _val = e.target.value
-                      if (reg.test(_val)) updatePublicSaleCall('pledgeLimitMax', _val)
-                    }}
-                  />
-                </Box>
-              </Box>
-            </Box>
 
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography fontSize={16} fontWeight={500}>
-                Public sale total
+        <Box mt={20} display={'grid'} gap={15}>
+          <Box display={'flex'} justifyContent={'space-between'} gap={15}>
+            <Box display={'flex'} gap={24} alignItems={'center'}>
+              <Typography fontSize={16} fontWeight={500} sx={{ whiteSpace: 'nowrap' }}>
+                Start time
               </Typography>
-              <Typography fontSize={16} fontWeight={500}>
-                10,000,000 DCC
-              </Typography>
-            </Box>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography fontSize={16} fontWeight={500}>
-                Equivalent estimate
-              </Typography>
-              <Typography fontSize={16} fontWeight={500}>
-                10,000,000 DCC
-              </Typography>
-            </Box>
-
-            <Box display={'flex'} justifyContent={'space-between'} gap={15}>
-              <Box display={'flex'} gap={24} alignItems={'center'}>
-                <Typography fontSize={16} fontWeight={500} sx={{ whiteSpace: 'nowrap' }}>
-                  Start time
-                </Typography>
-                <DatePicker
-                  valueStamp={distribution.publicSale.startTime}
-                  disabledPassTime={new Date()}
-                  onChange={timeStamp => {
-                    updatePublicSaleCall('startTime', timeStamp)
-                    updatePublicSaleCall('endTime', undefined)
-                  }}
-                />
-              </Box>
-              <Box display={'flex'} gap={24} alignItems={'center'}>
-                <Typography fontSize={16} fontWeight={500} sx={{ whiteSpace: 'nowrap' }}>
-                  End time
-                </Typography>
-                <DatePicker
-                  valueStamp={distribution.publicSale.endTime}
-                  disabledPassTime={
-                    distribution.publicSale.startTime ? Number(distribution.publicSale.startTime) * 1000 : new Date()
-                  }
-                  onChange={timeStamp => updatePublicSaleCall('endTime', timeStamp)}
-                />
-              </Box>
-            </Box>
-
-            <Box className="input-item">
-              <Typography fontSize={16} fontWeight={500} mb={10}>
-                About product
-              </Typography>
-              <TextArea
-                rows={4}
-                maxLength={200}
-                value={distribution.publicSale.aboutProduct}
-                onChange={e => {
-                  const _val = e.target.value
-                  updatePublicSaleCall('aboutProduct', _val)
+              <DatePicker
+                valueStamp={distribution.startTime}
+                disabledPassTime={new Date()}
+                onChange={timeStamp => {
+                  updateDistributionCall('startTime', timeStamp)
                 }}
               />
             </Box>
-          </>
-        )}
-      </Box>
+            <Box display={'flex'} gap={24} alignItems={'center'}>
+              <Typography fontSize={16} fontWeight={500} sx={{ whiteSpace: 'nowrap' }}>
+                End time
+              </Typography>
+              <DatePicker
+                valueStamp={distribution.endTime}
+                disabledPassTime={distribution.startTime ? Number(distribution.startTime) * 1000 : new Date()}
+                onChange={timeStamp => updateDistributionCall('endTime', timeStamp)}
+              />
+            </Box>
+          </Box>
 
-      <Box mt={15}>
-        <ErrorAlert msg="hfkjsdhjk" />
+          <Box className="input-item">
+            <Typography fontSize={16} fontWeight={500} mb={10}>
+              About product
+            </Typography>
+            <TextArea
+              rows={4}
+              maxLength={200}
+              value={distribution.aboutProduct}
+              onChange={e => {
+                const _val = e.target.value
+                updateDistributionCall('aboutProduct', _val)
+              }}
+            />
+          </Box>
+        </Box>
+
+        {!!verifyMsg && (
+          <Box mt={15}>
+            <AlertError>{verifyMsg}</AlertError>
+          </Box>
+        )}
+      </section>
+      <Box className="btn-group" display={'flex'} justifyContent={'space-between'}>
+        <Button className="btn-common btn-04" onClick={goBack}>
+          Back
+        </Button>
+        <Button className="btn-common btn-01" onClick={goNext} disabled={!!verifyMsg}>
+          Next
+        </Button>
       </Box>
-    </section>
+    </>
   )
 }

@@ -7,9 +7,10 @@ interface Props {
   disabledPassTime?: Date | number
   valueStamp?: number
   onChange?: (n: number | undefined) => void
+  onBlur?: () => void
 }
 
-export default function Index({ disabledPassTime, onChange, valueStamp }: Props) {
+export default function Index({ disabledPassTime, onChange, valueStamp, onBlur }: Props) {
   function _onChange(value: Moment | null) {
     onChange && onChange(value ? Number((value.valueOf() / 1000).toFixed()) : undefined)
   }
@@ -40,6 +41,7 @@ export default function Index({ disabledPassTime, onChange, valueStamp }: Props)
         value={valueStamp ? moment(valueStamp * 1000) : undefined}
         onChange={_onChange}
         onOk={onOk}
+        onBlur={onBlur}
       />
     </Box>
   )

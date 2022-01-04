@@ -1,33 +1,11 @@
 import { createAction } from '@reduxjs/toolkit'
-
-// export interface IHolder {
-//   address: string
-//   number: number | undefined
-//   per: number | undefined
-// }
-
-// export interface IMinVote {
-//   per: number
-//   votes: number
-// }
-
-// export interface IPhoto {
-//   preview: string
-//   file: any
-// }
-
-// export interface IVotingDuration {
-//   days?: number
-//   hours?: number
-//   minutes?: number
-// }
-
 export interface CreateDaoDataBasic {
   daoName: string
   description: string
   tokenName: string
   tokenSymbol: string
   tokenSupply: string
+  tokenDecimals: number
   tokenPhoto: string
   websiteLink: string
   twitterLink: string
@@ -45,22 +23,21 @@ export interface CreateDaoDataDistributionPrivateSale {
   tokenNumber: string | undefined
   per: number | undefined
   price: number | undefined
-  pledgedOfValue: number | undefined
+  // pledgedOfValue: number | undefined
 }
 export interface CreateDaoDataDistributionPublicSale {
   offeringAmount: string
   price: number | undefined
   pledgeLimitMin: string | undefined
   pledgeLimitMax: string | undefined
-  startTime: number | undefined
-  endTime: number | undefined
-  aboutProduct: string
 }
 
 export interface PrivateReceivingTokenProps {
   name: string
   value: string
   logo: JSX.Element
+  address: string
+  decimals: number
 }
 
 export interface CreateDaoDataDistribution {
@@ -68,18 +45,26 @@ export interface CreateDaoDataDistribution {
   reservedOpen: boolean
   privateSale: CreateDaoDataDistributionPrivateSale[]
   privateSaleOpen: boolean
-  privateReceivingToken: string | undefined
+  privateReceivingToken: string
   publicSale: CreateDaoDataDistributionPublicSale
   publicSaleOpen: boolean
+  startTime: number | undefined
+  endTime: number | undefined
+  aboutProduct: string
 }
 
 export interface CreateDaoDataRule {
   minVotePer: number
   minCreateProposalPer: number
   minApprovalPer: number
-  days?: number
-  hours?: number
-  minutes?: number
+  days: number
+  hours: number
+  minutes: number
+  votersCustom: boolean
+  contractExecutor: string
+  contractDays: number
+  contractHours: number
+  contractMinutes: number
   rules: string
 }
 

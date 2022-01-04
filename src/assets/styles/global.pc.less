@@ -257,6 +257,28 @@ body {
             line-height: 24px;
             color: #22304a;
         }
+        .ant-input-affix-wrapper.input-common {
+            box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+            border-radius: 8px;
+            min-height: 48px;
+            font-weight: 500;
+            color: #22304a;
+            input {
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 24px;
+            }
+            .ant-input-suffix {
+                display: flex;
+                align-items: center;
+            }
+        }
+
+        .ant-picker-input {
+            input {
+                font-weight: 500;
+            }
+        }
 
         .ant-input-number.input-number-common {
             height: 48px;
@@ -274,6 +296,11 @@ body {
 
             input {
                 text-align: center;
+                font-weight: 500;
+
+                &:disabled {
+                    opacity: 0.3;
+                }
             }
         }
 
@@ -698,6 +725,13 @@ body {
 }
 
 .stp-table {
+    .ant-table {
+        .ant-table-thead > tr > th {
+            color: #767676;
+            font-weight: normal;
+        }
+        color: #22304A;
+    }
     .ant-table-thead {
         .ant-table-cell {
             background: transparent;

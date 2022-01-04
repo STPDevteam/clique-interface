@@ -71,7 +71,7 @@ export default function App() {
                 <Route exact strict path="/" component={Daos} />
                 <Route exact strict path="/create" component={Home} />
                 <Route exact strict path="/building" component={Building} />
-                <Route exact strict path="/building/launching" component={Launching} />
+                <Route exact strict path="/building/launching/:hash" component={Launching} />
                 <Route exact strict path="/detail" component={DaoDetail} />
                 <Route exact strict path="/detail/:index" component={DaoDetail} />
               </Switch>

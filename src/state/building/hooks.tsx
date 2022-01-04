@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
 import { ReactComponent as IconTokenSvg } from '../../assets/images/icon-token.svg'
@@ -12,20 +12,66 @@ import {
   CreateDaoDataRule,
   PrivateReceivingTokenProps
 } from './actions'
+import BigNumber from 'bignumber.js'
+import { calcTotalAmountValue } from 'pages/building/function'
 
 export const privateReceivingTokens: PrivateReceivingTokenProps[] = [
-  { name: 'STEP', value: 'STEP', logo: <IconTokenSvg /> }
+  {
+    name: 'STEP',
+    value: 'STEP',
+    logo: <IconTokenSvg />,
+    address: '0x20badc54c480a1adb586860b84a86f30c16f2df0',
+    decimals: 18
+  },
+  {
+    name: 'USDT',
+    value: 'USDT',
+    logo: <IconTokenSvg />,
+    address: '0x20badc54c480a1adb586860b84a86f30c16f2df0',
+    decimals: 18
+  }
 ]
 
-export function useBuildingData() {
+export function useBuildingDataCallback() {
   const buildingDaoData = useSelector((state: AppState) => state.buildingDao)
 
   const dispatch = useDispatch<AppDispatch>()
   const updateBasic = useCallback(
     (createDaoDataBasic: CreateDaoDataBasic) => {
       dispatch(updateBuildingBasicDao({ createDaoDataBasic }))
+
+      if (createDaoDataBasic.tokenSupply !== buildingDaoData.basic.tokenSupply) {
+        // reset Distribution token number and per
+        const {
+          reservedTokens,
+          reservedOpen,
+          privateSale,
+          privateSaleOpen,
+          privateReceivingToken,
+          publicSale,
+          publicSaleOpen,
+          startTime,
+          endTime,
+          aboutProduct
+        } = buildingDaoData.distribution
+        const _newCreateDaoDataDistribution: CreateDaoDataDistribution = {
+          reservedTokens: reservedTokens.map(item =>
+            Object.assign({ ...item }, { tokenNumber: undefined, per: undefined })
+          ),
+          reservedOpen,
+          privateSale: privateSale.map(item => Object.assign({ ...item }, { tokenNumber: undefined, per: undefined })),
+          privateSaleOpen,
+          privateReceivingToken,
+          publicSale: Object.assign({ ...publicSale }, { offeringAmount: undefined }),
+          publicSaleOpen,
+          startTime,
+          endTime,
+          aboutProduct
+        }
+        dispatch(updateBuildingDistributionDao({ createDaoDataDistribution: _newCreateDaoDataDistribution }))
+      }
     },
-    [dispatch]
+    [buildingDaoData.basic.tokenSupply, buildingDaoData.distribution, dispatch]
   )
   const updateDistribution = useCallback(
     (createDaoDataDistribution: CreateDaoDataDistribution) => {
@@ -50,4 +96,118 @@ export function useBuildingData() {
     removeBuildingDaoData,
     buildingDaoData
   }
+}
+
+export function useCurrentUsedTokenAmount() {
+  const buildingDaoData = useSelector((state: AppState) => state.buildingDao)
+  const { basic, distribution } = buildingDaoData
+
+  let reservedAmountUsed = '0'
+  if (distribution.reservedOpen) {
+    reservedAmountUsed = distribution.reservedTokens.length
+      ? distribution.reservedTokens
+          .map(item => item.tokenNumber)
+          .reduce((pre, cur) => new BigNumber(pre || '0').plus(cur || '0').toString()) || '0'
+      : '0'
+  }
+
+  let privateSaleUsed = '0'
+  let privateSalePrice = '0'
+  if (distribution.privateSaleOpen) {
+    privateSaleUsed = distribution.privateSale.length
+      ? distribution.privateSale
+          .map(item => item.tokenNumber)
+          .reduce((pre, cur) => new BigNumber(pre || '0').plus(cur || '0').toString()) || '0'
+      : '0'
+
+    privateSalePrice = distribution.privateSale.length
+      ? distribution.privateSale
+          .map(item => calcTotalAmountValue(item.tokenNumber, item.price))
+          .reduce((pre, cur) => new BigNumber(pre || '0').plus(cur || '0').toString())
+      : '0'
+  }
+  const publicSaleUsed = new BigNumber(distribution.publicSale.offeringAmount || '0').toString()
+
+  return {
+    reservedAmount: reservedAmountUsed,
+    privateSaleTotal: privateSaleUsed,
+    privateEquivalentEstimate: privateSalePrice,
+    publicSaleTotal: publicSaleUsed,
+    publicEquivalentEstimate: calcTotalAmountValue(publicSaleUsed, distribution.publicSale.price) || '0',
+    tokenSupply: basic.tokenSupply
+  }
+}
+
+export function useRemainderTokenAmount(): string {
+  const { tokenSupply, reservedAmount, privateSaleTotal, publicSaleTotal } = useCurrentUsedTokenAmount()
+  const ret = new BigNumber(tokenSupply || '0')
+    .minus(reservedAmount)
+    .minus(privateSaleTotal)
+    .minus(publicSaleTotal)
+  return ret.gt(0) ? ret.toFixed(0) : '0'
+}
+
+export function useVotesNumber() {
+  const buildingDaoData = useSelector((state: AppState) => state.buildingDao)
+  const { basic, rule } = buildingDaoData
+  return useMemo(() => {
+    if (!basic.tokenSupply)
+      return {
+        minApprovalNumber: '',
+        minCreateProposalNumber: '',
+        minVoteNumber: ''
+      }
+    return {
+      minApprovalNumber: new BigNumber(basic.tokenSupply)
+        .multipliedBy(rule.minApprovalPer || 0)
+        .dividedBy(100)
+        .toFixed(0, 0),
+      minCreateProposalNumber: new BigNumber(basic.tokenSupply)
+        .multipliedBy(rule.minCreateProposalPer || 0)
+        .dividedBy(100)
+        .toFixed(0, 0),
+      minVoteNumber: new BigNumber(basic.tokenSupply)
+        .multipliedBy(rule.minVotePer || 0)
+        .dividedBy(100)
+        .toFixed(0, 0)
+    }
+  }, [basic.tokenSupply, rule.minApprovalPer, rule.minCreateProposalPer, rule.minVotePer])
+}
+
+export function useTrueCommitCreateDaoData() {
+  const buildingDaoData = useSelector((state: AppState) => state.buildingDao)
+  const { basic, distribution, rule } = buildingDaoData
+  const basicData: CreateDaoDataBasic = Object.assign(
+    { ...basic },
+    {
+      daoName: basic.daoName.trim(),
+      description: basic.description.trim(),
+      tokenName: basic.tokenName.trim(),
+      tokenSymbol: basic.tokenSymbol.trim(),
+      tokenSupply: basic.tokenSupply.trim(),
+      tokenPhoto: basic.tokenPhoto.trim(),
+      websiteLink: basic.websiteLink.trim(),
+      twitterLink: basic.twitterLink.trim(),
+      discordLink: basic.discordLink.trim()
+    }
+  )
+  const distributionData: CreateDaoDataDistribution = Object.assign(
+    { ...distribution },
+    { aboutProduct: distribution.aboutProduct.trim() }
+  )
+  const ruleData: CreateDaoDataRule = Object.assign({ ...rule }, { rules: rule.rules.trim() })
+
+  return {
+    basicData,
+    distributionData,
+    ruleData
+  }
+}
+
+export function useCurrentReceivingToken() {
+  const { distributionData } = useTrueCommitCreateDaoData()
+  for (const item of privateReceivingTokens) {
+    if (distributionData.privateReceivingToken === item.value) return item
+  }
+  return privateReceivingTokens[0]
 }
