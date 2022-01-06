@@ -1,6 +1,7 @@
 import { Avatar, Box, styled, Typography } from '@mui/material'
 import { Progress } from 'antd'
 import { DaoTypeStatus, useDaoInfoByAddress, useDaoStatus } from 'hooks/useDAOInfo'
+import { useHistory } from 'react-router-dom'
 import { timeStampToFormat, toFormatMillion } from 'utils/dao'
 
 const StyledText = styled(Typography)({
@@ -16,6 +17,7 @@ const StyledText = styled(Typography)({
 export default function PublicOfferingCard({ daoAddress }: { daoAddress: string | undefined }) {
   const daoInfo = useDaoInfoByAddress(daoAddress)
   const daoStatus = useDaoStatus(daoInfo)
+  const history = useHistory()
 
   return (
     <Box
@@ -31,6 +33,7 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
           boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)'
         }
       }}
+      onClick={() => history.push('/offering/' + daoInfo?.daoAddress)}
     >
       <Box display={'grid'} gap={14} gridTemplateColumns={'58px 80px 1fr'} mb={22}>
         <Avatar sx={{ width: 58, height: 58 }}></Avatar>

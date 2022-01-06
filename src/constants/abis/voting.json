@@ -17,12 +17,6 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "dao",
-        "type": "address"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
         "name": "id",
         "type": "uint256"
@@ -85,6 +79,75 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "allProposal",
+    "outputs": [
+      {
+        "internalType": "enum Voting.ProposalType",
+        "name": "proType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "content",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "endTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "blkHeight",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "approve",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "disapprove",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum Voting.ProposalStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       }
@@ -129,6 +192,11 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "ty",
+        "type": "uint256"
+      },
+      {
         "internalType": "string",
         "name": "title",
         "type": "string"
@@ -147,11 +215,6 @@
         "internalType": "uint256",
         "name": "endTime",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "dao",
-        "type": "address"
       },
       {
         "internalType": "bytes",
@@ -178,6 +241,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "daoAddr",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -191,19 +267,70 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "dao",
-        "type": "address"
-      }
-    ],
-    "name": "getProposalIdsByDao",
+    "inputs": [],
+    "name": "getAllProposal",
     "outputs": [
       {
-        "internalType": "uint256[]",
+        "components": [
+          {
+            "internalType": "enum Voting.ProposalType",
+            "name": "proType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "blkHeight",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "approve",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "disapprove",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum Voting.ProposalStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes",
+            "name": "data",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Voting.Proposal[]",
         "name": "",
-        "type": "uint256[]"
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -232,28 +359,10 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "dao",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
-    "name": "ids",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -280,16 +389,16 @@
         "type": "uint256"
       }
     ],
-    "name": "proposals",
+    "name": "proposalMap",
     "outputs": [
       {
-        "internalType": "address",
-        "name": "creator",
-        "type": "address"
+        "internalType": "enum Voting.ProposalType",
+        "name": "proType",
+        "type": "uint8"
       },
       {
         "internalType": "address",
-        "name": "dao",
+        "name": "creator",
         "type": "address"
       },
       {

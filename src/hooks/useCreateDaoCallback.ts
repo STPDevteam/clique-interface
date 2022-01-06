@@ -104,7 +104,11 @@ export function useCreateDaoCallback() {
       content: ruleData.rules
     })
 
-    return [Object.values(_basicParams), [_reserved, _priSale, _pubSale, currentReceivingToken.address], _rule]
+    return [
+      Object.values(_basicParams),
+      [_reserved, _priSale, _pubSale, currentReceivingToken.address, distributionData.aboutProduct],
+      _rule
+    ]
   }, [basicData, distributionData, ruleData, stptToken, currentReceivingToken])
 
   return useCallback(() => {

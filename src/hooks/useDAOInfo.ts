@@ -52,7 +52,7 @@ export function useDaoBaseInfoByAddress(
       daoAddress: string
       daoName: string | undefined
       votingAddress: string | undefined
-      proposalNumber: number | undefined
+      proposalNumber: string | undefined
       token: Token | undefined
     }
   | undefined {
@@ -111,7 +111,7 @@ export interface DaoInfoProps {
   receiveToken: Token | undefined
   pubSoldAmt: TokenAmount | undefined
   votingAddress: string | undefined
-  proposalNumber: number | undefined
+  proposalNumber: string | undefined
   rule:
     | undefined
     | {
@@ -162,10 +162,10 @@ export function useDaoStatus(daoInfo: DaoInfoProps | undefined): DaoStatusProps 
       ? 0
       : Number(
           daoInfo.pubSoldAmt
-            .multiply(JSBI.BigInt(10000))
+            .multiply(JSBI.BigInt(1000))
             .divide(daoInfo.pubSale.amount)
             .toSignificant(4)
-        ) / 100
+        ) / 10
 
   return {
     typeStatus,

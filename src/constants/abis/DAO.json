@@ -157,7 +157,7 @@
             "type": "string"
           }
         ],
-        "internalType": "struct DAOInterface.DAORule",
+        "internalType": "struct IDAOInterface.DAORule",
         "name": "",
         "type": "tuple"
       }
@@ -173,6 +173,66 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPriSales",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IDAOInterface.PrivateSale[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getReserved",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lockDate",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IDAOInterface.ReservedTokens[]",
+        "name": "",
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -238,7 +298,7 @@
             "type": "bool"
           }
         ],
-        "internalType": "struct DAOInterface.DAOBasic",
+        "internalType": "struct IDAOInterface.DAOBasic",
         "name": "basic",
         "type": "tuple"
       },
@@ -262,7 +322,7 @@
                 "type": "uint256"
               }
             ],
-            "internalType": "struct DAOInterface.ReservedTokens[]",
+            "internalType": "struct IDAOInterface.ReservedTokens[]",
             "name": "reserves",
             "type": "tuple[]"
           },
@@ -284,7 +344,7 @@
                 "type": "uint256"
               }
             ],
-            "internalType": "struct DAOInterface.PrivateSale[]",
+            "internalType": "struct IDAOInterface.PrivateSale[]",
             "name": "priSales",
             "type": "tuple[]"
           },
@@ -321,7 +381,7 @@
                 "type": "uint256"
               }
             ],
-            "internalType": "struct DAOInterface.PublicSale",
+            "internalType": "struct IDAOInterface.PublicSale",
             "name": "pubSale",
             "type": "tuple"
           },
@@ -329,9 +389,14 @@
             "internalType": "address",
             "name": "receiveToken",
             "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "introduction",
+            "type": "string"
           }
         ],
-        "internalType": "struct DAOInterface.Distribution",
+        "internalType": "struct IDAOInterface.Distribution",
         "name": "dis",
         "type": "tuple"
       },
@@ -368,7 +433,7 @@
             "type": "string"
           }
         ],
-        "internalType": "struct DAOInterface.DAORule",
+        "internalType": "struct IDAOInterface.DAORule",
         "name": "_rule",
         "type": "tuple"
       },
@@ -386,6 +451,19 @@
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "introduction",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -599,6 +677,25 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure",
     "type": "function"
   },
   {

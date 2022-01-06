@@ -246,12 +246,10 @@ export const override: any = {
         fontSize: 12
       },
       h5: {
-        // fontFamily: 'Futura PT',
-        fontSize: 28
+        fontSize: 20
       },
       h6: {
-        // fontFamily: 'Futura PT',
-        fontSize: 24
+        fontSize: 16
       },
       caption: {
         fontSize: 12,

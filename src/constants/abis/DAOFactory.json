@@ -13,7 +13,7 @@
       },
       {
         "internalType": "address",
-        "name": "_votingProxy",
+        "name": "_votingImpl",
         "type": "address"
       }
     ],
@@ -221,6 +221,11 @@
             "internalType": "address",
             "name": "receiveToken",
             "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "introduction",
+            "type": "string"
           }
         ],
         "internalType": "struct IDAOInterface.Distribution",
@@ -437,8 +442,21 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_votingImpl",
+        "type": "address"
+      }
+    ],
+    "name": "updateVotingImpl",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "votingProxy",
+    "name": "votingImpl",
     "outputs": [
       {
         "internalType": "address",

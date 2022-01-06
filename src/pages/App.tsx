@@ -18,6 +18,7 @@ import Daos from './Daos'
 import DaoDetail from './DaoDetail'
 import Building from './building'
 import Launching from './building/launching'
+import Offering from './offering'
 
 // const AppWrapper = styled('div')(({ theme }) => ({
 //   display: 'flex',
@@ -73,6 +74,7 @@ export default function App() {
                 <Route exact strict path="/building" component={Building} />
                 <Route exact strict path="/building/launching/:hash" component={Launching} />
                 <Route exact strict path="/detail/:address" component={DaoDetail} />
+                <Route exact strict path="/offering/:address" component={Offering} />
               </Switch>
             </Web3ReactManager>
             {/* </BodyWrapper> */}
