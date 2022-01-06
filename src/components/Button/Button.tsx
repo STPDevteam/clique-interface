@@ -35,7 +35,7 @@ export default function Button(props: Props) {
           background: theme.palette.primary.main
         },
         '&:disabled': {
-          opacity: 0.24,
+          opacity: 0.6,
           backgroundColor: theme.palette.primary.main
         },
         ...style

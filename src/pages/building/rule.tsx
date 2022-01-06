@@ -1,22 +1,28 @@
 import './rule.pc.less'
 
-import { useCallback, useMemo } from 'react'
-import { InputNumber, Slider, Input, Button, Switch } from 'antd'
+import { useCallback, useMemo, useState } from 'react'
+import { InputNumber, Slider, Input, Button, Switch, Tooltip } from 'antd'
 import { Box, Typography } from '@mui/material'
-import { useBuildingDataCallback, useVotesNumber } from 'state/building/hooks'
+import { useBuildingDataCallback } from 'state/building/hooks'
 import { CreateDaoDataRule } from 'state/building/actions'
 import { toFormatGroup } from 'utils/dao'
 import TextArea from 'antd/lib/input/TextArea'
 import AlertError from 'components/Alert/index'
 import { ZERO_ADDRESS } from '../../constants'
 import { isAddress } from 'utils'
+import { getAmountForPer, getPerForAmount } from './function'
+import BigNumber from 'bignumber.js'
 
 type CreateDaoDataRuleKey = keyof CreateDaoDataRule
 
 export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: () => void }) {
   const { updateRule, buildingDaoData } = useBuildingDataCallback()
   const { basic, rule } = buildingDaoData
-  const votesNumber = useVotesNumber()
+  const [minVotePer, setMinVotePer] = useState(getPerForAmount(basic.tokenSupply, rule.minVoteNumber || 1))
+  const [minCreateProposalPer, setMinCreateProposalPer] = useState(
+    getPerForAmount(basic.tokenSupply, rule.minCreateProposalNumber || 1)
+  )
+  const [minApprovalPer, setMinApprovalPer] = useState(getPerForAmount(basic.tokenSupply, rule.minApprovalNumber || 0))
 
   const updateRuleCall = useCallback(
     (key: CreateDaoDataRuleKey, value: any) => {
@@ -27,7 +33,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
   )
 
   const verifyMsg = useMemo(() => {
-    if (!rule.minApprovalPer || !rule.minCreateProposalPer || !rule.minVotePer) return 'Votes required'
+    if (!rule.minApprovalNumber || !rule.minCreateProposalNumber || !rule.minVoteNumber) return 'Votes required'
     if (rule.votersCustom) {
       if (!rule.contractExecutor) {
         return 'Contract Executor required'
@@ -62,15 +68,33 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                 <Slider
                   min={1}
                   max={100}
-                  value={rule.minVotePer}
-                  onChange={e => updateRuleCall('minVotePer', e as number)}
+                  value={minVotePer}
+                  onChange={e => {
+                    setMinVotePer(e as number)
+                    updateRuleCall('minVoteNumber', getAmountForPer(basic.tokenSupply, e as number))
+                  }}
                 />
-                <span>{rule.minVotePer}%</span>
+                <span>{Number(minVotePer.toFixed(2))}%</span>
               </div>
             </div>
             <div className="input-item votes">
               <span className="label">Votes</span>
-              <Input className="input-common" readOnly value={toFormatGroup(votesNumber.minVoteNumber || 0, 0)} />
+              <Tooltip placement="top" title={toFormatGroup(rule.minVoteNumber, 0)}>
+                <Input
+                  className="input-common"
+                  value={rule.minVoteNumber}
+                  onChange={e => {
+                    const reg = new RegExp('^[0-9]*$')
+                    const _val = e.target.value
+                    if (reg.test(_val)) {
+                      // check max value
+                      const input = new BigNumber(_val).gt(basic.tokenSupply) ? basic.tokenSupply : _val
+                      updateRuleCall('minVoteNumber', input)
+                      setMinVotePer(getPerForAmount(basic.tokenSupply, input))
+                    }
+                  }}
+                />
+              </Tooltip>
             </div>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'}>
@@ -80,38 +104,70 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                 <Slider
                   min={1}
                   max={100}
-                  value={rule.minCreateProposalPer}
-                  onChange={e => updateRuleCall('minCreateProposalPer', e as number)}
+                  value={minCreateProposalPer}
+                  onChange={e => {
+                    setMinCreateProposalPer(e as number)
+                    updateRuleCall('minCreateProposalNumber', getAmountForPer(basic.tokenSupply, e as number))
+                  }}
                 />
-                <span>{rule.minCreateProposalPer}%</span>
+                <span>{Number(minCreateProposalPer.toFixed(2))}%</span>
               </div>
             </div>
             <div className="input-item votes">
               <span className="label">Votes</span>
-              <Input
-                className="input-common"
-                readOnly
-                value={toFormatGroup(votesNumber.minCreateProposalNumber || 0, 0)}
-              />
+              <Tooltip placement="top" title={toFormatGroup(rule.minCreateProposalNumber, 0)}>
+                <Input
+                  className="input-common"
+                  value={rule.minCreateProposalNumber}
+                  onChange={e => {
+                    const reg = new RegExp('^[0-9]*$')
+                    const _val = e.target.value
+                    if (reg.test(_val)) {
+                      // check max value
+                      const input = new BigNumber(_val).gt(basic.tokenSupply) ? basic.tokenSupply : _val
+                      updateRuleCall('minCreateProposalNumber', input)
+                      setMinCreateProposalPer(getPerForAmount(basic.tokenSupply, input))
+                    }
+                  }}
+                />
+              </Tooltip>
             </div>
           </Box>
 
           <Box display={'flex'} justifyContent={'space-between'}>
             <div className="input-item progress">
-              <span className="label">Minimum approval percentage</span>
+              <span className="label">Minimum valid votes</span>
               <div className="progress-wrapper">
                 <Slider
                   min={1}
                   max={100}
-                  value={rule.minApprovalPer}
-                  onChange={e => updateRuleCall('minApprovalPer', e as number)}
+                  value={minApprovalPer}
+                  onChange={e => {
+                    setMinApprovalPer(e as number)
+                    updateRuleCall('minApprovalNumber', getAmountForPer(basic.tokenSupply, e as number))
+                  }}
                 />
-                <span>{rule.minApprovalPer}%</span>
+                <span>{Number(minApprovalPer.toFixed(2))}%</span>
               </div>
             </div>
             <div className="input-item votes">
               <span className="label">Votes</span>
-              <Input className="input-common" readOnly value={toFormatGroup(votesNumber.minApprovalNumber || 0, 0)} />
+              <Tooltip placement="top" title={toFormatGroup(rule.minApprovalNumber, 0)}>
+                <Input
+                  className="input-common"
+                  value={rule.minApprovalNumber}
+                  onChange={e => {
+                    const reg = new RegExp('^[0-9]*$')
+                    const _val = e.target.value
+                    if (reg.test(_val)) {
+                      // check max value
+                      const input = new BigNumber(_val).gt(basic.tokenSupply) ? basic.tokenSupply : _val
+                      updateRuleCall('minApprovalNumber', input)
+                      setMinApprovalPer(getPerForAmount(basic.tokenSupply, input))
+                    }
+                  }}
+                />
+              </Tooltip>
             </div>
           </Box>
 

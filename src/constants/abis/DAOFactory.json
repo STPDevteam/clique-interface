@@ -130,7 +130,7 @@
             "type": "bool"
           }
         ],
-        "internalType": "struct DAOInterface.DAOBasic",
+        "internalType": "struct IDAOInterface.DAOBasic",
         "name": "basic",
         "type": "tuple"
       },
@@ -154,7 +154,7 @@
                 "type": "uint256"
               }
             ],
-            "internalType": "struct DAOInterface.ReservedTokens[]",
+            "internalType": "struct IDAOInterface.ReservedTokens[]",
             "name": "reserves",
             "type": "tuple[]"
           },
@@ -176,7 +176,7 @@
                 "type": "uint256"
               }
             ],
-            "internalType": "struct DAOInterface.PrivateSale[]",
+            "internalType": "struct IDAOInterface.PrivateSale[]",
             "name": "priSales",
             "type": "tuple[]"
           },
@@ -201,9 +201,19 @@
                 "internalType": "uint256",
                 "name": "endTime",
                 "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "pledgeLimitMin",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "pledgeLimitMax",
+                "type": "uint256"
               }
             ],
-            "internalType": "struct DAOInterface.PublicSale",
+            "internalType": "struct IDAOInterface.PublicSale",
             "name": "pubSale",
             "type": "tuple"
           },
@@ -213,7 +223,7 @@
             "type": "address"
           }
         ],
-        "internalType": "struct DAOInterface.Distribution",
+        "internalType": "struct IDAOInterface.Distribution",
         "name": "dis",
         "type": "tuple"
       },
@@ -231,7 +241,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "minimumApproval",
+            "name": "minimumValidVotes",
             "type": "uint256"
           },
           {
@@ -250,7 +260,7 @@
             "type": "string"
           }
         ],
-        "internalType": "struct DAOInterface.DAORule",
+        "internalType": "struct IDAOInterface.DAORule",
         "name": "rule",
         "type": "tuple"
       }

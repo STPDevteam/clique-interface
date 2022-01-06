@@ -83,38 +83,38 @@
   },
   {
     "inputs": [],
-    "name": "daoDesc",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "daoName",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "daoToken",
     "outputs": [
       {
         "internalType": "contract IERC20",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "desc",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "discord",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -138,7 +138,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "minimumApproval",
+            "name": "minimumValidVotes",
             "type": "uint256"
           },
           {
@@ -194,6 +194,21 @@
           },
           {
             "internalType": "string",
+            "name": "website",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "twitter",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "discord",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
             "name": "tokenName",
             "type": "string"
           },
@@ -203,9 +218,19 @@
             "type": "string"
           },
           {
+            "internalType": "string",
+            "name": "tokenLogo",
+            "type": "string"
+          },
+          {
             "internalType": "uint256",
             "name": "tokenSupply",
             "type": "uint256"
+          },
+          {
+            "internalType": "uint8",
+            "name": "tokenDecimal",
+            "type": "uint8"
           },
           {
             "internalType": "bool",
@@ -284,6 +309,16 @@
                 "internalType": "uint256",
                 "name": "endTime",
                 "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "pledgeLimitMin",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "pledgeLimitMax",
+                "type": "uint256"
               }
             ],
             "internalType": "struct DAOInterface.PublicSale",
@@ -314,7 +349,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "minimumApproval",
+            "name": "minimumValidVotes",
             "type": "uint256"
           },
           {
@@ -351,6 +386,19 @@
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -438,6 +486,16 @@
         "internalType": "uint256",
         "name": "endTime",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pledgeLimitMin",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "pledgeLimitMax",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -521,7 +579,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "minimumApproval",
+        "name": "minimumValidVotes",
         "type": "uint256"
       },
       {
@@ -554,6 +612,19 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "twitter",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -647,6 +718,19 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "website",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",

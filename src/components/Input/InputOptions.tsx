@@ -2,7 +2,15 @@ import { Box } from '@mui/material'
 import { Input } from 'antd'
 import { ReactComponent as DeleteIcon } from 'assets/svg/delete_icon.svg'
 
-export default function InputOptions({ value, setValue }: { value: string; setValue?: (e: string) => void }) {
+export default function InputOptions({
+  value,
+  onChange,
+  remove
+}: {
+  value: string
+  onChange?: (e: string) => void
+  remove?: () => void
+}) {
   return (
     <Box
       sx={{
@@ -19,17 +27,20 @@ export default function InputOptions({ value, setValue }: { value: string; setVa
         }
       }}
     >
-      <Box
-        sx={{
-          position: 'absolute',
-          right: 0,
-          cursor: 'pointer',
-          zIndex: 1
-        }}
-      >
-        <DeleteIcon width={54} height={54} />
-      </Box>
-      <Input value={value} onChange={e => setValue && setValue(e.target.value)} />
+      {remove && (
+        <Box
+          sx={{
+            position: 'absolute',
+            right: 0,
+            cursor: 'pointer',
+            zIndex: 1
+          }}
+          onClick={remove}
+        >
+          <DeleteIcon width={54} height={54} />
+        </Box>
+      )}
+      <Input value={value} placeholder="input" onChange={e => onChange && onChange(e.target.value)} />
     </Box>
   )
 }

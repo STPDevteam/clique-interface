@@ -1,19 +1,30 @@
-import { useState } from 'react'
-import { Tabs, Button } from 'antd'
+import { useMemo, useState } from 'react'
+import { Tabs, Button, Tooltip } from 'antd'
 import styles from './index.module.less'
 const { TabPane } = Tabs
-import classNames from 'classnames'
 import ProposalStatus from '../../../../components/Proposal/ProposalStatus'
 import { Box } from '@mui/material'
+import { DaoInfoProps } from 'hooks/useDAOInfo'
+import { useTokenBalance } from 'state/wallet/hooks'
+import { useActiveWeb3React } from 'hooks'
+import { toFormatGroup } from 'utils/dao'
 
 interface IProps {
   onSelect: (proposal: any) => void
   onCreate: () => void
+  daoInfo: DaoInfoProps | undefined
 }
-export default (props: IProps) => {
-  const { onSelect, onCreate } = props
+export default function(props: IProps) {
+  const { onSelect, onCreate, daoInfo } = props
+  const { account } = useActiveWeb3React()
   const TABS = ['ALL', 'Executable', 'Open', 'Closed']
   const [currentTab, setCurrentTab] = useState(TABS[0])
+  const tokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
+  const isProposal = useMemo(() => {
+    if (!tokenBalance || !daoInfo?.rule?.minimumCreateProposal) return false
+    if (tokenBalance?.lessThan(daoInfo?.rule?.minimumCreateProposal)) return false
+    return true
+  }, [daoInfo?.rule?.minimumCreateProposal, tokenBalance])
 
   const proposals = [
     {
@@ -51,9 +62,23 @@ export default (props: IProps) => {
             Community proposals are a great way to see how the community feels about your ideas
           </p>
         </div>
-        <Button className={classNames('btn-common btn-01', styles['btn-create'])} onClick={onCreate}>
-          Create A Proposal
-        </Button>
+        <Tooltip
+          placement="top"
+          title={`Minimum create proposal: ${
+            daoInfo?.rule?.minimumCreateProposal
+              ? toFormatGroup(daoInfo?.rule?.minimumCreateProposal.toSignificant(), 0)
+              : '-'
+          } ${daoInfo?.token?.symbol}`}
+        >
+          <Button
+            disabled={!isProposal && false}
+            style={{ width: 190, height: 48 }}
+            className={'btn-common btn-01'}
+            onClick={onCreate}
+          >
+            Create A Proposal
+          </Button>
+        </Tooltip>
       </div>
 
       <Tabs

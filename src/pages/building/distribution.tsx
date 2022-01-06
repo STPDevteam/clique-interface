@@ -430,7 +430,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                             }
                           }}
                         >
-                          {item.logo}
+                          <img src={item.logo} />
                           {item.name}
                         </Box>
                       </Option>

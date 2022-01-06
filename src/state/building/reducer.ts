@@ -46,16 +46,16 @@ export const initialDaoDataState: CreateDaoData = {
     aboutProduct: ''
   },
   rule: {
-    minVotePer: 0,
-    minCreateProposalPer: 0,
-    minApprovalPer: 0,
-    days: 0,
+    minVoteNumber: '1',
+    minCreateProposalNumber: '1',
+    minApprovalNumber: '1',
+    days: 3,
     hours: 0,
     minutes: 0,
     rules: '',
     votersCustom: false,
     contractExecutor: '',
-    contractDays: 0,
+    contractDays: 3,
     contractHours: 0,
     contractMinutes: 0
   }

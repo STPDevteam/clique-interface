@@ -1,30 +1,42 @@
 import { useMemo, useState } from 'react'
-import { useLastDaoId } from './useDAOFactoryInfo'
+import { useDaoAddressListByIds, useLastDaoId, useMultiDaoBaseInfo } from './useDAOInfo'
 
-export function useHomeDaoList() {
+export function useDaoAddressLists(pageSize = 8) {
   const lastId = useLastDaoId()
-  const pageSize = 8
+  const begin = 1
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   const totalPages = useMemo(() => {
-    return lastId ? Math.ceil(lastId / pageSize) : 0
-  }, [lastId])
+    return lastId ? Math.ceil(lastId - begin + 1 / pageSize) : 0
+  }, [lastId, pageSize])
 
-  const inputs = useMemo(() => {
+  const ids = useMemo(() => {
     const ret = []
-    let index = (currentPage - 1) * pageSize
-    while (index < currentPage * pageSize && index <= lastId) {
-      ret.push([index])
-      index++
+    let index = lastId - (currentPage - 1) * pageSize
+    while (index > lastId - currentPage * pageSize && index >= begin) {
+      ret.push(index)
+      index--
     }
     return ret
-  }, [lastId, currentPage])
-  console.log('🚀 ~ file: useDaoList.ts ~ line 22 ~ inputs ~ inputs', inputs)
+  }, [lastId, currentPage, pageSize])
+  const daoAddresss = useDaoAddressListByIds(ids)
 
   return {
     page: {
       totalPages,
       setCurrentPage
-    }
+    },
+    daoAddresss
+  }
+}
+
+export function useHomeDaoList() {
+  const { daoAddresss, page } = useDaoAddressLists()
+
+  const daoList = useMultiDaoBaseInfo(daoAddresss)
+
+  return {
+    page,
+    list: daoList
   }
 }

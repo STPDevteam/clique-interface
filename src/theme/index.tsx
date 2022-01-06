@@ -24,6 +24,7 @@ interface BgColor {
   bg3: string
   bg4: string
   bg5: string
+  bg6: string
 }
 
 declare module '@mui/material/styles' {
@@ -119,13 +120,14 @@ export const theme = {
     bg2: '#191919',
     bg3: '#252525',
     bg4: '#303030',
-    bg5: '#A1A1A1'
+    bg5: '#A1A1A1',
+    bg6: '#f3f3f3'
   },
   gradient: {
     gradient1: '#000000 linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%)'
   },
   height: {
-    header: '88px',
+    header: '100px',
     mobileHeader: '77px',
     footer: '60px'
   },

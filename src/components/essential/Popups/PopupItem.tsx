@@ -9,9 +9,10 @@ import { CloseIcon } from 'theme/components'
 export const Popup = styled('div')(({ theme }) => ({
   display: 'inlineBlock',
   width: '100%',
-  backgroundColor: theme.bgColor.bg1,
+  backgroundColor: '#fff',
   position: 'relative',
   borderRadius: '4px',
+  boxShadow: '0 0 5px #aaa',
   padding: '20px',
   paddingRight: '35px',
   overflow: 'hidden',

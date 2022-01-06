@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import ERC20_INTERFACE from '../../constants/abis/erc20'
+import ERC20_INTERFACE, { DAO_ERC20_INTERFACE } from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../../hooks'
-import { useMulticallContract } from '../../hooks/useContract'
+import { useMulticallContract, useSTPTokenContract, useTokenContract } from '../../hooks/useContract'
 import { isAddress } from '../../utils'
-import { useSingleContractMultipleData, useMultipleContractSingleData } from '../multicall/hooks'
+import { useSingleContractMultipleData, useMultipleContractSingleData, useSingleCallResult } from '../multicall/hooks'
 import { CurrencyAmount, TokenAmount } from '../../constants/token/fractions'
 import JSBI from 'jsbi'
 import { Currency, ETHER, Token } from '../../constants/token'
@@ -135,4 +135,66 @@ export function useAggregateUniBalance(): TokenAmount | undefined {
   if (!uni) return undefined
 
   return uniBalance
+}
+
+export function useSTPTokens(tokenAddress: (string | undefined)[]): undefined | (Token | undefined)[] {
+  const { chainId } = useActiveWeb3React()
+
+  const tokenNames = useMultipleContractSingleData(tokenAddress, DAO_ERC20_INTERFACE, 'name')
+  const symbols = useMultipleContractSingleData(tokenAddress, DAO_ERC20_INTERFACE, 'symbol')
+  const decimalss = useMultipleContractSingleData(tokenAddress, DAO_ERC20_INTERFACE, 'decimals')
+  const logos = useMultipleContractSingleData(tokenAddress, DAO_ERC20_INTERFACE, 'logo')
+
+  return useMemo(() => {
+    if (!tokenAddress.length) return undefined
+    if (!tokenNames.length || !symbols.length || !decimalss.length || !chainId) return undefined
+    if (tokenNames[0].loading || symbols[0].loading || decimalss[0].loading) return undefined
+    return tokenAddress.map((address, index) => {
+      const symbol = symbols[index].result
+      const tokenName = tokenNames[index].result
+      const decimal = decimalss[index].result
+      const logo = logos[index].result
+      if (!symbol || !tokenName || !decimal || !address) return undefined
+
+      return new Token(chainId, address, decimal[0], symbol[0], tokenName[0], logo?.[0] || '')
+    })
+  }, [chainId, decimalss, logos, symbols, tokenAddress, tokenNames])
+}
+
+export function useSTPToken(tokenAddress: string | undefined): Token | undefined {
+  const { chainId } = useActiveWeb3React()
+  const tokenContract = useSTPTokenContract(tokenAddress)
+
+  const tokenName = useSingleCallResult(tokenAddress ? tokenContract : null, 'name', [])
+  const symbol = useSingleCallResult(tokenAddress ? tokenContract : null, 'symbol', [])
+  const decimal = useSingleCallResult(tokenAddress ? tokenContract : null, 'decimals', [])
+  const logo = useSingleCallResult(tokenAddress ? tokenContract : null, 'logo', [])
+
+  return useMemo(() => {
+    if (!tokenAddress || !chainId) return undefined
+    if (!tokenName.result || !symbol.result || !decimal.result) return undefined
+    return new Token(
+      chainId,
+      tokenAddress,
+      decimal.result[0],
+      symbol.result[0],
+      tokenName.result[0],
+      logo.result?.[0] || ''
+    )
+  }, [chainId, decimal.result, logo.result, symbol.result, tokenAddress, tokenName.result])
+}
+
+export function useToken(tokenAddress: string | undefined): Token | undefined {
+  const { chainId } = useActiveWeb3React()
+  const tokenContract = useTokenContract(tokenAddress)
+
+  const tokenName = useSingleCallResult(tokenAddress ? tokenContract : null, 'name', [])
+  const symbol = useSingleCallResult(tokenAddress ? tokenContract : null, 'symbol', [])
+  const decimal = useSingleCallResult(tokenAddress ? tokenContract : null, 'decimals', [])
+
+  return useMemo(() => {
+    if (!tokenAddress || !chainId) return undefined
+    if (!tokenName.result || !symbol.result || !decimal.result) return undefined
+    return new Token(chainId, tokenAddress, decimal.result[0], symbol.result[0], tokenName.result[0])
+  }, [chainId, decimal.result, symbol.result, tokenAddress, tokenName.result])
 }

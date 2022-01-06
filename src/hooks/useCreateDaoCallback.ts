@@ -1,34 +1,39 @@
 import { useCallback, useMemo } from 'react'
 import { Token } from '../constants/token'
-import { useCurrentReceivingToken, useTrueCommitCreateDaoData, useVotesNumber } from '../state/building/hooks'
+import { useCurrentReceivingToken, useTrueCommitCreateDaoData } from '../state/building/hooks'
 import { amountAddDecimals } from '../utils/dao'
 import { tryParseAmount } from '../state/application/hooks'
 import { calcVotingDuration } from 'pages/building/function'
 import { useDaoFactoryContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks'
-import { calculateGasMargin } from 'utils'
+// import { calculateGasMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 
 export function useCreateDaoCallback() {
   const { basicData, distributionData, ruleData } = useTrueCommitCreateDaoData()
   const currentReceivingToken = useCurrentReceivingToken()
-  const votesNumber = useVotesNumber()
   const daoFactoryContract = useDaoFactoryContract()
   const { account } = useActiveWeb3React()
   const addTransaction = useTransactionAdder()
 
-  const stptToken = useMemo(() => new Token(1, currentReceivingToken.address, currentReceivingToken.decimals), [
-    currentReceivingToken
-  ])
+  const stptToken = useMemo(
+    () => new Token(currentReceivingToken.chainId, currentReceivingToken.address, currentReceivingToken.decimals),
+    [currentReceivingToken]
+  )
 
   const args = useMemo(() => {
     const _basicParams = {
       daoName: basicData.daoName,
       daoDesc: basicData.description,
+      website: basicData.websiteLink,
+      twitter: basicData.twitterLink,
+      discord: basicData.discordLink,
       tokenName: basicData.tokenName,
       tokenSymbol: basicData.tokenSymbol,
+      tokenLogo: basicData.tokenPhoto || 'http://img.duoziwang.com/2021/06/q101801413228587.jpg',
       tokenSupply: amountAddDecimals(basicData.tokenSupply, basicData.tokenDecimals),
+      tokenDecimal: basicData.tokenDecimals,
       transfersEnabled: true
     }
 
@@ -62,10 +67,16 @@ export function useCreateDaoCallback() {
       const _priceTokenAmount = tryParseAmount(distributionData.publicSale.price.toString(), stptToken)
       if (!_priceTokenAmount) throw new Error('publicSale price empty')
       const _pubs = {
-        amout: distributionData.publicSale.offeringAmount,
+        amout: amountAddDecimals(distributionData.publicSale.offeringAmount, basicData.tokenDecimals),
         price: _priceTokenAmount.raw.toString(),
         startTime: distributionData.startTime,
-        endTime: distributionData.endTime
+        endTime: distributionData.endTime,
+        pledgeLimitMin: distributionData.publicSale.pledgeLimitMin
+          ? amountAddDecimals(distributionData.publicSale.pledgeLimitMin, basicData.tokenDecimals)
+          : 1,
+        pledgeLimitMax: distributionData.publicSale.pledgeLimitMax
+          ? amountAddDecimals(distributionData.publicSale.pledgeLimitMax, basicData.tokenDecimals)
+          : amountAddDecimals(distributionData.publicSale.offeringAmount, basicData.tokenDecimals)
       }
       _pubSale = Object.values(_pubs)
     } else {
@@ -73,15 +84,17 @@ export function useCreateDaoCallback() {
         amout: 0,
         price: 0,
         startTime: distributionData.startTime,
-        endTime: distributionData.endTime
+        endTime: distributionData.endTime,
+        pledgeLimitMin: 0,
+        pledgeLimitMax: 0
       }
       _pubSale = Object.values(_pubs)
     }
 
     const _rule = Object.values({
-      minimumVote: amountAddDecimals(votesNumber.minVoteNumber, basicData.tokenDecimals),
-      minimumCreateProposal: amountAddDecimals(votesNumber.minCreateProposalNumber, basicData.tokenDecimals),
-      minimumApproval: amountAddDecimals(votesNumber.minApprovalNumber, basicData.tokenDecimals),
+      minimumVote: amountAddDecimals(ruleData.minVoteNumber, basicData.tokenDecimals),
+      minimumCreateProposal: amountAddDecimals(ruleData.minCreateProposalNumber, basicData.tokenDecimals),
+      minimumApproval: amountAddDecimals(ruleData.minApprovalNumber, basicData.tokenDecimals),
       communityVotingDuration: ruleData.votersCustom
         ? 0
         : calcVotingDuration(ruleData.days, ruleData.hours, ruleData.minutes),
@@ -92,7 +105,7 @@ export function useCreateDaoCallback() {
     })
 
     return [Object.values(_basicParams), [_reserved, _priSale, _pubSale, currentReceivingToken.address], _rule]
-  }, [basicData, distributionData, votesNumber, ruleData, stptToken, currentReceivingToken])
+  }, [basicData, distributionData, ruleData, stptToken, currentReceivingToken])
 
   return useCallback(() => {
     if (!daoFactoryContract) {
@@ -100,18 +113,19 @@ export function useCreateDaoCallback() {
     }
 
     console.log('args->', JSON.stringify(args), ...args)
-    return daoFactoryContract.estimateGas.createDAO(...args, { from: account }).then(estimatedGasLimit => {
-      return daoFactoryContract
-        .createDAO(...args, {
-          gasLimit: calculateGasMargin(estimatedGasLimit),
-          from: account
+    // return daoFactoryContract.estimateGas.createDAO(...args, { from: account }).then(estimatedGasLimit => {
+    return daoFactoryContract
+      .createDAO(...args, {
+        // gasLimit: calculateGasMargin(estimatedGasLimit),
+        gasLimit: '3500000',
+        from: account
+      })
+      .then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Create Dao'
         })
-        .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            summary: 'Create Dao'
-          })
-          return response.hash
-        })
-    })
+        return response.hash
+      })
+    // })
   }, [account, addTransaction, args, daoFactoryContract])
 }

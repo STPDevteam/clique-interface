@@ -10,8 +10,7 @@ import {
   privateReceivingTokens,
   useBuildingDataCallback,
   useCurrentUsedTokenAmount,
-  useTrueCommitCreateDaoData,
-  useVotesNumber
+  useTrueCommitCreateDaoData
 } from 'state/building/hooks'
 import { useCallback, useMemo } from 'react'
 import { timeStampToFormat, toFormatGroup, toFormatMillion } from 'utils/dao'
@@ -49,7 +48,6 @@ export default function ReviewInformation({
   const { showModal, hideModal } = useModal()
   const history = useHistory()
   const currentUsedTokenAmount = useCurrentUsedTokenAmount()
-  const votesNumber = useVotesNumber()
   const createDaoCallback = useCreateDaoCallback()
   const { account } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
@@ -95,7 +93,7 @@ export default function ReviewInformation({
   const onCreate = useCallback(() => {
     showModal(<TransacitonPendingModal />)
     createDaoCallback()
-      .then(hash => {
+      .then((hash: string) => {
         hideModal()
         removeBuildingDaoData()
         history.push('/building/launching/' + hash)
@@ -284,8 +282,13 @@ export default function ReviewInformation({
                   <Box display={'flex'} justifyContent={'space-between'}>
                     <Typography>Pledge limit (optional)</Typography>
                     <Typography>
-                      {toFormatGroup(distributionData.publicSale.pledgeLimitMin || 0, 0)} -{' '}
-                      {toFormatGroup(distributionData.publicSale.pledgeLimitMax || 0, 0)}
+                      {distributionData.publicSale.pledgeLimitMin
+                        ? toFormatGroup(distributionData.publicSale.pledgeLimitMin, 0)
+                        : ''}{' '}
+                      -{' '}
+                      {distributionData.publicSale.pledgeLimitMax
+                        ? toFormatGroup(distributionData.publicSale.pledgeLimitMax, 0)
+                        : ''}
                     </Typography>
                   </Box>
                 </Box>
@@ -314,18 +317,24 @@ export default function ReviewInformation({
             <section className="panel-rule">
               <div className="input-item">
                 <span className="label">Minimum to vote</span>
-                <span className="value">{toFormatGroup(votesNumber.minVoteNumber, 0)}</span>
-                <span className="label">({ruleData.minVotePer}% per total supply)</span>
+                <span className="value">{toFormatGroup(ruleData.minVoteNumber, 0)}</span>
+                <span className="label">
+                  ({getPerForAmount(basicData.tokenSupply, ruleData.minVoteNumber)}% per total supply)
+                </span>
               </div>
               <div className="input-item">
                 <span className="label">Minimum create proposal</span>
-                <span className="value">{toFormatGroup(votesNumber.minCreateProposalNumber, 0)}</span>
-                <span className="label">({ruleData.minCreateProposalPer}% per total votes)</span>
+                <span className="value">{toFormatGroup(ruleData.minCreateProposalNumber, 0)}</span>
+                <span className="label">
+                  ({getPerForAmount(basicData.tokenSupply, ruleData.minCreateProposalNumber)}% per total votes)
+                </span>
               </div>
               <div className="input-item mt-12">
-                <span className="label">Minimum approval percentage</span>
-                <span className="value">{toFormatGroup(votesNumber.minApprovalNumber, 0)}</span>
-                <span className="label">({ruleData.minApprovalPer}% per total votes)</span>
+                <span className="label">Minimum valid votes</span>
+                <span className="value">{toFormatGroup(ruleData.minApprovalNumber, 0)}</span>
+                <span className="label">
+                  ({getPerForAmount(basicData.tokenSupply, ruleData.minApprovalNumber)}% per total votes)
+                </span>
               </div>
               {ruleData.votersCustom ? (
                 <>

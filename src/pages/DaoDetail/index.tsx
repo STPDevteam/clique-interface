@@ -9,29 +9,25 @@ import Assets from './components/Assets'
 import Members from './components/Members'
 import Configuration from './components/Configuration'
 import Copy from 'components/essential/Copy'
+import { useDaoInfoByAddress } from 'hooks/useDAOInfo'
+import { useParams } from 'react-router-dom'
+import { shortenAddress } from 'utils'
 
 export default function Index() {
-  const detail = {
-    name: 'DAO Test',
-    users: 14,
-    token: 'DAO Test Coin',
-    symbol: 'DTC',
-    address: '0x1B94fb7625e13408393B5Ac17D0265E0d61349f2'
-  }
   const links = ['Proposal', 'Assets', 'Members', 'Configuration']
+  const { address: daoAddress } = useParams<{ address: string }>()
+
   const [currentLink, setCurrentLink] = useState(links[0])
   const [currentProposal, setCurrentProposal] = useState()
   const [showCreate, setShowCreate] = useState(false)
+  const daoInfo = useDaoInfoByAddress(daoAddress)
 
   return (
     <div className={styles['dao-detail']}>
       <div className={styles['detail-header']}>
-        <p className={styles['title']}>{detail.name}</p>
-        <p className={styles['text']}>{detail.users} users</p>
-        <p>
-          Describe the organization in one paragraph,Describe the organization in one paragraph, Describe the
-          organization in one paragraph,{' '}
-        </p>
+        <p className={styles['title']}>{daoInfo?.daoName || '--'}</p>
+        <p className={styles['text']}> - Holders</p>
+        <p>{daoInfo?.daoDesc}</p>
         {/* <Button className={'btn-common btn-01'}>Join</Button> */}
       </div>
       {currentProposal && (
@@ -47,17 +43,19 @@ export default function Index() {
           onBack={() => {
             setShowCreate(false)
           }}
+          daoInfo={daoInfo}
         />
       )}
       {!showCreate && !currentProposal && (
         <div className={styles['detail-content']}>
           <div className={styles['content-left']}>
-            <img src={IconLogo} alt="" className={styles['logo']} />
-            <p className={styles['title']}>{detail.token}</p>
-            <p className={styles['symbol']}>{detail.symbol}</p>
+            <img src={daoInfo?.token?.logo || IconLogo} alt="" className={styles['logo']} />
+            <p className={styles['title']}>{daoInfo?.daoName}</p>
+            <p className={styles['symbol']}>{daoInfo?.token?.symbol}</p>
             <div className={styles['address']}>
-              <span>{detail.address.slice(0, 5) + '...' + detail.address.slice(-8)}</span>
-              <Copy toCopy={detail.address || ''} />
+              {/* <span>{detail.address.slice(0, 5) + '...' + detail.address.slice(-8)}</span> */}
+              <span>{daoInfo?.token?.address && shortenAddress(daoInfo?.token?.address)}</span>
+              <Copy toCopy={daoInfo?.token?.address || ''} />
             </div>
             <ul className={styles['links']}>
               {links.map((item, index) => (
@@ -74,7 +72,11 @@ export default function Index() {
 
           <div className={styles['content-right']}>
             {currentLink === 'Proposal' && (
-              <Proposals onSelect={val => setCurrentProposal(val)} onCreate={() => setShowCreate(true)} />
+              <Proposals
+                onSelect={val => setCurrentProposal(val)}
+                daoInfo={daoInfo}
+                onCreate={() => setShowCreate(true)}
+              />
             )}
             {currentLink === 'Assets' && <Assets />}
             {currentLink === 'Members' && <Members />}

@@ -35,7 +35,8 @@ export interface CreateDaoDataDistributionPublicSale {
 export interface PrivateReceivingTokenProps {
   name: string
   value: string
-  logo: JSX.Element
+  logo: string
+  chainId: number
   address: string
   decimals: number
 }
@@ -54,9 +55,9 @@ export interface CreateDaoDataDistribution {
 }
 
 export interface CreateDaoDataRule {
-  minVotePer: number
-  minCreateProposalPer: number
-  minApprovalPer: number
+  minVoteNumber: string
+  minCreateProposalNumber: string
+  minApprovalNumber: string
   days: number
   hours: number
   minutes: number

@@ -1,7 +1,7 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
-import { ReactComponent as IconTokenSvg } from '../../assets/images/icon-token.svg'
+import IconTokenSvg from '../../assets/images/icon-token.svg'
 import {
   updateBuildingBasicDao,
   updateBuildingDistributionDao,
@@ -19,15 +19,17 @@ export const privateReceivingTokens: PrivateReceivingTokenProps[] = [
   {
     name: 'STEP',
     value: 'STEP',
-    logo: <IconTokenSvg />,
-    address: '0x20badc54c480a1adb586860b84a86f30c16f2df0',
+    chainId: 1,
+    logo: IconTokenSvg,
+    address: '0xBC00Be88bd26F10980c9115d59B1699b7468fC67',
     decimals: 18
   },
   {
     name: 'USDT',
     value: 'USDT',
-    logo: <IconTokenSvg />,
-    address: '0x20badc54c480a1adb586860b84a86f30c16f2df0',
+    chainId: 1,
+    logo: IconTokenSvg,
+    address: '0xBC00Be88bd26F10980c9115d59B1699b7468fC67',
     decimals: 18
   }
 ]
@@ -145,33 +147,6 @@ export function useRemainderTokenAmount(): string {
     .minus(privateSaleTotal)
     .minus(publicSaleTotal)
   return ret.gt(0) ? ret.toFixed(0) : '0'
-}
-
-export function useVotesNumber() {
-  const buildingDaoData = useSelector((state: AppState) => state.buildingDao)
-  const { basic, rule } = buildingDaoData
-  return useMemo(() => {
-    if (!basic.tokenSupply)
-      return {
-        minApprovalNumber: '',
-        minCreateProposalNumber: '',
-        minVoteNumber: ''
-      }
-    return {
-      minApprovalNumber: new BigNumber(basic.tokenSupply)
-        .multipliedBy(rule.minApprovalPer || 0)
-        .dividedBy(100)
-        .toFixed(0, 0),
-      minCreateProposalNumber: new BigNumber(basic.tokenSupply)
-        .multipliedBy(rule.minCreateProposalPer || 0)
-        .dividedBy(100)
-        .toFixed(0, 0),
-      minVoteNumber: new BigNumber(basic.tokenSupply)
-        .multipliedBy(rule.minVotePer || 0)
-        .dividedBy(100)
-        .toFixed(0, 0)
-    }
-  }, [basic.tokenSupply, rule.minApprovalPer, rule.minCreateProposalPer, rule.minVotePer])
 }
 
 export function useTrueCommitCreateDaoData() {

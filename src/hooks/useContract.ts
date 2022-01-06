@@ -20,6 +20,9 @@ import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
 import { ChainId } from '../constants/chain'
 import DAO_FACTORY_ABI from '../constants/abis/DAOFactory.json'
+import DAO_ABI from '../constants/abis/DAO.json'
+import STP_TOKEN_ABI from '../constants/abis/DAOToken.json'
+import VOTING_ABI from '../constants/abis/voting.json'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -107,4 +110,16 @@ export function useAntiMatterGovernanceContract(): Contract | null {
 export function useDaoFactoryContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
   return useContract(chainId ? DAO_FACTORY_ADDRESS[chainId] : undefined, DAO_FACTORY_ABI, true)
+}
+
+export function useDaoContract(daoAddress: string | undefined): Contract | null {
+  return useContract(daoAddress, DAO_ABI, true)
+}
+
+export function useVotingContract(votingAddress: string | undefined): Contract | null {
+  return useContract(votingAddress, VOTING_ABI, true)
+}
+
+export function useSTPTokenContract(tokenAddress: string | undefined): Contract | null {
+  return useContract(tokenAddress, STP_TOKEN_ABI, true)
 }
