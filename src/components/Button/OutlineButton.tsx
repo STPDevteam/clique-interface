@@ -28,7 +28,7 @@ export default function OutlineButton(props: Props) {
           `1px solid ${color ? color : primary ? theme.palette.primary.main : theme.palette.text.secondary}`,
         fontSize,
         fontWeight: primary ? '500' : '400',
-        height: height || 60,
+        height: height || 48,
         color: primary ? theme.palette.primary.main : theme.palette.text.primary,
         borderRadius: borderRadius ?? 1,
         '&:hover': {

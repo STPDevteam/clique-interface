@@ -9,6 +9,7 @@ import { useActiveWeb3React } from 'hooks'
 // import { calculateGasMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
+import { PriceDecimals } from '../constants'
 
 export function useCreateDaoCallback() {
   const { basicData, distributionData, ruleData } = useTrueCommitCreateDaoData()
@@ -17,8 +18,9 @@ export function useCreateDaoCallback() {
   const { account } = useActiveWeb3React()
   const addTransaction = useTransactionAdder()
 
-  const stptToken = useMemo(
-    () => new Token(currentReceivingToken.chainId, currentReceivingToken.address, currentReceivingToken.decimals),
+  // special price decimals
+  const stptPriceToken = useMemo(
+    () => new Token(currentReceivingToken.chainId, currentReceivingToken.address, PriceDecimals),
     [currentReceivingToken]
   )
 
@@ -32,7 +34,7 @@ export function useCreateDaoCallback() {
       tokenName: basicData.tokenName,
       tokenSymbol: basicData.tokenSymbol,
       tokenLogo: basicData.tokenPhoto || 'http://img.duoziwang.com/2021/06/q101801413228587.jpg',
-      tokenSupply: amountAddDecimals(basicData.tokenSupply, basicData.tokenDecimals),
+      tokenSupply: basicData.tokenSupply,
       tokenDecimal: basicData.tokenDecimals,
       transfersEnabled: true
     }
@@ -50,7 +52,7 @@ export function useCreateDaoCallback() {
       _priSale = distributionData.privateSale.map(item => {
         if (!item.tokenNumber) throw new Error('token number empty')
         if (!item.price) throw new Error('token number price empty')
-        const _priceTokenAmount = tryParseAmount(item.price.toString(), stptToken)
+        const _priceTokenAmount = tryParseAmount(item.price.toString(), stptPriceToken)
         if (!_priceTokenAmount) throw new Error('token number price empty')
         return [
           item.address,
@@ -64,7 +66,7 @@ export function useCreateDaoCallback() {
     if (distributionData.publicSaleOpen) {
       if (!distributionData.publicSale.offeringAmount) throw new Error('offering amount empty')
       if (!distributionData.publicSale.price) throw new Error('publicSale price empty')
-      const _priceTokenAmount = tryParseAmount(distributionData.publicSale.price.toString(), stptToken)
+      const _priceTokenAmount = tryParseAmount(distributionData.publicSale.price.toString(), stptPriceToken)
       if (!_priceTokenAmount) throw new Error('publicSale price empty')
       const _pubs = {
         amout: amountAddDecimals(distributionData.publicSale.offeringAmount, basicData.tokenDecimals),
@@ -109,7 +111,7 @@ export function useCreateDaoCallback() {
       [_reserved, _priSale, _pubSale, currentReceivingToken.address, distributionData.aboutProduct],
       _rule
     ]
-  }, [basicData, distributionData, ruleData, stptToken, currentReceivingToken])
+  }, [basicData, distributionData, ruleData, stptPriceToken, currentReceivingToken])
 
   return useCallback(() => {
     if (!daoFactoryContract) {

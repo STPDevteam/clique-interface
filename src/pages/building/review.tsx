@@ -101,7 +101,7 @@ export default function ReviewInformation({
       .catch((err: any) => {
         hideModal()
         showModal(
-          <MessageBox type="error">{err.data && err.data.message ? err.data.message : err?.message}</MessageBox>
+          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
         )
         console.error(err)
       })

@@ -29,7 +29,7 @@ export function calcTotalAmountValue(amount: number | string | undefined, unitPr
   if (!amount || !Number(amount) || !unitPrice) return ''
   const _amount = amount.toString().split('.')[0]
   if (!_amount) return ''
-  return new BigNumber(amount).multipliedBy(unitPrice).toFixed(0, 0)
+  return new BigNumber(amount).multipliedBy(unitPrice).toFixed(1, 0)
   // const ret = JSBI.divide(
   //   JSBI.multiply(JSBI.BigInt((Number(unitPrice) * 1000000).toFixed()), JSBI.BigInt(_amount)),
   //   JSBI.BigInt(1000000)

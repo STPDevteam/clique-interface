@@ -7,11 +7,14 @@ import {
   useSingleCallResult,
   useSingleContractMultipleData
 } from '../state/multicall/hooks'
-import { useDaoContract, useDaoFactoryContract } from './useContract'
+import { useDaoContract, useDaoFactoryContract, useSTPTokenContract } from './useContract'
 import { DAO_INTERFACE } from '../constants/abis/erc20'
 import { useProposalNumber } from './useVoting'
 import { privateReceivingTokens } from 'state/building/hooks'
 import JSBI from 'jsbi'
+import { DefaultChainId, PriceDecimals } from '../constants'
+import { BigintIsh } from 'constants/token/constants'
+import { tryParseAmount } from 'state/application/hooks'
 
 export function useLastDaoId() {
   const daoFactoryContract = useDaoFactoryContract()
@@ -65,7 +68,7 @@ export function useDaoBaseInfoByAddress(
 
   const daoTokenRes = useSingleCallResult(daoContract ?? undefined, 'daoToken', [])
   const tokenAddress: string | undefined = useMemo(() => daoTokenRes.result?.[0], [daoTokenRes])
-  const token = useSTPToken(tokenAddress)
+  const token = useSTPToken(tokenAddress, DefaultChainId)
 
   if (!daoAddress) return undefined
 
@@ -83,6 +86,7 @@ export interface DaoInfoProps {
   daoName: string | undefined
   daoDesc: string | undefined
   token: Token | undefined
+  totalSupply: TokenAmount | undefined
   link: {
     website: string
     twitter: string
@@ -112,6 +116,7 @@ export interface DaoInfoProps {
   pubSoldAmt: TokenAmount | undefined
   votingAddress: string | undefined
   proposalNumber: string | undefined
+  introduction: string
   rule:
     | undefined
     | {
@@ -183,9 +188,11 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
   const websiteRes = useSingleCallResult(daoContract, 'website', [])
   const twitterRes = useSingleCallResult(daoContract, 'twitter', [])
   const discordRes = useSingleCallResult(daoContract, 'twitter', [])
-  // const reservedRes = useSingleCallResult(daoContract, 'reserved', [])
-  // const priSaleRes = useSingleCallResult(daoContract, 'priSales', [])
+  const reservedRes = useSingleCallResult(daoContract, 'getReserved', [])
+  const priSaleRes = useSingleCallResult(daoContract, 'getPriSales', [])
   const pubSaleRes = useSingleCallResult(daoContract, 'pubSale', [])
+  const introductionRes = useSingleCallResult(daoContract, 'introduction', [])
+
   const receiveTokenRes = useSingleCallResult(daoContract, 'receiveToken', [])
   const pubSoldAmtRes = useSingleCallResult(daoContract, 'pubSoldAmt', [])
 
@@ -195,7 +202,72 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
 
   const daoTokenRes = useSingleCallResult(daoContract ?? undefined, 'daoToken', [])
   const tokenAddress: string | undefined = useMemo(() => daoTokenRes.result?.[0], [daoTokenRes])
-  const token = useSTPToken(tokenAddress)
+  const token = useSTPToken(tokenAddress, DefaultChainId)
+  const tokenContract = useSTPTokenContract(tokenAddress)
+
+  const totalSupplyRes = useSingleCallResult(tokenContract, 'totalSupply', [])
+  const totalSupply = useMemo(() => {
+    if (!totalSupplyRes.result?.[0] || !token) return undefined
+    return new TokenAmount(token, totalSupplyRes.result[0].toString())
+  }, [token, totalSupplyRes.result])
+
+  const receiveToken = useMemo(() => {
+    if (!receiveTokenRes.result) return undefined
+    let _cur = privateReceivingTokens[0]
+    for (const item of privateReceivingTokens) {
+      if (receiveTokenRes.result?.[0] === item.address) {
+        _cur = item
+        break
+      }
+    }
+    return new Token(_cur.chainId, _cur.address, _cur.decimals, _cur.name, _cur.name, _cur.logo)
+  }, [receiveTokenRes.result])
+
+  const reserved = useMemo(
+    () =>
+      (token &&
+        reservedRes.result?.[0].map((item: { to: any; amount: BigintIsh; lockDate: any }) => {
+          return {
+            address: item.to,
+            amount: new TokenAmount(token, item.amount.toString()),
+            lockDate: Number(item.lockDate.toString())
+          }
+        })) ||
+      [],
+    [reservedRes.result, token]
+  )
+
+  // special price decimals
+  const stptPriceToken = useMemo(
+    () => (receiveToken ? new Token(receiveToken.chainId, receiveToken.address, PriceDecimals) : undefined),
+    [receiveToken]
+  )
+
+  const priSale: {
+    address: string
+    amount: TokenAmount
+    price: TokenAmount
+  }[] = useMemo(
+    () =>
+      (receiveToken &&
+        token &&
+        stptPriceToken &&
+        priSaleRes.result?.[0].map(
+          (item: { to: any; amount: { toString: () => BigintIsh }; price: { toString: () => BigintIsh } }) => {
+            const curPrice = tryParseAmount(
+              new TokenAmount(stptPriceToken, item.price.toString()).toSignificant(),
+              receiveToken
+            )
+            return {
+              address: item.to,
+              amount: new TokenAmount(token, item.amount.toString()),
+              price: curPrice as TokenAmount
+            }
+          }
+        )) ||
+      [],
+    [priSaleRes.result, receiveToken, stptPriceToken, token]
+  )
 
   const rule = useMemo(() => {
     if (!ruleRes.result || !token) return undefined
@@ -217,29 +289,24 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
     }
   }, [ruleRes.result, token])
 
-  const receiveToken = useMemo(() => {
-    if (!receiveTokenRes.result) return undefined
-    let _cur = privateReceivingTokens[0]
-    for (const item of privateReceivingTokens) {
-      if (receiveTokenRes.result?.[0] === item.address) {
-        _cur = item
-      }
-    }
-    return new Token(_cur.chainId, _cur.address, _cur.decimals, _cur.name, _cur.name, _cur.logo)
-  }, [receiveTokenRes.result])
-
   const pubSale = useMemo(() => {
     const _pub = pubSaleRes.result
-    if (!_pub || !token || !receiveToken) return undefined
+    if (!_pub || !token || !receiveToken || !stptPriceToken) return undefined
+    console.log('_pub.price.toString()', _pub.price.toString())
+    // price decimals handler
+    const curPrice = tryParseAmount(
+      new TokenAmount(stptPriceToken, _pub.price.toString()).toSignificant(),
+      receiveToken
+    )
     return {
       amount: new TokenAmount(token, _pub.amount),
-      price: new TokenAmount(receiveToken, _pub.price),
+      price: curPrice as TokenAmount,
       startTime: Number(_pub.startTime),
       endTime: Number(_pub.endTime),
       pledgeLimitMin: new TokenAmount(token, _pub.pledgeLimitMin),
       pledgeLimitMax: new TokenAmount(token, _pub.pledgeLimitMax)
     }
-  }, [pubSaleRes.result, receiveToken, token])
+  }, [pubSaleRes.result, receiveToken, stptPriceToken, token])
 
   const pubSoldAmt = useMemo(() => {
     if (!token) return undefined
@@ -253,33 +320,16 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
     daoAddress,
     daoName: daoNameRes.result?.[0],
     daoDesc: descRes.result?.[0],
+    totalSupply,
     link: {
       website: websiteRes.result?.[0] || '',
       twitter: twitterRes.result?.[0] || '',
       discord: discordRes.result?.[0] || ''
     },
-    reserved:
-      // (token &&
-      //   reservedRes.result?.map(item => {
-      //     return {
-      //       address: item.address,
-      //       amount: new TokenAmount(token, item.amount),
-      //       lockDate: Number(item.lockDate)
-      //     }
-      //   })) ||
-      [],
-    priSale:
-      // (receiveToken &&
-      //   token &&
-      //   priSaleRes.result?.map(item => {
-      //     return {
-      //       address: item.address,
-      //       amount: new TokenAmount(token, item.amount),
-      //       price: new TokenAmount(receiveToken, item.price)
-      //     }
-      //   })) ||
-      [],
+    reserved,
+    priSale,
     pubSale,
+    introduction: introductionRes.result?.[0] || '',
     receiveToken,
     pubSoldAmt,
     votingAddress,
@@ -307,7 +357,7 @@ export function useMultiDaoBaseInfo(
 
   const daoTokenRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'daoToken')
   const tokenAddresss: (string | undefined)[] = useMemo(() => daoTokenRes.map(item => item.result?.[0]), [daoTokenRes])
-  const tokens = useSTPTokens(tokenAddresss)
+  const tokens = useSTPTokens(tokenAddresss, DefaultChainId)
 
   return useMemo(() => {
     return daoNames.map((item, index) => {

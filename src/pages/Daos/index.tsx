@@ -46,17 +46,13 @@ export default function Index() {
             className={`one ${TypeTabs.DAO === currentTab ? 'active' : ''}`}
             onClick={() => setCurrentTab(TypeTabs.DAO)}
           >
-            <Typography fontSize={16} fontWeight={600}>
-              DAO
-            </Typography>
+            DAO
           </div>
           <div
             className={`two ${TypeTabs.OFFERING === currentTab ? 'active' : ''}`}
             onClick={() => setCurrentTab(TypeTabs.OFFERING)}
           >
-            <Typography fontSize={16} fontWeight={600}>
-              Public Offering
-            </Typography>
+            Public Offering
           </div>
         </Box>
         <Typography fontSize={12} padding={'20px 10px'}>

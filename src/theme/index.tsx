@@ -240,7 +240,8 @@ export const override: any = {
         fontFamily: 'Roboto'
       },
       body1: {
-        fontSize: 14
+        fontSize: 14,
+        color: '#767676'
       },
       body2: {
         fontSize: 12

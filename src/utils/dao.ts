@@ -12,7 +12,7 @@ export function timeStampToFormat(timeStamp: number | Date | undefined, format =
   return moment(timeStamp).format(format)
 }
 
-export function toFormatGroup(n: number | string, fixed = 2): string {
+export function toFormatGroup(n: number | string, fixed = 0): string {
   const Big = toFormat(_Big)
   const x = new Big(n || 0)
   return x.toFormat(fixed)
@@ -21,9 +21,9 @@ export function toFormatGroup(n: number | string, fixed = 2): string {
 export function toFormatMillion(n: number | string) {
   const _n = JSBI.BigInt((Number(n) * 10000).toFixed(0))
   if (JSBI.GE(_n, JSBI.BigInt(10000000000))) {
-    return toFormatGroup(Number(JSBI.divide(_n, JSBI.BigInt(100000000)).toString()) / 100) + 'M'
+    return toFormatGroup(Number(JSBI.divide(_n, JSBI.BigInt(100000000)).toString()) / 100, 2) + 'M'
   }
-  const _ret = toFormatGroup(n)
+  const _ret = toFormatGroup(n, 2)
   if (isNaN(Number(_ret))) {
     const _arr = _ret.split(',')
     const _end = _arr.splice(_arr.length - 1, 1)

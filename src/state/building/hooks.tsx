@@ -15,13 +15,14 @@ import {
 import BigNumber from 'bignumber.js'
 import { calcTotalAmountValue } from 'pages/building/function'
 
+// price decimals 12
 export const privateReceivingTokens: PrivateReceivingTokenProps[] = [
   {
     name: 'STEP',
     value: 'STEP',
     chainId: 1,
     logo: IconTokenSvg,
-    address: '0xBC00Be88bd26F10980c9115d59B1699b7468fC67',
+    address: '0xb56C5eF360E53DAB4bD3ba258161F550c968216a',
     decimals: 18
   },
   {
@@ -29,7 +30,7 @@ export const privateReceivingTokens: PrivateReceivingTokenProps[] = [
     value: 'USDT',
     chainId: 1,
     logo: IconTokenSvg,
-    address: '0xBC00Be88bd26F10980c9115d59B1699b7468fC67',
+    address: '0xb56C5eF360E53DAB4bD3ba258161F550c968216a',
     decimals: 18
   }
 ]

@@ -126,7 +126,11 @@ export const BLOCKED_ADDRESSES: string[] = [
 export const DAO_FACTORY_ADDRESS = {
   [ChainId.MAINNET]: '0xb00c9658522874582c8f9d0d371cf24284174fc7',
   [ChainId.ROPSTEN]: '0xb00c9658522874582c8f9d0d371cf24284174fc7',
-  [ChainId.RINKEBY]: '0x07F5B2462C2Bf8354e96B360f822a4cDcE7f88ea',
+  [ChainId.RINKEBY]: '0x7261e0227cc3f6FBcBD8bA830A39e7C9ac76ae2c',
   [ChainId.KOVAN]: '',
   [ChainId.GÖRLI]: ''
 }
+
+export const DefaultChainId = ChainId.RINKEBY
+
+export const PriceDecimals = 12
