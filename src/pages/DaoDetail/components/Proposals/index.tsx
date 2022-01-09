@@ -7,51 +7,27 @@ import { Box } from '@mui/material'
 import { DaoInfoProps } from 'hooks/useDAOInfo'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
-import { toFormatGroup } from 'utils/dao'
+import { timeStampToFormat, toFormatGroup } from 'utils/dao'
+import { ProposalInfoProp, useAllProposal } from 'hooks/useVoting'
 
 interface IProps {
-  onSelect: (proposal: any) => void
+  onSelect: (proposal: ProposalInfoProp) => void
   onCreate: () => void
   daoInfo: DaoInfoProps | undefined
 }
-export default function(props: IProps) {
+export default function Index(props: IProps) {
   const { onSelect, onCreate, daoInfo } = props
   const { account } = useActiveWeb3React()
   const TABS = ['ALL', 'Executable', 'Open', 'Closed']
   const [currentTab, setCurrentTab] = useState(TABS[0])
+  const proposalList = useAllProposal(daoInfo?.votingAddress)
+
   const tokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
   const isProposal = useMemo(() => {
     if (!tokenBalance || !daoInfo?.rule?.minimumCreateProposal) return false
     if (tokenBalance?.lessThan(daoInfo?.rule?.minimumCreateProposal)) return false
     return true
   }, [daoInfo?.rule?.minimumCreateProposal, tokenBalance])
-
-  const proposals = [
-    {
-      name: 'Parameter Changes Proposal',
-      desc: 'A law is currently looming on the horizon that xxxxxxx',
-      status: 'Open',
-      startTime: '2021-11-11 01:07:02'
-    },
-    {
-      name: 'Parameter Changes Proposal',
-      desc: 'A law is currently looming on the horizon that ...',
-      status: 'Soon',
-      startTime: '2021-11-11 01:07:02'
-    },
-    {
-      name: 'Parameter Changes Proposal',
-      desc: 'A law is currently looming on the horizon that ...',
-      status: 'Closed',
-      startTime: '2021-11-11 01:07:02'
-    },
-    {
-      name: 'Parameter Changes Proposal',
-      desc: 'A law is currently looming on the horizon that ...',
-      status: 'Executable',
-      startTime: '2021-11-11 01:07:02'
-    }
-  ]
 
   return (
     <div className={styles['proposals-container']}>
@@ -94,14 +70,14 @@ export default function(props: IProps) {
       </Tabs>
 
       <Box display={'flex'} gap="32px" flexWrap={'wrap'} className={styles['proposals-list']}>
-        {proposals.map((item, index) => (
+        {proposalList.map((item, index) => (
           <div key={index} className={styles['proposals-item']} onClick={() => onSelect(item)}>
-            <p className={styles['title']}>{item.name}</p>
-            <p className={styles['desc']}>{item.desc}</p>
+            <p className={styles['title']}>{item.title}</p>
+            <p className={styles['desc']}>{item.content}</p>
             <div className={styles['footer']}>
               <ProposalStatus status={item.status} />
               <p className={styles['start-time']}>
-                {item.status === 'Closed' ? 'Ended at ' : 'Start at '} {item.startTime}
+                {item.status === 0 ? 'Ended at ' : 'Start at '} {timeStampToFormat(item.startTime)}
               </p>
             </div>
           </div>

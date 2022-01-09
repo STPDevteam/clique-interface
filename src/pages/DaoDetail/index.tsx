@@ -12,13 +12,14 @@ import Copy from 'components/essential/Copy'
 import { useDaoInfoByAddress } from 'hooks/useDAOInfo'
 import { useParams } from 'react-router-dom'
 import { shortenAddress } from 'utils'
+import { ProposalInfoProp } from 'hooks/useVoting'
 
 export default function Index() {
   const links = ['Proposal', 'Assets', 'Members', 'Configuration']
   const { address: daoAddress } = useParams<{ address: string }>()
 
   const [currentLink, setCurrentLink] = useState(links[0])
-  const [currentProposal, setCurrentProposal] = useState()
+  const [currentProposal, setCurrentProposal] = useState<ProposalInfoProp>()
   const [showCreate, setShowCreate] = useState(false)
   const daoInfo = useDaoInfoByAddress(daoAddress)
 

@@ -292,7 +292,6 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
   const pubSale = useMemo(() => {
     const _pub = pubSaleRes.result
     if (!_pub || !token || !receiveToken || !stptPriceToken) return undefined
-    console.log('_pub.price.toString()', _pub.price.toString())
     // price decimals handler
     const curPrice = tryParseAmount(
       new TokenAmount(stptPriceToken, _pub.price.toString()).toSignificant(),

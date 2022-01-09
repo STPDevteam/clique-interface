@@ -11,6 +11,14 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
+import { useCreateCommunityProposalCallback } from 'hooks/useCreateCommunityProposalCallback'
+import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import useModal from 'hooks/useModal'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import { toFormatGroup } from 'utils/dao'
+import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
+import { Dots } from 'theme/components'
 
 interface Props {
   onBack: () => void
@@ -26,6 +34,32 @@ export default function Index(props: Props) {
   const [startTime, setStartTime] = useState<number>()
   const [endTime, setEndTime] = useState<number>()
   const toggleWalletModal = useWalletModalToggle()
+  const { hideModal, showModal } = useModal()
+  const createCommunityProposalCallback = useCreateCommunityProposalCallback(daoInfo?.votingAddress)
+
+  const daoTokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
+
+  const [approvalState, approvalCallback] = useApproveCallback(
+    daoInfo?.rule?.minimumCreateProposal,
+    daoInfo?.votingAddress
+  )
+
+  const onCreateCommunityProposalCallback = useCallback(() => {
+    if (!title.trim() || !startTime || !endTime) return
+    showModal(<TransactionPendingModal />)
+    createCommunityProposalCallback(title, desc, startTime, endTime)
+      .then(() => {
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
+      })
+      .catch((err: any) => {
+        hideModal()
+        showModal(
+          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+        )
+        console.error(err)
+      })
+  }, [createCommunityProposalCallback, desc, endTime, hideModal, showModal, startTime, title])
 
   const addOption = useCallback(() => {
     if (option.length >= 6) return
@@ -88,15 +122,34 @@ export default function Index(props: Props) {
         </MButton>
       )
     }
+
+    if (approvalState !== ApprovalState.APPROVED) {
+      if (approvalState === ApprovalState.PENDING) {
+        return (
+          <OutlineButton disabled>
+            Approval
+            <Dots />
+          </OutlineButton>
+        )
+      } else if (approvalState === ApprovalState.NOT_APPROVED) {
+        return <OutlineButton onClick={approvalCallback}>Approval</OutlineButton>
+      } else {
+        return <OutlineButton disabled>Pay</OutlineButton>
+      }
+    }
+
     return (
-      <MButton width="233px" height="48px" style={{ margin: 'auto' }}>
+      <MButton width="233px" height="48px" style={{ margin: 'auto' }} onClick={onCreateCommunityProposalCallback}>
         Create a Proposal
       </MButton>
     )
   }, [
     account,
+    approvalCallback,
+    approvalState,
     daoInfo?.rule?.minimumCreateProposal,
     endTime,
+    onCreateCommunityProposalCallback,
     option,
     startTime,
     title,
@@ -176,11 +229,18 @@ export default function Index(props: Props) {
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} mb={10}>
               <Typography>Your balance</Typography>
-              <Typography>0 STPT</Typography>
+              <Typography>
+                {daoTokenBalance ? toFormatGroup(daoTokenBalance?.toSignificant()) : '-'} {daoInfo?.token?.symbol}
+              </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} mb={10}>
               <Typography>Create a proposal need stakes</Typography>
-              <Typography>2,000 STPT</Typography>
+              <Typography>
+                {daoInfo?.rule?.minimumCreateProposal
+                  ? toFormatGroup(daoInfo?.rule?.minimumCreateProposal.toSignificant())
+                  : '-'}{' '}
+                {daoInfo?.token?.symbol}
+              </Typography>
             </Box>
             <Box
               mb={10}
@@ -190,7 +250,9 @@ export default function Index(props: Props) {
                 padding: '13px 44px'
               }}
             >
-              Valid votes greater than 100,000 will be considered valid proposals
+              Valid votes greater than{' '}
+              {daoInfo?.rule?.minimumValidVotes ? toFormatGroup(daoInfo?.rule?.minimumValidVotes.toSignificant()) : '-'}{' '}
+              will be considered valid proposals
             </Box>
             {getActions}
           </Box>

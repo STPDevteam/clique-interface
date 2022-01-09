@@ -168,7 +168,7 @@ export default function Offering() {
       })
   }, [hideModal, reservedClaimCallback, showModal])
 
-  const payBalance = useTokenBalance(account || undefined, daoInfo?.pubSale?.price.token)
+  const payBalance = useTokenBalance(account || undefined, daoInfo?.receiveToken)
 
   const getPriSaleActions = useMemo(() => {
     if (!account) {
@@ -348,7 +348,7 @@ export default function Offering() {
                   <Progress percent={daoStatus ? Number(daoStatus.pubSoldPer.toFixed(2)) : 0} />
                   <Typography variant="h6">
                     {daoInfo?.pubSoldAmt ? toFormatGroup(daoInfo.pubSoldAmt.toSignificant()) : '-'} /{' '}
-                    {daoInfo?.pubSale?.amount ? toFormatGroup(daoInfo.pubSale.amount.toSignificant(), 0) : '-'}{' '}
+                    {daoInfo?.pubSale?.amount ? toFormatGroup(daoInfo.pubSale.amount.toSignificant()) : '-'}{' '}
                   </Typography>
                   <StyledBetween mt={10}>
                     <Box>
@@ -380,7 +380,7 @@ export default function Offering() {
                   <StyledBetween>
                     <Typography variant="body1">Funding target</Typography>
                     <Typography variant="h6">
-                      {daoInfo?.pubSale?.amount ? daoInfo?.pubSale?.amount.toSignificant() : ' - '}{' '}
+                      {daoInfo?.pubSale?.amount ? toFormatGroup(daoInfo.pubSale.amount.toSignificant()) : ' - '}{' '}
                       {daoInfo?.token?.symbol}
                     </Typography>
                   </StyledBetween>

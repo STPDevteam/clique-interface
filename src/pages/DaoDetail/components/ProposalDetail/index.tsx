@@ -9,8 +9,10 @@ import ExecutableContent from '../../../../components/Proposal/ExecutableContent
 import ExecutableVoteResult from '../../../../components/Proposal/ExecutableVoteResult'
 import Vote from '../../../../components/Proposal/Vote'
 import { Grid } from '@mui/material'
+import { ProposalInfoProp } from 'hooks/useVoting'
+import { ProposalType } from 'hooks/useCreateCommunityProposalCallback'
 
-export default function Index({ detail, onBack }: { detail: any; onBack: any }) {
+export default function Index({ detail, onBack }: { detail: ProposalInfoProp; onBack: () => void }) {
   return (
     <div className={styles['proposal-detail-container']}>
       <Button className={styles['btn-back']} onClick={onBack}>
@@ -19,13 +21,13 @@ export default function Index({ detail, onBack }: { detail: any; onBack: any }) 
 
       <Grid container spacing={24}>
         <Grid item lg={8} xs={12} className={styles['left-part']}>
-          {detail.status !== 'Executable' && (
+          {detail.proType === ProposalType.COMMUNITY && (
             <>
               <ProposalContent detail={detail} />
               <ProposalVoteDetail detail={detail} />
             </>
           )}
-          {detail.status === 'Executable' && (
+          {detail.proType === ProposalType.CONTRACT && (
             <>
               <ExecutableContent />
               <ExecutableVoteResult />
@@ -33,8 +35,8 @@ export default function Index({ detail, onBack }: { detail: any; onBack: any }) 
           )}
         </Grid>
         <Grid item lg={4} xs={12} className={styles['left-part']}>
-          {detail.status === 'Open' && <CastVote />}
-          {detail.status === 'Executable' && <Vote />}
+          {detail.status === 0 && <CastVote />}
+          {detail.status === 0 && <Vote />}
           <ProposalUndoClaim />
           <OtherUserDetail />
         </Grid>

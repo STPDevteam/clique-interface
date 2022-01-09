@@ -1,6 +1,6 @@
 {
-  "name": "@chainswap/interface",
-  "description": "Chainswap Interface",
+  "name": "@stp/dao",
+  "description": "STP Dao",
   "homepage": ".",
   "private": true,
   "devDependencies": {
@@ -163,6 +163,7 @@
     "toformat": "^2.0.0",
     "ts-pnp": "1.2.0",
     "url-loader": "4.1.1",
+    "web3-eth-abi": "^1.6.1",
     "webpack": "4.44.2",
     "webpack-dev-server": "3.11.1",
     "webpack-manifest-plugin": "2.2.0",
