@@ -58,7 +58,78 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
     [account, addTransaction, votingContract]
   )
 
+  const updateConfigurationCallback = useCallback(
+    (
+      title: string,
+      content: string,
+      startTime: number,
+      endTime: number,
+      minimumVote: string,
+      minimumCreateProposal: string,
+      minimumValidVotes: string,
+      communityVotingDuration: string,
+      contractVotingDuration: string,
+      descContent: string
+    ) => {
+      if (!votingContract) throw new Error('none contract')
+
+      const args = [
+        title,
+        content,
+        startTime,
+        endTime,
+        Web3EthAbi.encodeFunctionSignature({
+          name: 'updateDaoRule',
+          type: 'function',
+          inputs: [
+            {
+              type: 'uint256',
+              name: minimumVote
+            },
+            {
+              type: 'uint256',
+              name: minimumCreateProposal
+            },
+            {
+              type: 'uint256',
+              name: minimumValidVotes
+            },
+            {
+              type: 'uint256',
+              name: communityVotingDuration
+            },
+            {
+              type: 'uint256',
+              name: contractVotingDuration
+            },
+            {
+              type: 'string',
+              name: descContent
+            }
+          ]
+        })
+      ]
+
+      // return votingContract.estimateGas.createContractProposal(...args, { from: account }).then(estimatedGasLimit => {
+      return votingContract
+        .createContractProposal(...args, {
+          // gasLimit: calculateGasMargin(estimatedGasLimit),
+          gasLimit: '3500000',
+          from: account
+        })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Create contract proposal'
+          })
+          return response.hash
+        })
+      // })
+    },
+    [account, addTransaction, votingContract]
+  )
+
   return {
-    withdrawAssetCallback
+    withdrawAssetCallback,
+    updateConfigurationCallback
   }
 }
