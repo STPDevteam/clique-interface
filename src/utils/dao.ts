@@ -19,6 +19,7 @@ export function toFormatGroup(n: number | string, fixed = 0): string {
 }
 
 export function toFormatMillion(n: number | string) {
+  if (!n) return n
   const _n = JSBI.BigInt((Number(n) * 10000).toFixed(0))
   if (JSBI.GE(_n, JSBI.BigInt(10000000000))) {
     return toFormatGroup(Number(JSBI.divide(_n, JSBI.BigInt(100000000)).toString()) / 100, 2) + 'M'
