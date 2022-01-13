@@ -33,7 +33,7 @@ export function useCreateDaoCallback() {
       discord: basicData.discordLink,
       tokenName: basicData.tokenName,
       tokenSymbol: basicData.tokenSymbol,
-      tokenLogo: basicData.tokenPhoto || 'http://img.duoziwang.com/2021/01/1618717228129267.jpg',
+      tokenLogo: basicData.tokenPhoto || 'https://p.qqan.com/up/2021-12/16390088331106260.jpg',
       tokenSupply: basicData.tokenSupply,
       tokenDecimal: basicData.tokenDecimals,
       transfersEnabled: true
