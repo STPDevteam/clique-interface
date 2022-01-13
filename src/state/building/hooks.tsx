@@ -22,7 +22,7 @@ export const privateReceivingTokens: PrivateReceivingTokenProps[] = [
     value: 'STEP',
     chainId: 1,
     logo: IconTokenSvg,
-    address: '0xFbe7a77Ed99f3622159A5ADf238f76290bAD1fDa',
+    address: '0x9D2e3653DE320F480Da0602cb489502a5ed81161',
     decimals: 18
   }
   // {
