@@ -58,7 +58,7 @@ export default function WithdrawAssets({
     const endTime = Number(daoInfo.rule.contractVotingDuration) + startTime
     onWithdraw(
       justification,
-      `Withdraw token ${curToken?.symbol} ${inputBal.toSignificant()}`,
+      `Withdraw ${inputBal.toSignificant()} ${curToken?.symbol}`,
       startTime,
       endTime,
       tokenAddress,
