@@ -21,7 +21,7 @@ export default function WarningModal() {
 export function WarningModalContent({ onDismiss }: { onDismiss: () => void }) {
   return (
     <Modal maxWidth="608px" width="100%">
-      <Box display="grid" gap="24px" width="100%" padding="32px">
+      <Box display="grid" gap="24px" width="100%">
         <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
           <div />
           <Typography variant="h6" style={{ textAlign: 'center' }}>
