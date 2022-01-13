@@ -31,9 +31,10 @@ export default function Index() {
         <p>{daoInfo?.daoDesc}</p>
         {/* <Button className={'btn-common btn-01'}>Join</Button> */}
       </div>
-      {currentProposal && (
+      {currentProposal && daoInfo && (
         <ProposalDetail
           detail={currentProposal}
+          daoInfo={daoInfo}
           onBack={() => {
             setCurrentProposal(undefined)
           }}
@@ -79,9 +80,11 @@ export default function Index() {
                 onCreate={() => setShowCreate(true)}
               />
             )}
-            {currentLink === 'Assets' && <Assets />}
+            {currentLink === 'Assets' && daoInfo && <Assets daoInfo={daoInfo} />}
             {currentLink === 'Members' && <Members />}
-            {currentLink === 'Configuration' && <Configuration />}
+            {currentLink === 'Configuration' && daoInfo && daoInfo.rule && daoInfo.totalSupply && (
+              <Configuration totalSupply={daoInfo.totalSupply.toSignificant()} rule={daoInfo.rule} />
+            )}
           </div>
         </div>
       )}

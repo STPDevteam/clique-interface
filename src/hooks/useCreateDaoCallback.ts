@@ -33,7 +33,7 @@ export function useCreateDaoCallback() {
       discord: basicData.discordLink,
       tokenName: basicData.tokenName,
       tokenSymbol: basicData.tokenSymbol,
-      tokenLogo: basicData.tokenPhoto || 'http://img.duoziwang.com/2021/06/q101801413228587.jpg',
+      tokenLogo: basicData.tokenPhoto || 'http://img.duoziwang.com/2021/01/1618717228129267.jpg',
       tokenSupply: basicData.tokenSupply,
       tokenDecimal: basicData.tokenDecimals,
       transfersEnabled: true
@@ -42,8 +42,8 @@ export function useCreateDaoCallback() {
     let _reserved: any[][] = []
     if (distributionData.reservedOpen) {
       _reserved = distributionData.reservedTokens.map(item => {
-        if (!item.tokenNumber) throw new Error('token number empty')
-        return [item.address, amountAddDecimals(item.tokenNumber, basicData.tokenDecimals), item.lockdate]
+        // if (!item.tokenNumber) throw new Error('token number empty')
+        return [item.address, amountAddDecimals(item.tokenNumber || '1', basicData.tokenDecimals), item.lockdate]
       })
     }
 
@@ -100,9 +100,11 @@ export function useCreateDaoCallback() {
       communityVotingDuration: ruleData.votersCustom
         ? 0
         : calcVotingDuration(ruleData.days, ruleData.hours, ruleData.minutes),
-      contractVotingDuration: ruleData.votersCustom
-        ? calcVotingDuration(ruleData.contractDays, ruleData.contractHours, ruleData.contractMinutes)
-        : 0,
+      contractVotingDuration: calcVotingDuration(
+        ruleData.contractDays,
+        ruleData.contractHours,
+        ruleData.contractMinutes
+      ),
       content: ruleData.rules
     })
 

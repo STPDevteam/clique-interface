@@ -4,11 +4,32 @@ import { useVotingContract } from './useContract'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
-const Web3EthAbi = require('web3-eth-abi')
+// const Web3EthAbi = require('web3-eth-abi')
+// Web3EthAbi.encodeFunctionSignature({
+//   name: '',
+//   type: '',
+//   inputs: []
+// })
 
 export enum ProposalType {
   COMMUNITY,
   CONTRACT
+}
+export enum ProposalStatusProp {
+  Review,
+  Active,
+  Failed,
+  Success,
+  Cancel,
+  Executed // 已执行
+}
+export const ProposalStatusText: { [key in ProposalStatusProp]: string } = {
+  [ProposalStatusProp.Review]: 'Review',
+  [ProposalStatusProp.Active]: 'Active',
+  [ProposalStatusProp.Failed]: 'Failed',
+  [ProposalStatusProp.Success]: 'Success',
+  [ProposalStatusProp.Cancel]: 'Cancel',
+  [ProposalStatusProp.Executed]: 'Executed'
 }
 
 export function useCreateCommunityProposalCallback(votingAddress: string | undefined) {
@@ -17,32 +38,21 @@ export function useCreateCommunityProposalCallback(votingAddress: string | undef
   const addTransaction = useTransactionAdder()
 
   return useCallback(
-    (title: string, content: string, startTime: number, endTime: number) => {
+    (title: string, content: string, startTime: number, endTime: number, options: string[]) => {
       if (!votingContract) throw new Error('none contract')
 
-      const args = [
-        0,
-        title,
-        content,
-        startTime,
-        endTime,
-        Web3EthAbi.encodeFunctionSignature({
-          name: '',
-          type: '',
-          inputs: []
-        })
-      ]
+      const args = [title, content, startTime, endTime, options]
 
-      // return votingContract.estimateGas.createProposal(...args, { from: account }).then(estimatedGasLimit => {
+      // return votingContract.estimateGas.createCommunityProposal(...args, { from: account }).then(estimatedGasLimit => {
       return votingContract
-        .createProposal(...args, {
+        .createCommunityProposal(...args, {
           // gasLimit: calculateGasMargin(estimatedGasLimit),
           gasLimit: '3500000',
           from: account
         })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
-            summary: 'Create proposal'
+            summary: 'Create community proposal'
           })
           return response.hash
         })

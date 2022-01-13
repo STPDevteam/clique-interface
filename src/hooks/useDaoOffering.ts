@@ -21,3 +21,23 @@ export function useIsPriSoldAddress(daoAddress: string | undefined, account: str
     return priSoldAddressRes.result[0]
   }, [account, daoAddress, priSoldAddressRes])
 }
+
+export function usePubSoldAmtPerAddress(
+  daoAddress: string | undefined,
+  account: string | undefined
+): string | undefined {
+  const daoContract = useDaoContract(daoAddress)
+  const priSoldAddressRes = useSingleCallResult(account ? daoContract : null, 'pubSoldAmtPerAddress', [account])
+
+  return useMemo(() => {
+    if (!daoAddress || !account || !priSoldAddressRes.result) return undefined
+    return priSoldAddressRes.result[0].toString()
+  }, [account, daoAddress, priSoldAddressRes])
+}
+
+export function usePubSoldAmt(daoAddress: string | undefined): string | undefined {
+  const daoContract = useDaoContract(daoAddress)
+  const pubSoldAmtRes = useSingleCallResult(daoContract, 'pubSoldAmt', [])
+
+  return pubSoldAmtRes.result?.[0].toString()
+}

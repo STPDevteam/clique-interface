@@ -47,7 +47,7 @@ export default function Index(props: Props) {
   const onCreateCommunityProposalCallback = useCallback(() => {
     if (!title.trim() || !startTime || !endTime) return
     showModal(<TransactionPendingModal />)
-    createCommunityProposalCallback(title, desc, startTime, endTime)
+    createCommunityProposalCallback(title, desc, startTime, endTime, option)
       .then(() => {
         hideModal()
         showModal(<TransactionSubmittedModal />)
@@ -59,7 +59,7 @@ export default function Index(props: Props) {
         )
         console.error(err)
       })
-  }, [createCommunityProposalCallback, desc, endTime, hideModal, showModal, startTime, title])
+  }, [createCommunityProposalCallback, desc, endTime, hideModal, option, showModal, startTime, title])
 
   const addOption = useCallback(() => {
     if (option.length >= 6) return

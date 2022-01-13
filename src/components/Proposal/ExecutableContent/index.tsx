@@ -9,7 +9,7 @@ export default function Index() {
           <p className={styles['title']}>Withdraw</p>
           <p className={styles['closed']}>Closed at {'2021-11-11 11:11:11'}</p>
         </div>
-        <ProposalStatus status={'Executable'} />
+        <ProposalStatus status={0} />
       </div>
       <p className={styles['info']}>I will use this token as gas fee</p>
       <div className={styles['payload']}>

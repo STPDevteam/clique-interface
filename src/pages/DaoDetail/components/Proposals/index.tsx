@@ -9,6 +9,7 @@ import { useTokenBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { ProposalInfoProp, useAllProposal } from 'hooks/useVoting'
+import { ProposalStatusProp } from 'hooks/useCreateCommunityProposalCallback'
 
 interface IProps {
   onSelect: (proposal: ProposalInfoProp) => void
@@ -77,7 +78,9 @@ export default function Index(props: IProps) {
             <div className={styles['footer']}>
               <ProposalStatus status={item.status} />
               <p className={styles['start-time']}>
-                {item.status === 0 ? 'Ended at ' : 'Start at '} {timeStampToFormat(item.startTime)}
+                {item.status === ProposalStatusProp.Review
+                  ? `Start at ${timeStampToFormat(item.startTime)}`
+                  : `Ended at ${timeStampToFormat(item.startTime)}`}
               </p>
             </div>
           </div>

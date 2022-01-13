@@ -224,10 +224,10 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                 total number of tokens locked will not be counted as votes.
               </Typography>
             </Box>
-            <Switch
+            {/* <Switch
               checked={distribution.reservedOpen}
               onChange={status => updateDistributionCall('reservedOpen', status)}
-            />
+            /> */}
           </Box>
           {distribution.reservedOpen && (
             <Box mt={16} display={'grid'} gap={15}>
@@ -275,8 +275,10 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       placement="top"
                       title={
                         <Box textAlign={'center'}>
-                          <Typography>Current tokens: {toFormatGroup(item.tokenNumber || 0, 0)}</Typography>
-                          <Typography>
+                          <Typography color={'#ccc'}>
+                            Current tokens: {toFormatGroup(item.tokenNumber || 0, 0)}
+                          </Typography>
+                          <Typography color={'#ccc'}>
                             Remaining tokens: {toFormatGroup(remainderTokenAmount, 0)}
                             {!!Number(remainderTokenAmount) && (
                               <MaxTag
@@ -354,9 +356,11 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       disabledPassTime={new Date()}
                       onChange={timeStamp => updateReservedHolder(index, 'lockdate', timeStamp)}
                     />
-                    <StyledExtraBg width={32} height={36} svgSize={16} onClick={() => removeReservedItem(index)}>
-                      <IconDelete />
-                    </StyledExtraBg>
+                    {index > 0 && (
+                      <StyledExtraBg width={32} height={36} svgSize={16} onClick={() => removeReservedItem(index)}>
+                        <IconDelete />
+                      </StyledExtraBg>
+                    )}
                   </Box>
                 ))}
               </Box>
@@ -483,8 +487,10 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       placement="top"
                       title={
                         <Box textAlign={'center'}>
-                          <Typography>Current tokens: {toFormatGroup(item.tokenNumber || 0, 0)}</Typography>
-                          <Typography>
+                          <Typography color={'#ccc'}>
+                            Current tokens: {toFormatGroup(item.tokenNumber || 0, 0)}
+                          </Typography>
+                          <Typography color={'#ccc'}>
                             Remaining tokens: {toFormatGroup(remainderTokenAmount, 0)}
                             {!!Number(remainderTokenAmount) && (
                               <MaxTag
@@ -638,10 +644,10 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       placement="top"
                       title={
                         <Box textAlign={'center'}>
-                          <Typography>
+                          <Typography color={'#ccc'}>
                             Current tokens: {toFormatGroup(distribution.publicSale.offeringAmount || 0, 0)}
                           </Typography>
-                          <Typography>
+                          <Typography color={'#ccc'}>
                             Remaining tokens: {toFormatGroup(remainderTokenAmount, 0)}
                             {!!Number(remainderTokenAmount) && (
                               <MaxTag

@@ -8,8 +8,6 @@ import { CreateDaoDataRule } from 'state/building/actions'
 import { toFormatGroup } from 'utils/dao'
 import TextArea from 'antd/lib/input/TextArea'
 import AlertError from 'components/Alert/index'
-import { ZERO_ADDRESS } from '../../constants'
-import { isAddress } from 'utils'
 import { getAmountForPer, getPerForAmount } from './function'
 import BigNumber from 'bignumber.js'
 
@@ -34,17 +32,13 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
 
   const verifyMsg = useMemo(() => {
     if (!rule.minApprovalNumber || !rule.minCreateProposalNumber || !rule.minVoteNumber) return 'Votes required'
-    if (rule.votersCustom) {
-      if (!rule.contractExecutor) {
-        return 'Contract Executor required'
-      }
-      if (!rule.days && !rule.hours && !rule.minutes) {
-        return 'Contract Voting Duration required'
-      }
-    } else {
+    if (!rule.votersCustom) {
       if (!rule.days && !rule.hours && !rule.minutes) {
         return 'Community Voting Duration required'
       }
+    }
+    if (!rule.contractDays && !rule.contractHours && !rule.contractMinutes) {
+      return 'Contract Voting Duration required'
     }
     return undefined
   }, [rule])
@@ -234,71 +228,54 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                 </Box>
               </Box>
             </div>
-            {rule.votersCustom && (
-              <>
-                <div className="input-item executor">
-                  <span className="label">Contract Executor</span>
-                  <Input
-                    placeholder={ZERO_ADDRESS}
-                    maxLength={ZERO_ADDRESS.length}
-                    value={rule.contractExecutor}
-                    onChange={e => updateRuleCall('contractExecutor', e.target.value)}
-                    onBlur={() => {
-                      if (rule.contractExecutor && !isAddress(rule.contractExecutor))
-                        updateRuleCall('contractExecutor', '')
+            <div className="input-item">
+              <span className="label">Contract Voting Duration</span>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                <div className="datetime-wrapper">
+                  <InputNumber
+                    min={0}
+                    className="input-number-common"
+                    value={rule.contractDays}
+                    onChange={(_val: any) => {
+                      const reg = new RegExp('^[0-9]*$')
+                      if (reg.test(_val)) updateRuleCall('contractDays', _val)
                     }}
                   />
+                  <span>Days</span>
                 </div>
-                <div className="input-item">
-                  <span className="label">Contract Voting Duration</span>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center'
+                <div className="datetime-wrapper">
+                  <InputNumber
+                    min={0}
+                    className="input-number-common"
+                    value={rule.contractHours}
+                    max={23}
+                    onChange={(_val: any) => {
+                      const reg = new RegExp('^[0-9]*$')
+                      if (reg.test(_val)) updateRuleCall('contractHours', _val)
                     }}
-                  >
-                    <div className="datetime-wrapper">
-                      <InputNumber
-                        min={0}
-                        className="input-number-common"
-                        value={rule.contractDays}
-                        onChange={(_val: any) => {
-                          const reg = new RegExp('^[0-9]*$')
-                          if (reg.test(_val)) updateRuleCall('contractDays', _val)
-                        }}
-                      />
-                      <span>Days</span>
-                    </div>
-                    <div className="datetime-wrapper">
-                      <InputNumber
-                        min={0}
-                        className="input-number-common"
-                        value={rule.contractHours}
-                        max={23}
-                        onChange={(_val: any) => {
-                          const reg = new RegExp('^[0-9]*$')
-                          if (reg.test(_val)) updateRuleCall('contractHours', _val)
-                        }}
-                      />
-                      <span>Hours</span>
-                    </div>
-                    <div className="datetime-wrapper">
-                      <InputNumber
-                        min={0}
-                        className="input-number-common"
-                        value={rule.contractMinutes}
-                        max={59}
-                        onChange={(_val: any) => {
-                          const reg = new RegExp('^[0-9]*$')
-                          if (reg.test(_val)) updateRuleCall('contractMinutes', _val)
-                        }}
-                      />
-                      <span>Minutes</span>
-                    </div>
-                  </Box>
+                  />
+                  <span>Hours</span>
                 </div>
-              </>
-            )}
+                <div className="datetime-wrapper">
+                  <InputNumber
+                    min={0}
+                    className="input-number-common"
+                    value={rule.contractMinutes}
+                    max={59}
+                    onChange={(_val: any) => {
+                      const reg = new RegExp('^[0-9]*$')
+                      if (reg.test(_val)) updateRuleCall('contractMinutes', _val)
+                    }}
+                  />
+                  <span>Minutes</span>
+                </div>
+              </Box>
+            </div>
             {/* <div className="input-item">
           <span className="label">Rules / Agreement</span>
           <div className="drag-area">

@@ -14,7 +14,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useReservedClaimCallback } from 'hooks/useReservedClaimCallback'
 import { usePartPriSaleCallback } from 'hooks/usePartPriSaleCallback'
 import { usePartPubSaleCallback } from 'hooks/usePartPubSaleCallback'
-import { useReservedClaimed, useIsPriSoldAddress } from 'hooks/useDaoOffering'
+import { useReservedClaimed, useIsPriSoldAddress, usePubSoldAmt, usePubSoldAmtPerAddress } from 'hooks/useDaoOffering'
 import { TokenAmount } from 'constants/token'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from 'hooks/useModal'
@@ -26,6 +26,7 @@ import Image from 'components/Image'
 import JSBI from 'jsbi'
 import { useTokenBalance } from 'state/wallet/hooks'
 import BigNumber from 'bignumber.js'
+import { Radio } from 'antd'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -44,9 +45,11 @@ const StyledCard = styled(Box)({
 })
 const StyledBetween = styled(Box)({
   display: 'flex',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
+  alignItems: 'center'
 })
 
+type TabOption = 'about' | 'active'
 export default function Offering() {
   const history = useHistory()
   const { account } = useActiveWeb3React()
@@ -56,13 +59,30 @@ export default function Offering() {
   const { address: daoAddress } = useParams<{ address: string }>()
   const daoInfo = useDaoInfoByAddress(daoAddress)
   const daoStatus = useDaoStatus(daoInfo)
+  const [tabInfo, setTabInfo] = useState<TabOption>('about')
+  const pubSoldAmt = usePubSoldAmt(daoInfo?.daoAddress)
 
   const [publicAmount, setPublicAmount] = useState('')
+
+  const currentAccountPubSoldAmt = usePubSoldAmtPerAddress(daoInfo?.daoAddress, account || undefined)
+  const currentAccountPubSoldTokenAmount = useMemo(() => {
+    if (!daoInfo?.token || !currentAccountPubSoldAmt) return undefined
+    return new TokenAmount(daoInfo.token, JSBI.BigInt(currentAccountPubSoldAmt))
+  }, [currentAccountPubSoldAmt, daoInfo?.token])
+
+  const remainingPubSaleAmount = useMemo(() => {
+    if (!pubSoldAmt || !daoInfo?.token || !daoInfo.pubSale) return undefined
+    const pubSoldTokenAmt = new TokenAmount(daoInfo.token, pubSoldAmt)
+    return new TokenAmount(daoInfo.token, daoInfo.pubSale.amount.subtract(pubSoldTokenAmt).numerator.toString())
+  }, [daoInfo?.pubSale, daoInfo?.token, pubSoldAmt])
+
   const currentPublicMaxInput = useMemo(() => {
-    if (!daoInfo?.pubSale) return '0'
-    if (daoInfo.pubSale.pledgeLimitMax.greaterThan('0')) return daoInfo?.pubSale?.pledgeLimitMax.toSignificant()
-    return daoInfo.pubSale.amount.toSignificant()
-  }, [daoInfo?.pubSale])
+    if (!daoInfo?.pubSale || !remainingPubSaleAmount || !currentAccountPubSoldTokenAmount) return '0'
+    if (daoInfo.pubSale.pledgeLimitMax.greaterThan('0')) {
+      return daoInfo.pubSale.pledgeLimitMax.subtract(currentAccountPubSoldTokenAmount).toSignificant()
+    }
+    return remainingPubSaleAmount.toSignificant()
+  }, [currentAccountPubSoldTokenAmount, daoInfo?.pubSale, remainingPubSaleAmount])
 
   const isPriSaleAccount = useMemo(() => {
     if (!account || !daoInfo) return undefined
@@ -97,6 +117,12 @@ export default function Offering() {
   const isReservedClaimed = useReservedClaimed(daoInfo?.daoAddress, account || undefined)
   const isPriSoldAddress = useIsPriSoldAddress(daoInfo?.daoAddress, account || undefined)
 
+  const pubPriSaleIsOpen = useMemo(() => {
+    if (!daoInfo?.pubSale) return false
+    const curTimeStamp = Number((new Date().getTime() / 1000).toFixed())
+    return daoInfo.pubSale.startTime < curTimeStamp && curTimeStamp < daoInfo.pubSale.endTime
+  }, [daoInfo?.pubSale])
+
   const currentPubReceiveTokenAmount = useMemo(() => {
     if (!JSBI.GT(JSBI.BigInt(publicAmount), JSBI.BigInt(0))) {
       return undefined
@@ -125,6 +151,7 @@ export default function Offering() {
     partPubSaleCallback(ca.raw.toString())
       .then(() => {
         hideModal()
+        setPublicAmount('')
         showModal(<TransactionSubmittedModal />)
       })
       .catch(err => {
@@ -187,8 +214,13 @@ export default function Offering() {
       )
     }
     if (isPriSoldAddress) {
-      return <OutlineButton disabled>已参与</OutlineButton>
+      return <OutlineButton disabled>Have participated</OutlineButton>
     }
+
+    if (!pubPriSaleIsOpen) {
+      return <OutlineButton disabled>Not open hours</OutlineButton>
+    }
+
     if (!payBalance || !priSalePayAmount || payBalance.lessThan(priSalePayAmount)) {
       return <OutlineButton disabled>Balance Insufficient</OutlineButton>
     }
@@ -215,6 +247,7 @@ export default function Offering() {
     priSaleApprovalCallback,
     priSaleApprovalState,
     priSalePayAmount,
+    pubPriSaleIsOpen,
     toggleWalletModal
   ])
 
@@ -225,6 +258,9 @@ export default function Offering() {
           Connect Wallet
         </OutlineButton>
       )
+    }
+    if (!pubPriSaleIsOpen) {
+      return <OutlineButton disabled>Not open hours</OutlineButton>
     }
     if (!currentPubReceiveTokenAmount) return <OutlineButton disabled>Pay</OutlineButton>
     if (!payBalance || payBalance.lessThan(currentPubReceiveTokenAmount)) {
@@ -244,12 +280,17 @@ export default function Offering() {
         return <OutlineButton disabled>Pay</OutlineButton>
       }
     }
+    if (new BigNumber(currentPublicMaxInput).lt(0.1)) {
+      return <OutlineButton disabled>Sale Ended</OutlineButton>
+    }
     return <OutlineButton onClick={onPartPubSaleCallback}>Pay</OutlineButton>
   }, [
     account,
     currentPubReceiveTokenAmount,
+    currentPublicMaxInput,
     onPartPubSaleCallback,
     payBalance,
+    pubPriSaleIsOpen,
     pubSaleApprovalCallback,
     pubSaleApprovalState,
     toggleWalletModal
@@ -274,8 +315,12 @@ export default function Offering() {
     if (isReservedClaimed) {
       return <OutlineButton disabled>Claimd</OutlineButton>
     }
+    if (!isReservedAccount || isReservedAccount.isLocked) {
+      return <OutlineButton disabled>Lock tIme</OutlineButton>
+    }
+
     return <OutlineButton onClick={onReservedClaim}>Claim</OutlineButton>
-  }, [account, isReservedClaimed, onReservedClaim, toggleWalletModal])
+  }, [account, isReservedAccount, isReservedClaimed, onReservedClaim, toggleWalletModal])
 
   return (
     <div>
@@ -368,6 +413,13 @@ export default function Offering() {
                   </StyledBetween>
                 </>
               )}
+              <Box display={'flex'} justifyContent={'center'} sx={{ margin: 20 }}>
+                <Radio.Group size="large" onChange={e => setTabInfo(e.target.value as TabOption)} value={tabInfo}>
+                  <Radio.Button value="about">About</Radio.Button>
+                  <Radio.Button value="active">Active</Radio.Button>
+                </Radio.Group>
+              </Box>
+              {tabInfo === 'about' && <Typography>{daoInfo?.introduction}</Typography>}
             </Box>
           </Grid>
           <Grid item lg={4} md={12}>
@@ -461,7 +513,9 @@ export default function Offering() {
                       }
                     />
                   </Box>
-                  <Typography variant="body1">Claimable balance: -- {isPriSaleAccount?.amount.token.symbol}</Typography>
+                  <Typography variant="body1">
+                    Claimable balance: {currentPublicMaxInput} {daoInfo?.token?.symbol}
+                  </Typography>
                   <Typography variant="body1" fontSize={10} mt={10}>
                     *You should do your own research and understand the risks before committing you funds.
                   </Typography>
@@ -496,6 +550,16 @@ export default function Offering() {
                     </Typography>
                   </StyledBetween>
                   <Box mt={10}>{getPriSaleActions}</Box>
+                </StyledCard>
+              )}
+              {!!daoInfo?.priSale.length && !isPriSaleAccount && (
+                <StyledCard display={'grid'} gap={6}>
+                  <Typography variant="h6" mb={10}>
+                    Whitelist sale
+                  </Typography>
+                  <Typography color={'#FF5F5B'} variant="body1">
+                    Your address is not whitelisted
+                  </Typography>
                 </StyledCard>
               )}
 

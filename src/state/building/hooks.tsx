@@ -22,17 +22,17 @@ export const privateReceivingTokens: PrivateReceivingTokenProps[] = [
     value: 'STEP',
     chainId: 1,
     logo: IconTokenSvg,
-    address: '0xb56C5eF360E53DAB4bD3ba258161F550c968216a',
-    decimals: 18
-  },
-  {
-    name: 'USDT',
-    value: 'USDT',
-    chainId: 1,
-    logo: IconTokenSvg,
-    address: '0xb56C5eF360E53DAB4bD3ba258161F550c968216a',
+    address: '0xFbe7a77Ed99f3622159A5ADf238f76290bAD1fDa',
     decimals: 18
   }
+  // {
+  //   name: 'USDT',
+  //   value: 'USDT',
+  //   chainId: 1,
+  //   logo: IconTokenSvg,
+  //   address: '0x8e65ae1De0af58d8759aD5C90Af8450A8cc8Ffa9',
+  //   decimals: 18
+  // }
 ]
 
 export function useBuildingDataCallback() {

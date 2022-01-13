@@ -612,6 +612,25 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "pubSoldAmtPerAddress",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "receiveToken",
     "outputs": [
@@ -750,6 +769,40 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "daoTokenAmt",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint8",
+        "name": "daoDecimals",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "receiveTokenDecimals",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "translateWithDecimal",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "twitter",
     "outputs": [
@@ -784,6 +837,51 @@
       }
     ],
     "name": "updateContractVotingDuration",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "minimumVote",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumCreateProposal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumValidVotes",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "communityVotingDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "contractVotingDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "content",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAOInterface.DAORule",
+        "name": "_rule",
+        "type": "tuple"
+      }
+    ],
+    "name": "updateDaoRule",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -910,6 +1008,29 @@
   {
     "inputs": [],
     "name": "withdrawReserved",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdrawToken",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

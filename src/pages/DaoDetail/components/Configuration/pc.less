@@ -30,6 +30,40 @@
                 line-height: 24px;
                 color: #22304a;
             }
+
+            .input-item {
+                &.progress {
+                    flex-basis: 75%;
+
+                    .progress-wrapper {
+                        display: flex;
+                        align-items: center;
+                        width: 100%;
+
+                        .ant-slider {
+                            flex-basis: 80%;
+                        }
+
+                        span {
+                            font-style: normal;
+                            font-weight: 500;
+                            font-size: 16px;
+                            line-height: 24px;
+                            color: #22304a;
+                            margin-left: 17px;
+                        }
+                    }
+                }
+
+                &.votes {
+                    // flex-basis: 25%;
+
+                    .input-common {
+                        height: 40px;
+                        width: 125px;
+                    }
+                }
+            }
         }
     }
 

@@ -4,38 +4,50 @@ import { Radio, Space, Button } from 'antd'
 import classNames from 'classnames'
 import { RadioChangeEvent } from 'antd/lib/radio'
 
-export default function Index() {
-  const [vote, setVote] = useState()
-  const options = [
-    {
-      label: 'Approve',
-      value: 1
-    },
-    {
-      label: 'Disapprove',
-      value: 0
-    }
-  ]
+export default function Index({
+  list,
+  onVote,
+  balanceAt
+}: {
+  onVote: (index: number) => void
+  balanceAt: string | undefined
+  list: {
+    name: string
+    per: number
+    votes: string | undefined
+  }[]
+}) {
+  const [voteIndex, setVoteIndex] = useState<number>()
   const handleChange = (e: RadioChangeEvent) => {
-    setVote(e.target.value)
+    setVoteIndex(e.target.value)
   }
   return (
     <div className={styles['vote-container']}>
       <p className={styles.title}>Vote</p>
-      <Radio.Group onChange={handleChange} value={vote} className="custom-radio">
+      <Radio.Group onChange={handleChange} value={voteIndex} className="custom-radio">
         <Space direction="vertical">
-          {options.map(option => (
-            <Radio key={option.value} value={option.value}>
-              {option.label}
+          {list.map((option, index) => (
+            <Radio key={index} value={index}>
+              {option.name}
             </Radio>
           ))}
         </Space>
       </Radio.Group>
       <div className={styles['your-vote']}>
         <p>Your Vote</p>
-        <p>1000</p>
+        <p>{balanceAt || '-'}</p>
       </div>
-      <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')}>Vote</Button>
+      <Button
+        className={classNames(styles['btn-vote'], 'btn-common btn-01')}
+        onClick={() => {
+          if (voteIndex === undefined) {
+            return
+          }
+          onVote(voteIndex)
+        }}
+      >
+        Vote
+      </Button>
     </div>
   )
 }

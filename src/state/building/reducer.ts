@@ -29,8 +29,15 @@ export const initialDaoDataState: CreateDaoData = {
     discordLink: ''
   },
   distribution: {
-    reservedTokens: [],
-    reservedOpen: false,
+    reservedTokens: [
+      {
+        address: '',
+        tokenNumber: undefined,
+        per: undefined,
+        lockdate: undefined
+      }
+    ],
+    reservedOpen: true,
     privateSale: [],
     privateSaleOpen: false,
     privateReceivingToken: 'STEP',
