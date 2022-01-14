@@ -43,7 +43,9 @@ export default function DepositAssets({
   return (
     <Modal closeIcon>
       <Box display="grid" gap="20px" width="100%">
-        <Typography variant="h6">Deposit assets</Typography>
+        <Typography variant="h4" fontWeight={500} fontSize={24}>
+          Deposit assets
+        </Typography>
         <Box
           display={'grid'}
           justifyContent={'center'}

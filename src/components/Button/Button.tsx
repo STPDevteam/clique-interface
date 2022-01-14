@@ -24,7 +24,7 @@ export default function Button(props: Props) {
       disabled={disabled}
       sx={{
         width: width || '100%',
-        height: height || 60,
+        height: height || 48,
         fontSize: fontSize || 16,
         fontWeight: 500,
         transition: '.3s',

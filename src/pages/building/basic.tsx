@@ -99,7 +99,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
                   maxLength={30}
                   value={basicData.tokenSupply}
                   onChange={e => {
-                    const reg = new RegExp('[0-9]+$')
+                    const reg = new RegExp('^[0-9]+$')
                     const _val = e.target.value
                     if (!_val || reg.test(_val)) updateBasicCall('tokenSupply', _val)
                   }}

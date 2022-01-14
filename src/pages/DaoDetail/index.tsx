@@ -83,7 +83,11 @@ export default function Index() {
             {currentLink === 'Assets' && daoInfo && <Assets daoInfo={daoInfo} />}
             {currentLink === 'Members' && <Members />}
             {currentLink === 'Configuration' && daoInfo && daoInfo.rule && daoInfo.totalSupply && (
-              <Configuration totalSupply={daoInfo.totalSupply.toSignificant()} rule={daoInfo.rule} />
+              <Configuration
+                totalSupply={daoInfo.totalSupply}
+                votingAddress={daoInfo.votingAddress}
+                rule={daoInfo.rule}
+              />
             )}
           </div>
         </div>

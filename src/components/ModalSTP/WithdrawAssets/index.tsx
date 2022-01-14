@@ -1,7 +1,7 @@
 import './pc.less'
 
 import 'react'
-import { Button, Input, Select } from 'antd'
+import { Input, Select } from 'antd'
 import IconDownArrow from '../assets/icon-down-arrow.svg'
 // import IconToken from '../../../assets/images/icon-token.svg'
 import { Box, Typography } from '@mui/material'
@@ -15,6 +15,16 @@ import { DaoInfoProps } from 'hooks/useDAOInfo'
 import { useActiveWeb3React } from 'hooks'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { Dots } from 'theme/components'
+import { styled } from '@mui/system'
+import OutlineButton from 'components/Button/OutlineButton'
+import Button from 'components/Button/Button'
+import { timeStampToFormat } from 'utils/dao'
+
+const FlexBetween = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between'
+})
 
 const { Option } = Select
 
@@ -35,6 +45,7 @@ export default function WithdrawAssets({
   ) => void
 }) {
   const [tokenAddress, setTokenAddress] = useState<string>()
+  const [showConfirm, setShowConfirm] = useState(false)
   const { account } = useActiveWeb3React()
   const [input, setInput] = useState('')
   const curToken = useMemo(() => daoTokens.find(item => item.address === tokenAddress), [daoTokens, tokenAddress])
@@ -52,10 +63,14 @@ export default function WithdrawAssets({
 
   const inputBal = useMemo(() => tryParseAmount(input, curToken), [curToken, input])
 
+  const startTime = Number((new Date().getTime() / 1000).toFixed())
+  const endTime = useMemo(() => Number(daoInfo?.rule?.contractVotingDuration || 0) + startTime, [
+    daoInfo?.rule?.contractVotingDuration,
+    startTime
+  ])
+
   const onWithdrawCall = useCallback(() => {
     if (!daoInfo.rule?.contractVotingDuration || !justification || !tokenAddress || !inputBal) return
-    const startTime = Number((new Date().getTime() / 1000).toFixed())
-    const endTime = Number(daoInfo.rule.contractVotingDuration) + startTime
     onWithdraw(
       justification,
       `Withdraw ${inputBal.toSignificant()} ${curToken?.symbol}`,
@@ -64,7 +79,16 @@ export default function WithdrawAssets({
       tokenAddress,
       inputBal.raw.toString()
     )
-  }, [curToken?.symbol, daoInfo.rule?.contractVotingDuration, inputBal, justification, onWithdraw, tokenAddress])
+  }, [
+    curToken?.symbol,
+    daoInfo.rule?.contractVotingDuration,
+    endTime,
+    inputBal,
+    justification,
+    onWithdraw,
+    startTime,
+    tokenAddress
+  ])
 
   const getActions = useMemo(() => {
     if (!input || !inputBal || !daoInfo.daoAddress) return <Button disabled>Create a proposal</Button>
@@ -92,7 +116,7 @@ export default function WithdrawAssets({
         )
       }
     }
-    return <Button onClick={onWithdrawCall}>Create a proposal</Button>
+    return <Button onClick={() => setShowConfirm(true)}>Create a proposal</Button>
   }, [
     approvalCallback,
     approvalState,
@@ -101,82 +125,123 @@ export default function WithdrawAssets({
     daoInfo.rule,
     input,
     inputBal,
-    justification,
-    onWithdrawCall
+    justification
   ])
 
   return (
     <Modal closeIcon>
-      <Box display="grid" gap="20px" width="100%">
-        <Typography variant="h6">Withdraw Assets</Typography>
-        <Box
-          display={'grid'}
-          justifyContent={'center'}
-          gridTemplateColumns={'1fr'}
-          gap="10px"
-          className="withdraw-assets"
-        >
-          <div className="input-item">
-            <span className="label">Asset</span>
-            <div className="assets-selector">
-              <img src={curToken?.logo || ''} />
-              <Select defaultValue="" onChange={e => setTokenAddress(e)} suffixIcon={<img src={IconDownArrow} />}>
-                <Option value="">Select assets</Option>
-                {daoTokens.map(item => (
-                  <Option key={item.address} value={item.address}>
-                    {item.symbol}
-                  </Option>
-                ))}
-              </Select>
+      {showConfirm ? (
+        <>
+          <Typography variant="h4" fontWeight={500} fontSize={24}>
+            Confirm Proposal
+          </Typography>
+          <Box display={'grid'} gap={5} mt={30}>
+            <Typography variant="body1">Your Proposal</Typography>
+            <Typography variant="h6">{justification}</Typography>
+            <FlexBetween mt={20}>
+              <Typography variant="body1">Start time</Typography>
+              <Typography variant="h6">{timeStampToFormat(startTime)}</Typography>
+            </FlexBetween>
+            <FlexBetween>
+              <Typography variant="body1">End time</Typography>
+              <Typography variant="h6">{timeStampToFormat(endTime)}</Typography>
+            </FlexBetween>
+            <FlexBetween>
+              <Typography variant="body1">You will stake</Typography>
+              <Typography variant="h6">
+                {daoInfo.rule?.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' })} STPT
+              </Typography>
+            </FlexBetween>
+            <Box sx={{ backgroundColor: '#FAFAFA', padding: '14px 20px', borderRadius: '8px', margin: '20px 0' }}>
+              <Typography variant="body1">
+                Are you sure you want to vote for the above choice? This action cannot be undone.
+              </Typography>
+            </Box>
+
+            <FlexBetween>
+              <OutlineButton width={120} onClick={() => setShowConfirm(false)}>
+                Cancel
+              </OutlineButton>
+              <Button width="240px" style={{ maxWidth: '65%' }} onClick={onWithdrawCall}>
+                Stake STPT and Create
+              </Button>
+            </FlexBetween>
+          </Box>
+        </>
+      ) : (
+        <Box display="grid" gap="20px" width="100%">
+          <Typography variant="h4" fontWeight={500} fontSize={24}>
+            Withdraw Assets
+          </Typography>
+          <Box
+            display={'grid'}
+            justifyContent={'center'}
+            gridTemplateColumns={'1fr'}
+            gap="10px"
+            className="withdraw-assets"
+          >
+            <div className="input-item">
+              <span className="label">Asset</span>
+              <div className="assets-selector">
+                <img src={curToken?.logo || ''} />
+                <Select defaultValue="" onChange={e => setTokenAddress(e)} suffixIcon={<img src={IconDownArrow} />}>
+                  <Option value="">Select assets</Option>
+                  {daoTokens.map(item => (
+                    <Option key={item.address} value={item.address}>
+                      {item.symbol}
+                    </Option>
+                  ))}
+                </Select>
+              </div>
             </div>
-          </div>
-          <div className="input-item">
-            <div className="kv">
-              <span>Amount</span>
-              <span>Balance: {curDaoBalance?.toSignificant(6, { groupSeparator: ',' }) || '-'}</span>
-            </div>
-            <Input
-              placeholder="0.00"
-              value={input}
-              maxLength={12}
-              onChange={e => {
-                const _val = e.target.value
-                if (isNaN(Number(_val))) return
-                const reg = new RegExp('^[0-9.]*$')
-                if (reg.test(_val)) {
-                  if (new BigNumber(_val).gt(curDaoBalance?.toSignificant() || 0)) {
-                    setInput(curDaoBalance?.toSignificant() || '0')
-                  } else {
-                    setInput(_val)
+            <div className="input-item">
+              <div className="kv">
+                <span>Amount</span>
+                <span>Balance: {curDaoBalance?.toSignificant(6, { groupSeparator: ',' }) || '-'}</span>
+              </div>
+              <Input
+                placeholder="0.00"
+                value={input}
+                maxLength={12}
+                onChange={e => {
+                  const _val = e.target.value
+                  if (isNaN(Number(_val))) return
+                  const reg = new RegExp('^[0-9.]*$')
+                  if (reg.test(_val)) {
+                    if (new BigNumber(_val).gt(curDaoBalance?.toSignificant() || 0)) {
+                      setInput(curDaoBalance?.toSignificant() || '0')
+                    } else {
+                      setInput(_val)
+                    }
                   }
-                }
-              }}
-            />
-          </div>
-          <div className="input-item">
-            <span className="label">Justification</span>
-            <Input
-              placeholder="Withdraw tokens"
-              maxLength={100}
-              value={justification}
-              onChange={e => setJustification(e.target.value)}
-            />
-          </div>
-          <div className="kv mt-16">
-            <span>Your balance</span>
-            <span>
-              {curAccountBalance?.toSignificant()} {daoInfo.token?.symbol}
-            </span>
-          </div>
-          <div className="kv">
-            <span>Minimum needed</span>
-            <span>
-              {daoInfo.rule?.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' })} {daoInfo.token?.symbol}
-            </span>
-          </div>
-          {getActions}
+                }}
+              />
+            </div>
+            <div className="input-item">
+              <span className="label">Justification</span>
+              <Input
+                placeholder="Withdraw tokens"
+                maxLength={100}
+                value={justification}
+                onChange={e => setJustification(e.target.value)}
+              />
+            </div>
+            <div className="kv mt-16">
+              <span>Your balance</span>
+              <span>
+                {curAccountBalance?.toSignificant()} {daoInfo.token?.symbol}
+              </span>
+            </div>
+            <div className="kv">
+              <span>Minimum needed</span>
+              <span>
+                {daoInfo.rule?.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' })} {daoInfo.token?.symbol}
+              </span>
+            </div>
+            {getActions}
+          </Box>
         </Box>
-      </Box>
+      )}
     </Modal>
   )
 }
