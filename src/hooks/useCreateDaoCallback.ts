@@ -6,7 +6,7 @@ import { tryParseAmount } from '../state/application/hooks'
 import { calcVotingDuration } from 'pages/building/function'
 import { useDaoFactoryContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks'
-// import { calculateGasMargin } from 'utils'
+import { calculateGasMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { PriceDecimals } from '../constants'
@@ -121,19 +121,19 @@ export function useCreateDaoCallback() {
     }
 
     console.log('args->', JSON.stringify(args), ...args)
-    // return daoFactoryContract.estimateGas.createDAO(...args, { from: account }).then(estimatedGasLimit => {
-    return daoFactoryContract
-      .createDAO(...args, {
-        // gasLimit: calculateGasMargin(estimatedGasLimit),
-        gasLimit: '3500000',
-        from: account
-      })
-      .then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Create Dao'
+    return daoFactoryContract.estimateGas.createDAO(...args, { from: account }).then(estimatedGasLimit => {
+      return daoFactoryContract
+        .createDAO(...args, {
+          gasLimit: calculateGasMargin(estimatedGasLimit),
+          // gasLimit: '3500000',
+          from: account
         })
-        return response.hash
-      })
-    // })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Create Dao'
+          })
+          return response.hash
+        })
+    })
   }, [account, addTransaction, args, daoFactoryContract])
 }

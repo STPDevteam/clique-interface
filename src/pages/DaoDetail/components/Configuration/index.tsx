@@ -5,12 +5,17 @@ import { Input, Button, Slider, Tooltip, Switch, InputNumber } from 'antd'
 import { Box, Typography } from '@mui/material'
 import { useCallback, useMemo, useState } from 'react'
 import AlertError from 'components/Alert/index'
-import { toFormatGroup } from 'utils/dao'
+import { amountAddDecimals, toFormatGroup } from 'utils/dao'
 import { calcVotingDuration, getAmountForPer, getPerForAmount } from 'pages/building/function'
-import { TokenAmount } from 'constants/token'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 import TextArea from 'antd/lib/input/TextArea'
+import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import { useCreateContractProposalCallback } from 'hooks/useCreateContractProposalCallback'
+import useModal from 'hooks/useModal'
+import { TokenAmount } from 'constants/token'
 
 // const { TextArea } = Input
 
@@ -27,7 +32,8 @@ function calcTime(timeStamp: number) {
 
 export default function Configuration({
   rule,
-  totalSupply
+  totalSupply,
+  votingAddress
 }: {
   rule: {
     minimumVote: TokenAmount
@@ -37,23 +43,31 @@ export default function Configuration({
     contractVotingDuration: string
     content: string
   }
-  totalSupply: string
+  totalSupply: TokenAmount
+  votingAddress: string | undefined
 }) {
+  const { hideModal, showModal } = useModal()
   const [minVoteNumber, setMinVoteNumber] = useState(rule.minimumVote.toSignificant())
-  const [minCreateProposalNumber, setMinCreateProposalNumber] = useState(rule.minimumCreateProposal.toSignificant())
+  const [minCreateProposalNumber, setMinCreateProposalNumber] = useState(rule?.minimumCreateProposal.toSignificant())
   const [minValidNumber, setMinValidNumber] = useState(rule.minimumValidVotes.toSignificant())
-  const [minVotePer, setMinVotePer] = useState(getPerForAmount(totalSupply, rule.minimumVote.toSignificant()))
-  const [minCreateProposalPer, setMinCreateProposalPer] = useState(
-    getPerForAmount(totalSupply, rule.minimumCreateProposal.toSignificant())
+  const [minVotePer, setMinVotePer] = useState(
+    getPerForAmount(totalSupply.toSignificant(), rule.minimumVote.toSignificant())
   )
-  const [minValidPer, setMinValidPer] = useState(getPerForAmount(totalSupply, rule.minimumValidVotes.toSignificant()))
+  const [minCreateProposalPer, setMinCreateProposalPer] = useState(
+    getPerForAmount(totalSupply.toSignificant(), rule.minimumCreateProposal.toSignificant())
+  )
+  const [minValidPer, setMinValidPer] = useState(
+    getPerForAmount(totalSupply.toSignificant(), rule?.minimumValidVotes.toSignificant())
+  )
 
   const [votersCustom, setVotersCustom] = useState(JSBI.GT(JSBI.BigInt(rule.communityVotingDuration), JSBI.BigInt(0)))
 
-  const [communityData, setCommunityData] = useState(calcTime(Number(rule.communityVotingDuration)))
-  const [contractData, setContractData] = useState(calcTime(Number(rule.contractVotingDuration)))
+  const [communityData, setCommunityData] = useState(calcTime(Number(rule?.communityVotingDuration || 0)))
+  const [contractData, setContractData] = useState(calcTime(Number(rule?.contractVotingDuration || 0)))
 
-  const [content, setContent] = useState(rule.content)
+  const [ruleContent, setRuleContent] = useState(rule.content)
+
+  const { updateConfigurationCallback } = useCreateContractProposalCallback(votingAddress)
 
   const verifyMsg = useMemo(() => {
     if (!minVoteNumber || !minCreateProposalNumber || !minValidNumber) return 'Votes required'
@@ -80,11 +94,37 @@ export default function Configuration({
       minCreateProposalNumber === rule.minimumCreateProposal.toSignificant() &&
       minValidNumber === rule.minimumValidVotes.toSignificant() &&
       communityDuration === rule.communityVotingDuration &&
-      contractDuration === rule.contractVotingDuration
+      contractDuration === rule.contractVotingDuration &&
+      ruleContent === rule.content
     ) {
       return
     }
-    alert('update')
+    const startTime = Number((new Date().getTime() / 1000).toFixed())
+    const endTime = Number(rule.contractVotingDuration) + startTime
+    showModal(<TransactionPendingModal />)
+    updateConfigurationCallback(
+      'Update Contract Configuration',
+      '',
+      startTime,
+      endTime,
+      amountAddDecimals(minVoteNumber, totalSupply.token.decimals),
+      amountAddDecimals(minCreateProposalNumber, totalSupply.token.decimals),
+      amountAddDecimals(minValidNumber, totalSupply.token.decimals),
+      votersCustom ? 0 : calcVotingDuration(communityData.days, communityData.hours, communityData.minutes),
+      calcVotingDuration(contractData.days, contractData.hours, contractData.minutes),
+      ruleContent
+    )
+      .then(() => {
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
+      })
+      .catch((err: any) => {
+        hideModal()
+        showModal(
+          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+        )
+        console.error(err)
+      })
   }, [
     communityData.days,
     communityData.hours,
@@ -92,14 +132,21 @@ export default function Configuration({
     contractData.days,
     contractData.hours,
     contractData.minutes,
+    hideModal,
     minCreateProposalNumber,
     minValidNumber,
     minVoteNumber,
     rule.communityVotingDuration,
+    rule.content,
     rule.contractVotingDuration,
     rule.minimumCreateProposal,
     rule.minimumValidVotes,
-    rule.minimumVote
+    rule.minimumVote,
+    ruleContent,
+    showModal,
+    totalSupply.token.decimals,
+    updateConfigurationCallback,
+    votersCustom
   ])
 
   return (
@@ -111,7 +158,7 @@ export default function Configuration({
             Total Supply
           </Typography>
           <Typography fontSize={14} fontWeight={600}>
-            {toFormatGroup(totalSupply)}
+            {toFormatGroup(totalSupply.toSignificant())}
           </Typography>
         </Box>
         <Box display={'flex'} justifyContent={'space-between'}>
@@ -124,7 +171,7 @@ export default function Configuration({
                 value={minVotePer}
                 onChange={e => {
                   setMinVotePer(e as number)
-                  setMinVoteNumber(getAmountForPer(totalSupply, e as number))
+                  setMinVoteNumber(getAmountForPer(totalSupply.toSignificant(), e as number))
                 }}
               />
               <span>{Number(minVotePer.toFixed(2))}%</span>
@@ -141,9 +188,11 @@ export default function Configuration({
                   const _val = e.target.value
                   if (reg.test(_val)) {
                     // check max value
-                    const input = new BigNumber(_val).gt(totalSupply) ? totalSupply : _val
+                    const input = new BigNumber(_val).gt(totalSupply.toSignificant())
+                      ? totalSupply.toSignificant()
+                      : _val
                     setMinVoteNumber(input)
-                    setMinVotePer(getPerForAmount(totalSupply, input))
+                    setMinVotePer(getPerForAmount(totalSupply.toSignificant(), input))
                   }
                 }}
               />
@@ -160,7 +209,7 @@ export default function Configuration({
                 value={minCreateProposalPer}
                 onChange={e => {
                   setMinCreateProposalPer(e as number)
-                  setMinCreateProposalNumber(getAmountForPer(totalSupply, e as number))
+                  setMinCreateProposalNumber(getAmountForPer(totalSupply.toSignificant(), e as number))
                 }}
               />
               <span>{Number(minCreateProposalPer.toFixed(2))}%</span>
@@ -177,9 +226,11 @@ export default function Configuration({
                   const _val = e.target.value
                   if (reg.test(_val)) {
                     // check max value
-                    const input = new BigNumber(_val).gt(totalSupply) ? totalSupply : _val
+                    const input = new BigNumber(_val).gt(totalSupply.toSignificant())
+                      ? totalSupply.toSignificant()
+                      : _val
                     setMinCreateProposalNumber(input)
-                    setMinCreateProposalPer(getPerForAmount(totalSupply, input))
+                    setMinCreateProposalPer(getPerForAmount(totalSupply.toSignificant(), input))
                   }
                 }}
               />
@@ -197,7 +248,7 @@ export default function Configuration({
                 value={minValidPer}
                 onChange={e => {
                   setMinValidPer(e as number)
-                  setMinValidNumber(getAmountForPer(totalSupply, e as number))
+                  setMinValidNumber(getAmountForPer(totalSupply.toSignificant(), e as number))
                 }}
               />
               <span>{Number(minValidPer.toFixed(2))}%</span>
@@ -214,9 +265,11 @@ export default function Configuration({
                   const _val = e.target.value
                   if (reg.test(_val)) {
                     // check max value
-                    const input = new BigNumber(_val).gt(totalSupply) ? totalSupply : _val
+                    const input = new BigNumber(_val).gt(totalSupply.toSignificant())
+                      ? totalSupply.toSignificant()
+                      : _val
                     setMinValidNumber(input)
-                    setMinValidPer(getPerForAmount(totalSupply, input))
+                    setMinValidPer(getPerForAmount(totalSupply.toSignificant(), input))
                   }
                 }}
               />
@@ -379,7 +432,7 @@ export default function Configuration({
           </div>
           <div className="input-item">
             <span className="label">Rules / Agreement</span>
-            <TextArea rows={5} value={content} onChange={e => setContent(e.target.value)} />
+            <TextArea rows={5} value={ruleContent} onChange={e => setRuleContent(e.target.value)} />
           </div>
         </Box>
       </Box>
