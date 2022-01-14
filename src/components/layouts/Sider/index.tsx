@@ -38,7 +38,7 @@ export default function Index() {
           className={`btn-dao ${item.daoAddress === activeAddress ? 'active' : ''}`}
           onClick={() => chooseDao(item.daoAddress)}
         >
-          <Image src={item.token?.logo || IconDao} width={80} height={80} />
+          <Image src={item.token?.logo || IconDao} width={48} height={48} style={{ borderRadius: '50%' }} />
         </Button>
       ))}
       <Button className="btn-add" onClick={() => history.push('/create')}>
