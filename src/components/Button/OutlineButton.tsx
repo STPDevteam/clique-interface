@@ -34,6 +34,7 @@ export default function OutlineButton(props: Props) {
         '&:hover': {
           color: primary ? theme.palette.primary.main : theme.palette.text.secondary,
           borderColor: primary ? theme.palette.primary.main : theme.palette.text.secondary,
+          transition: 'all 0.5s',
           boxShadow: '5px 7px 13px rgb(174 174 174 / 60%), -3px -3px 8px rgb(255 255 255 / 80%)'
         },
         '&:disabled': {

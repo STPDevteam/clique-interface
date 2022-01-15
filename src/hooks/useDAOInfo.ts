@@ -46,7 +46,7 @@ export function useCreatedDao(): string[] | undefined {
 
   const res = useSingleCallResult(account ? daoFactoryContract : null, 'getCreatedDaoByAddress', [account ?? undefined])
 
-  return res.result ? (res.result[0] as string[]) : undefined
+  return res.result ? res.result[0].map((item: string) => item).reverse() : undefined
 }
 
 export function useDaoBaseInfoByAddress(

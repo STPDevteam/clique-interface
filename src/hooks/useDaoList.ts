@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useDaoAddressListByIds, useLastDaoId, useMultiDaoBaseInfo } from './useDAOInfo'
 
-export function useDaoAddressLists(pageSize = 16) {
+export function useDaoAddressLists(pageSize = 8) {
   const lastId = useLastDaoId()
   const begin = 1
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -23,7 +23,10 @@ export function useDaoAddressLists(pageSize = 16) {
 
   return {
     page: {
+      total: lastId,
       totalPages,
+      currentPage,
+      pageSize,
       setCurrentPage
     },
     daoAddresss
