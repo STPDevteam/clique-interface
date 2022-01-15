@@ -12,24 +12,13 @@ export const BAST_TOKEN: { [chainId in ChainId]: Token } = {
   [ChainId.ROPSTEN]: new Token(ChainId.MAINNET, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter'),
   [ChainId.RINKEBY]: new Token(ChainId.MAINNET, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter'),
   [ChainId.GÖRLI]: new Token(ChainId.MAINNET, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter'),
-  [ChainId.KOVAN]: new Token(ChainId.MAINNET, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter')
+  [ChainId.KOVAN]: new Token(ChainId.MAINNET, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter'),
+  [ChainId.STP]: new Token(ChainId.STP, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter')
 }
 
 export const ROUTER_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
 
-export const ANTIMATTER_ADDRESS: { [chainId in ChainId]: string } = {
-  [ChainId.MAINNET]: '0x60d0769c4940cA58648C0AA34ecdf390a10F272e',
-  [ChainId.ROPSTEN]: '0x60d0769c4940cA58648C0AA34ecdf390a10F272e',
-  [ChainId.RINKEBY]: '0xe774A104715ba1B99dEAB30ab33e1C99B0695270',
-  [ChainId.KOVAN]: '',
-  [ChainId.GÖRLI]: ''
-}
-
-export const ANTIMATTER_GOVERNANCE_ADDRESS = '0x78fC5460737EB07Ce9e7d954B294ecA7E6203D19'
-
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-
-export const GOVERNANCE_ADDRESS = '0x78fC5460737EB07Ce9e7d954B294ecA7E6203D19'
 
 export interface WalletInfo {
   connector?: AbstractConnector
@@ -128,7 +117,8 @@ export const DAO_FACTORY_ADDRESS = {
   [ChainId.ROPSTEN]: '0xb00c9658522874582c8f9d0d371cf24284174fc7',
   [ChainId.RINKEBY]: '0x7c05613017E3763A916af35e43ed74302E6FE98A',
   [ChainId.KOVAN]: '',
-  [ChainId.GÖRLI]: ''
+  [ChainId.GÖRLI]: '',
+  [ChainId.STP]: '0x62E8648ad36DD74b11740332b1F64878e72DDc94'
 }
 
 export const DefaultChainId = ChainId.RINKEBY
