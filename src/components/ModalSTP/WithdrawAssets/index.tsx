@@ -18,7 +18,7 @@ import { Dots } from 'theme/components'
 import { styled } from '@mui/system'
 import OutlineButton from 'components/Button/OutlineButton'
 import Button from 'components/Button/Button'
-import { timeStampToFormat } from 'utils/dao'
+import { getCurrentTimeStamp, timeStampToFormat } from 'utils/dao'
 
 const FlexBetween = styled(Box)({
   display: 'flex',
@@ -63,7 +63,7 @@ export default function WithdrawAssets({
 
   const inputBal = useMemo(() => tryParseAmount(input, curToken), [curToken, input])
 
-  const startTime = Number((new Date().getTime() / 1000).toFixed())
+  const startTime = getCurrentTimeStamp()
   const endTime = useMemo(() => Number(daoInfo?.rule?.contractVotingDuration || 0) + startTime, [
     daoInfo?.rule?.contractVotingDuration,
     startTime
@@ -149,7 +149,7 @@ export default function WithdrawAssets({
             <FlexBetween>
               <Typography variant="body1">You will stake</Typography>
               <Typography variant="h6">
-                {daoInfo.rule?.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' })} STPT
+                {daoInfo.rule?.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' })} {daoInfo.token?.symbol}
               </Typography>
             </FlexBetween>
             <Box sx={{ backgroundColor: '#FAFAFA', padding: '14px 20px', borderRadius: '8px', margin: '20px 0' }}>
@@ -163,7 +163,7 @@ export default function WithdrawAssets({
                 Cancel
               </OutlineButton>
               <Button width="240px" style={{ maxWidth: '65%' }} onClick={onWithdrawCall}>
-                Stake STPT and Create
+                Stake {daoInfo.token?.symbol} and Create
               </Button>
             </FlexBetween>
           </Box>

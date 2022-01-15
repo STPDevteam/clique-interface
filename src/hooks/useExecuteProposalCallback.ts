@@ -5,7 +5,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import { useVotingContract } from './useContract'
 
-export function useCancelProposalCallback(votingAddress: string | undefined) {
+export function useExecuteProposalCallback(votingAddress: string | undefined) {
   const addTransaction = useTransactionAdder()
   const votingContract = useVotingContract(votingAddress)
   const { account } = useActiveWeb3React()
@@ -15,16 +15,16 @@ export function useCancelProposalCallback(votingAddress: string | undefined) {
       if (!account) throw new Error('none account')
       if (!votingContract) throw new Error('none votingContract')
 
-      return votingContract.estimateGas.cancelProposal(id, { from: account }).then(estimatedGasLimit => {
+      return votingContract.estimateGas.executeProposal(id, { from: account }).then(estimatedGasLimit => {
         return votingContract
-          .cancelProposal(id, {
+          .executeProposal(id, {
             gasLimit: calculateGasMargin(estimatedGasLimit),
             // gasLimit: '3500000',
             from: account
           })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
-              summary: 'Cancel proposal'
+              summary: 'Execute proposal'
             })
             return response.hash
           })

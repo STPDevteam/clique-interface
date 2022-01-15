@@ -72,7 +72,7 @@
         "type": "uint256"
       },
       {
-        "internalType": "enum Voting.ProposalType",
+        "internalType": "enum IVotingInterface.ProposalType",
         "name": "proType",
         "type": "uint8"
       },
@@ -107,7 +107,7 @@
         "type": "uint256"
       },
       {
-        "internalType": "enum Voting.ProposalStatus",
+        "internalType": "enum IVotingInterface.ProposalStatus",
         "name": "status",
         "type": "uint8"
       },
@@ -290,6 +290,19 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "executeProposalData",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getAllProposal",
     "outputs": [
@@ -301,7 +314,7 @@
             "type": "uint256"
           },
           {
-            "internalType": "enum Voting.ProposalType",
+            "internalType": "enum IVotingInterface.ProposalType",
             "name": "proType",
             "type": "uint8"
           },
@@ -336,7 +349,7 @@
             "type": "uint256"
           },
           {
-            "internalType": "enum Voting.ProposalStatus",
+            "internalType": "enum IVotingInterface.ProposalStatus",
             "name": "status",
             "type": "uint8"
           },
@@ -346,7 +359,7 @@
             "type": "bytes"
           }
         ],
-        "internalType": "struct Voting.Proposal[]",
+        "internalType": "struct IVotingInterface.Proposal[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -396,7 +409,7 @@
     "name": "getProposalStatus",
     "outputs": [
       {
-        "internalType": "enum Voting.ProposalStatus",
+        "internalType": "enum IVotingInterface.ProposalStatus",
         "name": "",
         "type": "uint8"
       }
@@ -462,7 +475,7 @@
         "type": "uint256"
       },
       {
-        "internalType": "enum Voting.ProposalType",
+        "internalType": "enum IVotingInterface.ProposalType",
         "name": "proType",
         "type": "uint8"
       },
@@ -497,7 +510,7 @@
         "type": "uint256"
       },
       {
-        "internalType": "enum Voting.ProposalStatus",
+        "internalType": "enum IVotingInterface.ProposalStatus",
         "name": "status",
         "type": "uint8"
       },
@@ -539,6 +552,40 @@
     "name": "vote",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "voteResults",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "optionIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

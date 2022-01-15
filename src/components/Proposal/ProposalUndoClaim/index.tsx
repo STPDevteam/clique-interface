@@ -1,11 +1,69 @@
 import styles from './index.module.less'
-import { Button } from 'antd'
-import classNames from 'classnames'
-import { ProposalInfoProp } from 'hooks/useVoting'
+import { ProposalInfoProp, useVotingClaimed } from 'hooks/useVoting'
 import { timeStampToFormat } from 'utils/dao'
 import { DaoInfoProps } from 'hooks/useDAOInfo'
+import { ProposalStatusProp } from 'hooks/useCreateCommunityProposalCallback'
+import { useCallback, useMemo } from 'react'
+import OutlineButton from 'components/Button/OutlineButton'
+import { useCancelProposalCallback } from 'hooks/useCancelProposalCallback'
+import { useClaimProposalTokenCallback } from 'hooks/useClaimProposalTokenCallback'
+import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import useModal from 'hooks/useModal'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 
 export default function Index({ detail, daoInfo }: { detail: ProposalInfoProp; daoInfo: DaoInfoProps }) {
+  const isClaimed = useVotingClaimed(daoInfo.votingAddress, detail.id)
+  const { showModal, hideModal } = useModal()
+  const cancelProposalCallback = useCancelProposalCallback(daoInfo.votingAddress)
+  const claimProposalTokenCallback = useClaimProposalTokenCallback(daoInfo.votingAddress)
+
+  const onCancelProposalCallback = useCallback(() => {
+    showModal(<TransactionPendingModal />)
+    cancelProposalCallback(detail.id)
+      .then(() => {
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
+      })
+      .catch(err => {
+        hideModal()
+        showModal(
+          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+        )
+        console.error(err)
+      })
+  }, [detail.id, hideModal, showModal, cancelProposalCallback])
+
+  const onClaimProposalTokenCallback = useCallback(() => {
+    showModal(<TransactionPendingModal />)
+    claimProposalTokenCallback(detail.id)
+      .then(() => {
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
+      })
+      .catch(err => {
+        hideModal()
+        showModal(
+          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+        )
+        console.error(err)
+      })
+  }, [detail.id, hideModal, showModal, claimProposalTokenCallback])
+
+  const getBtn = useMemo(() => {
+    if (detail.status === ProposalStatusProp.Review || detail.status === ProposalStatusProp.Active) {
+      return <OutlineButton onClick={onCancelProposalCallback}>Undo proposals and claim my assets</OutlineButton>
+    }
+    if (
+      detail.status === ProposalStatusProp.Failed ||
+      detail.status === ProposalStatusProp.Success ||
+      detail.status === ProposalStatusProp.Executed
+    ) {
+      if (isClaimed === false) return <OutlineButton onClick={onClaimProposalTokenCallback}>Claim</OutlineButton>
+    }
+    return undefined
+  }, [detail.status, isClaimed, onCancelProposalCallback, onClaimProposalTokenCallback])
+
   return (
     <div className={styles['undo-claim-container']}>
       <p className={styles['title']}>Details</p>
@@ -31,9 +89,7 @@ export default function Index({ detail, daoInfo }: { detail: ProposalInfoProp; d
           {daoInfo.rule?.minimumCreateProposal.toSignificant()} {daoInfo.token?.symbol}
         </span>
       </div>
-      <Button className={classNames('btn-common btn-02', styles['btn-undo'])}>
-        Undo proposals and claim my assets
-      </Button>
+      {getBtn}
     </div>
   )
 }

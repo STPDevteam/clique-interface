@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useVotingContract } from './useContract'
-// import { calculateGasMargin } from 'utils'
+import { calculateGasMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
@@ -21,7 +21,9 @@ export enum ProposalStatusProp {
   Failed,
   Success,
   Cancel,
-  Executed // 已执行
+  Executed,
+  WaitFinish,
+  Executable
 }
 export const ProposalStatusText: { [key in ProposalStatusProp]: string } = {
   [ProposalStatusProp.Review]: 'Review',
@@ -29,7 +31,9 @@ export const ProposalStatusText: { [key in ProposalStatusProp]: string } = {
   [ProposalStatusProp.Failed]: 'Failed',
   [ProposalStatusProp.Success]: 'Success',
   [ProposalStatusProp.Cancel]: 'Cancel',
-  [ProposalStatusProp.Executed]: 'Executed'
+  [ProposalStatusProp.Executed]: 'Executed',
+  [ProposalStatusProp.Executable]: 'Executable',
+  [ProposalStatusProp.WaitFinish]: 'WaitFinish'
 }
 
 export function useCreateCommunityProposalCallback(votingAddress: string | undefined) {
@@ -43,20 +47,20 @@ export function useCreateCommunityProposalCallback(votingAddress: string | undef
 
       const args = [title, content, startTime, endTime, options]
 
-      // return votingContract.estimateGas.createCommunityProposal(...args, { from: account }).then(estimatedGasLimit => {
-      return votingContract
-        .createCommunityProposal(...args, {
-          // gasLimit: calculateGasMargin(estimatedGasLimit),
-          gasLimit: '3500000',
-          from: account
-        })
-        .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            summary: 'Create community proposal'
+      return votingContract.estimateGas.createCommunityProposal(...args, { from: account }).then(estimatedGasLimit => {
+        return votingContract
+          .createCommunityProposal(...args, {
+            gasLimit: calculateGasMargin(estimatedGasLimit),
+            // gasLimit: '3500000',
+            from: account
           })
-          return response.hash
-        })
-      // })
+          .then((response: TransactionResponse) => {
+            addTransaction(response, {
+              summary: 'Create community proposal'
+            })
+            return response.hash
+          })
+      })
     },
     [account, addTransaction, votingContract]
   )

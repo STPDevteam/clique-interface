@@ -5,7 +5,7 @@ import { Input, Button, Slider, Tooltip, Switch, InputNumber } from 'antd'
 import { Box, Typography } from '@mui/material'
 import { useCallback, useMemo, useState } from 'react'
 import AlertError from 'components/Alert/index'
-import { amountAddDecimals, toFormatGroup } from 'utils/dao'
+import { amountAddDecimals, getCurrentTimeStamp, toFormatGroup } from 'utils/dao'
 import { calcVotingDuration, getAmountForPer, getPerForAmount } from 'pages/building/function'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
@@ -16,6 +16,7 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { useCreateContractProposalCallback } from 'hooks/useCreateContractProposalCallback'
 import useModal from 'hooks/useModal'
 import { TokenAmount } from 'constants/token'
+import Confirm from './Confirm'
 
 // const { TextArea } = Input
 
@@ -60,7 +61,7 @@ export default function Configuration({
     getPerForAmount(totalSupply.toSignificant(), rule?.minimumValidVotes.toSignificant())
   )
 
-  const [votersCustom, setVotersCustom] = useState(JSBI.GT(JSBI.BigInt(rule.communityVotingDuration), JSBI.BigInt(0)))
+  const [votersCustom, setVotersCustom] = useState(JSBI.GT(!JSBI.BigInt(rule.communityVotingDuration), JSBI.BigInt(0)))
 
   const [communityData, setCommunityData] = useState(calcTime(Number(rule?.communityVotingDuration || 0)))
   const [contractData, setContractData] = useState(calcTime(Number(rule?.contractVotingDuration || 0)))
@@ -82,36 +83,96 @@ export default function Configuration({
     return undefined
   }, [communityData, contractData, minCreateProposalNumber, minValidNumber, minVoteNumber, votersCustom])
 
-  const onUpdate = useCallback(() => {
-    const communityDuration = calcVotingDuration(
-      communityData.days,
-      communityData.hours,
-      communityData.minutes
-    ).toString()
-    const contractDuration = calcVotingDuration(contractData.days, contractData.hours, contractData.minutes).toString()
-    if (
-      minVoteNumber === rule.minimumVote.toSignificant() &&
-      minCreateProposalNumber === rule.minimumCreateProposal.toSignificant() &&
-      minValidNumber === rule.minimumValidVotes.toSignificant() &&
-      communityDuration === rule.communityVotingDuration &&
-      contractDuration === rule.contractVotingDuration &&
-      ruleContent === rule.content
-    ) {
-      return
+  const startTime = getCurrentTimeStamp()
+  const endTime = useMemo(() => Number(rule?.contractVotingDuration || 0) + startTime, [
+    rule?.contractVotingDuration,
+    startTime
+  ])
+
+  const communityDuration = useMemo(
+    () =>
+      votersCustom
+        ? '0'
+        : calcVotingDuration(communityData.days, communityData.hours, communityData.minutes).toString(),
+    [communityData.days, communityData.hours, communityData.minutes, votersCustom]
+  )
+  const contractDuration = useMemo(
+    () => calcVotingDuration(contractData.days, contractData.hours, contractData.minutes).toString(),
+    [contractData]
+  )
+
+  const updateLog = useMemo(() => {
+    const logArr: { [key in string]: string[] } = {}
+    if (minVoteNumber !== rule.minimumVote.toSignificant()) {
+      logArr['Minimum to vote'] = [rule.minimumVote.toSignificant(6, { groupSeparator: ',' }), minVoteNumber]
     }
-    const startTime = Number((new Date().getTime() / 1000).toFixed())
-    const endTime = Number(rule.contractVotingDuration) + startTime
+    if (minCreateProposalNumber !== rule.minimumCreateProposal.toSignificant()) {
+      logArr['Minimum create proposal'] = [
+        rule.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' }),
+        minCreateProposalNumber
+      ]
+    }
+    if (minValidNumber !== rule.minimumValidVotes.toSignificant()) {
+      logArr['Minimum valid votes'] = [rule.minimumValidVotes.toSignificant(6, { groupSeparator: ',' }), minValidNumber]
+    }
+    if (communityDuration !== rule.communityVotingDuration) {
+      const _new = calcTime(Number(communityDuration))
+      const _old = calcTime(Number(rule.communityVotingDuration))
+      logArr['Community Voting Duration'] = [
+        `${_old.days} Days ${_old.hours} Hours ${_old.hours} Minutes ${
+          Number(rule.communityVotingDuration) === 0 ? '(voters custom)' : ''
+        }`,
+        `${_new.days} Days ${_new.hours} Hours ${_new.hours} Minutes ${
+          Number(communityDuration) === 0 ? '(voters custom)' : ''
+        }`
+      ]
+    }
+    if (contractDuration !== rule.contractVotingDuration) {
+      const _new = calcTime(Number(contractDuration))
+      const _old = calcTime(Number(rule.contractVotingDuration))
+      logArr['Contract Voting Duration'] = [
+        `${_old.days} Days ${_old.hours} Hours ${_old.hours} Minutes`,
+        `${_new.days} Days ${_new.hours} Hours ${_new.hours} Minutes`
+      ]
+    }
+    if (ruleContent !== rule.content) {
+      logArr['Rules / Agreement'] = [rule.content, ruleContent]
+    }
+    const ret: string[] = []
+    for (const key in logArr) {
+      if (Object.prototype.hasOwnProperty.call(logArr, key)) {
+        const item = logArr[key]
+        ret.push(`${key}: ${item[0]} --> ${item[1]}`)
+      }
+    }
+    return ret.join(' <br /> ')
+  }, [
+    communityDuration,
+    contractDuration,
+    minCreateProposalNumber,
+    minValidNumber,
+    minVoteNumber,
+    rule.communityVotingDuration,
+    rule.content,
+    rule.contractVotingDuration,
+    rule.minimumCreateProposal,
+    rule.minimumValidVotes,
+    rule.minimumVote,
+    ruleContent
+  ])
+
+  const onCommit = useCallback(() => {
     showModal(<TransactionPendingModal />)
     updateConfigurationCallback(
       'Update Contract Configuration',
-      '',
+      updateLog,
       startTime,
       endTime,
       amountAddDecimals(minVoteNumber, totalSupply.token.decimals),
       amountAddDecimals(minCreateProposalNumber, totalSupply.token.decimals),
       amountAddDecimals(minValidNumber, totalSupply.token.decimals),
-      votersCustom ? 0 : calcVotingDuration(communityData.days, communityData.hours, communityData.minutes),
-      calcVotingDuration(contractData.days, contractData.hours, contractData.minutes),
+      Number(contractDuration),
+      Number(contractDuration),
       ruleContent
     )
       .then(() => {
@@ -126,28 +187,32 @@ export default function Configuration({
         console.error(err)
       })
   }, [
-    communityData.days,
-    communityData.hours,
-    communityData.minutes,
-    contractData.days,
-    contractData.hours,
-    contractData.minutes,
+    contractDuration,
+    endTime,
     hideModal,
     minCreateProposalNumber,
     minValidNumber,
     minVoteNumber,
-    rule.communityVotingDuration,
-    rule.content,
-    rule.contractVotingDuration,
-    rule.minimumCreateProposal,
-    rule.minimumValidVotes,
-    rule.minimumVote,
     ruleContent,
     showModal,
+    startTime,
     totalSupply.token.decimals,
     updateConfigurationCallback,
-    votersCustom
+    updateLog
   ])
+
+  const onUpdateConfirm = useCallback(() => {
+    showModal(
+      <Confirm
+        minimumCreateProposal={rule.minimumCreateProposal}
+        onCommit={onCommit}
+        startTime={startTime}
+        endTime={endTime}
+        updateLog={updateLog}
+        votingAddress={votingAddress}
+      />
+    )
+  }, [endTime, onCommit, rule.minimumCreateProposal, showModal, startTime, updateLog, votingAddress])
 
   return (
     <section className="configuration">
@@ -341,7 +406,7 @@ export default function Configuration({
                         setCommunityData(
                           Object.assign({
                             ...communityData,
-                            hours: _val
+                            minutes: _val
                           })
                         )
                       }
@@ -442,7 +507,7 @@ export default function Configuration({
           <AlertError>{verifyMsg}</AlertError>
         </Box>
       )}
-      <Button className="btn-common btn-02 btn-update pc-mt-25" onClick={onUpdate}>
+      <Button className="btn-common btn-02 btn-update pc-mt-25" disabled={!updateLog.length} onClick={onUpdateConfirm}>
         Update
       </Button>
     </section>
