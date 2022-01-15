@@ -7,7 +7,6 @@ import { WithdrawAssets, DepositAssets } from '../../../../components/ModalSTP'
 import { Box } from '@mui/material'
 import useModal from 'hooks/useModal'
 import { DaoInfoProps } from 'hooks/useDAOInfo'
-import { privateReceivingTokens } from 'state/building/hooks'
 import { useCallback, useMemo } from 'react'
 import { Token } from 'constants/token'
 import Image from 'components/Image'
@@ -18,18 +17,21 @@ import TransactionSubmittedModal from 'components/Modal/TransactionModals/Transa
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { useTokenTransferCallback } from 'hooks/useTokenTransferCallback'
 import { useCreateContractProposalCallback } from 'hooks/useCreateContractProposalCallback'
+import { useCurPrivateReceivingTokens } from 'state/building/hooks'
 
 export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
   const { showModal, hideModal } = useModal()
   const { account } = useActiveWeb3React()
 
+  const curPrivateReceivingTokens = useCurPrivateReceivingTokens()
+
   const daoTokens = useMemo(() => {
-    const ret = privateReceivingTokens.map(
+    const ret = curPrivateReceivingTokens.map(
       item => new Token(item.chainId, item.address, item.decimals, item.name, item.name, item.logo)
     )
     daoInfo.token && ret.unshift(daoInfo.token)
     return ret
-  }, [daoInfo.token])
+  }, [curPrivateReceivingTokens, daoInfo.token])
 
   const onTokenTransferCallback = useTokenTransferCallback(daoInfo.token?.address)
   const onDepositCallback = useCallback(

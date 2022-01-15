@@ -7,8 +7,8 @@ import { ReactComponent as EditIcon } from 'assets/svg/edit_icon.svg'
 import { Box, styled, Typography } from '@mui/material'
 import { StyledExtraBg } from 'components/styled'
 import {
-  privateReceivingTokens,
   useBuildingDataCallback,
+  useCurrentReceivingToken,
   useCurrentUsedTokenAmount,
   useTrueCommitCreateDaoData
 } from 'state/building/hooks'
@@ -25,6 +25,7 @@ import { useCreateDaoCallback } from 'hooks/useCreateDaoCallback'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
+import Image from 'components/Image'
 
 const Wrapper = styled('section')({
   '& p': {
@@ -83,12 +84,7 @@ export default function ReviewInformation({
     distributionData.privateSale
   ])
 
-  const currentReceivingToken = useMemo(() => {
-    for (const item of privateReceivingTokens) {
-      if (distributionData.privateReceivingToken === item.value) return item
-    }
-    return privateReceivingTokens[0]
-  }, [distributionData.privateReceivingToken])
+  const currentReceivingToken = useCurrentReceivingToken()
 
   const onCreate = useCallback(() => {
     showModal(<TransacitonPendingModal />)
@@ -223,7 +219,7 @@ export default function ReviewInformation({
                       }
                     }}
                   >
-                    {currentReceivingToken.logo}
+                    <Image src={currentReceivingToken.logo} />
                     {currentReceivingToken.name}
                   </Box>
                 </Box>

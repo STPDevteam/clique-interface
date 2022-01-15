@@ -5,8 +5,8 @@ import IconToken from '../../assets/images/icon-token.svg'
 import { ReactComponent as IconAdd } from '../../assets/images/icon-upload.svg'
 import { ReactComponent as IconDelete } from '../../assets/svg/icon-delete.svg'
 import {
-  privateReceivingTokens,
   useBuildingDataCallback,
+  useCurPrivateReceivingTokens,
   useCurrentUsedTokenAmount,
   useRemainderTokenAmount
 } from 'state/building/hooks'
@@ -72,6 +72,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
   const { basic, distribution } = buildingDaoData
   const currentUsedTokenAmount = useCurrentUsedTokenAmount()
   const remainderTokenAmount = useRemainderTokenAmount()
+  const curPrivateReceivingTokens = useCurPrivateReceivingTokens()
 
   const updateDistributionCall = useCallback(
     (key: CreateDaoDataDistributionKey, value: any) => {
@@ -421,7 +422,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       updateDistributionCall('privateReceivingToken', val)
                     }}
                   >
-                    {privateReceivingTokens.map(item => (
+                    {curPrivateReceivingTokens.map(item => (
                       <Option value={item.value} key={item.value}>
                         <Box
                           display={'flex'}

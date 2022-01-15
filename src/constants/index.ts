@@ -3,6 +3,8 @@ import { Token } from './token'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 import JSBI from 'jsbi'
 import { ChainId } from './chain'
+import { PrivateReceivingTokenProps } from 'state/building/actions'
+import IconTokenSvg from '../assets/images/icon-token.svg'
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
@@ -116,3 +118,27 @@ export const DAO_FACTORY_ADDRESS = {
 export const DefaultChainId = ChainId.RINKEBY
 
 export const PriceDecimals = 12
+
+// price decimals 12
+export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTokenProps[] } = {
+  [ChainId.RINKEBY]: [
+    {
+      name: 'STEP',
+      value: 'STEP',
+      chainId: 4,
+      logo: IconTokenSvg,
+      address: '0x030003546dfF30d0B7F0e6cD284D32A9D273131C',
+      decimals: 18
+    }
+  ],
+  [ChainId.STP]: [
+    {
+      name: 'STEP',
+      value: 'STEP',
+      chainId: 72,
+      logo: IconTokenSvg,
+      address: '0xB6076c0347c6F0a1c5Ae0096365eF6E022063505',
+      decimals: 18
+    }
+  ]
+}

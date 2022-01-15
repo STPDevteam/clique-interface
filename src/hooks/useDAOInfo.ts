@@ -10,12 +10,12 @@ import {
 import { useDaoContract, useDaoFactoryContract, useSTPTokenContract } from './useContract'
 import { DAO_INTERFACE } from '../constants/abis/erc20'
 import { useProposalNumber } from './useVoting'
-import { privateReceivingTokens } from 'state/building/hooks'
 import JSBI from 'jsbi'
 import { DefaultChainId, PriceDecimals } from '../constants'
 import { BigintIsh } from 'constants/token/constants'
 import { tryParseAmount } from 'state/application/hooks'
 import { getCurrentTimeStamp } from 'utils/dao'
+import { useCurPrivateReceivingTokens } from 'state/building/hooks'
 
 export function useLastDaoId() {
   const daoFactoryContract = useDaoFactoryContract()
@@ -211,18 +211,19 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
     if (!totalSupplyRes.result?.[0] || !token) return undefined
     return new TokenAmount(token, totalSupplyRes.result[0].toString())
   }, [token, totalSupplyRes.result])
+  const curPrivateReceivingTokens = useCurPrivateReceivingTokens()
 
   const receiveToken = useMemo(() => {
-    if (!receiveTokenRes.result) return undefined
-    let _cur = privateReceivingTokens[0]
-    for (const item of privateReceivingTokens) {
+    if (!receiveTokenRes.result || !curPrivateReceivingTokens.length) return undefined
+    let _cur = curPrivateReceivingTokens[0]
+    for (const item of curPrivateReceivingTokens) {
       if (receiveTokenRes.result?.[0] === item.address) {
         _cur = item
         break
       }
     }
     return new Token(_cur.chainId, _cur.address, _cur.decimals, _cur.name, _cur.name, _cur.logo)
-  }, [receiveTokenRes.result])
+  }, [curPrivateReceivingTokens, receiveTokenRes.result])
 
   const reserved = useMemo(
     () =>

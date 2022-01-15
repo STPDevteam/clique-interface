@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '../index'
-import IconTokenSvg from '../../assets/images/icon-token.svg'
 import {
   updateBuildingBasicDao,
   updateBuildingDistributionDao,
@@ -14,26 +13,13 @@ import {
 } from './actions'
 import BigNumber from 'bignumber.js'
 import { calcTotalAmountValue } from 'pages/building/function'
+import { useActiveWeb3React } from 'hooks'
+import { privateReceivingTokens } from '../../constants'
 
-// price decimals 12
-export const privateReceivingTokens: PrivateReceivingTokenProps[] = [
-  {
-    name: 'STEP',
-    value: 'STEP',
-    chainId: 1,
-    logo: IconTokenSvg,
-    address: '0x030003546dfF30d0B7F0e6cD284D32A9D273131C',
-    decimals: 18
-  }
-  // {
-  //   name: 'USDT',
-  //   value: 'USDT',
-  //   chainId: 1,
-  //   logo: IconTokenSvg,
-  //   address: '0xc751F532EE2a6c0D910208aFE2fFfC127652284C',
-  //   decimals: 18
-  // }
-]
+export function useCurPrivateReceivingTokens(): PrivateReceivingTokenProps[] {
+  const { chainId } = useActiveWeb3React()
+  return chainId && privateReceivingTokens[chainId] ? privateReceivingTokens[chainId] : []
+}
 
 export function useBuildingDataCallback() {
   const buildingDaoData = useSelector((state: AppState) => state.buildingDao)
@@ -182,8 +168,10 @@ export function useTrueCommitCreateDaoData() {
 
 export function useCurrentReceivingToken() {
   const { distributionData } = useTrueCommitCreateDaoData()
-  for (const item of privateReceivingTokens) {
+  const curPrivateReceivingTokens = useCurPrivateReceivingTokens()
+
+  for (const item of curPrivateReceivingTokens) {
     if (distributionData.privateReceivingToken === item.value) return item
   }
-  return privateReceivingTokens[0]
+  return curPrivateReceivingTokens[0]
 }
