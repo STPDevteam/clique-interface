@@ -6,6 +6,8 @@ import icon01 from '../../assets/images/icon-membership.svg'
 import icon02 from '../../assets/images/icon-dao.svg'
 import icon03 from '../../assets/images/icon-invest.svg'
 import { useHistory } from 'react-router-dom'
+import { useActiveWeb3React } from 'hooks'
+import { useWalletModalToggle } from 'state/application/hooks'
 
 export default function Index() {
   const history = useHistory()
@@ -33,6 +35,8 @@ export default function Index() {
       action: 'Build'
     }
   ]
+  const { account } = useActiveWeb3React()
+  const toggleWalletModal = useWalletModalToggle()
   return (
     <main className="home">
       <h1>Create a DAO within a few minutes</h1>
@@ -40,9 +44,15 @@ export default function Index() {
         Build on-chain decentralized organizations and issue governance token running on STP Smart Chain by using
         industry-based templates
       </p>
-      <Button className="btn-common btn-01 btn-build" onClick={() => history.push('/building')}>
-        Build
-      </Button>
+      {account ? (
+        <Button className="btn-common btn-01 btn-build" onClick={() => history.push('/building')}>
+          Build
+        </Button>
+      ) : (
+        <Button className="btn-common btn-01 btn-build" onClick={toggleWalletModal}>
+          Connect Wallet
+        </Button>
+      )}
       <div className="card-list">
         {cardItems.map(item => (
           <div key={item.title} className="card-item">

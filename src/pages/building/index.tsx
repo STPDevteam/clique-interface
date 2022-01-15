@@ -1,12 +1,13 @@
 import './index.pc.less'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import BuildingHeader from './components/Header/index'
 import Basic from './basic'
 import Distribution from './distribution'
 import Rule from './rule'
 import Review from './review'
 import { useHistory } from 'react-router-dom'
+import { useActiveWeb3React } from 'hooks'
 
 const stepItems = ['Basic', 'Distribution', 'Rule', 'Review'] as const
 
@@ -16,6 +17,10 @@ export default function Index() {
   const history = useHistory()
   const [step, setStep] = useState<Step>('Basic')
   const goToStep = useCallback((step: Step) => setStep(step), [])
+  const { account } = useActiveWeb3React()
+  useEffect(() => {
+    if (!account) history.replace('/create')
+  }, [account, history])
 
   const goBack = useCallback(() => {
     const index = stepItems.findIndex(item => item === step)
