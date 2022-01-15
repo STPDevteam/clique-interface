@@ -15,6 +15,7 @@ import JSBI from 'jsbi'
 import { DefaultChainId, PriceDecimals } from '../constants'
 import { BigintIsh } from 'constants/token/constants'
 import { tryParseAmount } from 'state/application/hooks'
+import { getCurrentTimeStamp } from 'utils/dao'
 
 export function useLastDaoId() {
   const daoFactoryContract = useDaoFactoryContract()
@@ -155,7 +156,7 @@ export function useDaoStatus(daoInfo: DaoInfoProps | undefined): DaoStatusProps 
   }
 
   let openStatus: DaoOpenStatus = DaoOpenStatus.COMING_SOON
-  const curTimeStamp = Number((new Date().getTime() / 1000).toFixed())
+  const curTimeStamp = getCurrentTimeStamp()
   if (daoInfo.pubSale.endTime > curTimeStamp) {
     openStatus = DaoOpenStatus.CLOSE
   } else if (daoInfo.pubSale.startTime > curTimeStamp) {

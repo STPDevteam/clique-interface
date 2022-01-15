@@ -1,6 +1,7 @@
 import { useActiveWeb3React } from 'hooks'
-import { useMemo } from 'react'
-import { useSingleCallResult } from '../state/multicall/hooks'
+import { useMemo, useState } from 'react'
+import { getCurrentTimeStamp } from 'utils/dao'
+import { useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
 import { useSTPTokenContract, useVotingContract } from './useContract'
 import { ProposalStatusProp, ProposalType } from './useCreateCommunityProposalCallback'
 
@@ -22,25 +23,64 @@ export interface ProposalInfoProp {
   status: ProposalStatusProp
 }
 
-export function useAllProposal(votingAddress: string | undefined): ProposalInfoProp[] {
+export function useProposalList(votingAddress: string | undefined) {
+  const pageSize = 8
   const votingContract = useVotingContract(votingAddress)
-  const listRes = useSingleCallResult(votingContract, 'getAllProposal', [])
-  return useMemo(() => {
-    if (!listRes.result || !listRes.result[0].length) return []
-    return listRes.result[0].map((item: any) => {
-      return {
-        id: item.id.toString(),
-        creator: item.creator,
-        proType: item.proType,
-        title: item.title,
-        content: item.content,
-        startTime: Number(item.startTime.toString()),
-        endTime: Number(item.startTime.toString()),
-        blkHeight: item.blkHeight.toString(),
-        status: item.status
-      }
-    })
-  }, [listRes.result])
+  const lastIdRes = useSingleCallResult(votingContract, 'curId', [])
+  const lastId = useMemo(() => (lastIdRes.result ? Number(lastIdRes.result.toString()) : 0), [lastIdRes.result])
+
+  const begin = 1
+  const [currentPage, setCurrentPage] = useState<number>(1)
+
+  const totalPages = useMemo(() => {
+    return lastId ? Math.ceil(lastId - begin + 1 / pageSize) : 0
+  }, [lastId, pageSize])
+
+  const ids = useMemo(() => {
+    const ret = []
+    let index = lastId - (currentPage - 1) * pageSize
+    while (index > lastId - currentPage * pageSize && index >= begin) {
+      ret.push([index])
+      index--
+    }
+    return ret
+  }, [lastId, currentPage, pageSize])
+
+  const proposalMap = useSingleContractMultipleData(votingContract, 'proposalMap', ids)
+  const list: (ProposalInfoProp | undefined)[] = proposalMap.map(pro => {
+    if (!pro.result) return undefined
+    const item = pro.result
+    const ret = {
+      id: item.id.toString(),
+      creator: item.creator,
+      proType: item.proType,
+      title: item.title,
+      content: item.content,
+      startTime: Number(item.startTime.toString()),
+      endTime: Number(item.endTime.toString()),
+      blkHeight: item.blkHeight.toString(),
+      status: item.status
+    }
+    const curTime = getCurrentTimeStamp()
+    if (item.status === 0 && ret.startTime < curTime && ret.endTime > curTime) {
+      ret.status = ProposalStatusProp.Active
+    }
+    if (item.status <= 1 && ret.endTime < curTime) {
+      ret.status = ProposalStatusProp.WaitFinish
+    }
+    if (item.status === ProposalStatusProp.Success && item.proType === ProposalType.CONTRACT) {
+      ret.status = ProposalStatusProp.Executable
+    }
+    return ret
+  })
+
+  return {
+    page: {
+      totalPages,
+      setCurrentPage
+    },
+    list
+  }
 }
 
 export function useBalanceOfAt(tokenAddress: string | undefined, blkHeight: number | undefined): string | undefined {
@@ -72,4 +112,32 @@ export function useVotingOptionsById(
       amount: item.amount.toString()
     })) || []
   )
+}
+
+export function useVoteResults(
+  votingAddress: string | undefined,
+  proposalId: string
+):
+  | {
+      amount: string
+      id: string
+      optionIndex: number
+    }
+  | undefined {
+  const { account } = useActiveWeb3React()
+  const votingContract = useVotingContract(votingAddress)
+  const res = useSingleCallResult(proposalId ? votingContract : null, 'voteResults', [account || undefined, proposalId])
+  return res.result
+    ? {
+        amount: res.result.amount.toString(),
+        id: res.result.id.toString(),
+        optionIndex: Number(res.result.optionIndex.toString())
+      }
+    : undefined
+}
+
+export function useVotingClaimed(votingAddress: string | undefined, proposalId: string): boolean | undefined {
+  const votingContract = useVotingContract(votingAddress)
+  const res = useSingleCallResult(proposalId ? votingContract : null, 'claimed', [proposalId])
+  return res.result?.[0]
 }

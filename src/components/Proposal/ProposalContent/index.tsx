@@ -14,7 +14,7 @@ export default function Index({ detail }: { detail: ProposalInfoProp }) {
         </div>
         <ProposalStatus status={detail.status} />
       </div>
-      <p className={styles['text']}>{detail.content}</p>
+      <p className={styles['text']} dangerouslySetInnerHTML={{ __html: detail.content }}></p>
     </div>
   )
 }

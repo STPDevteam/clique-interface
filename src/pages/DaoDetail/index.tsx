@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './index.module.less'
 // import { Button } from 'antd'
 import IconLogo from '../../assets/images/token-stpt.png'
@@ -22,6 +22,13 @@ export default function Index() {
   const [currentProposal, setCurrentProposal] = useState<ProposalInfoProp>()
   const [showCreate, setShowCreate] = useState(false)
   const daoInfo = useDaoInfoByAddress(daoAddress)
+
+  useEffect(() => {
+    if (daoAddress) {
+      setShowCreate(false)
+      setCurrentProposal(undefined)
+    }
+  }, [daoAddress])
 
   return (
     <div className={styles['dao-detail']}>

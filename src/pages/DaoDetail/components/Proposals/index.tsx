@@ -8,7 +8,7 @@ import { DaoInfoProps } from 'hooks/useDAOInfo'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { timeStampToFormat, toFormatGroup } from 'utils/dao'
-import { ProposalInfoProp, useAllProposal } from 'hooks/useVoting'
+import { ProposalInfoProp, useProposalList } from 'hooks/useVoting'
 import { ProposalStatusProp } from 'hooks/useCreateCommunityProposalCallback'
 
 interface IProps {
@@ -21,7 +21,7 @@ export default function Index(props: IProps) {
   const { account } = useActiveWeb3React()
   const TABS = ['ALL', 'Executable', 'Open', 'Closed']
   const [currentTab, setCurrentTab] = useState(TABS[0])
-  const proposalList = useAllProposal(daoInfo?.votingAddress)
+  const { list: proposalList } = useProposalList(daoInfo?.votingAddress)
 
   const tokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
   const isProposal = useMemo(() => {
@@ -71,20 +71,23 @@ export default function Index(props: IProps) {
       </Tabs>
 
       <Box display={'flex'} gap="32px" flexWrap={'wrap'} className={styles['proposals-list']}>
-        {proposalList.map((item, index) => (
-          <div key={index} className={styles['proposals-item']} onClick={() => onSelect(item)}>
-            <p className={styles['title']}>{item.title}</p>
-            <p className={styles['desc']}>{item.content}</p>
-            <div className={styles['footer']}>
-              <ProposalStatus status={item.status} />
-              <p className={styles['start-time']}>
-                {item.status === ProposalStatusProp.Review
-                  ? `Start at ${timeStampToFormat(item.startTime)}`
-                  : `Ended at ${timeStampToFormat(item.startTime)}`}
-              </p>
-            </div>
-          </div>
-        ))}
+        {proposalList.map(
+          (item, index) =>
+            item && (
+              <div key={index} className={styles['proposals-item']} onClick={() => onSelect(item)}>
+                <p className={styles['title']}>{item.title}</p>
+                <p className={styles['desc']}>{item.content}</p>
+                <div className={styles['footer']}>
+                  <ProposalStatus status={item.status} />
+                  <p className={styles['start-time']}>
+                    {item.status === ProposalStatusProp.Review
+                      ? `Start at ${timeStampToFormat(item.startTime)}`
+                      : `Ended at ${timeStampToFormat(item.endTime)}`}
+                  </p>
+                </div>
+              </div>
+            )
+        )}
       </Box>
     </div>
   )

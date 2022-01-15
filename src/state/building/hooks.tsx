@@ -22,7 +22,7 @@ export const privateReceivingTokens: PrivateReceivingTokenProps[] = [
     value: 'STEP',
     chainId: 1,
     logo: IconTokenSvg,
-    address: '0x9D2e3653DE320F480Da0602cb489502a5ed81161',
+    address: '0x030003546dfF30d0B7F0e6cD284D32A9D273131C',
     decimals: 18
   }
   // {
@@ -30,7 +30,7 @@ export const privateReceivingTokens: PrivateReceivingTokenProps[] = [
   //   value: 'USDT',
   //   chainId: 1,
   //   logo: IconTokenSvg,
-  //   address: '0x8e65ae1De0af58d8759aD5C90Af8450A8cc8Ffa9',
+  //   address: '0xc751F532EE2a6c0D910208aFE2fFfC127652284C',
   //   decimals: 18
   // }
 ]

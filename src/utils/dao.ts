@@ -37,3 +37,7 @@ export function toFormatMillion(n: number | string) {
 export function amountAddDecimals(amount: string, decimals = 18) {
   return amount + new Array(decimals).fill('0').join('')
 }
+
+export function getCurrentTimeStamp() {
+  return Number((new Date().getTime() / 1000).toFixed())
+}

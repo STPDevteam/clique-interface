@@ -5,12 +5,12 @@ import ProposalVoteDetail from '../../../../components/Proposal/ProposalVoteDeta
 // import CastVote from '../../../../components/Proposal/CastVote'
 import ProposalUndoClaim from '../../../../components/Proposal/ProposalUndoClaim'
 import OtherUserDetail from '../../../../components/Proposal/OtherUserDetail'
-import ExecutableContent from '../../../../components/Proposal/ExecutableContent'
-import ExecutableVoteResult from '../../../../components/Proposal/ExecutableVoteResult'
+// import ExecutableContent from '../../../../components/Proposal/ExecutableContent'
+// import ExecutableVoteResult from '../../../../components/Proposal/ExecutableVoteResult'
 import Vote from '../../../../components/Proposal/Vote'
 import { Grid } from '@mui/material'
-import { ProposalInfoProp, useBalanceOfAt, useVotingOptionsById } from 'hooks/useVoting'
-import { ProposalType } from 'hooks/useCreateCommunityProposalCallback'
+import { ProposalInfoProp, useBalanceOfAt, useVoteResults, useVotingOptionsById } from 'hooks/useVoting'
+// import { ProposalType } from 'hooks/useCreateCommunityProposalCallback'
 import { useVoteCallback } from 'hooks/useVoteCallback'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from 'hooks/useModal'
@@ -21,6 +21,8 @@ import { DaoInfoProps } from 'hooks/useDAOInfo'
 import { TokenAmount } from 'constants/token'
 import { useActiveWeb3React } from 'hooks'
 import JSBI from 'jsbi'
+import { useResolveVotingResultCallback } from 'hooks/useResolveVotingResultCallback'
+import { useExecuteProposalCallback } from 'hooks/useExecuteProposalCallback'
 
 export default function Index({
   detail,
@@ -91,6 +93,44 @@ export default function Index({
     },
     [detail.id, hideModal, showModal, voteCallback]
   )
+
+  const resolveVotingResultCallback = useResolveVotingResultCallback(daoInfo.votingAddress)
+  const executeProposalCallback = useExecuteProposalCallback(daoInfo.votingAddress)
+
+  const onResolveVotingResult = useCallback(() => {
+    showModal(<TransactionPendingModal />)
+    resolveVotingResultCallback(detail.id)
+      .then(() => {
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
+      })
+      .catch(err => {
+        hideModal()
+        showModal(
+          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+        )
+        console.error(err)
+      })
+  }, [detail.id, hideModal, resolveVotingResultCallback, showModal])
+
+  const onExecuteProposalCallback = useCallback(() => {
+    showModal(<TransactionPendingModal />)
+    executeProposalCallback(detail.id)
+      .then(() => {
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
+      })
+      .catch(err => {
+        hideModal()
+        showModal(
+          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+        )
+        console.error(err)
+      })
+  }, [detail.id, hideModal, executeProposalCallback, showModal])
+
+  const voteResults = useVoteResults(daoInfo.votingAddress, detail.id)
+
   return (
     <div className={styles['proposal-detail-container']}>
       <Button className={styles['btn-back']} onClick={onBack}>
@@ -99,23 +139,29 @@ export default function Index({
 
       <Grid container spacing={24}>
         <Grid item lg={8} xs={12} className={styles['left-part']}>
-          {detail.proType === ProposalType.COMMUNITY && (
-            <>
-              <ProposalContent detail={detail} />
-              <ProposalVoteDetail list={votingOptionsList} />
-            </>
-          )}
-          {detail.proType === ProposalType.CONTRACT && (
+          <>
+            <ProposalContent detail={detail} />
+            <ProposalVoteDetail list={votingOptionsList} />
+          </>
+          {/* {detail.proType === ProposalType.CONTRACT && (
             <>
               <ExecutableContent />
               <ExecutableVoteResult />
             </>
-          )}
+          )} */}
         </Grid>
         <Grid item lg={4} xs={12} className={styles['left-part']}>
           {/* {detail.status === ProposalStatusProp.Active && <CastVote />}
           {detail.status !== ProposalStatusProp.Active && <Vote />} */}
-          <Vote onVote={onVoteCallback} list={votingOptionsList} balanceAt={myDaoBalanceAt?.toSignificant()} />
+          <Vote
+            detail={detail}
+            voteResults={voteResults}
+            onResolveVotingResult={onResolveVotingResult}
+            onExecuteProposalCallback={onExecuteProposalCallback}
+            onVote={onVoteCallback}
+            list={votingOptionsList}
+            balanceAt={myDaoBalanceAt}
+          />
           {isCreator ? <ProposalUndoClaim detail={detail} daoInfo={daoInfo} /> : <OtherUserDetail detail={detail} />}
         </Grid>
       </Grid>

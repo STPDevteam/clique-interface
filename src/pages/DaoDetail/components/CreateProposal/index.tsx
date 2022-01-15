@@ -19,6 +19,7 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { toFormatGroup } from 'utils/dao'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import { Dots } from 'theme/components'
+import Confirm from './Confirm'
 
 interface Props {
   onBack: () => void
@@ -39,6 +40,14 @@ export default function Index(props: Props) {
 
   const daoTokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
 
+  const endTimeDIsabled = useMemo(() => {
+    if (!daoInfo?.rule) return true
+    if (Number(daoInfo.rule.communityVotingDuration) > 0) {
+      return true
+    }
+    return false
+  }, [daoInfo?.rule])
+
   const [approvalState, approvalCallback] = useApproveCallback(
     daoInfo?.rule?.minimumCreateProposal,
     daoInfo?.votingAddress
@@ -46,8 +55,9 @@ export default function Index(props: Props) {
 
   const onCreateCommunityProposalCallback = useCallback(() => {
     if (!title.trim() || !startTime || !endTime) return
+    const curOption = option.filter(i => i.trim())
     showModal(<TransactionPendingModal />)
-    createCommunityProposalCallback(title, desc, startTime, endTime, option)
+    createCommunityProposalCallback(title, desc, startTime, endTime, curOption)
       .then(() => {
         hideModal()
         showModal(<TransactionSubmittedModal />)
@@ -139,7 +149,22 @@ export default function Index(props: Props) {
     }
 
     return (
-      <MButton width="233px" height="48px" style={{ margin: 'auto' }} onClick={onCreateCommunityProposalCallback}>
+      <MButton
+        width="233px"
+        height="48px"
+        style={{ margin: 'auto' }}
+        onClick={() =>
+          showModal(
+            <Confirm
+              title={title}
+              endTime={endTime}
+              startTime={startTime}
+              minimumCreateProposal={daoInfo.rule?.minimumCreateProposal}
+              onCreate={onCreateCommunityProposalCallback}
+            />
+          )
+        }
+      >
         Create a Proposal
       </MButton>
     )
@@ -151,6 +176,7 @@ export default function Index(props: Props) {
     endTime,
     onCreateCommunityProposalCallback,
     option,
+    showModal,
     startTime,
     title,
     toggleWalletModal,
@@ -216,13 +242,19 @@ export default function Index(props: Props) {
               <DatePicker
                 valueStamp={startTime}
                 disabledPassTime={new Date()}
-                onChange={timeStamp => setStartTime(timeStamp)}
+                onChange={timeStamp => {
+                  setStartTime(timeStamp)
+                  if (endTimeDIsabled) {
+                    setEndTime(timeStamp ? timeStamp + Number(daoInfo?.rule?.communityVotingDuration || 0) : undefined)
+                  }
+                }}
               />
             </Box>
             <Box className="input-item" mb={10}>
               <span className="label">End time</span>
               <DatePicker
                 valueStamp={endTime}
+                disabled={endTimeDIsabled}
                 disabledPassTime={startTime ? startTime * 1000 : new Date()}
                 onChange={timeStamp => setEndTime(timeStamp)}
               />

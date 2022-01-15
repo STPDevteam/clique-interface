@@ -9,7 +9,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { DaoTypeStatus, useDaoInfoByAddress, useDaoStatus } from 'hooks/useDAOInfo'
 import { getEtherscanLink } from 'utils'
-import { timeStampToFormat, toFormatGroup } from 'utils/dao'
+import { getCurrentTimeStamp, timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { useActiveWeb3React } from 'hooks'
 import { useReservedClaimCallback } from 'hooks/useReservedClaimCallback'
 import { usePartPriSaleCallback } from 'hooks/usePartPriSaleCallback'
@@ -104,7 +104,7 @@ export default function Offering() {
     if (!account || !daoInfo) return undefined
     for (const item of daoInfo.reserved) {
       if (item.address === account) {
-        const curTimeStamp = Number((new Date().getTime() / 1000).toFixed())
+        const curTimeStamp = getCurrentTimeStamp()
         return {
           ...item,
           isLocked: item.lockDate > curTimeStamp ? true : false
@@ -119,7 +119,7 @@ export default function Offering() {
 
   const pubPriSaleIsOpen = useMemo(() => {
     if (!daoInfo?.pubSale) return false
-    const curTimeStamp = Number((new Date().getTime() / 1000).toFixed())
+    const curTimeStamp = getCurrentTimeStamp()
     return daoInfo.pubSale.startTime < curTimeStamp && curTimeStamp < daoInfo.pubSale.endTime
   }, [daoInfo?.pubSale])
 

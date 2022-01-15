@@ -8,9 +8,10 @@ interface Props {
   valueStamp?: number
   onChange?: (n: number | undefined) => void
   onBlur?: () => void
+  disabled?: boolean
 }
 
-export default function Index({ disabledPassTime, onChange, valueStamp, onBlur }: Props) {
+export default function Index({ disabledPassTime, onChange, valueStamp, onBlur, disabled }: Props) {
   function _onChange(value: Moment | null) {
     onChange && onChange(value ? Number((value.valueOf() / 1000).toFixed()) : undefined)
   }
@@ -35,6 +36,7 @@ export default function Index({ disabledPassTime, onChange, valueStamp, onBlur }
     >
       <DatePicker
         showTime
+        disabled={disabled}
         disabledDate={current => {
           return disabledPassTime ? current && current < moment(disabledPassTime).subtract(0, 'days') : false
         }}
