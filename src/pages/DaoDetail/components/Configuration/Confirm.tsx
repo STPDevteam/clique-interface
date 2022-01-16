@@ -45,16 +45,20 @@ export default function Confirm({
     if (approvalState !== ApprovalState.APPROVED) {
       if (approvalState === ApprovalState.PENDING) {
         return (
-          <Button disabled>
+          <Button width="240px" disabled>
             Approval
             <Dots />
           </Button>
         )
       } else if (approvalState === ApprovalState.NOT_APPROVED) {
-        return <Button onClick={approvalCallback}>Approval</Button>
+        return (
+          <Button width="240px" onClick={approvalCallback}>
+            Approval
+          </Button>
+        )
       } else {
         return (
-          <Button disabled>
+          <Button width="240px" disabled>
             Loading
             <Dots />
           </Button>

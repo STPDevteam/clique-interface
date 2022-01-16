@@ -1,7 +1,8 @@
 import './pc.less'
 
 import 'react'
-import { Button, Input, Select } from 'antd'
+import { Input, Select } from 'antd'
+import Button from 'components/Button/Button'
 import IconDownArrow from '../assets/icon-down-arrow.svg'
 // import IconToken from '../../../assets/images/icon-token.svg'
 import Modal from 'components/Modal'
@@ -36,8 +37,17 @@ export default function DepositAssets({
 
   const getActions = useMemo(() => {
     const _bal = tryParseAmount(input, curToken)
-    if (!input || !_bal || !daoAddress) return <Button disabled>Submit</Button>
-    return <Button onClick={() => onDeposit(daoAddress, _bal.raw.toString())}>Submit</Button>
+    if (!input || !_bal || !daoAddress)
+      return (
+        <Button disabled width="240px">
+          Submit
+        </Button>
+      )
+    return (
+      <Button width="240px" onClick={() => onDeposit(daoAddress, _bal.raw.toString())}>
+        Submit
+      </Button>
+    )
   }, [curToken, daoAddress, input, onDeposit])
 
   return (
@@ -94,7 +104,9 @@ export default function DepositAssets({
             <span className="label">Memo</span>
             <Input placeholder="Deposit tokens" />
           </div> */}
-          {getActions}
+          <Box display={'flex'} justifyContent={'center'} mt={10}>
+            {getActions}
+          </Box>
         </Box>
       </Box>
     </Modal>

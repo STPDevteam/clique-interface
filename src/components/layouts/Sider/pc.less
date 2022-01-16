@@ -10,19 +10,23 @@
             -3px -3px 8px rgba(255, 255, 255, 0.8);
             border-radius: 0px;
             width: @siderWith;
-            min-height: 100vh;
+            height: 100vh;
             left: 0;
             top: 0;
             position: fixed;
             z-index: 10;
             padding-top: @headerHeight;
-            display: flex !important;
             flex-direction: column;
             align-items: center;
+            overflow-y: auto;
+            &::-webkit-scrollbar {
+                display: none
+            }
 
             .ant-btn.btn-dao {
                 height: 79.99999237060577px;
                 width: 79.99999237060577px;
+                margin: 20px auto;
                 border-radius: 8px;
                 background: #FFFFFF;
                 border: 0.5px solid #D8D8D8;
@@ -41,18 +45,10 @@
                     box-sizing: border-box;
                     box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.5);
                 }
-
-                &:first-child {
-                    margin-top: 40px;
-                }
-
-                &:nth-child(n + 2) {
-                    margin-top: 24px;
-                }
             }
 
             .ant-btn.btn-add {
-                margin-top: 24px;
+                margin: 20px auto;
                 height: 79.99999237060577px;
                 width: 79.99999237060577px;
                 border-radius: 8px;

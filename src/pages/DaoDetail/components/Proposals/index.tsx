@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react'
-import { Tabs, Button, Tooltip } from 'antd'
+import { Tabs, Button, Tooltip, Pagination } from 'antd'
 import styles from './index.module.less'
 const { TabPane } = Tabs
 import ProposalStatus from '../../../../components/Proposal/ProposalStatus'
-import { Box } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { DaoInfoProps } from 'hooks/useDAOInfo'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
@@ -21,7 +21,7 @@ export default function Index(props: IProps) {
   const { account } = useActiveWeb3React()
   const TABS = ['ALL', 'Executable', 'Open', 'Closed']
   const [currentTab, setCurrentTab] = useState(TABS[0])
-  const { list: proposalList } = useProposalList(daoInfo?.votingAddress)
+  const { list: proposalList, page: proposalListPage } = useProposalList(daoInfo?.votingAddress)
 
   const tokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
   const isProposal = useMemo(() => {
@@ -32,7 +32,7 @@ export default function Index(props: IProps) {
 
   return (
     <div className={styles['proposals-container']}>
-      <div className={styles['header']}>
+      <Box className={styles['header']} justifyContent={'space-between'} display={'flex'} flexWrap={'wrap'} gap={10}>
         <div className={styles['header-info']}>
           <p className={styles['title']}>Proposal</p>
           <p className={styles['text']}>
@@ -56,7 +56,7 @@ export default function Index(props: IProps) {
             Create A Proposal
           </Button>
         </Tooltip>
-      </div>
+      </Box>
 
       <Tabs
         defaultActiveKey={currentTab}
@@ -70,24 +70,46 @@ export default function Index(props: IProps) {
         ))}
       </Tabs>
 
-      <Box display={'flex'} gap="32px" flexWrap={'wrap'} className={styles['proposals-list']}>
+      <Grid container className={styles['proposals-list']} spacing={30}>
         {proposalList.map(
           (item, index) =>
             item && (
-              <div key={index} className={styles['proposals-item']} onClick={() => onSelect(item)}>
-                <p className={styles['title']}>{item.title}</p>
-                <p className={styles['desc']}>{item.content}</p>
-                <div className={styles['footer']}>
-                  <ProposalStatus status={item.status} />
-                  <p className={styles['start-time']}>
-                    {item.status === ProposalStatusProp.Review
-                      ? `Start at ${timeStampToFormat(item.startTime)}`
-                      : `Ended at ${timeStampToFormat(item.endTime)}`}
-                  </p>
-                </div>
-              </div>
+              <Grid item md={12} lg={6} key={index}>
+                <Box
+                  display={'flex'}
+                  flexDirection={'column'}
+                  justifyContent={'space-between'}
+                  className={styles['proposals-item']}
+                  onClick={() => onSelect(item)}
+                >
+                  <Box>
+                    <p className={styles['title']}>{item.title}</p>
+                    <p className={styles['desc']}>{item.content}</p>
+                  </Box>
+                  <div className={styles['footer']}>
+                    <ProposalStatus status={item.status} />
+                    <p className={styles['start-time']}>
+                      {item.status === ProposalStatusProp.Review
+                        ? `Start at ${timeStampToFormat(item.startTime)}`
+                        : `Ended at ${timeStampToFormat(item.endTime)}`}
+                    </p>
+                  </div>
+                </Box>
+              </Grid>
             )
         )}
+      </Grid>
+      <Box display={'flex'} justifyContent={'center'}>
+        <Pagination
+          simple
+          size="default"
+          hideOnSinglePage
+          pageSize={proposalListPage.pageSize}
+          style={{ marginTop: 20 }}
+          current={proposalListPage.currentPage}
+          total={proposalListPage.total}
+          onChange={e => proposalListPage.setCurrentPage(e)}
+        />
       </Box>
     </div>
   )

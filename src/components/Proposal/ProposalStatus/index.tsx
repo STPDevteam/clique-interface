@@ -7,11 +7,12 @@ export default function Index({ status }: { status: ProposalStatusProp }) {
     <div
       className={classNames(styles.status, {
         [styles.soon]: status === ProposalStatusProp.Review,
-        [styles.open]: status === ProposalStatusProp.Active,
-        [styles.closed]: status === ProposalStatusProp.Failed,
-        [styles.open]: status === ProposalStatusProp.Success,
-        [styles.closed]: status === ProposalStatusProp.Cancel,
-        [styles.executable]: status === ProposalStatusProp.Executed
+        [styles.open]: status === ProposalStatusProp.Active || status === ProposalStatusProp.WaitFinish,
+        [styles.closed]: status === ProposalStatusProp.Failed || status === ProposalStatusProp.Cancel,
+        [styles.success]:
+          status === ProposalStatusProp.Success ||
+          status === ProposalStatusProp.Executed ||
+          status === ProposalStatusProp.Executable
       })}
     >
       <span className={styles.dot}></span>

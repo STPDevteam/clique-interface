@@ -1,10 +1,10 @@
 import './pc.less'
 
-import { Button } from 'antd'
+import Button from 'components/Button/Button'
 import IconLink from '../../../../assets/images/icon-link.svg'
 import IconLogo from '../../../../assets/images/icon-token.svg'
 import { WithdrawAssets, DepositAssets } from '../../../../components/ModalSTP'
-import { Box } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import useModal from 'hooks/useModal'
 import { DaoInfoProps } from 'hooks/useDAOInfo'
 import { useCallback, useMemo } from 'react'
@@ -77,10 +77,11 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
     <section className="assets">
       <div className="header">
         <h3>Assets</h3>
-        <div className="actions">
+        <Box display={'flex'} gap="15px">
           {account && daoInfo && (
             <>
               <Button
+                width={'150px'}
                 onClick={() =>
                   showModal(
                     <DepositAssets
@@ -94,6 +95,7 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
                 Deposit
               </Button>
               <Button
+                width={'150px'}
                 onClick={() =>
                   showModal(<WithdrawAssets daoInfo={daoInfo} daoTokens={daoTokens} onWithdraw={onWithdrawCallback} />)
                 }
@@ -102,41 +104,45 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
               </Button>
             </>
           )}
-        </div>
+        </Box>
       </div>
-      <Box display={'flex'} gap="20px" className="transactions">
-        <div className="history-list">
-          {[1, 2].map((item, index) => (
-            <div key={index} className="history-item">
-              <div className="left">
-                <span>Deposit this token</span>
-                <span>2021-11-11 01:07:02</span>
-              </div>
-              <div className="right">
-                <div className="amount">
-                  <span>STPT</span>
-                  <span>+1000,0000,000</span>
+      <Grid container spacing={20} className="transactions">
+        <Grid item lg={8} md={12}>
+          <div className="history-list">
+            {[1, 2].map((item, index) => (
+              <div key={index} className="history-item">
+                <div className="left">
+                  <span>Deposit this token</span>
+                  <span>2021-11-11 01:07:02</span>
                 </div>
-                <a className="link">
-                  <img src={IconLink} />
-                </a>
+                <div className="right">
+                  <div className="amount">
+                    <span>STPT</span>
+                    <span>+1000,0000,000</span>
+                  </div>
+                  <a className="link">
+                    <img src={IconLink} />
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-        <div className="dao-tokens">
-          <h3>DAO Tokens</h3>
-          {daoTokens.map((item, index) => (
-            <div key={index} className="token">
-              <Image className="icon" width={20} src={item.logo || IconLogo} />
-              <span className="name">{item.symbol}</span>
-              <span className="number">
-                <ShowTokenBalance token={item} account={daoInfo.daoAddress}></ShowTokenBalance>
-              </span>
-            </div>
-          ))}
-        </div>
-      </Box>
+            ))}
+          </div>
+        </Grid>
+        <Grid item lg={4} md={12}>
+          <div className="dao-tokens">
+            <h3>DAO Tokens</h3>
+            {daoTokens.map((item, index) => (
+              <div key={index} className="token">
+                <Image className="icon" width={20} src={item.logo || IconLogo} />
+                <span className="name">{item.symbol}</span>
+                <span className="number">
+                  <ShowTokenBalance token={item} account={daoInfo.daoAddress}></ShowTokenBalance>
+                </span>
+              </div>
+            ))}
+          </div>
+        </Grid>
+      </Grid>
     </section>
   )
 }

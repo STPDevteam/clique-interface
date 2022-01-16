@@ -76,7 +76,10 @@ export function useProposalList(votingAddress: string | undefined) {
 
   return {
     page: {
+      total: lastId,
       totalPages,
+      currentPage,
+      pageSize,
       setCurrentPage
     },
     list

@@ -91,32 +91,54 @@ export default function WithdrawAssets({
   ])
 
   const getActions = useMemo(() => {
-    if (!input || !inputBal || !daoInfo.daoAddress) return <Button disabled>Create a proposal</Button>
+    if (!input || !inputBal || !daoInfo.daoAddress)
+      return (
+        <Button disabled width="240px">
+          Create a proposal
+        </Button>
+      )
     if (!curAccountBalance || !daoInfo.rule || curAccountBalance?.lessThan(daoInfo.rule?.minimumCreateProposal)) {
-      return <Button disabled>Balance Insufficient</Button>
+      return (
+        <Button width="240px" disabled>
+          Balance Insufficient
+        </Button>
+      )
     }
-    if (!justification.trim()) return <Button disabled>Input justification</Button>
+    if (!justification.trim())
+      return (
+        <Button width="240px" disabled>
+          Input justification
+        </Button>
+      )
 
     if (approvalState !== ApprovalState.APPROVED) {
       if (approvalState === ApprovalState.PENDING) {
         return (
-          <Button disabled>
+          <Button disabled width="240px">
             Approval
             <Dots />
           </Button>
         )
       } else if (approvalState === ApprovalState.NOT_APPROVED) {
-        return <Button onClick={approvalCallback}>Approval</Button>
+        return (
+          <Button width="240px" onClick={approvalCallback}>
+            Approval
+          </Button>
+        )
       } else {
         return (
-          <Button disabled>
+          <Button disabled width="240px">
             Loading
             <Dots />
           </Button>
         )
       }
     }
-    return <Button onClick={() => setShowConfirm(true)}>Create a proposal</Button>
+    return (
+      <Button width="240px" onClick={() => setShowConfirm(true)}>
+        Create a proposal
+      </Button>
+    )
   }, [
     approvalCallback,
     approvalState,
@@ -238,7 +260,9 @@ export default function WithdrawAssets({
                 {daoInfo.rule?.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' })} {daoInfo.token?.symbol}
               </span>
             </div>
-            {getActions}
+            <Box display={'flex'} justifyContent={'center'} mt={10}>
+              {getActions}
+            </Box>
           </Box>
         </Box>
       )}
