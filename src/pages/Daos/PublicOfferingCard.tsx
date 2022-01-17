@@ -75,7 +75,7 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
           {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC ? daoStatus.pubSoldPer + '% funded' : ''}
         </Typography>
         <Typography variant="body2" color={'#798488'}>
-          Start at {daoInfo?.pubSale?.startTime ? timeStampToFormat(daoInfo.pubSale.startTime, 'Y-M-D') : '-'}
+          Start at {daoInfo?.pubSale?.startTime ? timeStampToFormat(daoInfo.pubSale.startTime, 'Y-MM-DD') : '-'}
         </Typography>
       </Box>
     </Box>

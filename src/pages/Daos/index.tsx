@@ -85,7 +85,15 @@ export default function Index() {
                 >
                   <Box display={'flex'} gap={16} mb={15}>
                     <Avatar sx={{ width: 58, height: 58 }} src={item.token?.logo}></Avatar>
-                    <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'} padding={'5px 0'}>
+                    <Box
+                      display={'flex'}
+                      flexDirection={'column'}
+                      justifyContent={'space-between'}
+                      padding={'5px 0'}
+                      sx={{
+                        width: 'calc(100% - 74px)'
+                      }}
+                    >
                       <Typography
                         fontWeight={600}
                         fontSize={16}

@@ -3,7 +3,7 @@ import moment from 'moment'
 import toFormat from 'toformat'
 import _Big from 'big.js'
 
-export function timeStampToFormat(timeStamp: number | Date | undefined, format = 'Y-M-D h:m:s') {
+export function timeStampToFormat(timeStamp: number | Date | undefined, format = 'Y-MM-DD hh:mm:ss') {
   if (!timeStamp) return '--'
   if (timeStamp instanceof Date) {
     return moment(timeStamp).format(format)
