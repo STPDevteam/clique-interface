@@ -303,7 +303,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                     >
                       <Input
                         className="input-common token-number"
-                        placeholder="1,111"
+                        placeholder="100"
                         maxLength={basic.tokenSupply.length}
                         id={'reservedInput' + index}
                         value={item.tokenNumber}
@@ -314,6 +314,8 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                             // check max value
                             const input = getCurrentInputMaxAmount(remainderTokenAmount, item.tokenNumber || '0', _val)
                             updateReservedHolder(index, 'tokenNumber', input)
+                          } else {
+                            updateReservedHolder(index, 'tokenNumber', item.tokenNumber || '')
                           }
                         }}
                         onBlur={() =>
@@ -346,6 +348,8 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                             Number(_val)
                           )
                           updateReservedHolder(index, 'per', maxPer)
+                        } else {
+                          updateReservedHolder(index, 'per', item.per || 0)
                         }
                       }}
                       onBlur={() =>
@@ -515,7 +519,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                     >
                       <Input
                         className="input-common token-number"
-                        placeholder="1,111"
+                        placeholder="100"
                         maxLength={basic.tokenSupply.length}
                         value={item.tokenNumber}
                         id={'privateInput' + index}
@@ -525,6 +529,8 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                           if (reg.test(_val)) {
                             const input = getCurrentInputMaxAmount(remainderTokenAmount, item.tokenNumber || '0', _val)
                             updatePrivateHolder(index, 'tokenNumber', input)
+                          } else {
+                            updatePrivateHolder(index, 'tokenNumber', item.tokenNumber || '')
                           }
                         }}
                         onBlur={() =>
@@ -556,6 +562,8 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                             Number(_val)
                           )
                           updatePrivateHolder(index, 'per', maxPer)
+                        } else {
+                          updatePrivateHolder(index, 'per', item.per || 0)
                         }
                       }}
                       onBlur={() =>
@@ -570,9 +578,15 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                         value={item.price}
                         onChange={e => {
                           const _val = e.target.value
-                          if (isNaN(Number(_val))) return
+                          if (isNaN(Number(_val))) {
+                            updatePrivateHolder(index, 'price', item.price || 0)
+                            return
+                          }
                           const reg = new RegExp('^[0-9.]*$')
                           if (reg.test(_val)) updatePrivateHolder(index, 'price', _val)
+                          else {
+                            updatePrivateHolder(index, 'price', item.price || 0)
+                          }
                         }}
                       />
                     </Tooltip>
@@ -684,6 +698,8 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                               _val
                             )
                             updatePublicSaleCall('offeringAmount', input)
+                          } else {
+                            updatePublicSaleCall('offeringAmount', distribution.publicSale.offeringAmount || '')
                           }
                         }}
                       />
@@ -700,9 +716,13 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       suffix={distribution.privateReceivingToken}
                       onChange={e => {
                         const _val = e.target.value
-                        if (isNaN(Number(_val))) return
+                        if (isNaN(Number(_val))) {
+                          updatePublicSaleCall('price', distribution.publicSale.price || 0)
+                          return
+                        }
                         const reg = new RegExp('^[0-9.]*$')
                         if (reg.test(_val)) updatePublicSaleCall('price', _val)
+                        else updatePublicSaleCall('price', distribution.publicSale.price || 0)
                       }}
                     />
                   </Box>
@@ -720,6 +740,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                         const reg = new RegExp('^[0-9]*$')
                         const _val = e.target.value
                         if (reg.test(_val)) updatePublicSaleCall('pledgeLimitMin', _val)
+                        else updatePublicSaleCall('pledgeLimitMin', distribution.publicSale.pledgeLimitMin || '')
                       }}
                     />
                     <Typography display={'flex'} alignItems={'center'}>
@@ -735,6 +756,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                         const reg = new RegExp('^[0-9]*$')
                         const _val = e.target.value
                         if (reg.test(_val)) updatePublicSaleCall('pledgeLimitMax', _val)
+                        else updatePublicSaleCall('pledgeLimitMax', distribution.publicSale.pledgeLimitMax || '')
                       }}
                     />
                   </Box>

@@ -95,13 +95,14 @@ export default function Basic({ goNext }: { goNext: () => void }) {
               <span className="label">Token Supply</span>
               <Tooltip placement="top" title={toFormatMillion(basicData.tokenSupply)}>
                 <Input
-                  placeholder="100,0000,0000"
+                  placeholder="10000000000"
                   maxLength={30}
                   value={basicData.tokenSupply}
                   onChange={e => {
                     const reg = new RegExp('^[0-9]+$')
                     const _val = e.target.value
                     if (!_val || reg.test(_val)) updateBasicCall('tokenSupply', _val)
+                    else updateBasicCall('tokenSupply', basicData.tokenSupply || '')
                   }}
                 />
               </Tooltip>
@@ -111,7 +112,6 @@ export default function Basic({ goNext }: { goNext: () => void }) {
               <span className="label">Token Decimals</span>
               <InputNumber
                 placeholder="18"
-                readOnly
                 className="input-number-common"
                 style={{ width: '100%' }}
                 min={6}
