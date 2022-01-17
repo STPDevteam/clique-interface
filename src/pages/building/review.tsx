@@ -178,7 +178,7 @@ export default function ReviewInformation({
             {distributionData.reservedOpen && (
               <Box padding={'20px 35px'} borderBottom={'0.5px solid #D8D8D8'} width={'100%'}>
                 <Box padding={'0 30px'} borderBottom={'0.5px solid #D8D8D8'} paddingBottom={8}>
-                  <Typography fontWeight={500}>Reserved Tokens</Typography>
+                  <Typography variant="h6">Reserved Tokens</Typography>
                 </Box>
                 <Table
                   className="panel-config stp-table"
@@ -193,8 +193,8 @@ export default function ReviewInformation({
                   <Column title="Lock until" dataIndex="lockUntil" key="lockUntil" align="center" />
                 </Table>
                 <Box padding={'0 30px'} display={'flex'} justifyContent={'space-between'}>
-                  <Typography fontWeight={500}>Reserved amount:</Typography>
-                  <Typography>
+                  <Typography variant="h6">Reserved amount:</Typography>
+                  <Typography variant="h6">
                     {toFormatGroup(currentUsedTokenAmount.reservedAmount, 0)} {basicData.tokenSymbol} (
                     {getPerForAmount(basicData.tokenSupply, currentUsedTokenAmount.reservedAmount)}%)
                   </Typography>
@@ -220,7 +220,7 @@ export default function ReviewInformation({
                     }}
                   >
                     <Image src={currentReceivingToken.logo} />
-                    {currentReceivingToken.name}
+                    <Typography variant="h6">{currentReceivingToken.name}</Typography>
                   </Box>
                 </Box>
                 <Box
@@ -230,7 +230,7 @@ export default function ReviewInformation({
                   borderBottom={'0.5px solid #D8D8D8'}
                   mt={20}
                 >
-                  <Typography fontWeight={500}>Private sale</Typography>
+                  <Typography variant="h6">Whitelist sale</Typography>
                 </Box>
                 <Table className="panel-config stp-table" dataSource={privateSaleData} rowKey={'id'} pagination={false}>
                   <Column title="#" dataIndex="id" key="id" align="center" />
@@ -241,15 +241,15 @@ export default function ReviewInformation({
                   <Column title="Pledged of value" dataIndex="pledgedOfValue" key="pledgedOfValue" align="center" />
                 </Table>
                 <Box display={'flex'} justifyContent={'space-between'} padding={'0 30px'} mt={8}>
-                  <Typography>Private sale total</Typography>
-                  <Typography>
+                  <Typography variant="h6">Whitelist sale total</Typography>
+                  <Typography variant="h6">
                     {toFormatGroup(currentUsedTokenAmount.privateSaleTotal, 0)} {basicData.tokenSymbol} (
                     {getPerForAmount(basicData.tokenSupply, currentUsedTokenAmount.privateSaleTotal)}%)
                   </Typography>
                 </Box>
                 <Box display={'flex'} justifyContent={'space-between'} padding={'0 30px'} mt={8}>
-                  <Typography>Equivalent estimate</Typography>
-                  <Typography>
+                  <Typography variant="h6">Equivalent estimate</Typography>
+                  <Typography variant="h6">
                     {toFormatGroup(currentUsedTokenAmount.privateEquivalentEstimate) +
                       ' ' +
                       distributionData.privateReceivingToken}
@@ -262,22 +262,30 @@ export default function ReviewInformation({
               <Box padding={'20px 35px'} width={'100%'}>
                 <Box display={'grid'} gap="8px" padding={'0 30px'}>
                   <Box display={'flex'} justifyContent={'space-between'}>
-                    <Typography>Public sale total</Typography>
-                    <Typography>
+                    <Typography variant="h6">Public sale total</Typography>
+                    <Typography variant="h6">
                       {toFormatGroup(currentUsedTokenAmount.publicSaleTotal, 0)} {basicData.tokenSymbol} ({' '}
                       {getPerForAmount(basicData.tokenSupply, currentUsedTokenAmount.publicSaleTotal)}
                       %)
                     </Typography>
                   </Box>
                   <Box display={'flex'} justifyContent={'space-between'}>
-                    <Typography>Price</Typography>
-                    <Typography>
+                    <Typography variant="h6">Price</Typography>
+                    <Typography variant="h6">
                       {distributionData.publicSale.price} {distributionData.privateReceivingToken}
                     </Typography>
                   </Box>
+                  <Box display={'flex'} justifyContent={'space-between'} padding={'0 30px'} mt={8}>
+                    <Typography variant="h6">Equivalent estimate</Typography>
+                    <Typography variant="h6">
+                      {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate) +
+                        ' ' +
+                        distributionData.privateReceivingToken}
+                    </Typography>
+                  </Box>
                   <Box display={'flex'} justifyContent={'space-between'}>
-                    <Typography>Pledge limit (optional)</Typography>
-                    <Typography>
+                    <Typography variant="h6">Pledge limit (optional)</Typography>
+                    <Typography variant="h6">
                       {distributionData.publicSale.pledgeLimitMin
                         ? toFormatGroup(distributionData.publicSale.pledgeLimitMin, 0)
                         : ''}{' '}
@@ -292,8 +300,8 @@ export default function ReviewInformation({
             )}
             <Box padding={'20px 65px'} width={'100%'} display={'grid'} gap={8}>
               <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography>Start time: {timeStampToFormat(distributionData.startTime)}</Typography>
-                <Typography>End time: {timeStampToFormat(distributionData.endTime)}</Typography>
+                <Typography variant="h6">Start time: {timeStampToFormat(distributionData.startTime)}</Typography>
+                <Typography variant="h6">End time: {timeStampToFormat(distributionData.endTime)}</Typography>
               </Box>
               <Box className="input-item">
                 <TextArea value={distributionData.aboutProduct} disabled rows={5} />
@@ -314,9 +322,9 @@ export default function ReviewInformation({
               <div className="input-item">
                 <span className="label">Minimum to vote</span>
                 <span className="value">{toFormatGroup(ruleData.minVoteNumber, 0)}</span>
-                <span className="label">
+                {/* <span className="label">
                   ({getPerForAmount(basicData.tokenSupply, ruleData.minVoteNumber)}% per total supply)
-                </span>
+                </span> */}
               </div>
               <div className="input-item">
                 <span className="label">Minimum create proposal</span>
@@ -332,29 +340,20 @@ export default function ReviewInformation({
                   ({getPerForAmount(basicData.tokenSupply, ruleData.minApprovalNumber)}% per total votes)
                 </span>
               </div>
-              {ruleData.votersCustom ? (
-                <>
-                  <div className="input-item mt-12 rules-agreement">
-                    <span className="label">Contract Executor</span>
-                    <Typography fontSize={14} fontWeight={500}>
-                      {ruleData.contractExecutor}
-                    </Typography>
-                  </div>
-                  <div className="input-item mt-12 rules-agreement">
-                    <span className="label">Contract Voting Duration</span>
-                    <Typography fontSize={14} fontWeight={500}>
-                      {ruleData.contractDays} Day {ruleData.contractHours} Hour {ruleData.contractMinutes} Minute
-                    </Typography>
-                  </div>
-                </>
-              ) : (
-                <div className="input-item mt-12 rules-agreement">
-                  <span className="label">Community Voting Duration</span>
-                  <Typography fontSize={14} fontWeight={500}>
-                    {ruleData.days} Day {ruleData.hours} Hour {ruleData.minutes} Minute
-                  </Typography>
-                </div>
-              )}
+              <div className="input-item mt-12">
+                <span className="label">Community Voting Duration</span>
+                <Typography variant="h6">
+                  {ruleData.votersCustom
+                    ? 'Voters custom'
+                    : `${ruleData.days} Day ${ruleData.hours} Hour ${ruleData.minutes} Minute`}
+                </Typography>
+              </div>
+              <div className="input-item mt-12" rules-agreement>
+                <span className="label">Contract Voting Duration</span>
+                <Typography variant="h6">
+                  {ruleData.contractDays} Day {ruleData.contractHours} Hour {ruleData.contractMinutes} Minute
+                </Typography>
+              </div>
               <div className="input-item mt-12 rules-agreement">
                 <span className="label">Rules/Agreement</span>
                 <Typography fontSize={12}>{ruleData.rules}</Typography>

@@ -217,9 +217,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
         >
           <Box display={'flex'} justifyContent={'space-between'} gap={15}>
             <Box>
-              <Typography fontSize={16} fontWeight={500}>
-                Reserved Tokens
-              </Typography>
+              <Typography variant="h6">Reserved Tokens</Typography>
               <Typography color={'#798488'} fontSize={12}>
                 You can choose to set aside a portion of your tokens, and if you set a time lock on the address, the
                 total number of tokens locked will not be counted as votes.
@@ -378,10 +376,8 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                 Add More
               </Button>
               <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography fontSize={16} fontWeight={500}>
-                  Reserved amount
-                </Typography>
-                <Typography fontSize={16} fontWeight={500}>
+                <Typography variant="h6">Reserved amount</Typography>
+                <Typography variant="h6">
                   {toFormatGroup(currentUsedTokenAmount.reservedAmount, 0)} {basic.tokenSymbol}
                 </Typography>
               </Box>
@@ -398,9 +394,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
         >
           <Box display={'flex'} justifyContent={'space-between'} gap={15}>
             <Box>
-              <Typography fontSize={16} fontWeight={500}>
-                Private sale
-              </Typography>
+              <Typography variant="h6">Whitelist sale</Typography>
               <Typography color={'#798488'} fontSize={12}>
                 You can set up both whitelist crowdfunding and public crowdfunding. Whitelisted crowdfunders need to
                 redeem their tokens at once. If the whitelist crowdfunding or public crowdfunding does not reach the
@@ -409,15 +403,18 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
             </Box>
             <Switch
               checked={distribution.privateSaleOpen}
-              onChange={status => updateDistributionCall('privateSaleOpen', status)}
+              onChange={status => {
+                updateDistributionCall('privateSaleOpen', status)
+                if (status && distribution.privateSale.length === 0) {
+                  addPrivateSaleMore()
+                }
+              }}
             />
           </Box>
           {distribution.privateSaleOpen && (
             <Box mt={16} display={'grid'} gap={15}>
               <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Typography fontSize={16} fontWeight={500}>
-                  Receiving Tokens
-                </Typography>
+                <Typography variant="h6">Receiving Tokens</Typography>
                 <Box className="input-assets-selector" width={220}>
                   <Select
                     value={distribution.privateReceivingToken}
@@ -609,18 +606,14 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                 Add More
               </Button>
               <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography fontSize={16} fontWeight={500}>
-                  Private sale total
-                </Typography>
-                <Typography fontSize={16} fontWeight={500}>
+                <Typography variant="h6">Private sale total</Typography>
+                <Typography variant="h6">
                   {toFormatGroup(currentUsedTokenAmount.privateSaleTotal, 0)} {basic.tokenSymbol}
                 </Typography>
               </Box>
               <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography fontSize={16} fontWeight={500}>
-                  Equivalent estimate
-                </Typography>
-                <Typography fontSize={16} fontWeight={500}>
+                <Typography variant="h6">Equivalent estimate</Typography>
+                <Typography variant="h6">
                   {toFormatGroup(currentUsedTokenAmount.privateEquivalentEstimate, 0)}{' '}
                   {distribution.privateReceivingToken}
                 </Typography>
@@ -640,9 +633,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
         >
           <Box display={'flex'} justifyContent={'space-between'} gap={15}>
             <Box>
-              <Typography fontSize={16} fontWeight={500}>
-                Public sale
-              </Typography>
+              <Typography variant="h6">Public sale</Typography>
             </Box>
             <Switch
               checked={distribution.publicSaleOpen}
@@ -764,18 +755,14 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
               </Box>
 
               <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography fontSize={16} fontWeight={500}>
-                  Public sale total
-                </Typography>
-                <Typography fontSize={16} fontWeight={500}>
+                <Typography variant="h6">Public sale total</Typography>
+                <Typography variant="h6">
                   {toFormatGroup(currentUsedTokenAmount.publicSaleTotal, 0)} {basic.tokenSymbol}
                 </Typography>
               </Box>
               <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography fontSize={16} fontWeight={500}>
-                  Equivalent estimate
-                </Typography>
-                <Typography fontSize={16} fontWeight={500}>
+                <Typography variant="h6">Equivalent estimate</Typography>
+                <Typography variant="h6">
                   {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate, 0)}{' '}
                   {distribution.privateReceivingToken}
                 </Typography>
@@ -787,7 +774,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
         <Box mt={20} display={'grid'} gap={15}>
           <Box display={'flex'} justifyContent={'space-between'} gap={15}>
             <Box display={'flex'} gap={24} alignItems={'center'}>
-              <Typography fontSize={16} fontWeight={500} sx={{ whiteSpace: 'nowrap' }}>
+              <Typography variant="h6" sx={{ whiteSpace: 'nowrap' }}>
                 Start time
               </Typography>
               <DatePicker
@@ -799,7 +786,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
               />
             </Box>
             <Box display={'flex'} gap={24} alignItems={'center'}>
-              <Typography fontSize={16} fontWeight={500} sx={{ whiteSpace: 'nowrap' }}>
+              <Typography variant="h6" sx={{ whiteSpace: 'nowrap' }}>
                 End time
               </Typography>
               <DatePicker
@@ -811,7 +798,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
           </Box>
 
           <Box className="input-item">
-            <Typography fontSize={16} fontWeight={500} mb={10}>
+            <Typography variant="h6" mb={10}>
               About product
             </Typography>
             <TextArea

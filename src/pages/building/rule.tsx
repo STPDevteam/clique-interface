@@ -16,7 +16,7 @@ type CreateDaoDataRuleKey = keyof CreateDaoDataRule
 export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: () => void }) {
   const { updateRule, buildingDaoData } = useBuildingDataCallback()
   const { basic, rule } = buildingDaoData
-  const [minVotePer, setMinVotePer] = useState(getPerForAmount(basic.tokenSupply, rule.minVoteNumber || 1))
+  // const [minVotePer, setMinVotePer] = useState(getPerForAmount(basic.tokenSupply, rule.minVoteNumber || 1))
   const [minCreateProposalPer, setMinCreateProposalPer] = useState(
     getPerForAmount(basic.tokenSupply, rule.minCreateProposalNumber || 1)
   )
@@ -47,18 +47,18 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
     <>
       <section className="rule">
         <Box display="grid" gap="10px">
-          <Box display={'flex'} justifyContent={'space-between'} mb={20}>
-            <Typography fontSize={14} fontWeight={600}>
+          <Box display={'flex'} justifyContent={'space-between'} mb={10}>
+            <Typography fontSize={14} variant="h6">
               Total Supply
             </Typography>
-            <Typography fontSize={14} fontWeight={600}>
+            <Typography fontSize={20} variant="h6">
               {toFormatGroup(basic.tokenSupply, 0)}
             </Typography>
           </Box>
-          <Box display={'flex'} justifyContent={'space-between'}>
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
               <span className="label">Minimum % to vote</span>
-              <div className="progress-wrapper">
+              {/* <div className="progress-wrapper">
                 <Slider
                   min={1}
                   max={100}
@@ -69,10 +69,9 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                   }}
                 />
                 <span>{Number(minVotePer.toFixed(2))}%</span>
-              </div>
+              </div> */}
             </div>
             <div className="input-item votes">
-              <span className="label">Votes</span>
               <Tooltip placement="top" title={toFormatGroup(rule.minVoteNumber, 0)}>
                 <Input
                   className="input-common"
@@ -84,14 +83,14 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                       // check max value
                       const input = new BigNumber(_val).gt(basic.tokenSupply) ? basic.tokenSupply : _val
                       updateRuleCall('minVoteNumber', input)
-                      setMinVotePer(getPerForAmount(basic.tokenSupply, input))
+                      // setMinVotePer(getPerForAmount(basic.tokenSupply, input))
                     }
                   }}
                 />
               </Tooltip>
             </div>
           </Box>
-          <Box display={'flex'} justifyContent={'space-between'}>
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
               <span className="label">Minimum % create proposal</span>
               <div className="progress-wrapper">
@@ -128,7 +127,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
             </div>
           </Box>
 
-          <Box display={'flex'} justifyContent={'space-between'}>
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
               <span className="label">Minimum valid votes</span>
               <div className="progress-wrapper">
