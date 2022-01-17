@@ -107,7 +107,7 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
         </Box>
       </div>
       <Grid container spacing={20} className="transactions">
-        <Grid item lg={8} md={12}>
+        <Grid item lg={8} xs={12}>
           <div className="history-list">
             {[1, 2].map((item, index) => (
               <div key={index} className="history-item">
@@ -128,7 +128,7 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
             ))}
           </div>
         </Grid>
-        <Grid item lg={4} md={12}>
+        <Grid item lg={4} xs={12}>
           <div className="dao-tokens">
             <h3>DAO Tokens</h3>
             {daoTokens.map((item, index) => (

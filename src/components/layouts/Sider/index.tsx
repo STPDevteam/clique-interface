@@ -7,11 +7,13 @@ import IconAdd from './assets/icon-add.svg'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useCreatedDao, useMultiDaoBaseInfo } from 'hooks/useDAOInfo'
 import Image from 'components/Image'
+import { useActiveWeb3React } from 'hooks'
 
 export default function Index() {
   const location = useLocation()
   const history = useHistory()
-  const createdAddressList = useCreatedDao()
+  const { account } = useActiveWeb3React()
+  const createdAddressList = useCreatedDao(account || undefined)
   const daoBaseInfoList = useMultiDaoBaseInfo(createdAddressList || [])
 
   // useParams does not take effect on this component

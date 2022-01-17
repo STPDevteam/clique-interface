@@ -19,7 +19,8 @@ interface IProps {
 export default function Index(props: IProps) {
   const { onSelect, onCreate, daoInfo } = props
   const { account } = useActiveWeb3React()
-  const TABS = ['ALL', 'Executable', 'Open', 'Closed']
+  const TABS = ['ALL']
+  // const TABS = ['ALL', 'Executable', 'Open', 'Closed']
   const [currentTab, setCurrentTab] = useState(TABS[0])
   const { list: proposalList, page: proposalListPage } = useProposalList(daoInfo?.votingAddress)
 

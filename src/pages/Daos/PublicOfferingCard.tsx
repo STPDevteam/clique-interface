@@ -36,11 +36,10 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
       onClick={() => history.push('/offering/' + daoInfo?.daoAddress)}
     >
       <Box display={'grid'} gap={14} gridTemplateColumns={'58px 80px 1fr'} mb={22}>
-        <Avatar sx={{ width: 58, height: 58 }}></Avatar>
+        <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.token?.logo}></Avatar>
         <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'} pt={4} height={52}>
           <Typography
-            fontWeight={600}
-            fontSize={16}
+            variant="h6"
             sx={{
               whiteSpace: 'nowrap',
               overflow: 'hidden',

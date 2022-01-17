@@ -51,9 +51,9 @@ export default function Configuration({
   const [minVoteNumber, setMinVoteNumber] = useState(rule.minimumVote.toSignificant())
   const [minCreateProposalNumber, setMinCreateProposalNumber] = useState(rule?.minimumCreateProposal.toSignificant())
   const [minValidNumber, setMinValidNumber] = useState(rule.minimumValidVotes.toSignificant())
-  const [minVotePer, setMinVotePer] = useState(
-    getPerForAmount(totalSupply.toSignificant(), rule.minimumVote.toSignificant())
-  )
+  // const [minVotePer, setMinVotePer] = useState(
+  //   getPerForAmount(totalSupply.toSignificant(), rule.minimumVote.toSignificant())
+  // )
   const [minCreateProposalPer, setMinCreateProposalPer] = useState(
     getPerForAmount(totalSupply.toSignificant(), rule.minimumCreateProposal.toSignificant())
   )
@@ -218,18 +218,14 @@ export default function Configuration({
     <section className="configuration">
       <h1>Configuration</h1>
       <Box display="grid" gap="10px">
-        <Box display={'flex'} justifyContent={'space-between'} mb={20}>
-          <Typography fontSize={14} fontWeight={600}>
-            Total Supply
-          </Typography>
-          <Typography fontSize={14} fontWeight={600}>
-            {toFormatGroup(totalSupply.toSignificant())}
-          </Typography>
+        <Box display={'flex'} justifyContent={'space-between'} mb={20} mt={10}>
+          <Typography variant="h6">Total Supply</Typography>
+          <Typography variant="h6">{toFormatGroup(totalSupply.toSignificant())}</Typography>
         </Box>
-        <Box display={'flex'} justifyContent={'space-between'}>
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <div className="input-item progress">
             <span className="label">Minimum % to vote</span>
-            <div className="progress-wrapper">
+            {/* <div className="progress-wrapper">
               <Slider
                 min={1}
                 max={100}
@@ -240,10 +236,10 @@ export default function Configuration({
                 }}
               />
               <span>{Number(minVotePer.toFixed(2))}%</span>
-            </div>
+            </div> */}
           </div>
           <div className="input-item votes">
-            <span className="label">Votes</span>
+            {/* <span className="label">Votes</span> */}
             <Tooltip placement="top" title={toFormatGroup(minVoteNumber, 0)}>
               <Input
                 className="input-common"
@@ -257,14 +253,14 @@ export default function Configuration({
                       ? totalSupply.toSignificant()
                       : _val
                     setMinVoteNumber(input)
-                    setMinVotePer(getPerForAmount(totalSupply.toSignificant(), input))
+                    // setMinVotePer(getPerForAmount(totalSupply.toSignificant(), input))
                   }
                 }}
               />
             </Tooltip>
           </div>
         </Box>
-        <Box display={'flex'} justifyContent={'space-between'}>
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <div className="input-item progress">
             <span className="label">Minimum % create proposal</span>
             <div className="progress-wrapper">
@@ -303,7 +299,7 @@ export default function Configuration({
           </div>
         </Box>
 
-        <Box display={'flex'} justifyContent={'space-between'}>
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <div className="input-item progress">
             <span className="label">Minimum valid votes</span>
             <div className="progress-wrapper">
@@ -422,7 +418,7 @@ export default function Configuration({
                     setVotersCustom(val)
                   }}
                 />
-                <Typography fontWeight={500}>Voters Custom</Typography>
+                <Typography variant="h6">Voters Custom</Typography>
               </Box>
             </Box>
           </div>

@@ -8,6 +8,7 @@ import { useHistory } from 'react-router-dom'
 import { useProposalNumber } from 'hooks/useVoting'
 import PublicOfferingCard from './PublicOfferingCard'
 import Pagination from 'antd/lib/pagination'
+import ShowTokenHolders from './ShowTokenHolders'
 
 enum TypeTabs {
   DAO,
@@ -94,15 +95,7 @@ export default function Index() {
                         width: 'calc(100% - 74px)'
                       }}
                     >
-                      <Typography
-                        fontWeight={600}
-                        fontSize={16}
-                        sx={{
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}
-                      >
+                      <Typography variant="h6" noWrap>
                         {item.daoName}
                       </Typography>
                       <Typography fontWeight={500} fontSize={14} color="#798488">
@@ -111,17 +104,13 @@ export default function Index() {
                     </Box>
                   </Box>
                   <Box display={'flex'} justifyContent={'space-between'} mt={10}>
-                    <Typography fontSize={14} color={'#798488'}>
-                      Holders
-                    </Typography>
-                    <Typography fontSize={14} fontWeight={500}>
-                      3.3k
+                    <Typography variant="body1">Holders</Typography>
+                    <Typography fontSize={14} variant="h6">
+                      <ShowTokenHolders address={item.token?.address} />
                     </Typography>
                   </Box>
                   <Box display={'flex'} justifyContent={'space-between'} mt={10}>
-                    <Typography fontSize={14} color={'#798488'}>
-                      Proposal
-                    </Typography>
+                    <Typography variant="body1">Proposal</Typography>
                     <ShowProposalNumber votingAddress={item.votingAddress} daoAddress={item.daoAddress} />
                   </Box>
 
@@ -181,9 +170,5 @@ function ShowProposalNumber({
   daoAddress: string | undefined
 }) {
   const proposalNumber = useProposalNumber(votingAddress, daoAddress)
-  return (
-    <Typography fontSize={14} fontWeight={500}>
-      {proposalNumber === undefined ? '--' : proposalNumber}
-    </Typography>
-  )
+  return <Typography variant="h6">{proposalNumber === undefined ? '--' : proposalNumber}</Typography>
 }

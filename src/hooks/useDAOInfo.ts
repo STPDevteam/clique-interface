@@ -1,5 +1,4 @@
 import { Token, TokenAmount } from 'constants/token'
-import { useActiveWeb3React } from 'hooks'
 import { useMemo } from 'react'
 import { useSTPToken, useSTPTokens } from 'state/wallet/hooks'
 import {
@@ -10,12 +9,12 @@ import {
 import { useDaoContract, useDaoFactoryContract, useSTPTokenContract } from './useContract'
 import { DAO_INTERFACE } from '../constants/abis/erc20'
 import { useProposalNumber } from './useVoting'
-import JSBI from 'jsbi'
 import { DefaultChainId, PriceDecimals } from '../constants'
 import { BigintIsh } from 'constants/token/constants'
 import { tryParseAmount } from 'state/application/hooks'
 import { getCurrentTimeStamp } from 'utils/dao'
 import { useCurPrivateReceivingTokens } from 'state/building/hooks'
+import BigNumber from 'bignumber.js'
 
 export function useLastDaoId() {
   const daoFactoryContract = useDaoFactoryContract()
@@ -40,8 +39,7 @@ export function useDaoAddressListByIds(ids: number[]): (string | undefined)[] {
 }
 
 // dao address
-export function useCreatedDao(): string[] | undefined {
-  const { account } = useActiveWeb3React()
+export function useCreatedDao(account: string | undefined): string[] | undefined {
   const daoFactoryContract = useDaoFactoryContract()
 
   const res = useSingleCallResult(account ? daoFactoryContract : null, 'getCreatedDaoByAddress', [account ?? undefined])
@@ -164,14 +162,13 @@ export function useDaoStatus(daoInfo: DaoInfoProps | undefined): DaoStatusProps 
   }
 
   const pubSoldPer =
-    DaoTypeStatus.PUBLIC !== typeStatus || !daoInfo.pubSoldAmt
+    DaoTypeStatus.PUBLIC !== typeStatus || !daoInfo?.pubSoldAmt || !daoInfo?.pubSale?.amount
       ? 0
       : Number(
-          daoInfo.pubSoldAmt
-            .multiply(JSBI.BigInt(1000))
-            .divide(daoInfo.pubSale.amount)
-            .toSignificant(4)
-        ) / 10
+          new BigNumber(daoInfo.pubSoldAmt.raw.toString() || 0)
+            .dividedBy(daoInfo.pubSale.amount.raw.toString())
+            .toFixed(2)
+        )
 
   return {
     typeStatus,

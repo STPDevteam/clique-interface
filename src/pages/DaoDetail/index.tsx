@@ -13,6 +13,7 @@ import { useDaoInfoByAddress } from 'hooks/useDAOInfo'
 import { useParams } from 'react-router-dom'
 import { shortenAddress } from 'utils'
 import { ProposalInfoProp } from 'hooks/useVoting'
+import ShowTokenHolders from '../Daos/ShowTokenHolders'
 
 export default function Index() {
   const links = ['Proposal', 'Assets', 'Members', 'Configuration']
@@ -34,7 +35,10 @@ export default function Index() {
     <div className={styles['dao-detail']}>
       <div className={styles['detail-header']}>
         <p className={styles['title']}>{daoInfo?.daoName || '--'}</p>
-        <p className={styles['text']}> - Holders</p>
+        <p className={styles['text']}>
+          {' '}
+          <ShowTokenHolders address={daoInfo?.token?.address} /> Holders
+        </p>
         <p>{daoInfo?.daoDesc}</p>
         {/* <Button className={'btn-common btn-01'}>Join</Button> */}
       </div>
@@ -88,7 +92,7 @@ export default function Index() {
               />
             )}
             {currentLink === 'Assets' && daoInfo && <Assets daoInfo={daoInfo} />}
-            {currentLink === 'Members' && <Members />}
+            {currentLink === 'Members' && daoInfo && <Members daoInfo={daoInfo} />}
             {currentLink === 'Configuration' && daoInfo && daoInfo.rule && daoInfo.totalSupply && (
               <Configuration
                 totalSupply={daoInfo.totalSupply}

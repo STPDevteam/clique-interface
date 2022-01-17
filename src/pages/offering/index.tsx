@@ -27,6 +27,7 @@ import JSBI from 'jsbi'
 import { useTokenBalance } from 'state/wallet/hooks'
 import BigNumber from 'bignumber.js'
 import { Radio } from 'antd'
+import ShowTokenHolders from '../Daos/ShowTokenHolders'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -329,7 +330,9 @@ export default function Offering() {
           {daoInfo?.daoName || '-'}
         </Typography>
         <Box display={'flex'} gap="15px" alignItems={'center'}>
-          <Typography fontSize={16}>- Holders</Typography>
+          <Typography fontSize={16}>
+            <ShowTokenHolders address={daoInfo?.token?.address} /> Holders
+          </Typography>
           {daoInfo?.link.website && <ExternalLink href={daoInfo.link.website}>{daoInfo.link.website}</ExternalLink>}
           {daoInfo?.link.twitter && (
             <ExternalLink href={daoInfo.link.twitter} sx={{ display: 'flex', alignItems: 'center' }}>
