@@ -163,10 +163,13 @@ export function useDaoStatus(daoInfo: DaoInfoProps | undefined): DaoStatusProps 
 
   let openStatus: DaoOpenStatus = DaoOpenStatus.COMING_SOON
   const curTimeStamp = getCurrentTimeStamp()
-  if (daoInfo.pubSale.endTime > curTimeStamp) {
-    openStatus = DaoOpenStatus.CLOSE
-  } else if (daoInfo.pubSale.startTime > curTimeStamp) {
+  if (curTimeStamp < daoInfo.pubSale.startTime) {
+    openStatus = DaoOpenStatus.COMING_SOON
+  }
+  if (curTimeStamp >= daoInfo.pubSale.startTime && curTimeStamp <= daoInfo.pubSale.endTime) {
     openStatus = DaoOpenStatus.ACTIVE
+  } else {
+    openStatus = DaoOpenStatus.CLOSE
   }
 
   const pubSoldPer =

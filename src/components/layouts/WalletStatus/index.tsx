@@ -2,13 +2,15 @@ import './pc.less'
 
 import { useMemo } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { Button } from 'antd'
 import WalletModal from 'components/Modal/WalletModal'
 import { shortenAddress } from 'utils'
 import useENSName from 'hooks/useENSName'
 import { isTransactionRecent, useAllTransactions } from 'state/transactions/hooks'
 import { TransactionDetails } from 'state/transactions/reducer'
 import { useWalletModalToggle } from 'state/application/hooks'
+import Button from 'components/Button/Button'
+import OutlineButton from 'components/Button/OutlineButton'
+import { Box, Typography } from '@mui/material'
 
 // we want the latest one to come first, so return negative if a is after b
 function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
@@ -32,15 +34,25 @@ export default function Index() {
   return (
     <div className="wallet-status">
       <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
-      {!account && (
-        <Button onClick={toggleWalletModal} className="btn-common btn-04 btn-connect">
-          Connect Wallet
-        </Button>
-      )}
+      {!account && <Button onClick={toggleWalletModal}>Connect Wallet</Button>}
       {account && (
-        <Button className="btn-common btn-04 btn-connected" onClick={toggleWalletModal}>
-          {shortenAddress(account)}
-        </Button>
+        <Box display={'flex'} gap={20}>
+          <OutlineButton width={140} onClick={toggleWalletModal}>
+            <Typography variant="h6">My Wallet</Typography>
+          </OutlineButton>
+          <OutlineButton
+            width={160}
+            style={{
+              background: '#FAFAFA',
+              boxShadow: 'inset 2px 2px 5px rgba(105, 141, 173, 0.5)',
+              border: 'none'
+            }}
+          >
+            <Typography fontWeight={500} color={'#3898FC'}>
+              {shortenAddress(account)}
+            </Typography>
+          </OutlineButton>
+        </Box>
       )}
     </div>
   )

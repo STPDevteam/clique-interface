@@ -1,6 +1,6 @@
 import { Avatar, Box, styled, Typography } from '@mui/material'
 import { Progress } from 'antd'
-import { DaoTypeStatus, useDaoInfoByAddress, useDaoStatus } from 'hooks/useDAOInfo'
+import { DaoOpenStatus, DaoTypeStatus, useDaoInfoByAddress, useDaoStatus } from 'hooks/useDAOInfo'
 import { useHistory } from 'react-router-dom'
 import { timeStampToFormat, toFormatMillion } from 'utils/dao'
 
@@ -14,6 +14,37 @@ const StyledText = styled(Typography)({
   lineHeight: '16px'
 })
 
+function ShowStatus({ status }: { status: DaoOpenStatus }) {
+  const color =
+    status === DaoOpenStatus.COMING_SOON ? '#798488' : status === DaoOpenStatus.ACTIVE ? '#30D62C' : '#FF5F5B'
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        right: 10,
+        top: 5
+      }}
+    >
+      <Box
+        sx={{
+          display: 'inlink-block',
+          width: 5,
+          height: 5,
+          backgroundColor: color,
+          borderRadius: '50%',
+          marginRight: 5
+        }}
+      ></Box>
+      <Typography variant="body2" color={color}>
+        {status}
+      </Typography>
+    </Box>
+  )
+}
+
 export default function PublicOfferingCard({ daoAddress }: { daoAddress: string | undefined }) {
   const daoInfo = useDaoInfoByAddress(daoAddress)
   const daoStatus = useDaoStatus(daoInfo)
@@ -21,7 +52,7 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
 
   return (
     <Box
-      padding={'29px 17px'}
+      padding={'35px 17px 28px'}
       height={186}
       sx={{
         background: '#FFFFFF',
@@ -29,12 +60,39 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
         boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.2), -3px -3px 8px rgba(255, 255, 255, 0.6)',
         borderRadius: '8px',
         cursor: 'pointer',
+        position: 'relative',
         '&:hover': {
-          boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)'
+          boxShadow: '5px 7px 13px hsla(0, 0%, 68.23529411764706%, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)'
         }
       }}
       onClick={() => history.push('/offering/' + daoInfo?.daoAddress)}
     >
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '80px',
+          height: '28px',
+          left: 0,
+          top: 0,
+          background: '#FFFFFF',
+          boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.2), -3px -3px 8px rgba(255, 255, 255, 0.5)',
+          borderRadius: '8px 0px 0px 0px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC ? (
+          <Typography variant="body2" color={'#3898FC'}>
+            {daoStatus?.typeStatus}
+          </Typography>
+        ) : (
+          <Typography variant="body2" color={'#798488'}>
+            {daoStatus?.typeStatus}
+          </Typography>
+        )}
+      </Box>
+      {daoStatus && <ShowStatus status={daoStatus.openStatus} />}
       <Box display={'grid'} gap={14} gridTemplateColumns={'58px 80px 1fr'} mb={22}>
         <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.token?.logo}></Avatar>
         <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'} pt={4} height={52}>
