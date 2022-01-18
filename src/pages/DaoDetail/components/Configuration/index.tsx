@@ -1,7 +1,7 @@
 import './pc.less'
 
 import 'react'
-import { Input, Button, Slider, Tooltip, Switch, InputNumber } from 'antd'
+import { Input, Slider, Tooltip, Switch, InputNumber } from 'antd'
 import { Box, Typography } from '@mui/material'
 import { useCallback, useMemo, useState } from 'react'
 import AlertError from 'components/Alert/index'
@@ -17,6 +17,8 @@ import { useCreateContractProposalCallback } from 'hooks/useCreateContractPropos
 import useModal from 'hooks/useModal'
 import { TokenAmount } from 'constants/token'
 import Confirm from './Confirm'
+import { useActiveWeb3React } from 'hooks'
+import OutlineButton from 'components/Button/OutlineButton'
 
 // const { TextArea } = Input
 
@@ -47,6 +49,7 @@ export default function Configuration({
   totalSupply: TokenAmount
   votingAddress: string | undefined
 }) {
+  const { account } = useActiveWeb3React()
   const { hideModal, showModal } = useModal()
   const [minVoteNumber, setMinVoteNumber] = useState(rule.minimumVote.toSignificant())
   const [minCreateProposalNumber, setMinCreateProposalNumber] = useState(rule?.minimumCreateProposal.toSignificant())
@@ -503,9 +506,13 @@ export default function Configuration({
           <AlertError>{verifyMsg}</AlertError>
         </Box>
       )}
-      <Button className="btn-common btn-02 btn-update pc-mt-25" disabled={!updateLog.length} onClick={onUpdateConfirm}>
-        Update
-      </Button>
+      {account && (
+        <Box mt={15}>
+          <OutlineButton width={120} disabled={!updateLog.length} onClick={onUpdateConfirm}>
+            Update
+          </OutlineButton>
+        </Box>
+      )}
     </section>
   )
 }

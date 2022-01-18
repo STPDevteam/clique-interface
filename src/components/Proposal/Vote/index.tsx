@@ -10,6 +10,7 @@ import JSBI from 'jsbi'
 import { TokenAmount } from 'constants/token'
 import Confirm from './confirm'
 import useModal from 'hooks/useModal'
+import { useActiveWeb3React } from 'hooks'
 
 export default function Index({
   detail,
@@ -38,6 +39,7 @@ export default function Index({
       }
     | undefined
 }) {
+  const { account } = useActiveWeb3React()
   const isVoted = useMemo(() => JSBI.GT(JSBI.BigInt(voteResults?.amount || 0), JSBI.BigInt(0)), [voteResults?.amount])
   const { showModal, hideModal } = useModal()
   const [voteIndex, setVoteIndex] = useState<number>()
@@ -61,12 +63,12 @@ export default function Index({
                 {balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'}
               </Typography>
             </Box>
-            {detail.status === ProposalStatusProp.WaitFinish && (
+            {account && detail.status === ProposalStatusProp.WaitFinish && (
               <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} onClick={onResolveVotingResult}>
                 Resolve voting result
               </Button>
             )}
-            {detail.status === ProposalStatusProp.Executable && (
+            {account && detail.status === ProposalStatusProp.Executable && (
               <Button
                 className={classNames(styles['btn-vote'], 'btn-common btn-01')}
                 onClick={onExecuteProposalCallback}
@@ -94,11 +96,11 @@ export default function Index({
             </Space>
           </Radio.Group>
           <div className={styles['your-vote']}>
-            <p>Your Vote</p>
+            <p>Your Votes</p>
             <p>{balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'}</p>
           </div>
           <Box display={'grid'} gap={10}>
-            {detail.status === ProposalStatusProp.Active && (
+            {account && detail.status === ProposalStatusProp.Active && (
               <Button
                 className={classNames(styles['btn-vote'], 'btn-common btn-01')}
                 disabled={voteIndex === undefined || !balanceAt || !balanceAt.greaterThan(JSBI.BigInt(0))}
@@ -119,12 +121,12 @@ export default function Index({
                 Vote Now
               </Button>
             )}
-            {detail.status === ProposalStatusProp.WaitFinish && (
+            {account && detail.status === ProposalStatusProp.WaitFinish && (
               <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} onClick={onResolveVotingResult}>
                 Resolve voting result
               </Button>
             )}
-            {detail.status === ProposalStatusProp.Executable && (
+            {account && detail.status === ProposalStatusProp.Executable && (
               <Button
                 className={classNames(styles['btn-vote'], 'btn-common btn-01')}
                 onClick={onExecuteProposalCallback}

@@ -42,7 +42,7 @@ export default function Index() {
         </Space>
       </Radio.Group>
       <div className={styles['your-vote']}>
-        <p>Your Vote</p>
+        <p>Your Votes</p>
         <p>1000</p>
       </div>
       <Button className={classNames('btn-common btn-01', styles['btn-vote'])}>Vote</Button>

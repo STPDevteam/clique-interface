@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Tabs, Button, Tooltip, Pagination, Spin, Empty } from 'antd'
+import { Tabs, Tooltip, Pagination, Spin, Empty } from 'antd'
 import styles from './index.module.less'
 const { TabPane } = Tabs
 import ProposalStatus from '../../../../components/Proposal/ProposalStatus'
@@ -10,6 +10,7 @@ import { useActiveWeb3React } from 'hooks'
 import { timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { ProposalInfoProp, useProposalList } from 'hooks/useVoting'
 import { ProposalStatusProp } from 'hooks/useCreateCommunityProposalCallback'
+import Button from 'components/Button/Button'
 
 interface IProps {
   onSelect: (proposal: ProposalInfoProp) => void
@@ -50,12 +51,7 @@ export default function Index(props: IProps) {
               : '-'
           } ${daoInfo?.token?.symbol}`}
         >
-          <Button
-            disabled={!isProposal && false}
-            style={{ width: 190, height: 48 }}
-            className={'btn-common btn-01'}
-            onClick={onCreate}
-          >
+          <Button disabled={!isProposal} style={{ width: 190, height: 48 }} onClick={onCreate}>
             Create A Proposal
           </Button>
         </Tooltip>
