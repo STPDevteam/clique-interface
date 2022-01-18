@@ -19,7 +19,7 @@ export function useDaoAddressLists(pageSize = 8) {
     }
     return ret
   }, [lastId, currentPage, pageSize])
-  const daoAddresss = useDaoAddressListByIds(ids)
+  const { loading, data: daoAddresss } = useDaoAddressListByIds(ids)
 
   return {
     page: {
@@ -29,17 +29,19 @@ export function useDaoAddressLists(pageSize = 8) {
       pageSize,
       setCurrentPage
     },
-    daoAddresss
+    daoAddresss,
+    loading
   }
 }
 
 export function useHomeDaoList() {
-  const { daoAddresss, page } = useDaoAddressLists()
+  const { daoAddresss, page, loading } = useDaoAddressLists()
 
-  const daoList = useMultiDaoBaseInfo(daoAddresss)
+  const { data: daoList, loading: infoLoading } = useMultiDaoBaseInfo(daoAddresss)
 
   return {
     page,
+    loading: loading || infoLoading,
     list: daoList
   }
 }

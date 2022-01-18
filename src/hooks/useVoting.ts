@@ -82,7 +82,8 @@ export function useProposalList(votingAddress: string | undefined) {
       pageSize,
       setCurrentPage
     },
-    list
+    list,
+    loading: lastIdRes.loading || proposalMap?.[0]?.loading || false
   }
 }
 

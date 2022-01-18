@@ -14,7 +14,7 @@ export default function Index() {
   const history = useHistory()
   const { account } = useActiveWeb3React()
   const createdAddressList = useCreatedDao(account || undefined)
-  const daoBaseInfoList = useMultiDaoBaseInfo(createdAddressList || [])
+  const { data: daoBaseInfoList } = useMultiDaoBaseInfo(createdAddressList || [])
 
   // useParams does not take effect on this component
   // this is an alternative plan

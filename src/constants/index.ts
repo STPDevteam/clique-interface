@@ -115,7 +115,7 @@ export const DAO_FACTORY_ADDRESS = {
   [ChainId.STP]: '0x62E8648ad36DD74b11740332b1F64878e72DDc94'
 }
 
-export const DefaultChainId = ChainId.RINKEBY
+export const DefaultChainId = ChainId.STP
 
 export const PriceDecimals = 12
 
@@ -142,3 +142,5 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
     }
   ]
 }
+
+export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'

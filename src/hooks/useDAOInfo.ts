@@ -28,14 +28,22 @@ export function useDaoContractAddressById(id: number | undefined): string | unde
   return daoAddressRes.result ? daoAddressRes.result[0] : undefined
 }
 
-export function useDaoAddressListByIds(ids: number[]): (string | undefined)[] {
+export function useDaoAddressListByIds(
+  ids: number[]
+): {
+  loading: boolean
+  data: (string | undefined)[]
+} {
   const daoFactoryContract = useDaoFactoryContract()
   const daoAddressRes = useSingleContractMultipleData(
     ids.length ? daoFactoryContract : null,
     'daoMap',
     ids.map(item => [item])
   )
-  return daoAddressRes.map(item => item.result?.[0])
+  return {
+    loading: daoAddressRes?.[0]?.loading || false,
+    data: daoAddressRes.map(item => item.result?.[0])
+  }
 }
 
 // dao address
@@ -340,11 +348,14 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
 export function useMultiDaoBaseInfo(
   addresss: (string | undefined)[]
 ): {
-  daoAddress: string | undefined
-  daoName: string | undefined
-  votingAddress: string | undefined
-  token: Token | undefined
-}[] {
+  loading: boolean
+  data: {
+    daoAddress: string | undefined
+    daoName: string | undefined
+    votingAddress: string | undefined
+    token: Token | undefined
+  }[]
+} {
   const daoNameRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'name')
   const daoNames = useMemo(() => daoNameRes.map(item => item.result?.[0]), [daoNameRes])
 
@@ -357,7 +368,7 @@ export function useMultiDaoBaseInfo(
   const tokenAddresss: (string | undefined)[] = useMemo(() => daoTokenRes.map(item => item.result?.[0]), [daoTokenRes])
   const tokens = useSTPTokens(tokenAddresss, DefaultChainId)
 
-  return useMemo(() => {
+  const data = useMemo(() => {
     return daoNames.map((item, index) => {
       return {
         daoAddress: addresss[index],
@@ -367,4 +378,9 @@ export function useMultiDaoBaseInfo(
       }
     })
   }, [addresss, daoNames, tokens, votingAddresss])
+
+  return {
+    loading: daoNameRes?.[0]?.loading || false,
+    data
+  }
 }

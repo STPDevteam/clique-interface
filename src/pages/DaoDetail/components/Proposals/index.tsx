@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Tabs, Button, Tooltip, Pagination } from 'antd'
+import { Tabs, Button, Tooltip, Pagination, Spin, Empty } from 'antd'
 import styles from './index.module.less'
 const { TabPane } = Tabs
 import ProposalStatus from '../../../../components/Proposal/ProposalStatus'
@@ -22,7 +22,9 @@ export default function Index(props: IProps) {
   const TABS = ['ALL']
   // const TABS = ['ALL', 'Executable', 'Open', 'Closed']
   const [currentTab, setCurrentTab] = useState(TABS[0])
-  const { list: proposalList, page: proposalListPage } = useProposalList(daoInfo?.votingAddress)
+  const { list: proposalList, page: proposalListPage, loading: proposalListLoading } = useProposalList(
+    daoInfo?.votingAddress
+  )
 
   const tokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
   const isProposal = useMemo(() => {
@@ -71,34 +73,45 @@ export default function Index(props: IProps) {
         ))}
       </Tabs>
 
+      {proposalListLoading && (
+        <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={30}>
+          <Spin size="large" tip="Loading..." />
+        </Box>
+      )}
+      {!proposalListLoading && proposalList.length === 0 && (
+        <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={30}>
+          <Empty description="No proposals currently" />
+        </Box>
+      )}
       <Grid container className={styles['proposals-list']} spacing={30}>
-        {proposalList.map(
-          (item, index) =>
-            item && (
-              <Grid item md={12} lg={6} key={index}>
-                <Box
-                  display={'flex'}
-                  flexDirection={'column'}
-                  justifyContent={'space-between'}
-                  className={styles['proposals-item']}
-                  onClick={() => onSelect(item)}
-                >
-                  <Box>
-                    <p className={styles['title']}>{item.title}</p>
-                    <p className={styles['desc']}>{item.content}</p>
+        {!proposalListLoading &&
+          proposalList.map(
+            (item, index) =>
+              item && (
+                <Grid item md={12} lg={6} key={index}>
+                  <Box
+                    display={'flex'}
+                    flexDirection={'column'}
+                    justifyContent={'space-between'}
+                    className={styles['proposals-item']}
+                    onClick={() => onSelect(item)}
+                  >
+                    <Box>
+                      <p className={styles['title']}>{item.title}</p>
+                      <p className={styles['desc']}>{item.content}</p>
+                    </Box>
+                    <div className={styles['footer']}>
+                      <ProposalStatus status={item.status} />
+                      <p className={styles['start-time']}>
+                        {item.status === ProposalStatusProp.Review
+                          ? `Start at ${timeStampToFormat(item.startTime)}`
+                          : `Ended at ${timeStampToFormat(item.endTime)}`}
+                      </p>
+                    </div>
                   </Box>
-                  <div className={styles['footer']}>
-                    <ProposalStatus status={item.status} />
-                    <p className={styles['start-time']}>
-                      {item.status === ProposalStatusProp.Review
-                        ? `Start at ${timeStampToFormat(item.startTime)}`
-                        : `Ended at ${timeStampToFormat(item.endTime)}`}
-                    </p>
-                  </div>
-                </Box>
-              </Grid>
-            )
-        )}
+                </Grid>
+              )
+          )}
       </Grid>
       <Box display={'flex'} justifyContent={'center'}>
         <Pagination
