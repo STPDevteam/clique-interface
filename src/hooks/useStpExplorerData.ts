@@ -1,8 +1,9 @@
 import { DefaultChainId } from '../constants'
 import { Token, TokenAmount } from 'constants/token'
 import { useEffect, useState } from 'react'
-import { getTokenHolders, getTokenInfo } from 'utils/fetch/stpExplorer'
+import { getAccountERC20Tokens, getTokenHolders, getTokenInfo } from 'utils/fetch/stpExplorer'
 import JSBI from 'jsbi'
+import { useActiveWeb3React } from 'hooks'
 
 interface ExplorerTokenInfo {
   name: string
@@ -71,5 +72,39 @@ export function useTokenHoldersByExplorer(tokenAddress: string | undefined) {
   return {
     data,
     loading
+  }
+}
+
+export function useAccountERC20Tokens() {
+  const { account, chainId } = useActiveWeb3React()
+  const [data, setData] = useState<TokenAmount[]>([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (!account || !chainId || chainId !== DefaultChainId) {
+      setData([])
+      return
+    }
+    setLoading(true)
+    getAccountERC20Tokens(account)
+      .then(res => {
+        const data: any = res.data
+        const ret = data.tokens.map((item: { address: string; decimals: number; balance: string; symbol: string }) => {
+          const token = new Token(chainId, item.address, item.decimals, item.symbol)
+          return new TokenAmount(token, JSBI.BigInt(item.balance))
+        })
+        setData(ret)
+        setLoading(false)
+      })
+      .catch(e => {
+        console.error(e)
+        setData([])
+        setLoading(false)
+      })
+  }, [account, chainId])
+
+  return {
+    loading,
+    data
   }
 }

@@ -19,6 +19,7 @@ import DaoDetail from './DaoDetail'
 import Building from './building'
 import Launching from './building/launching'
 import Offering from './offering'
+import MyWallet from './myWallet'
 
 // const AppWrapper = styled('div')(({ theme }) => ({
 //   display: 'flex',
@@ -75,6 +76,7 @@ export default function App() {
                 <Route exact strict path="/building/launching/:hash" component={Launching} />
                 <Route exact strict path="/detail/:address" component={DaoDetail} />
                 <Route exact strict path="/offering/:address" component={Offering} />
+                <Route exact strict path="/my_wallet" component={MyWallet} />
               </Switch>
             </Web3ReactManager>
             {/* </BodyWrapper> */}

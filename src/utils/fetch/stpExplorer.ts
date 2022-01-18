@@ -8,3 +8,7 @@ export function getTokenInfo(tokenAddress: string) {
 export function getTokenHolders(tokenAddress: string) {
   return Axios.get(stpExplorerBaseUrl + `api/accounts/${tokenAddress}/holders`)
 }
+
+export function getAccountERC20Tokens(accountAddress: string) {
+  return Axios.get(stpExplorerBaseUrl + `api/accounts/${accountAddress}/tokens`)
+}
