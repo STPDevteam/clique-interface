@@ -1,12 +1,13 @@
-import { Select as MuiSelect, InputLabel as MuiInputLabel, styled, InputBase, useTheme } from '@mui/material'
+import { Select as MuiSelect, InputLabel as MuiInputLabel, styled, InputBase, useTheme, Theme } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import SelectedIcon from 'assets/componentsIcon/selected_icon.svg'
+import { SxProps } from '@mui/system'
 
 interface Props {
   children?: React.ReactNode
   onChange?: (e: any) => void
   defaultValue?: any
-  value?: string | string[]
+  value?: string | string[] | number | number[]
   disabled?: boolean
   selected?: React.ReactNode
   placeholder?: string
@@ -16,6 +17,7 @@ interface Props {
   primary?: boolean
   label?: string
   renderValue?: any
+  style?: React.CSSProperties | SxProps<Theme>
 }
 
 const StyledInputLabel = styled(MuiInputLabel)(({ theme }) => ({
@@ -51,7 +53,8 @@ export default function Select(props: Props) {
     value,
     defaultValue,
     placeholder,
-    renderValue
+    renderValue,
+    style
   } = props
   const theme = useTheme()
 
@@ -76,8 +79,10 @@ export default function Select(props: Props) {
             backgroundColor: disabled ? theme.palette.grey.A400 : theme.palette.primary.main
           },
           '& .MuiSelect-icon': {
+            color: '#22304A',
             display: disabled ? 'none' : 'block'
-          }
+          },
+          ...style
         }}
         value={value}
         displayEmpty
@@ -85,21 +90,20 @@ export default function Select(props: Props) {
         MenuProps={{
           sx: {
             '& .MuiPaper-root': {
-              width: '100%',
+              width: '150px',
               borderRadius: '10px',
               mt: '12px',
               border: '1px solid rgba(255, 255, 255, 0.2)',
               '& li': {
                 fontSize: 16,
                 fontWeight: 500,
-                color: '#FFFFFF',
-                borderBottom: '1px solid rgba(255,255,255,0.1)',
+                color: '#22304A',
                 display: 'flex',
                 alignItems: 'center',
                 padding: '12px 0'
               },
               '& li:hover': {
-                backgroundColor: 'rgba(255,255,255,0.05)'
+                backgroundColor: '#3898fc'
               },
               '& li:last-child': {
                 borderBottom: 'none'

@@ -100,27 +100,30 @@ export default function Index({
             <p>{balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'}</p>
           </div>
           <Box display={'grid'} gap={10}>
-            {account && detail.status === ProposalStatusProp.Active && (
-              <Button
-                className={classNames(styles['btn-vote'], 'btn-common btn-01')}
-                disabled={voteIndex === undefined || !balanceAt || !balanceAt.greaterThan(JSBI.BigInt(0))}
-                onClick={() => {
-                  if (voteIndex === undefined) {
-                    return
-                  }
-                  showModal(
-                    <Confirm
-                      balanceAt={balanceAt?.toSignificant(6, { groupSeparator: ',' }) || ''}
-                      optionName={list[voteIndex].name}
-                      onConfirm={() => onVote(voteIndex)}
-                      onHide={hideModal}
-                    />
-                  )
-                }}
-              >
-                Vote Now
-              </Button>
-            )}
+            <Button
+              className={classNames(styles['btn-vote'], 'btn-common btn-01')}
+              disabled={
+                detail.status !== ProposalStatusProp.Active ||
+                voteIndex === undefined ||
+                !balanceAt ||
+                !balanceAt.greaterThan(JSBI.BigInt(0))
+              }
+              onClick={() => {
+                if (voteIndex === undefined) {
+                  return
+                }
+                showModal(
+                  <Confirm
+                    balanceAt={balanceAt?.toSignificant(6, { groupSeparator: ',' }) || ''}
+                    optionName={list[voteIndex].name}
+                    onConfirm={() => onVote(voteIndex)}
+                    onHide={hideModal}
+                  />
+                )
+              }}
+            >
+              Vote Now
+            </Button>
             {account && detail.status === ProposalStatusProp.WaitFinish && (
               <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} onClick={onResolveVotingResult}>
                 Resolve voting result

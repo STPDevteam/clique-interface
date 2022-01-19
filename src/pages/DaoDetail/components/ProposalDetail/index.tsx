@@ -23,6 +23,7 @@ import { useActiveWeb3React } from 'hooks'
 import JSBI from 'jsbi'
 import { useResolveVotingResultCallback } from 'hooks/useResolveVotingResultCallback'
 import { useExecuteProposalCallback } from 'hooks/useExecuteProposalCallback'
+import TimelineStatus from './TimelineStatus'
 
 export default function Index({
   detail,
@@ -162,6 +163,7 @@ export default function Index({
             list={votingOptionsList}
             balanceAt={myDaoBalanceAt}
           />
+          <TimelineStatus detail={detail} onExecuteProposal={onExecuteProposalCallback} />
           {isCreator ? <ProposalUndoClaim detail={detail} daoInfo={daoInfo} /> : <OtherUserDetail detail={detail} />}
         </Grid>
       </Grid>

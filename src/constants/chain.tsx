@@ -1,6 +1,8 @@
 import { Chain } from 'models/chain'
 import { ReactComponent as ETH } from 'assets/svg/eth_logo.svg'
 import EthUrl from 'assets/svg/eth_logo.svg'
+import STPSvg from '../assets/images/icon-token.svg'
+import { ReactComponent as STPLogo } from '../assets/images/icon-token.svg'
 
 export enum ChainId {
   RINKEBY = 4,
@@ -17,10 +19,10 @@ export const ChainList = [
     hex: '0x4'
   },
   {
-    icon: <ETH />,
-    logo: EthUrl,
-    symbol: 'STP',
-    name: 'STP Network',
+    icon: <STPLogo />,
+    logo: STPSvg,
+    symbol: 'Meter',
+    name: 'Meter Network',
     id: ChainId.STP,
     hex: '0x48'
   }

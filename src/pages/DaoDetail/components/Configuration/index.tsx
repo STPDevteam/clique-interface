@@ -1,11 +1,11 @@
 import './pc.less'
 
 import 'react'
-import { Input, Slider, Tooltip, Switch, InputNumber } from 'antd'
+import { Input, Slider, Tooltip, Switch, InputNumber, Table } from 'antd'
 import { Box, Typography } from '@mui/material'
 import { useCallback, useMemo, useState } from 'react'
 import AlertError from 'components/Alert/index'
-import { amountAddDecimals, getCurrentTimeStamp, toFormatGroup } from 'utils/dao'
+import { amountAddDecimals, getCurrentTimeStamp, timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { calcVotingDuration, getAmountForPer, getPerForAmount } from 'pages/building/function'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
@@ -19,6 +19,7 @@ import { TokenAmount } from 'constants/token'
 import Confirm from './Confirm'
 import { useActiveWeb3React } from 'hooks'
 import OutlineButton from 'components/Button/OutlineButton'
+const { Column } = Table
 
 // const { TextArea } = Input
 
@@ -36,7 +37,8 @@ function calcTime(timeStamp: number) {
 export default function Configuration({
   rule,
   totalSupply,
-  votingAddress
+  votingAddress,
+  reserved
 }: {
   rule: {
     minimumVote: TokenAmount
@@ -48,9 +50,25 @@ export default function Configuration({
   }
   totalSupply: TokenAmount
   votingAddress: string | undefined
+  reserved: {
+    address: string
+    amount: TokenAmount
+    lockDate: number
+  }[]
 }) {
   const { account } = useActiveWeb3React()
   const { hideModal, showModal } = useModal()
+  const reservedData = useMemo(
+    () =>
+      reserved.map(({ address, amount, lockDate }, index) => ({
+        id: index + 1,
+        address,
+        amount: amount.toSignificant(6, { groupSeparator: ',' }),
+        per: getPerForAmount(totalSupply.toSignificant(), amount.toSignificant()),
+        lock: timeStampToFormat(lockDate)
+      })),
+    [reserved, totalSupply]
+  )
   const [minVoteNumber, setMinVoteNumber] = useState(rule.minimumVote.toSignificant())
   const [minCreateProposalNumber, setMinCreateProposalNumber] = useState(rule?.minimumCreateProposal.toSignificant())
   const [minValidNumber, setMinValidNumber] = useState(rule.minimumValidVotes.toSignificant())
@@ -220,6 +238,16 @@ export default function Configuration({
   return (
     <section className="configuration">
       <h1>Configuration</h1>
+      <Box>
+        <Typography>Lock Address</Typography>
+        <Table className="stp-table" dataSource={reservedData} rowKey={'id'} pagination={false}>
+          <Column title="#" dataIndex="id" key="id" align="center" />
+          <Column title="Addresses" dataIndex="address" key="id" align="center" />
+          <Column title="Amount" dataIndex="amount" key="id" align="center" />
+          <Column title="%" dataIndex="per" key="id" align="center" />
+          <Column title="Lock until" dataIndex="lock" key="id" align="center" />
+        </Table>
+      </Box>
       <Box display="grid" gap="10px">
         <Box display={'flex'} justifyContent={'space-between'} mb={20} mt={10}>
           <Typography variant="h6">Total Supply</Typography>

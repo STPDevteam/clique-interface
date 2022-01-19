@@ -26,8 +26,8 @@ import Image from 'components/Image'
 import JSBI from 'jsbi'
 import { useTokenBalance } from 'state/wallet/hooks'
 import BigNumber from 'bignumber.js'
-import { Radio } from 'antd'
 import ShowTokenHolders from '../Daos/ShowTokenHolders'
+import ActiveBox from './ActiveBox'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -35,6 +35,36 @@ const StyledHeader = styled(Box)({
   boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)',
   padding: '23px 43px'
 })
+const StyledTabBox = styled(Box)({
+  margin: '10px auto 0',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderRadius: '8px',
+  boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)',
+  '& .item': {
+    width: 115,
+    display: 'flex',
+    justifyContent: 'center',
+    height: 40,
+    cursor: 'pointer',
+    color: '#22304A',
+    fontWeight: 500,
+    alignItems: 'center',
+    border: '1px solid #3898FC',
+    '&:first-child': {
+      borderRadius: '8px 0px 0px 8px'
+    },
+    '&:last-child': {
+      borderRadius: '0px 8px 8px 0px'
+    }
+  },
+  '& .active': {
+    background: '#3898FC',
+    color: '#fff'
+  }
+})
+
 const StyledContent = styled(Box)({
   maxWidth: '1320px',
   padding: '20px 76px 100px'
@@ -356,7 +386,7 @@ export default function Offering() {
           </OutlineButton>
         </Box>
         <Grid container spacing={32} fontSize={16}>
-          <Grid item lg={8} md={12} width={'100%'}>
+          <Grid item lg={8} xs={12} width={'100%'}>
             <StyledBetween alignItems={'center'}>
               <Box display={'flex'} gap={15}>
                 <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.token?.logo || ''}></Avatar>
@@ -416,16 +446,19 @@ export default function Offering() {
                   </StyledBetween>
                 </>
               )}
-              <Box display={'flex'} justifyContent={'center'} sx={{ margin: 20 }}>
-                <Radio.Group size="large" onChange={e => setTabInfo(e.target.value as TabOption)} value={tabInfo}>
-                  <Radio.Button value="about">About</Radio.Button>
-                  <Radio.Button value="active">Active</Radio.Button>
-                </Radio.Group>
-              </Box>
+              <StyledTabBox display={'flex'}>
+                <div className={`item ${tabInfo === 'about' ? 'active' : ''}`} onClick={() => setTabInfo('about')}>
+                  About
+                </div>
+                <div className={`item ${tabInfo === 'active' ? 'active' : ''}`} onClick={() => setTabInfo('active')}>
+                  Active
+                </div>
+              </StyledTabBox>
               {tabInfo === 'about' && <Typography>{daoInfo?.introduction}</Typography>}
+              {tabInfo === 'active' && <ActiveBox></ActiveBox>}
             </Box>
           </Grid>
-          <Grid item lg={4} md={12}>
+          <Grid item lg={4} xs={12}>
             <Box display={'grid'} gap={24}>
               {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC && (
                 <StyledCard display={'grid'} gap={6}>

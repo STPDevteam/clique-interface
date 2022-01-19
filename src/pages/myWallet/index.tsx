@@ -10,7 +10,7 @@ const StyledHeader = styled(Box)({
   width: '100%',
   minHeight: 138,
   boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)',
-  padding: '23px 43px'
+  padding: '0 43px'
 })
 const Container = styled(Box)({
   maxWidth: 852,
@@ -42,8 +42,10 @@ export default function Index() {
     () =>
       myTokens.map(item => ({
         asset: item.token.symbol,
+        price: '-',
         balance: item.toSignificant(6, { groupSeparator: ',' }),
-        daoName: '-'
+        daoName: '-',
+        value: '-'
       })),
     [myTokens]
   )
@@ -81,7 +83,9 @@ export default function Index() {
               pagination={false}
             >
               <Column title="Asset" dataIndex="asset" key="id" align="center" />
+              <Column title="Price" dataIndex="price" key="id" align="center" />
               <Column align="center" title="Balance" dataIndex="balance" key="quantity" />
+              <Column title="Value" dataIndex="value" key="id" align="center" />
               <Column title="DAO Name" dataIndex="daoName" key="proposals" align="center" />
             </Table>
           </Container>

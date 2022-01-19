@@ -98,6 +98,7 @@ export default function Index() {
                 totalSupply={daoInfo.totalSupply}
                 votingAddress={daoInfo.votingAddress}
                 rule={daoInfo.rule}
+                reserved={daoInfo.reserved}
               />
             )}
           </div>

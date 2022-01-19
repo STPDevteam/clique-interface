@@ -195,7 +195,7 @@ export default function WalletModal({
           </Typography>
           <Box padding={isUpToMD ? '16px' : '2rem 6rem 52px'}>
             {error instanceof UnsupportedChainIdError
-              ? 'Please connect to the appropriate Ethereum network.'
+              ? 'Please connect to a supported network in your wallet'
               : 'Error connecting. Try refreshing the page.'}
           </Box>
         </>

@@ -12,6 +12,7 @@ import Button from 'components/Button/Button'
 import OutlineButton from 'components/Button/OutlineButton'
 import { Box, Typography } from '@mui/material'
 import { useHistory } from 'react-router-dom'
+import NetworkSelect from '../../Header/NetworkSelect'
 
 // we want the latest one to come first, so return negative if a is after b
 function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
@@ -43,6 +44,7 @@ export default function Index() {
       )}
       {account && (
         <Box display={'flex'} gap={20}>
+          <NetworkSelect />
           <OutlineButton width={140}>
             <Typography variant="h6" onClick={() => history.push('/my_wallet')}>
               My Wallet
