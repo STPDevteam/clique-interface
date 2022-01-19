@@ -172,6 +172,14 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
       // if (!isValidAmount(_publicSaleData.pledgeLimitMin) || !isValidAmount(_publicSaleData.pledgeLimitMax))
       //   return 'Public sale pledge limit required'
     }
+    if (distribution.publicSaleOpen || distribution.privateSaleOpen) {
+      const isValidPrivateReceivingToken = curPrivateReceivingTokens.filter(
+        item => item.value === distribution.privateReceivingToken
+      )
+      if (!isValidPrivateReceivingToken.length) {
+        return 'Receiving token invalid'
+      }
+    }
 
     if (!distribution.startTime) return 'Start time required'
     if (!distribution.endTime) return 'End time required'
@@ -182,7 +190,9 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
 
     return undefined
   }, [
+    curPrivateReceivingTokens,
     distribution.endTime,
+    distribution.privateReceivingToken,
     distribution.privateSale,
     distribution.privateSaleOpen,
     distribution.publicSale,

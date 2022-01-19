@@ -123,8 +123,8 @@ export const PriceDecimals = 12
 export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTokenProps[] } = {
   [ChainId.RINKEBY]: [
     {
-      name: 'STEP',
-      value: 'STEP',
+      name: 'TT',
+      value: 'TT',
       chainId: 4,
       logo: IconTokenSvg,
       address: '0x030003546dfF30d0B7F0e6cD284D32A9D273131C',
@@ -133,8 +133,8 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
   ],
   [ChainId.STP]: [
     {
-      name: 'STEP',
-      value: 'STEP',
+      name: 'TT',
+      value: 'TT',
       chainId: 72,
       logo: IconTokenSvg,
       address: '0xB6076c0347c6F0a1c5Ae0096365eF6E022063505',
