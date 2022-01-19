@@ -82,7 +82,7 @@ export default function Configuration({
     getPerForAmount(totalSupply.toSignificant(), rule?.minimumValidVotes.toSignificant())
   )
 
-  const [votersCustom, setVotersCustom] = useState(JSBI.GT(!JSBI.BigInt(rule.communityVotingDuration), JSBI.BigInt(0)))
+  const [votersCustom, setVotersCustom] = useState(!JSBI.GT(JSBI.BigInt(rule.communityVotingDuration), JSBI.BigInt(0)))
 
   const [communityData, setCommunityData] = useState(calcTime(Number(rule?.communityVotingDuration || 0)))
   const [contractData, setContractData] = useState(calcTime(Number(rule?.contractVotingDuration || 0)))
