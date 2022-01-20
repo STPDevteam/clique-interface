@@ -61,6 +61,10 @@ export default function Index(props: Props) {
       .then(() => {
         hideModal()
         showModal(<TransactionSubmittedModal />)
+        setTitle('')
+        setDesc('')
+        setStartTime(undefined)
+        setEndTime(undefined)
       })
       .catch((err: any) => {
         hideModal()

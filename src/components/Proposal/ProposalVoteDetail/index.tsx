@@ -1,24 +1,35 @@
 import styles from './index.module.less'
 import { Button, Progress } from 'antd'
 import classNames from 'classnames'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import useModal from 'hooks/useModal'
 import VoteList from './VoteList'
+import { TokenAmount } from 'constants/token'
 
 export default function Index({
-  list
+  list,
+  minimumValidVotes
 }: {
   list: {
     name: string
     per: number
     votes: string | undefined
   }[]
+  minimumValidVotes: TokenAmount | undefined
 }) {
   const { showModal } = useModal()
 
   return (
     <div className={styles['vote-details']}>
-      <p className={styles['title']}>Detail</p>
+      <Box display={'flex'} gap={20} alignItems={'center'} mb={10}>
+        <Typography variant="h6" fontSize={20}>
+          Current Results
+        </Typography>
+        <Typography>
+          (Minimum valid votes:{minimumValidVotes?.toSignificant(6, { groupSeparator: ',' })}{' '}
+          {minimumValidVotes?.token.symbol})
+        </Typography>
+      </Box>
       <div className={styles['vote-list']}>
         {list.map((item, index) => (
           <div key={index} className={styles['vote-item']}>

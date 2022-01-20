@@ -28,16 +28,16 @@ export default function Basic({ goNext }: { goNext: () => void }) {
 
   const verifyMsg = useMemo(() => {
     if (!basicData.daoName.trim()) {
-      return 'Dao Name Required'
+      return 'Dao name required'
     }
     if (!basicData.tokenName.trim()) {
-      return 'Token Name Required'
+      return 'Token name required'
     }
     if (!basicData.tokenSymbol.trim()) {
-      return 'Token Symbol Required'
+      return 'Token symbol required'
     }
     if (!basicData.tokenSupply.trim() || !new BigNumber(basicData.tokenSupply).gt(0)) {
-      return 'Token Supply Required'
+      return 'Token supply required'
     }
     return undefined
   }, [basicData.daoName, basicData.tokenName, basicData.tokenSupply, basicData.tokenSymbol])
@@ -106,7 +106,9 @@ export default function Basic({ goNext }: { goNext: () => void }) {
                   }}
                 />
               </Tooltip>
-              <Typography fontSize={12}>更改Token Supply将会重置后续分配token的数量</Typography>
+              <Typography fontSize={12}>
+                Changing the Token Supply will reset the number of tokens allocated subsequently
+              </Typography>
             </Box>
             <Box display="grid">
               <span className="label">Token Decimals</span>
@@ -126,11 +128,14 @@ export default function Basic({ goNext }: { goNext: () => void }) {
           </Box>
           <div className="input-item">
             <span className="label">Token Photo</span>
-            <IUpload>
-              <Button className="btn-upload">
-                <img src={IconUpload} />
-              </Button>
-            </IUpload>
+            <Box display={'flex'} alignItems={'center'} gap="5px">
+              <IUpload setResult={val => updateBasicCall('tokenPhoto', val)}>
+                <Button className="btn-upload">
+                  <img src={IconUpload} />
+                </Button>
+              </IUpload>
+              <Typography>File types supported: JPG, PNG. Max size: 500KB</Typography>
+            </Box>
           </div>
           <div className="input-item">
             <span className="label">Website (optional)</span>

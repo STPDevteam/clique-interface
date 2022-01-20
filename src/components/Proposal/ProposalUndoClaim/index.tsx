@@ -11,8 +11,18 @@ import TransactionPendingModal from 'components/Modal/TransactionModals/Transact
 import useModal from 'hooks/useModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import { shortenAddress } from 'utils'
+import { TokenAmount } from 'constants/token'
 
-export default function Index({ detail, daoInfo }: { detail: ProposalInfoProp; daoInfo: DaoInfoProps }) {
+export default function Index({
+  detail,
+  daoInfo,
+  stakedToken
+}: {
+  detail: ProposalInfoProp
+  daoInfo: DaoInfoProps
+  stakedToken: TokenAmount | undefined
+}) {
   const isClaimed = useVotingClaimed(daoInfo.votingAddress, detail.id)
   const { showModal, hideModal } = useModal()
   const cancelProposalCallback = useCancelProposalCallback(daoInfo.votingAddress)
@@ -41,7 +51,7 @@ export default function Index({ detail, daoInfo }: { detail: ProposalInfoProp; d
         hideModal()
         showModal(<TransactionSubmittedModal />)
       })
-      .catch(err => {
+      .catch((err: any) => {
         hideModal()
         showModal(
           <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
@@ -69,11 +79,11 @@ export default function Index({ detail, daoInfo }: { detail: ProposalInfoProp; d
       <p className={styles['title']}>Details</p>
       <div className={styles['list-item']}>
         <span className={styles['label']}>Proposer</span>
-        <span className={styles['value']}>--</span>
+        <span className={styles['value']}>{shortenAddress(detail.creator)}</span>
       </div>
       <div className={styles['list-item']}>
         <span className={styles['label']}>Snapshot</span>
-        <span className={styles['value']}>--</span>
+        <span className={styles['value']}>{detail.blkHeight}</span>
       </div>
       <div className={styles['list-item']}>
         <span className={styles['label']}>Start time</span>
@@ -86,7 +96,7 @@ export default function Index({ detail, daoInfo }: { detail: ProposalInfoProp; d
       <div className={styles['list-item']}>
         <span className={styles['label']}>Staked</span>
         <span className={styles['value']}>
-          {daoInfo.rule?.minimumCreateProposal.toSignificant()} {daoInfo.token?.symbol}
+          {isClaimed ? 0 : stakedToken?.toSignificant()} {stakedToken?.token?.symbol}
         </span>
       </div>
       {getBtn}

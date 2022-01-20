@@ -16,15 +16,14 @@ export default function Index({
   detail,
   list,
   onVote,
-  onResolveVotingResult,
   onExecuteProposalCallback,
   balanceAt,
-  voteResults
+  voteResults,
+  minimumVote
 }: {
   onVote: (index: number) => void
   balanceAt: TokenAmount | undefined
   detail: ProposalInfoProp
-  onResolveVotingResult: () => void
   onExecuteProposalCallback: () => void
   list: {
     name: string
@@ -38,6 +37,7 @@ export default function Index({
         optionIndex: number
       }
     | undefined
+  minimumVote: TokenAmount | undefined
 }) {
   const { account } = useActiveWeb3React()
   const isVoted = useMemo(() => JSBI.GT(JSBI.BigInt(voteResults?.amount || 0), JSBI.BigInt(0)), [voteResults?.amount])
@@ -46,6 +46,54 @@ export default function Index({
   const handleChange = (e: RadioChangeEvent) => {
     setVoteIndex(e.target.value)
   }
+
+  const voteBtn = useMemo(() => {
+    if (detail.status !== ProposalStatusProp.Active) {
+      return (
+        <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
+          Close
+        </Button>
+      )
+    }
+    if (isVoted) {
+      return (
+        <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
+          You voted
+        </Button>
+      )
+    }
+    if (!balanceAt || !minimumVote || !balanceAt.greaterThan(minimumVote)) {
+      return (
+        <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
+          You votes insufficient
+        </Button>
+      )
+    }
+    if (voteIndex === undefined) {
+      return (
+        <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
+          Vote Now
+        </Button>
+      )
+    }
+    return (
+      <Button
+        className={classNames(styles['btn-vote'], 'btn-common btn-01')}
+        onClick={() => {
+          showModal(
+            <Confirm
+              balanceAt={balanceAt?.toSignificant(6, { groupSeparator: ',' }) || ''}
+              optionName={list[voteIndex].name}
+              onConfirm={() => onVote(voteIndex)}
+              onHide={hideModal}
+            />
+          )
+        }}
+      >
+        Vote Now
+      </Button>
+    )
+  }, [balanceAt, detail.status, hideModal, isVoted, list, minimumVote, onVote, showModal, voteIndex])
 
   return (
     <div className={styles['vote-container']}>
@@ -58,16 +106,18 @@ export default function Index({
               {voteResults ? list[voteResults.optionIndex].name : ''}
             </Typography>
             <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography variant="body1">Your Vote</Typography>
+              <Typography variant="body1">Your Votes</Typography>
               <Typography variant="h6" fontSize={14}>
                 {balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'}
               </Typography>
             </Box>
-            {account && detail.status === ProposalStatusProp.WaitFinish && (
-              <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} onClick={onResolveVotingResult}>
-                Resolve voting result
-              </Button>
-            )}
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Typography variant="body1">Minimum to vote</Typography>
+              <Typography variant="h6" fontSize={14}>
+                {minimumVote?.toSignificant(6, { groupSeparator: ',' }) || '-'}
+              </Typography>
+            </Box>
+            {voteBtn}
             {account && detail.status === ProposalStatusProp.Executable && (
               <Button
                 className={classNames(styles['btn-vote'], 'btn-common btn-01')}
@@ -81,62 +131,44 @@ export default function Index({
       ) : (
         <div>
           <p className={styles.title}>Cast your vote</p>
-          <Radio.Group
-            onChange={handleChange}
-            value={voteIndex}
-            disabled={detail.status !== ProposalStatusProp.Active}
-            className="custom-radio"
-          >
-            <Space direction="vertical">
-              {list.map((option, index) => (
-                <Radio key={index} value={index}>
-                  {option.name}
-                </Radio>
-              ))}
-            </Space>
-          </Radio.Group>
-          <div className={styles['your-vote']}>
-            <p>Your Votes</p>
-            <p>{balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'}</p>
-          </div>
-          <Box display={'grid'} gap={10}>
-            <Button
-              className={classNames(styles['btn-vote'], 'btn-common btn-01')}
-              disabled={
-                detail.status !== ProposalStatusProp.Active ||
-                voteIndex === undefined ||
-                !balanceAt ||
-                !balanceAt.greaterThan(JSBI.BigInt(0))
-              }
-              onClick={() => {
-                if (voteIndex === undefined) {
-                  return
-                }
-                showModal(
-                  <Confirm
-                    balanceAt={balanceAt?.toSignificant(6, { groupSeparator: ',' }) || ''}
-                    optionName={list[voteIndex].name}
-                    onConfirm={() => onVote(voteIndex)}
-                    onHide={hideModal}
-                  />
-                )
-              }}
+          <Box display={'grid'} gap={5}>
+            <Radio.Group
+              onChange={handleChange}
+              value={voteIndex}
+              disabled={detail.status !== ProposalStatusProp.Active}
+              className="custom-radio"
             >
-              Vote Now
-            </Button>
-            {account && detail.status === ProposalStatusProp.WaitFinish && (
-              <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} onClick={onResolveVotingResult}>
-                Resolve voting result
-              </Button>
-            )}
-            {account && detail.status === ProposalStatusProp.Executable && (
-              <Button
-                className={classNames(styles['btn-vote'], 'btn-common btn-01')}
-                onClick={onExecuteProposalCallback}
-              >
-                Execute proposal
-              </Button>
-            )}
+              <Space direction="vertical">
+                {list.map((option, index) => (
+                  <Radio key={index} value={index}>
+                    {option.name}
+                  </Radio>
+                ))}
+              </Space>
+            </Radio.Group>
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Typography variant="body1">Your Vote</Typography>
+              <Typography variant="h6" fontSize={14}>
+                {balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'}
+              </Typography>
+            </Box>
+            <Box display={'flex'} justifyContent={'space-between'}>
+              <Typography variant="body1">Minimum to vote</Typography>
+              <Typography variant="h6" fontSize={14}>
+                {minimumVote?.toSignificant(6, { groupSeparator: ',' }) || '-'}
+              </Typography>
+            </Box>
+            <Box display={'grid'} gap={10}>
+              {voteBtn}
+              {account && detail.status === ProposalStatusProp.Executable && (
+                <Button
+                  className={classNames(styles['btn-vote'], 'btn-common btn-01')}
+                  onClick={onExecuteProposalCallback}
+                >
+                  Execute proposal
+                </Button>
+              )}
+            </Box>
           </Box>
         </div>
       )}

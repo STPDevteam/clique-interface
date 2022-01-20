@@ -186,7 +186,8 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
 
     if (Number(distribution.startTime >= Number(distribution.endTime))) return 'Start time must be less than end time'
 
-    if (isValidAmount(remainderTokenAmount)) return '有剩余代币未被使用，请配置完成后点击下一步'
+    if (isValidAmount(remainderTokenAmount))
+      return 'There are remaining tokens that are not used, please click Next after the configuration is complete'
 
     return undefined
   }, [

@@ -1,12 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Tabs, Tooltip, Pagination, Spin, Empty } from 'antd'
 import styles from './index.module.less'
 const { TabPane } = Tabs
 import ProposalStatus from '../../../../components/Proposal/ProposalStatus'
 import { Box, Grid } from '@mui/material'
 import { DaoInfoProps } from 'hooks/useDAOInfo'
-import { useTokenBalance } from 'state/wallet/hooks'
-import { useActiveWeb3React } from 'hooks'
+// import { useTokenBalance } from 'state/wallet/hooks'
+// import { useActiveWeb3React } from 'hooks'
 import { timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { ProposalInfoProp, useProposalList } from 'hooks/useVoting'
 import { ProposalStatusProp } from 'hooks/useCreateCommunityProposalCallback'
@@ -19,7 +19,7 @@ interface IProps {
 }
 export default function Index(props: IProps) {
   const { onSelect, onCreate, daoInfo } = props
-  const { account } = useActiveWeb3React()
+  // const { account } = useActiveWeb3React()
   const TABS = ['ALL']
   // const TABS = ['ALL', 'Executable', 'Open', 'Closed']
   const [currentTab, setCurrentTab] = useState(TABS[0])
@@ -27,12 +27,12 @@ export default function Index(props: IProps) {
     daoInfo?.votingAddress
   )
 
-  const tokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
-  const isProposal = useMemo(() => {
-    if (!tokenBalance || !daoInfo?.rule?.minimumCreateProposal) return false
-    if (tokenBalance?.lessThan(daoInfo?.rule?.minimumCreateProposal)) return false
-    return true
-  }, [daoInfo?.rule?.minimumCreateProposal, tokenBalance])
+  // const tokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
+  // const isProposal = useMemo(() => {
+  //   if (!tokenBalance || !daoInfo?.rule?.minimumCreateProposal) return false
+  //   if (tokenBalance?.lessThan(daoInfo?.rule?.minimumCreateProposal)) return false
+  //   return true
+  // }, [daoInfo?.rule?.minimumCreateProposal, tokenBalance])
 
   return (
     <div className={styles['proposals-container']}>
@@ -51,7 +51,7 @@ export default function Index(props: IProps) {
               : '-'
           } ${daoInfo?.token?.symbol}`}
         >
-          <Button disabled={!isProposal} style={{ width: 190, height: 48 }} onClick={onCreate}>
+          <Button style={{ width: 190, height: 48 }} onClick={onCreate}>
             Create A Proposal
           </Button>
         </Tooltip>

@@ -7,7 +7,7 @@ export default function Index({ status }: { status: ProposalStatusProp }) {
     <div
       className={classNames(styles.status, {
         [styles.soon]: status === ProposalStatusProp.Review,
-        [styles.open]: status === ProposalStatusProp.Active || status === ProposalStatusProp.WaitFinish,
+        [styles.open]: status === ProposalStatusProp.Active,
         [styles.closed]: status === ProposalStatusProp.Failed || status === ProposalStatusProp.Cancel,
         [styles.success]:
           status === ProposalStatusProp.Success ||

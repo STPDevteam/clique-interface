@@ -22,7 +22,6 @@ export enum ProposalStatusProp {
   Success,
   Cancel,
   Executed,
-  WaitFinish,
   Executable
 }
 export const ProposalStatusText: { [key in ProposalStatusProp]: string } = {
@@ -32,8 +31,7 @@ export const ProposalStatusText: { [key in ProposalStatusProp]: string } = {
   [ProposalStatusProp.Success]: 'Success',
   [ProposalStatusProp.Cancel]: 'Closed',
   [ProposalStatusProp.Executed]: 'Executed',
-  [ProposalStatusProp.Executable]: 'Success',
-  [ProposalStatusProp.WaitFinish]: 'Open'
+  [ProposalStatusProp.Executable]: 'Success'
 }
 
 export function useCreateCommunityProposalCallback(votingAddress: string | undefined) {

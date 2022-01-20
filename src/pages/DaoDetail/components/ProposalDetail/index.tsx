@@ -21,7 +21,7 @@ import { DaoInfoProps } from 'hooks/useDAOInfo'
 import { TokenAmount } from 'constants/token'
 import { useActiveWeb3React } from 'hooks'
 import JSBI from 'jsbi'
-import { useResolveVotingResultCallback } from 'hooks/useResolveVotingResultCallback'
+// import { useResolveVotingResultCallback } from 'hooks/useResolveVotingResultCallback'
 import { useExecuteProposalCallback } from 'hooks/useExecuteProposalCallback'
 import TimelineStatus from './TimelineStatus'
 
@@ -41,6 +41,15 @@ export default function Index({
     return new TokenAmount(daoInfo.token, balanceOfAt)
   }, [balanceOfAt, daoInfo.token])
   const { account } = useActiveWeb3React()
+
+  const currentProVoteInfo = useMemo(() => {
+    if (!daoInfo.token) return undefined
+    return {
+      minimumVote: new TokenAmount(daoInfo.token, detail.minimumVote),
+      minimumValidVotes: new TokenAmount(daoInfo.token, detail.minimumValidVotes),
+      minimumCreateProposal: new TokenAmount(daoInfo.token, detail.minimumCreateProposal)
+    }
+  }, [daoInfo.token, detail.minimumCreateProposal, detail.minimumValidVotes, detail.minimumVote])
 
   const votingOptions = useVotingOptionsById(daoInfo.votingAddress, detail.id)
   const votingOptionsStatus = useMemo(() => {
@@ -95,24 +104,24 @@ export default function Index({
     [detail.id, hideModal, showModal, voteCallback]
   )
 
-  const resolveVotingResultCallback = useResolveVotingResultCallback(daoInfo.votingAddress)
+  // const resolveVotingResultCallback = useResolveVotingResultCallback(daoInfo.votingAddress)
   const executeProposalCallback = useExecuteProposalCallback(daoInfo.votingAddress)
 
-  const onResolveVotingResult = useCallback(() => {
-    showModal(<TransactionPendingModal />)
-    resolveVotingResultCallback(detail.id)
-      .then(() => {
-        hideModal()
-        showModal(<TransactionSubmittedModal />)
-      })
-      .catch(err => {
-        hideModal()
-        showModal(
-          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
-        )
-        console.error(err)
-      })
-  }, [detail.id, hideModal, resolveVotingResultCallback, showModal])
+  // const onResolveVotingResult = useCallback(() => {
+  //   showModal(<TransactionPendingModal />)
+  //   resolveVotingResultCallback(detail.id)
+  //     .then(() => {
+  //       hideModal()
+  //       showModal(<TransactionSubmittedModal />)
+  //     })
+  //     .catch(err => {
+  //       hideModal()
+  //       showModal(
+  //         <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+  //       )
+  //       console.error(err)
+  //     })
+  // }, [detail.id, hideModal, resolveVotingResultCallback, showModal])
 
   const onExecuteProposalCallback = useCallback(() => {
     showModal(<TransactionPendingModal />)
@@ -142,7 +151,7 @@ export default function Index({
         <Grid item lg={8} xs={12} className={styles['left-part']}>
           <>
             <ProposalContent detail={detail} />
-            <ProposalVoteDetail list={votingOptionsList} />
+            <ProposalVoteDetail list={votingOptionsList} minimumValidVotes={currentProVoteInfo?.minimumValidVotes} />
           </>
           {/* {detail.proType === ProposalType.CONTRACT && (
             <>
@@ -157,14 +166,22 @@ export default function Index({
           <Vote
             detail={detail}
             voteResults={voteResults}
-            onResolveVotingResult={onResolveVotingResult}
             onExecuteProposalCallback={onExecuteProposalCallback}
             onVote={onVoteCallback}
             list={votingOptionsList}
+            minimumVote={currentProVoteInfo?.minimumVote}
             balanceAt={myDaoBalanceAt}
           />
           <TimelineStatus detail={detail} onExecuteProposal={onExecuteProposalCallback} />
-          {isCreator ? <ProposalUndoClaim detail={detail} daoInfo={daoInfo} /> : <OtherUserDetail detail={detail} />}
+          {isCreator ? (
+            <ProposalUndoClaim
+              stakedToken={currentProVoteInfo?.minimumCreateProposal}
+              detail={detail}
+              daoInfo={daoInfo}
+            />
+          ) : (
+            <OtherUserDetail detail={detail} />
+          )}
         </Grid>
       </Grid>
     </div>

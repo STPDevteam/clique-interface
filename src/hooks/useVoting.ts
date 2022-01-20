@@ -1,6 +1,6 @@
 import { useActiveWeb3React } from 'hooks'
 import { useMemo, useState } from 'react'
-import { getCurrentTimeStamp } from 'utils/dao'
+// import { getCurrentTimeStamp } from 'utils/dao'
 import { useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
 import { useSTPTokenContract, useVotingContract } from './useContract'
 import { ProposalStatusProp, ProposalType } from './useCreateCommunityProposalCallback'
@@ -21,6 +21,9 @@ export interface ProposalInfoProp {
   endTime: number
   blkHeight: number
   status: ProposalStatusProp
+  minimumVote: string
+  minimumValidVotes: string
+  minimumCreateProposal: string
 }
 
 export function useProposalList(votingAddress: string | undefined) {
@@ -46,12 +49,12 @@ export function useProposalList(votingAddress: string | undefined) {
     return ret
   }, [lastId, currentPage, pageSize])
 
-  const proposalMap = useSingleContractMultipleData(votingContract, 'proposalMap', ids)
-  const list: (ProposalInfoProp | undefined)[] = proposalMap.map(pro => {
-    if (!pro.result) return undefined
-    const item = pro.result
+  const proposalMap = useSingleContractMultipleData(votingContract, 'getProposalById', ids)
+  const list: (ProposalInfoProp | undefined)[] = proposalMap.map((pro, index) => {
+    if (!pro.result || !pro.result[0]) return undefined
+    const item = pro.result[0]
     const ret = {
-      id: item.id.toString(),
+      id: ids[index][0].toString(),
       creator: item.creator,
       proType: item.proType,
       title: item.title,
@@ -59,15 +62,18 @@ export function useProposalList(votingAddress: string | undefined) {
       startTime: Number(item.startTime.toString()),
       endTime: Number(item.endTime.toString()),
       blkHeight: item.blkHeight.toString(),
-      status: item.status
+      status: item.status,
+      minimumVote: item.minimumVote,
+      minimumValidVotes: item.minimumValidVotes,
+      minimumCreateProposal: item.minimumCreateProposal
     }
-    const curTime = getCurrentTimeStamp()
-    if (item.status === 0 && ret.startTime < curTime && ret.endTime > curTime) {
-      ret.status = ProposalStatusProp.Active
-    }
-    if (item.status <= 1 && ret.endTime < curTime) {
-      ret.status = ProposalStatusProp.WaitFinish
-    }
+    // const curTime = getCurrentTimeStamp()
+    // if (item.status === 0 && ret.startTime < curTime && ret.endTime > curTime) {
+    //   ret.status = ProposalStatusProp.Active
+    // }
+    // if (item.status <= 1 && ret.endTime < curTime) {
+    //   ret.status = ProposalStatusProp.WaitFinish
+    // }
     if (item.status === ProposalStatusProp.Success && item.proType === ProposalType.CONTRACT) {
       ret.status = ProposalStatusProp.Executable
     }

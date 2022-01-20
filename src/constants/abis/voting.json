@@ -3,7 +3,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
         "name": "id",
         "type": "uint256"
@@ -16,26 +16,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "CreateProposal",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "ResolveVotingResult",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
         "name": "id",
         "type": "uint256"
@@ -43,7 +24,13 @@
       {
         "indexed": false,
         "internalType": "address",
-        "name": "user",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "to",
         "type": "address"
       },
       {
@@ -53,72 +40,120 @@
         "type": "uint256"
       }
     ],
-    "name": "Vote",
+    "name": "ClaimToken",
     "type": "event"
   },
   {
+    "anonymous": false,
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "allProposal",
-    "outputs": [
-      {
+        "indexed": true,
         "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       },
       {
-        "internalType": "enum IVotingInterface.ProposalType",
-        "name": "proType",
-        "type": "uint8"
-      },
-      {
+        "indexed": false,
         "internalType": "address",
-        "name": "creator",
+        "name": "from",
         "type": "address"
       },
       {
-        "internalType": "string",
-        "name": "title",
-        "type": "string"
+        "indexed": false,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
       },
       {
-        "internalType": "string",
-        "name": "content",
-        "type": "string"
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       },
       {
+        "indexed": false,
         "internalType": "uint256",
         "name": "startTime",
         "type": "uint256"
       },
       {
+        "indexed": false,
         "internalType": "uint256",
         "name": "endTime",
         "type": "uint256"
-      },
+      }
+    ],
+    "name": "CreateProposal",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
       {
+        "indexed": true,
         "internalType": "uint256",
-        "name": "blkHeight",
+        "name": "id",
         "type": "uint256"
       },
       {
-        "internalType": "enum IVotingInterface.ProposalStatus",
-        "name": "status",
-        "type": "uint8"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isSuccess",
+        "type": "bool"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "name": "ExecuteProposal",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "res",
+        "type": "uint256"
+      }
+    ],
+    "name": "ResolveVotingResult",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "optionIndex",
+        "type": "uint256"
+      }
+    ],
+    "name": "Vote",
+    "type": "event"
   },
   {
     "inputs": [
@@ -292,19 +327,43 @@
   {
     "inputs": [
       {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
       }
     ],
-    "name": "executeProposalData",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "getOptionsById",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Voting.Option[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getAllProposal",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getProposalById",
     "outputs": [
       {
         "components": [
@@ -349,6 +408,21 @@
             "type": "uint256"
           },
           {
+            "internalType": "uint256",
+            "name": "minimumVote",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumValidVotes",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumCreateProposal",
+            "type": "uint256"
+          },
+          {
             "internalType": "enum IVotingInterface.ProposalStatus",
             "name": "status",
             "type": "uint8"
@@ -359,59 +433,9 @@
             "type": "bytes"
           }
         ],
-        "internalType": "struct IVotingInterface.Proposal[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "getOptionsById",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct Voting.Option[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "getProposalStatus",
-    "outputs": [
-      {
-        "internalType": "enum IVotingInterface.ProposalStatus",
-        "name": "",
-        "type": "uint8"
+        "internalType": "struct IVotingInterface.Proposal",
+        "name": "p",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -457,83 +481,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "proposalMap",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum IVotingInterface.ProposalType",
-        "name": "proType",
-        "type": "uint8"
-      },
-      {
-        "internalType": "address",
-        "name": "creator",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "title",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "content",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "endTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "blkHeight",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum IVotingInterface.ProposalStatus",
-        "name": "status",
-        "type": "uint8"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "resolveVotingResult",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

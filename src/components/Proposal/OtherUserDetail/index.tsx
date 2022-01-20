@@ -1,4 +1,5 @@
 import { ProposalInfoProp } from 'hooks/useVoting'
+import { shortenAddress } from 'utils'
 import { timeStampToFormat } from 'utils/dao'
 import styles from './index.module.less'
 
@@ -10,11 +11,11 @@ export default function Index({ detail }: { detail: ProposalInfoProp }) {
         <p className={styles['title']}>Details</p>
         <div className={styles['list-item']}>
           <span className={styles['label']}>Proposer</span>
-          <span className={styles['value']}>--</span>
+          <span className={styles['value']}>{shortenAddress(detail.creator)}</span>
         </div>
         <div className={styles['list-item']}>
           <span className={styles['label']}>Snapshot</span>
-          <span className={styles['value']}>--</span>
+          <span className={styles['value']}>{detail.blkHeight}</span>
         </div>
         <div className={styles['list-item']}>
           <span className={styles['label']}>Start time</span>
