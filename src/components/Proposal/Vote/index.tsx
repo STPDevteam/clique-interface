@@ -111,7 +111,6 @@ export default function Index({
                 {minimumVote?.toSignificant(6, { groupSeparator: ',' }) || '-'}
               </Typography>
             </Box>
-            {voteBtn}
           </Box>
         </div>
       ) : (
@@ -144,6 +143,7 @@ export default function Index({
                 {minimumVote?.toSignificant(6, { groupSeparator: ',' }) || '-'}
               </Typography>
             </Box>
+            {voteBtn}
           </Box>
         </div>
       )}
