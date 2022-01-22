@@ -344,7 +344,7 @@ export default function Offering() {
       )
     }
     if (isReservedClaimed) {
-      return <OutlineButton disabled>Claimd</OutlineButton>
+      return <OutlineButton disabled>Claimed</OutlineButton>
     }
     if (!isReservedAccount || isReservedAccount.isLocked) {
       return <OutlineButton disabled>Lock tIme</OutlineButton>
@@ -455,7 +455,9 @@ export default function Offering() {
                 </div>
               </StyledTabBox>
               {tabInfo === 'about' && <Typography>{daoInfo?.introduction}</Typography>}
-              {tabInfo === 'active' && <ActiveBox></ActiveBox>}
+              {tabInfo === 'active' && daoInfo?.token && (
+                <ActiveBox daoToken={daoInfo.token} daoAddress={daoInfo?.daoAddress}></ActiveBox>
+              )}
             </Box>
           </Grid>
           <Grid item lg={4} xs={12}>

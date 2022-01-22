@@ -111,7 +111,7 @@ export const BLOCKED_ADDRESSES: string[] = [
 ]
 
 export const DAO_FACTORY_ADDRESS = {
-  [ChainId.RINKEBY]: '0xe658558bB97E9f5a62D390f9e36C57d05FDEb7F7',
+  [ChainId.RINKEBY]: '0xa733D6699e96bb05EC1064368E02e0D7F5643c40',
   [ChainId.STP]: '0xc27bbcC40bCf68C2D41eaB9Ec53C336e88eaE0E8'
 }
 
@@ -127,7 +127,7 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
       value: 'TT',
       chainId: 4,
       logo: IconTokenSvg,
-      address: '0xDEFaf1504A77d644694D5dDa8dBEACDeB6200E11',
+      address: '0x28131D78A5090D174EE6ea64e694f1667B6b3f06',
       decimals: 18
     }
   ],
@@ -144,3 +144,4 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
 }
 
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
+export const serverBaseUrl = 'http://18.136.200.88/'

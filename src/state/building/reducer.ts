@@ -40,7 +40,7 @@ export const initialDaoDataState: CreateDaoData = {
     reservedOpen: true,
     privateSale: [],
     privateSaleOpen: false,
-    privateReceivingToken: 'STEP',
+    privateReceivingToken: '',
     publicSale: {
       offeringAmount: '',
       price: undefined,

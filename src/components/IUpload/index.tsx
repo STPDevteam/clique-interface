@@ -1,8 +1,10 @@
 import './pc.less'
 
-import { useState, ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { message, Upload } from 'antd'
 import { RcFile, UploadChangeParam } from 'antd/lib/upload'
+import { uploadPictureAddress } from 'utils/fetch/server'
+import axios from 'axios'
 
 export interface IUploadProps {
   action?: string
@@ -35,27 +37,34 @@ function beforeUpload(file: RcFile) {
 }
 
 const IUpload = (props: IUploadProps) => {
-  const { action = 'https://www.mocky.io/v2/5cc8019d300000980a055e76', method = 'post', children, onDone } = props
-  const [fileList, setFileList] = useState<any>([])
+  const { action = uploadPictureAddress(), method = 'post', children, onDone } = props
 
   const onChange = async ({ fileList: newFileList }: UploadChangeParam) => {
-    setFileList(newFileList)
-    const curBase64 = newFileList[0]?.originFileObj ? await getBase64(newFileList[0]?.originFileObj) : ''
+    const newFile = newFileList[newFileList.length - 1]
     onDone &&
-      newFileList[0] &&
+      newFile &&
       onDone({
-        file: newFileList[0],
-        preview: newFileList[0]?.originFileObj ? await getBase64(newFileList[0]?.originFileObj) : ''
+        file: newFile,
+        preview: newFile?.originFileObj ? await getBase64(newFile?.originFileObj) : ''
       })
-    props.setResult(typeof curBase64 === 'string' ? curBase64 : '')
+    props.setResult(newFile.response?.data?.data || '')
   }
 
   return (
     <Upload
       action={action}
       method={method}
+      customRequest={options => {
+        const param = new FormData()
+        param.append('file', options.file)
+        const config = {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+        axios.post(options.action, param, config).then(res => {
+          options.onSuccess(res, options.file)
+        })
+      }}
       beforeUpload={beforeUpload}
-      fileList={fileList}
       onChange={onChange}
       showUploadList={false}
     >

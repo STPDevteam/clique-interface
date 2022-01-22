@@ -5,19 +5,35 @@ import { Box, Typography } from '@mui/material'
 import useModal from 'hooks/useModal'
 import VoteList from './VoteList'
 import { TokenAmount } from 'constants/token'
+import { useMemo } from 'react'
 
 export default function Index({
   list,
-  minimumValidVotes
+  minimumValidVotes,
+  id,
+  votingAddress
 }: {
   list: {
     name: string
     per: number
-    votes: string | undefined
+    votes: TokenAmount | undefined
   }[]
   minimumValidVotes: TokenAmount | undefined
+  id: string
+  votingAddress: string | undefined
 }) {
   const { showModal } = useModal()
+
+  const totalVotes = useMemo(() => {
+    const trueVoting = list.filter(item => item.votes).map(item => item.votes) as TokenAmount[]
+    return trueVoting.length
+      ? trueVoting
+          .reduce((pre, cur) => {
+            return pre.add(cur)
+          })
+          .toSignificant(6, { groupSeparator: ',' })
+      : '0'
+  }, [list])
 
   return (
     <div className={styles['vote-details']}>
@@ -37,7 +53,7 @@ export default function Index({
               <p className={styles['vote-desc']}>{item.name}</p>
               <div className={styles['vote-data']}>
                 <p>{item.per * 100}%</p>
-                <p>{item.votes} Votes</p>
+                <p>{item.votes?.toSignificant(6, { groupSeparator: ',' })} Votes</p>
               </div>
             </Box>
             <Progress percent={item.per * 100} showInfo={false} />
@@ -45,9 +61,14 @@ export default function Index({
         ))}
         <Button
           className={classNames('btn-common btn-02', styles['btn-view-all'])}
-          onClick={() => showModal(<VoteList />)}
+          onClick={() =>
+            votingAddress &&
+            minimumValidVotes?.token &&
+            list.length &&
+            showModal(<VoteList token={minimumValidVotes.token} id={id} list={list} votingAddress={votingAddress} />)
+          }
         >
-          View all vote
+          View all vote ({totalVotes} Votes)
         </Button>
       </div>
     </div>

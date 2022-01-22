@@ -1,32 +1,64 @@
 import Modal from 'components/Modal'
 import { Box, Typography } from '@mui/material'
-import { Table } from 'antd'
+import { Pagination, Table } from 'antd'
 import Column from 'antd/lib/table/Column'
+import { useProposalVoteList } from 'hooks/useBackedServer'
+import { Token, TokenAmount } from 'constants/token'
+import { useMemo } from 'react'
 import { shortenAddress } from 'utils'
-import STPPagination from 'components/Pagination/STPPagination'
 
-export default function VoteList() {
-  const data = ' '
-    .repeat(4)
-    .split(' ')
-    .map((item, index) => ({
-      id: index + 1,
-      address: '0x18041866663b077bB6BF2bAFFAeA2451a2472ed7',
-      shortAddress: shortenAddress('0x18041866663b077bB6BF2bAFFAeA2451a2472ed7'),
-      choose: 'Aggree',
-      votes: 100
+export default function VoteList({
+  id,
+  votingAddress,
+  list,
+  token
+}: {
+  votingAddress: string
+  id: string
+  list: {
+    name: string
+    per: number
+    votes: TokenAmount | undefined
+  }[]
+  token: Token
+}) {
+  const { result, loading, page } = useProposalVoteList(votingAddress, id)
+  const showList = useMemo(() => {
+    return result.map(item => ({
+      address: shortenAddress(item.address),
+      choose: list[item.optionIndex].name,
+      votes: new TokenAmount(token, item.votes).toSignificant(6, { groupSeparator: ',' })
     }))
+  }, [list, result, token])
+
   return (
     <Modal closeIcon>
       <Box display="grid" gap="20px" width="100%">
         <Typography variant="h6">Vote list</Typography>
       </Box>
-      <Table className="panel-config stp-table" dataSource={data} rowKey={'id'} pagination={false}>
-        <Column align="center" title="Users" dataIndex="shortAddress" key="address" />
+      <Table
+        className="panel-config stp-table"
+        loading={loading}
+        dataSource={showList}
+        rowKey={'id'}
+        pagination={false}
+      >
+        <Column align="center" title="Users" dataIndex="address" key="address" />
         <Column align="center" title="Choose" dataIndex="choose" key="choose" />
         <Column title="Votes" dataIndex="votes" key="votes" align="center" />
       </Table>
-      <STPPagination count={1} page={1} />
+      <Box display={'flex'} justifyContent={'center'}>
+        <Pagination
+          simple
+          size="default"
+          hideOnSinglePage
+          pageSize={page.pageSize}
+          style={{ marginTop: 20 }}
+          current={page.currentPage}
+          total={page.total}
+          onChange={e => page.setCurrentPage(e)}
+        />
+      </Box>
     </Modal>
   )
 }

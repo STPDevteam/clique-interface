@@ -74,7 +74,7 @@ export default function Index({
       return {
         name: item.name,
         per: _amount && item.votes && _amount.greaterThan('0') ? Number(item.votes.divide(_amount).toFixed(0)) : 0,
-        votes: item.votes?.toSignificant()
+        votes: item.votes
       }
     })
   }, [daoInfo.token, votingOptionsStatus.list, votingOptionsStatus.total])
@@ -151,7 +151,12 @@ export default function Index({
         <Grid item lg={8} xs={12} className={styles['left-part']}>
           <>
             <ProposalContent detail={detail} />
-            <ProposalVoteDetail list={votingOptionsList} minimumValidVotes={currentProVoteInfo?.minimumValidVotes} />
+            <ProposalVoteDetail
+              id={detail.id}
+              votingAddress={daoInfo.votingAddress}
+              list={votingOptionsList}
+              minimumValidVotes={currentProVoteInfo?.minimumValidVotes}
+            />
           </>
           {/* {detail.proType === ProposalType.CONTRACT && (
             <>
@@ -166,13 +171,16 @@ export default function Index({
           <Vote
             detail={detail}
             voteResults={voteResults}
-            onExecuteProposalCallback={onExecuteProposalCallback}
             onVote={onVoteCallback}
             list={votingOptionsList}
             minimumVote={currentProVoteInfo?.minimumVote}
             balanceAt={myDaoBalanceAt}
           />
-          <TimelineStatus detail={detail} onExecuteProposal={onExecuteProposalCallback} />
+          <TimelineStatus
+            votingAddress={daoInfo?.votingAddress}
+            detail={detail}
+            onExecuteProposal={onExecuteProposalCallback}
+          />
           {isCreator ? (
             <ProposalUndoClaim
               stakedToken={currentProVoteInfo?.minimumCreateProposal}

@@ -238,6 +238,12 @@ export default function Configuration({
   return (
     <section className="configuration">
       <h1>Configuration</h1>
+      <Box mb={20} mt={20}>
+        <Typography>Voting Contract Address</Typography>
+        <Typography variant="h6" fontSize={14}>
+          {votingAddress}
+        </Typography>
+      </Box>
       <Box>
         <Typography>Lock Address</Typography>
         <Table className="stp-table" dataSource={reservedData} rowKey={'id'} pagination={false}>

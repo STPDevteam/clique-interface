@@ -3,7 +3,7 @@ import moment from 'moment'
 import toFormat from 'toformat'
 import _Big from 'big.js'
 
-export function timeStampToFormat(timeStamp: number | Date | undefined, format = 'Y-MM-DD hh:mm:ss') {
+export function timeStampToFormat(timeStamp: number | Date | undefined, format = 'Y-MM-DD HH:mm:ss') {
   if (!timeStamp) return '--'
   if (timeStamp instanceof Date) {
     return moment(timeStamp).format(format)
@@ -40,4 +40,12 @@ export function amountAddDecimals(amount: string, decimals = 18) {
 
 export function getCurrentTimeStamp() {
   return Number((new Date().getTime() / 1000).toFixed())
+}
+
+export function titleCase(str: string) {
+  return str.slice(0, 1).toUpperCase() + str.slice(1).toLowerCase()
+}
+
+export function shortenHashAddress(hash: string, chars = 4): string {
+  return `${hash.substring(0, chars + 2)}...${hash.substring(hash.length - chars)}`
 }

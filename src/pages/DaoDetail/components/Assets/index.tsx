@@ -8,9 +8,9 @@ import { Box, Grid } from '@mui/material'
 import useModal from 'hooks/useModal'
 import { DaoInfoProps } from 'hooks/useDAOInfo'
 import { useCallback, useMemo } from 'react'
-import { Token } from 'constants/token'
+import { Token, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
-import { useTokenBalance } from 'state/wallet/hooks'
+import { useToken, useTokenBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
@@ -18,10 +18,16 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { useTokenTransferCallback } from 'hooks/useTokenTransferCallback'
 import { useCreateContractProposalCallback } from 'hooks/useCreateContractProposalCallback'
 import { useCurPrivateReceivingTokens } from 'state/building/hooks'
+import { AssetsTransferRecordProp, useAssetsTransferRecord } from 'hooks/useBackedServer'
+import { Empty, Pagination, Spin } from 'antd'
+import { timeStampToFormat, titleCase } from 'utils/dao'
+import { ExternalLink } from 'theme/components'
+import { getEtherscanLink } from 'utils'
+import { DefaultChainId } from '../../../../constants'
 
 export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
   const { showModal, hideModal } = useModal()
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
 
   const curPrivateReceivingTokens = useCurPrivateReceivingTokens()
 
@@ -72,6 +78,7 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
     },
     [showModal, withdrawAssetCallback, hideModal]
   )
+  const { page, loading, result: assetsTransferRecord } = useAssetsTransferRecord(daoInfo.daoAddress)
 
   return (
     <section className="assets">
@@ -108,25 +115,48 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
       </div>
       <Grid container spacing={20} className="transactions">
         <Grid item lg={8} xs={12}>
+          {loading && (
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+              <Spin size="large" tip="Loading..." />
+            </Box>
+          )}
+          {!loading && assetsTransferRecord.length === 0 && (
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+              <Empty description="No records currently" />
+            </Box>
+          )}
           <div className="history-list">
-            {[1, 2].map((item, index) => (
-              <div key={index} className="history-item">
-                <div className="left">
-                  <span>Deposit this token</span>
-                  <span>2021-11-11 01:07:02</span>
-                </div>
-                <div className="right">
-                  <div className="amount">
-                    <span>STPT</span>
-                    <span>+1000,0000,000</span>
+            {!loading &&
+              assetsTransferRecord.map((item, index) => (
+                <div key={index} className="history-item">
+                  <div className="left">
+                    <span>{titleCase(item.type)} this token</span>
+                    <span>{timeStampToFormat(item.timeStamp)}</span>
                   </div>
-                  <a className="link">
-                    <img src={IconLink} />
-                  </a>
+                  <div className="right">
+                    <ShowTransferValue data={item} />
+                    <ExternalLink
+                      href={getEtherscanLink(chainId || DefaultChainId, item.hash, 'transaction')}
+                      className="link"
+                    >
+                      <img src={IconLink} />
+                    </ExternalLink>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
+          <Box display={'flex'} justifyContent={'center'}>
+            <Pagination
+              simple
+              size="default"
+              hideOnSinglePage
+              pageSize={page.pageSize}
+              style={{ marginTop: 20 }}
+              current={page.currentPage}
+              total={page.total}
+              onChange={e => page.setCurrentPage(e)}
+            />
+          </Box>
         </Grid>
         <Grid item lg={4} xs={12}>
           <div className="dao-tokens">
@@ -151,4 +181,21 @@ function ShowTokenBalance({ token, account }: { token: Token; account: string })
   const balance = useTokenBalance(account, token)
 
   return <>{balance?.toSignificant(6, { groupSeparator: ',' }) || '-'}</>
+}
+
+function ShowTransferValue({ data }: { data: AssetsTransferRecordProp }) {
+  const token = useToken(data.tokenAddress)
+  const curValue = useMemo(() => {
+    if (!token) return undefined
+    return new TokenAmount(token, data.value)
+  }, [data.value, token])
+  return (
+    <div className="amount">
+      <span>{token?.symbol || '-'}</span>
+      <span>
+        {data.mark}
+        {curValue?.toSignificant(6, { groupSeparator: ',' })}
+      </span>
+    </div>
+  )
 }

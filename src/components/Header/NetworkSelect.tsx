@@ -5,19 +5,20 @@ import { useActiveWeb3React } from 'hooks'
 import { ChainId, ChainList, SUPPORTED_NETWORKS } from 'constants/chain'
 import useBreakpoint from 'hooks/useBreakpoint'
 import Image from 'components/Image'
-import { DefaultChainId } from '../../constants'
+import { useWalletModalToggle } from 'state/application/hooks'
 
 export default function NetworkSelect() {
   const { chainId, account, library } = useActiveWeb3React()
   const isDownSm = useBreakpoint('sm')
+  const toggleWalletModal = useWalletModalToggle()
 
-  if (!chainId || !account) return null
+  // if (!chainId || !account) return null
 
   return (
     <Box>
       <Select
-        defaultValue={chainId ?? DefaultChainId}
-        value={chainId ?? DefaultChainId}
+        defaultValue={chainId ?? ''}
+        value={chainId ?? ''}
         height={isDownSm ? '24px' : '36px'}
         style={{
           background: 'transparent',
@@ -34,6 +35,10 @@ export default function NetworkSelect() {
         {ChainList.map(option => (
           <MenuItem
             onClick={() => {
+              if (!chainId || !library || !account) {
+                toggleWalletModal()
+                return
+              }
               if (Object.values(ChainId).includes(option.id)) {
                 library?.send('wallet_switchEthereumChain', [
                   { chainId: SUPPORTED_NETWORKS[option.id as ChainId]?.chainId },

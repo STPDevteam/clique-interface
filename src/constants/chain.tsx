@@ -21,8 +21,8 @@ export const ChainList = [
   {
     icon: <STPLogo />,
     logo: STPSvg,
-    symbol: 'Meter',
-    name: 'Meter Network',
+    symbol: 'Verse',
+    name: 'Verse Network',
     id: ChainId.STP,
     hex: '0x48'
   }
@@ -50,7 +50,7 @@ export const SUPPORTED_NETWORKS: {
 } = {
   [ChainId.STP]: {
     chainId: '0x48',
-    chainName: 'STP',
+    chainName: 'Verse',
     nativeCurrency: {
       name: 'STP',
       symbol: 'STP',

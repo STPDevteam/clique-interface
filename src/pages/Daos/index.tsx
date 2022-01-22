@@ -1,5 +1,5 @@
 import './index.less'
-import Search, { SearchParams } from './components/Search'
+// import { Search, SearchParams } from './components/Search'
 // import IconDao from '../../assets/images/token-stpt.png'
 import { Avatar, Box, Grid, Typography } from '@mui/material'
 import { useState } from 'react'
@@ -31,9 +31,9 @@ export default function Index() {
   //   users: 3300,
   //   proposals: 10
   // })
-  const handleSearch = (val: SearchParams) => {
-    console.log('🚀 ~ file: index.tsx ~ line 14 ~ handleSearch ~ val', val)
-  }
+  // const handleSearch = (val: SearchParams) => {
+  //   console.log('🚀 ~ file: index.tsx ~ line 14 ~ handleSearch ~ val', val)
+  // }
 
   return (
     <div className="daos-container">
@@ -45,7 +45,7 @@ export default function Index() {
             industry-based templates
           </p>
         </div>
-        <Search placeholder="DAO Name" onSearch={handleSearch} />
+        {/* <Search placeholder="DAO Name" onSearch={handleSearch} /> */}
       </div>
       <div>
         <Box className="dao-group-btn" display={'grid'} gridTemplateColumns={'100px 2fr'} mt={10}>

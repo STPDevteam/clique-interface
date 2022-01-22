@@ -130,8 +130,12 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             <span className="label">Token Photo</span>
             <Box display={'flex'} alignItems={'center'} gap="5px">
               <IUpload setResult={val => updateBasicCall('tokenPhoto', val)}>
-                <Button className="btn-upload">
-                  <img src={IconUpload} />
+                <Button className="btn-upload" style={{ padding: 5 }}>
+                  <img
+                    src={basicData.tokenPhoto || IconUpload}
+                    width={basicData.tokenPhoto ? '100%' : 'auto'}
+                    height={basicData.tokenPhoto ? '100%' : 'auto'}
+                  />
                 </Button>
               </IUpload>
               <Typography>File types supported: JPG, PNG. Max size: 500KB</Typography>

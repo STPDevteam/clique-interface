@@ -1,7 +1,19 @@
-import { Tabs } from 'antd'
+import { Empty, Pagination, Spin, Tabs } from 'antd'
 import { Box, styled, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ExternalLink } from 'theme/components'
+import {
+  OfferingReservedProp,
+  OfferingSwapProp,
+  useOfferingReservedRecord,
+  useOfferingSwapRecord
+} from 'hooks/useBackedServer'
+import { shortenHashAddress, timeStampToFormat } from 'utils/dao'
+import { getEtherscanLink } from 'utils'
+import { useActiveWeb3React } from 'hooks'
+import { DefaultChainId } from '../../constants'
+import { Token, TokenAmount } from 'constants/token'
+import { useReceiveToken } from 'hooks/useDaoTokenInfo'
 const { TabPane } = Tabs
 
 const StyledActiveBox = styled(Box)({
@@ -36,7 +48,10 @@ export enum OfferingActiveProps {
   PAY = 'Pay',
   REDEEM = 'Redeem'
 }
-export default function ActiveBox() {
+export default function ActiveBox({ daoAddress, daoToken }: { daoAddress: string | undefined; daoToken: Token }) {
+  const { loading: swapLoading, swap: swapList, page: swapPage } = useOfferingSwapRecord(daoAddress)
+  const { loading: reservedLoading, reserved: reservedList } = useOfferingReservedRecord(daoAddress)
+  const receiveToken = useReceiveToken(daoAddress)
   const [tab, setTab] = useState<OfferingActiveProps>(OfferingActiveProps.PAY)
   return (
     <StyledActiveBox>
@@ -46,58 +61,111 @@ export default function ActiveBox() {
         tabBarExtraContent={<Typography variant="h6">Activity</Typography>}
       >
         <TabPane tab={OfferingActiveProps.PAY} key={OfferingActiveProps.PAY}>
-          <StyledItem>
-            <FlexBetween>
-              <Typography>Paid</Typography>
-              <Typography>2021-12-16 16:05:50</Typography>
-            </FlexBetween>
-            <FlexBetween>
-              <Typography variant="h6">Swap 1,000 STPT to 2,000 DCC</Typography>
-              <ExternalLink style={{ fontSize: 16 }} href="">
-                0xba0a...8a4372
-              </ExternalLink>
-            </FlexBetween>
-          </StyledItem>
+          {swapLoading && (
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+              <Spin size="large" tip="Loading..." />
+            </Box>
+          )}
+          {!swapLoading && swapList.length === 0 && (
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+              <Empty description="No records currently" />
+            </Box>
+          )}
+          {!swapLoading &&
+            swapList.map((item, index) => (
+              <SwapItem receiveToken={receiveToken} daoToken={daoToken} key={index} item={item} />
+            ))}
+          <Box display={'flex'} justifyContent={'center'} mb={10}>
+            <Pagination
+              simple
+              size="default"
+              hideOnSinglePage
+              pageSize={swapPage.pageSize}
+              style={{ marginTop: 20 }}
+              current={swapPage.currentPage}
+              total={swapPage.total}
+              onChange={e => swapPage.setCurrentPage(e)}
+            />
+          </Box>
         </TabPane>
         <TabPane tab={OfferingActiveProps.REDEEM} key={OfferingActiveProps.REDEEM}>
-          <StyledItem>
-            <FlexBetween>
-              <Typography>Redeemed</Typography>
-              <Typography>2021-12-16 16:05:50</Typography>
-            </FlexBetween>
-            <FlexBetween>
-              <Typography variant="h6">Swap 1,000 STPT to 2,000 DCC</Typography>
-              <ExternalLink style={{ fontSize: 16 }} href="">
-                0xba0a...8a4372
-              </ExternalLink>
-            </FlexBetween>
-          </StyledItem>
-          <StyledItem>
-            <FlexBetween>
-              <Typography>Redeemed</Typography>
-              <Typography>2021-12-16 16:05:50</Typography>
-            </FlexBetween>
-            <FlexBetween>
-              <Typography variant="h6">Swap 1,000 STPT to 2,000 DCC</Typography>
-              <ExternalLink style={{ fontSize: 16 }} href="">
-                0xba0a...8a4372
-              </ExternalLink>
-            </FlexBetween>
-          </StyledItem>
-          <StyledItem>
-            <FlexBetween>
-              <Typography>Redeemed</Typography>
-              <Typography>2021-12-16 16:05:50</Typography>
-            </FlexBetween>
-            <FlexBetween>
-              <Typography variant="h6">Swap 1,000 STPT to 2,000 DCC</Typography>
-              <ExternalLink style={{ fontSize: 16 }} href="">
-                0xba0a...8a4372
-              </ExternalLink>
-            </FlexBetween>
-          </StyledItem>
+          {reservedLoading && (
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+              <Spin size="large" tip="Loading..." />
+            </Box>
+          )}
+          {!reservedLoading && reservedList.length === 0 && (
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+              <Empty description="No records currently" />
+            </Box>
+          )}
+          {!reservedLoading &&
+            reservedList.map((item, index) => <ReservedItem daoToken={daoToken} key={index} item={item} />)}
         </TabPane>
       </Tabs>
     </StyledActiveBox>
+  )
+}
+
+function SwapItem({
+  item,
+  daoToken,
+  receiveToken
+}: {
+  item: OfferingSwapProp
+  daoToken: Token
+  receiveToken: Token | undefined
+}) {
+  const { chainId } = useActiveWeb3React()
+  const daoTokenAmount = useMemo(() => new TokenAmount(daoToken, item.daoAmt), [daoToken, item.daoAmt])
+  const receiveTokenAmount = useMemo(
+    () => (receiveToken ? new TokenAmount(receiveToken, item.receiveAmt) : undefined),
+    [item.receiveAmt, receiveToken]
+  )
+
+  return (
+    <StyledItem>
+      <FlexBetween>
+        <Typography>Paid</Typography>
+        <Typography>{timeStampToFormat(item.timeStamp)}</Typography>
+      </FlexBetween>
+      <FlexBetween>
+        <Typography variant="h6">
+          Swap {receiveTokenAmount?.toSignificant(6, { groupSeparator: ',' }) || '-'} {receiveToken?.symbol} to{' '}
+          {daoTokenAmount.toSignificant(6, { groupSeparator: ',' })} {daoToken.symbol}
+        </Typography>
+        <ExternalLink
+          style={{ fontSize: 16 }}
+          href={getEtherscanLink(chainId || DefaultChainId, item.hash, 'transaction')}
+        >
+          {shortenHashAddress(item.hash)}
+        </ExternalLink>
+      </FlexBetween>
+    </StyledItem>
+  )
+}
+
+function ReservedItem({ item, daoToken }: { item: OfferingReservedProp; daoToken: Token }) {
+  const { chainId } = useActiveWeb3React()
+  const daoTokenAmount = useMemo(() => new TokenAmount(daoToken, item.daoAmt), [daoToken, item.daoAmt])
+
+  return (
+    <StyledItem>
+      <FlexBetween>
+        <Typography>Redeemed</Typography>
+        <Typography>{timeStampToFormat(item.timeStamp)}</Typography>
+      </FlexBetween>
+      <FlexBetween>
+        <Typography variant="h6">
+          Claim {daoTokenAmount.toSignificant(6, { groupSeparator: ',' })} {daoToken.symbol}
+        </Typography>
+        <ExternalLink
+          style={{ fontSize: 16 }}
+          href={getEtherscanLink(chainId || DefaultChainId, item.hash, 'transaction')}
+        >
+          {shortenHashAddress(item.hash)}
+        </ExternalLink>
+      </FlexBetween>
+    </StyledItem>
   )
 }

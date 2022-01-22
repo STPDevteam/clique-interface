@@ -38,9 +38,12 @@ export default function Index() {
     <div className="wallet-status">
       <WalletModal ENSName={ENSName ?? undefined} pendingTransactions={pending} confirmedTransactions={confirmed} />
       {!account && (
-        <Button onClick={toggleWalletModal} width="150px">
-          Connect Wallet
-        </Button>
+        <Box display={'flex'} gap={20}>
+          <NetworkSelect />
+          <Button onClick={toggleWalletModal} width="150px">
+            Connect Wallet
+          </Button>
+        </Box>
       )}
       {account && (
         <Box display={'flex'} gap={20}>

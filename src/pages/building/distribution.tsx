@@ -152,17 +152,35 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
 
   const verifyMsg = useMemo(() => {
     if (distribution.reservedOpen) {
+      const countRecord: { [key in string]: number } = {}
       for (const item of distribution.reservedTokens) {
         if (!item.address) return 'Reserved tokens address required'
         if (!isValidAmount(item.tokenNumber)) return 'Reserved tokens number required'
         if (!item.lockdate) return 'Reserved tokens lock date required'
+        if (Object.keys(countRecord).includes(item.address)) {
+          countRecord[item.address] = countRecord[item.address] + 1
+        } else {
+          countRecord[item.address] = 1
+        }
+      }
+      for (const i of Object.values(countRecord)) {
+        if (i > 1) return 'Reserved tokens address is repeat'
       }
     }
     if (distribution.privateSaleOpen) {
+      const countRecord: { [key in string]: number } = {}
       for (const item of distribution.privateSale) {
-        if (!item.address) return 'Private sale tokens address required'
-        if (!isValidAmount(item.tokenNumber)) return 'Private sale tokens number required'
-        if (!Number(item.price)) return 'Private sale tokens price required'
+        if (!item.address) return 'Whitelist sale tokens address required'
+        if (!isValidAmount(item.tokenNumber)) return 'Whitelist sale tokens number required'
+        if (!Number(item.price)) return 'Whitelist sale tokens price required'
+        if (Object.keys(countRecord).includes(item.address)) {
+          countRecord[item.address] = countRecord[item.address] + 1
+        } else {
+          countRecord[item.address] = 1
+        }
+      }
+      for (const i of Object.values(countRecord)) {
+        if (i > 1) return 'Whitelist sale tokens address is repeat'
       }
     }
     if (distribution.publicSaleOpen) {
@@ -434,6 +452,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       updateDistributionCall('privateReceivingToken', val)
                     }}
                   >
+                    <Option value={''}>Please select token</Option>
                     {curPrivateReceivingTokens.map(item => (
                       <Option value={item.value} key={item.value}>
                         <Box
