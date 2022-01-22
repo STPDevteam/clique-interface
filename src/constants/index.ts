@@ -111,8 +111,8 @@ export const BLOCKED_ADDRESSES: string[] = [
 ]
 
 export const DAO_FACTORY_ADDRESS = {
-  [ChainId.RINKEBY]: '0xa733D6699e96bb05EC1064368E02e0D7F5643c40',
-  [ChainId.STP]: '0xc27bbcC40bCf68C2D41eaB9Ec53C336e88eaE0E8'
+  [ChainId.RINKEBY]: '0x72FFDa8Ac887c49a4061Ac7AcFd4A4AA3862b00b',
+  [ChainId.STP]: '0xc7765DC8ec1c496cAe8096fCe4d80eB56f07B18a'
 }
 
 export const DefaultChainId = ChainId.STP
@@ -127,7 +127,7 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
       value: 'TT',
       chainId: 4,
       logo: IconTokenSvg,
-      address: '0x28131D78A5090D174EE6ea64e694f1667B6b3f06',
+      address: '0x61f1964d39305e818EDEf9c4FEb7cd5D37953459',
       decimals: 18
     }
   ],
@@ -137,11 +137,11 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
       value: 'TT',
       chainId: 72,
       logo: IconTokenSvg,
-      address: '0xd5D03aE862578C7c4B67e0624ad0Da8B0e4eC494',
+      address: '0x7A348fB565a628B1358Fcf15f106535a1E516bE3',
       decimals: 18
     }
   ]
 }
 
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
-export const serverBaseUrl = 'http://18.136.200.88/'
+export const serverBaseUrl = 'https://testnet-dao-api.stp.network/'

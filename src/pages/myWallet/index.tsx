@@ -148,7 +148,7 @@ function HistoryItem({ item }: { item: MyWalletHistoryProp }) {
         borderRadius: '8px',
         marginBottom: 16,
         marginRight: 5,
-        padding: '26px 52px'
+        padding: '20px 52px'
       }}
       display={'grid'}
       gridTemplateColumns={'1fr 1fr 1fr 1fr'}

@@ -44,6 +44,18 @@
         "internalType": "uint256",
         "name": "receiveAmount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "receiveToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "daoToken",
+        "type": "address"
       }
     ],
     "name": "PartPriSale",
@@ -75,6 +87,18 @@
         "internalType": "uint256",
         "name": "receiveAmount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "receiveToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "daoToken",
+        "type": "address"
       }
     ],
     "name": "PartPubSale",
@@ -162,6 +186,12 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "daoToken",
+        "type": "address"
       }
     ],
     "name": "WithdrawReserved",
