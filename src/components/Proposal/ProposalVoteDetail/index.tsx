@@ -60,6 +60,7 @@ export default function Index({
           </div>
         ))}
         <Button
+          style={{ width: 'auto' }}
           className={classNames('btn-common btn-02', styles['btn-view-all'])}
           onClick={() =>
             votingAddress &&
