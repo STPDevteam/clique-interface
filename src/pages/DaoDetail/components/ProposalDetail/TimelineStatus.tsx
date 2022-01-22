@@ -35,6 +35,7 @@ export default function TimelineStatus({
   const { account, chainId } = useActiveWeb3React()
   const { loading, result: dateline } = useProposalStatusDateline(votingAddress, detail.id, detail.status)
 
+  if (dateline.length === 0) return null
   return (
     <Box
       sx={{

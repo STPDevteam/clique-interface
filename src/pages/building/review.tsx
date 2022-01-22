@@ -2,7 +2,6 @@ import './review.pc.less'
 
 import { Button, Collapse, Table } from 'antd'
 import IconArrow from '../../assets/images/icon-arrow.svg'
-import IconToken from '../../assets/images/icon-token.svg'
 import { ReactComponent as EditIcon } from 'assets/svg/edit_icon.svg'
 import { Box, styled, Typography } from '@mui/material'
 import { StyledExtraBg } from 'components/styled'
@@ -69,7 +68,7 @@ export default function ReviewInformation({
     return distributionData.privateSale.map((item, index) => ({
       id: index + 1,
       address: (item.address && shortenAddress(item.address)) || '',
-      amount: toFormatMillion(item.tokenNumber || '') + ' ' + basicData.tokenSymbol,
+      amount: toFormatGroup(item.tokenNumber || '') + ' ' + basicData.tokenSymbol,
       per: getPerForAmount(basicData.tokenSupply, item.tokenNumber || '') + '%',
       price: item.price + ' ' + distributionData.privateReceivingToken,
       pledgedOfValue:
@@ -145,7 +144,7 @@ export default function ReviewInformation({
           >
             <section className="panel-general">
               <Box display={'grid'} gridTemplateColumns={'1fr 1fr 1fr 1fr'} gap="20px" mb={15}>
-                <img className="icon-token" src={IconToken} />
+                <img className="icon-token" src={basicData.tokenPhoto} />
                 <div className="input-item">
                   <span className="label">Token Name</span>
                   <span className="value">{basicData.tokenName}</span>
@@ -275,7 +274,7 @@ export default function ReviewInformation({
                       {distributionData.publicSale.price} {distributionData.privateReceivingToken}
                     </Typography>
                   </Box>
-                  <Box display={'flex'} justifyContent={'space-between'} padding={'0 30px'} mt={8}>
+                  <Box display={'flex'} justifyContent={'space-between'} mt={8}>
                     <Typography variant="h6">Equivalent estimate</Typography>
                     <Typography variant="h6">
                       {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate) +

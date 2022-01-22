@@ -187,8 +187,6 @@ export default function Configuration({
     updateConfigurationCallback(
       'Update Contract Configuration',
       updateLog,
-      startTime,
-      endTime,
       amountAddDecimals(minVoteNumber, totalSupply.token.decimals),
       amountAddDecimals(minCreateProposalNumber, totalSupply.token.decimals),
       amountAddDecimals(minValidNumber, totalSupply.token.decimals),
@@ -209,14 +207,12 @@ export default function Configuration({
       })
   }, [
     contractDuration,
-    endTime,
     hideModal,
     minCreateProposalNumber,
     minValidNumber,
     minVoteNumber,
     ruleContent,
     showModal,
-    startTime,
     totalSupply.token.decimals,
     updateConfigurationCallback,
     updateLog

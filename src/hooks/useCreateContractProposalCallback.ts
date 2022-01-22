@@ -17,16 +17,10 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
   const addTransaction = useTransactionAdder()
 
   const withdrawAssetCallback = useCallback(
-    (title: string, content: string, startTime: number, endTime: number, tokenAddress: string, amount: string) => {
+    (title: string, content: string, tokenAddress: string, amount: string) => {
       if (!votingContract) throw new Error('none contract')
 
-      const args = [
-        title,
-        content,
-        startTime,
-        endTime,
-        daoContract.methods.withdrawToken(tokenAddress, account, amount).encodeABI()
-      ]
+      const args = [title, content, daoContract.methods.withdrawToken(tokenAddress, account, amount).encodeABI()]
 
       return votingContract.estimateGas.createContractProposal(...args, { from: account }).then(estimatedGasLimit => {
         return votingContract
@@ -50,8 +44,6 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
     (
       title: string,
       content: string,
-      startTime: number,
-      endTime: number,
       minimumVote: string,
       minimumCreateProposal: string,
       minimumValidVotes: string,
@@ -64,8 +56,6 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
       const args = [
         title,
         content,
-        startTime,
-        endTime,
         daoContract.methods
           .updateDaoRule([
             minimumVote,

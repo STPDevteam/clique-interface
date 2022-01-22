@@ -25,13 +25,7 @@ export function toFormatMillion(n: number | string) {
   if (JSBI.GE(_n, JSBI.BigInt(10000000000))) {
     return toFormatGroup(Number(JSBI.divide(_n, JSBI.BigInt(100000000)).toString()) / 100, 2) + 'M'
   }
-  const _ret = toFormatGroup(n, 2)
-  if (isNaN(Number(_ret))) {
-    const _arr = _ret.split(',')
-    const _end = _arr.splice(_arr.length - 1, 1)
-    return _arr.join(',') + `,${Number(_end)}`
-  }
-  return Number(_ret)
+  return toFormatGroup(n, 0)
 }
 
 export function amountAddDecimals(amount: string, decimals = 18) {

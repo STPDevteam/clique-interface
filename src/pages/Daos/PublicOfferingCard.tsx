@@ -48,6 +48,7 @@ function ShowStatus({ status }: { status: DaoOpenStatus }) {
 export default function PublicOfferingCard({ daoAddress }: { daoAddress: string | undefined }) {
   const daoInfo = useDaoInfoByAddress(daoAddress)
   const daoStatus = useDaoStatus(daoInfo)
+  console.log('🚀 ~ file: PublicOfferingCard.tsx ~ line 50 ~ PublicOfferingCard ~ daoInfo', daoInfo)
   const history = useHistory()
 
   return (

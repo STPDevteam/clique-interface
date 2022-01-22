@@ -96,7 +96,7 @@ export default function Index({
       <div className={styles['list-item']}>
         <span className={styles['label']}>Staked</span>
         <span className={styles['value']}>
-          {isClaimed ? 0 : stakedToken?.toSignificant()} {stakedToken?.token?.symbol}
+          {isClaimed ? 0 : stakedToken?.toSignificant(6, { groupSeparator: ',' })} {stakedToken?.token?.symbol}
         </span>
       </div>
       {getBtn}

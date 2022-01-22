@@ -7,7 +7,7 @@ import { WithdrawAssets, DepositAssets } from '../../../../components/ModalSTP'
 import { Box, Grid } from '@mui/material'
 import useModal from 'hooks/useModal'
 import { DaoInfoProps } from 'hooks/useDAOInfo'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Token, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
 import { useToken, useTokenBalance } from 'state/wallet/hooks'
@@ -28,6 +28,7 @@ import { DefaultChainId } from '../../../../constants'
 export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
   const { showModal, hideModal } = useModal()
   const { account, chainId } = useActiveWeb3React()
+  const [selectDepositAddress, setSelectDepositAddress] = useState<string>()
 
   const curPrivateReceivingTokens = useCurPrivateReceivingTokens()
 
@@ -39,7 +40,7 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
     return ret
   }, [curPrivateReceivingTokens, daoInfo.token])
 
-  const onTokenTransferCallback = useTokenTransferCallback(daoInfo.token?.address)
+  const onTokenTransferCallback = useTokenTransferCallback(selectDepositAddress)
   const onDepositCallback = useCallback(
     (to: string, value: string) => {
       showModal(<TransactionPendingModal />)
@@ -63,7 +64,7 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
   const onWithdrawCallback = useCallback(
     (title: string, content: string, startTime: number, endTime: number, tokenAddress: string, amount: string) => {
       showModal(<TransactionPendingModal />)
-      withdrawAssetCallback(title, content, startTime, endTime, tokenAddress, amount)
+      withdrawAssetCallback(title, content, tokenAddress, amount)
         .then(() => {
           hideModal()
           showModal(<TransactionSubmittedModal />)
@@ -93,6 +94,7 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
                   showModal(
                     <DepositAssets
                       daoTokens={daoTokens}
+                      setSelectDepositAddress={val => setSelectDepositAddress(val)}
                       daoAddress={daoInfo.daoAddress}
                       onDeposit={onDepositCallback}
                     />

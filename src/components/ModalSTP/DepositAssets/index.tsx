@@ -19,11 +19,13 @@ const { Option } = Select
 export default function DepositAssets({
   daoTokens,
   daoAddress,
+  setSelectDepositAddress,
   onDeposit
 }: {
   daoTokens: Token[]
   daoAddress: string
   onDeposit: (to: string, value: string) => void
+  setSelectDepositAddress: (v: string) => void
 }) {
   const [tokenAddress, setTokenAddress] = useState<string>()
   const [input, setInput] = useState('')
@@ -67,7 +69,14 @@ export default function DepositAssets({
             <span className="label">Asset</span>
             <div className="assets-selector">
               <img src={curToken?.logo || ''} />
-              <Select defaultValue="" onChange={e => setTokenAddress(e)} suffixIcon={<img src={IconDownArrow} />}>
+              <Select
+                defaultValue=""
+                onChange={e => {
+                  setSelectDepositAddress(e)
+                  setTokenAddress(e)
+                }}
+                suffixIcon={<img src={IconDownArrow} />}
+              >
                 <Option value="">Select assets</Option>
                 {daoTokens.map(item => (
                   <Option key={item.address} value={item.address}>

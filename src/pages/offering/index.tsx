@@ -8,7 +8,6 @@ import { Input, Progress } from 'antd'
 import { useCallback, useMemo, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { DaoTypeStatus, useDaoInfoByAddress, useDaoStatus } from 'hooks/useDAOInfo'
-import { getEtherscanLink } from 'utils'
 import { getCurrentTimeStamp, timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { useActiveWeb3React } from 'hooks'
 import { useReservedClaimCallback } from 'hooks/useReservedClaimCallback'
@@ -398,7 +397,8 @@ export default function Offering() {
                 </Box>
               </Box>
               <ExternalLink
-                href={getEtherscanLink(daoInfo?.token?.chainId || 1, daoInfo?.token?.address || '', 'token')}
+                target="self"
+                href={`/#/detail/${daoInfo?.daoAddress}`}
                 sx={{
                   display: 'flex'
                 }}
@@ -409,7 +409,7 @@ export default function Offering() {
             <Box display={'grid'} gap={10} mt={32}>
               <StyledBetween>
                 <Typography variant="inherit" color={'#767676'}>
-                  Address:
+                  Contract Address:
                 </Typography>
                 <Typography variant="h6">{daoInfo?.token?.address || '-'}</Typography>
               </StyledBetween>
@@ -418,15 +418,15 @@ export default function Offering() {
                   Target amount:
                 </Typography>
                 <Typography variant="h6">
-                  {daoInfo?.pubSale?.amount ? toFormatGroup(daoInfo.pubSale.amount.toSignificant()) : '-'}
+                  {daoInfo?.pubSale?.amount ? daoInfo.pubSale.amount.toSignificant(6, { groupSeparator: ',' }) : '-'}
                 </Typography>
               </StyledBetween>
               {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC && (
                 <>
                   <Progress percent={daoStatus ? Number(daoStatus.pubSoldPer.toFixed(2)) : 0} />
                   <Typography variant="h6">
-                    {daoInfo?.pubSoldAmt ? toFormatGroup(daoInfo.pubSoldAmt.toSignificant()) : '-'} /{' '}
-                    {daoInfo?.pubSale?.amount ? toFormatGroup(daoInfo.pubSale.amount.toSignificant()) : '-'}{' '}
+                    {daoInfo?.pubSoldAmt ? daoInfo.pubSoldAmt.toSignificant(6, { groupSeparator: ',' }) : '-'} /{' '}
+                    {daoInfo?.pubSale?.amount ? daoInfo.pubSale.amount.toSignificant(6, { groupSeparator: ',' }) : '-'}{' '}
                   </Typography>
                   <StyledBetween mt={10}>
                     <Box>
@@ -485,11 +485,11 @@ export default function Offering() {
                     <Typography variant="body1">Pledge limit</Typography>
                     <Typography variant="body1">
                       {daoInfo?.pubSale?.pledgeLimitMin.greaterThan(JSBI.BigInt(1))
-                        ? toFormatGroup(daoInfo?.pubSale?.pledgeLimitMin.toSignificant())
+                        ? daoInfo?.pubSale?.pledgeLimitMin.toSignificant(6, { groupSeparator: ',' })
                         : '1'}
                       {' - '}
                       {daoInfo?.pubSale?.pledgeLimitMax.greaterThan(JSBI.BigInt(1))
-                        ? toFormatGroup(daoInfo?.pubSale?.pledgeLimitMax.toSignificant())
+                        ? daoInfo?.pubSale?.pledgeLimitMax.toSignificant(6, { groupSeparator: ',' })
                         : ''}
                     </Typography>
                   </StyledBetween>
@@ -529,7 +529,7 @@ export default function Offering() {
                     <StyledBetween>
                       <Typography variant="body1">Pay</Typography>
                       <Typography variant="body1">
-                        Balance: {payBalance ? toFormatGroup(payBalance?.toSignificant()) : '-'}{' '}
+                        Balance: {payBalance ? payBalance?.toSignificant(6, { groupSeparator: ',' }) : '-'}{' '}
                         {payBalance?.token.symbol}
                       </Typography>
                     </StyledBetween>
@@ -552,7 +552,7 @@ export default function Offering() {
                     />
                   </Box>
                   <Typography variant="body1">
-                    Claimable balance: {currentPublicMaxInput} {daoInfo?.token?.symbol}
+                    Claimable balance: {toFormatGroup(currentPublicMaxInput)} {daoInfo?.token?.symbol}
                   </Typography>
                   <Typography variant="body1" fontSize={10} mt={10}>
                     *You should do your own research and understand the risks before committing you funds.
@@ -569,7 +569,7 @@ export default function Offering() {
                   <StyledBetween>
                     <Typography variant="body1">Your allocation</Typography>
                     <Typography variant="h6">
-                      {isPriSaleAccount ? toFormatGroup(isPriSaleAccount?.amount.toSignificant()) : ''}{' '}
+                      {isPriSaleAccount ? isPriSaleAccount?.amount.toSignificant(6, { groupSeparator: ',' }) : ''}{' '}
                       {isPriSaleAccount?.amount.token.symbol}
                     </Typography>
                   </StyledBetween>
