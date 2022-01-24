@@ -244,7 +244,7 @@ export default function Offering() {
       )
     }
     if (isPriSoldAddress) {
-      return <OutlineButton disabled>Have participated</OutlineButton>
+      return <OutlineButton disabled>Claimed</OutlineButton>
     }
 
     if (!pubPriSaleIsOpen) {
@@ -604,7 +604,7 @@ export default function Offering() {
               {!!isReservedAccount && (
                 <StyledCard display={'grid'} gap={6}>
                   <Typography variant="h6" mb={10}>
-                    Private sale
+                    Reserved token
                   </Typography>
                   <StyledBetween>
                     <Typography variant="body1">Allocation</Typography>

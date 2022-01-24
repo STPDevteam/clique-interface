@@ -11,7 +11,8 @@ const StyledText = styled(Typography)({
   '-webkit-line-clamp': '3',
   '-webkit-box-orient': 'vertical',
   height: 52,
-  lineHeight: '16px'
+  lineHeight: '16px',
+  wordBreak: 'break-word'
 })
 
 function ShowStatus({ status }: { status: DaoOpenStatus }) {
@@ -48,7 +49,6 @@ function ShowStatus({ status }: { status: DaoOpenStatus }) {
 export default function PublicOfferingCard({ daoAddress }: { daoAddress: string | undefined }) {
   const daoInfo = useDaoInfoByAddress(daoAddress)
   const daoStatus = useDaoStatus(daoInfo)
-  console.log('🚀 ~ file: PublicOfferingCard.tsx ~ line 50 ~ PublicOfferingCard ~ daoInfo', daoInfo)
   const history = useHistory()
 
   return (

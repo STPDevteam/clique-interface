@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useDaoContract } from './useContract'
 import { useSingleCallResult } from '../state/multicall/hooks'
 
-export function useReservedClaimed(daoAddress: string | undefined, account: string | undefined) {
+export function useReservedClaimed(daoAddress: string | undefined, account: string | undefined): boolean | undefined {
   const daoContract = useDaoContract(daoAddress)
   const reservedClaimedRes = useSingleCallResult(account ? daoContract : null, 'reservedClaimed', [account])
 
@@ -12,7 +12,7 @@ export function useReservedClaimed(daoAddress: string | undefined, account: stri
   }, [account, daoAddress, reservedClaimedRes])
 }
 
-export function useIsPriSoldAddress(daoAddress: string | undefined, account: string | undefined) {
+export function useIsPriSoldAddress(daoAddress: string | undefined, account: string | undefined): boolean | undefined {
   const daoContract = useDaoContract(daoAddress)
   const priSoldAddressRes = useSingleCallResult(account ? daoContract : null, 'priSoldAddress', [account])
 
