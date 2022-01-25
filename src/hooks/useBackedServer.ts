@@ -435,7 +435,7 @@ export function useProposalStatusDateline(
             timeStamp: baseInfo.endTime
           })
           ret.push({
-            name: 'Canceled',
+            name: 'Executed',
             hash: lastInfo.hash,
             timeStamp: lastInfo.timeStamp
           })

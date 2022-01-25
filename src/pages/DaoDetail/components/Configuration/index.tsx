@@ -240,6 +240,12 @@ export default function Configuration({
           {votingAddress}
         </Typography>
       </Box>
+      <Box mb={20} mt={20}>
+        <Typography>Token Contract Address</Typography>
+        <Typography variant="h6" fontSize={14}>
+          {totalSupply.token.address}
+        </Typography>
+      </Box>
       <Box>
         <Typography>Lock Address</Typography>
         <Table className="stp-table" dataSource={reservedData} rowKey={'id'} pagination={false}>
