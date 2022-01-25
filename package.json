@@ -71,6 +71,8 @@
     "start": "node scripts/start.js",
     "start:service-worker": "yarn build && yarn serve -s build",
     "build": "node scripts/build.js",
+    "build:daoframe": "node scripts/build-daoframe.js",
+    "build:myclique": "node scripts/build-myclique.js",
     "test": "node scripts/test.js --env=jsdom",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
@@ -91,6 +93,16 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ],
+    "myclique": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "daoframe": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ]
   },
   "license": "GPL-3.0-or-later",

@@ -3,6 +3,16 @@ import moment from 'moment'
 import toFormat from 'toformat'
 import _Big from 'big.js'
 
+export function isDaoframeSite() {
+  return process.env.NODE_ENV === 'daoframe'
+}
+export function isMycliqueSite() {
+  return process.env.NODE_ENV === 'myclique'
+}
+export function isDevSite() {
+  return process.env.NODE_ENV === 'development'
+}
+
 export function timeStampToFormat(timeStamp: number | Date | undefined, format = 'Y-MM-DD HH:mm:ss') {
   if (!timeStamp) return '--'
   if (timeStamp instanceof Date) {

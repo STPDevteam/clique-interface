@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 // import { styled } from '@mui/material'
 import Layouts from '../components/layouts/index'
 import Polling from '../components/essential/Polling'
@@ -20,6 +20,7 @@ import Building from './building'
 import Launching from './building/launching'
 import Offering from './offering'
 import MyWallet from './myWallet'
+import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
 
 // const AppWrapper = styled('div')(({ theme }) => ({
 //   display: 'flex',
@@ -70,13 +71,40 @@ export default function App() {
             <Web3ReactManager>
               <Switch>
                 {/* <Route exact strict path="/test1" component={ComingSoon} /> */}
-                <Route exact strict path="/" component={Daos} />
-                <Route exact strict path="/create" component={Home} />
-                <Route exact strict path="/building" component={Building} />
-                <Route exact strict path="/building/launching/:hash" component={Launching} />
-                <Route exact strict path="/detail/:address" component={DaoDetail} />
-                <Route exact strict path="/offering/:address" component={Offering} />
-                <Route exact strict path="/my_wallet" component={MyWallet} />
+                {isMycliqueSite() ? (
+                  <>
+                    <Route exact strict path="/" component={Daos} />
+                    <Route exact strict path="/detail/:address" component={DaoDetail} />
+                    <Route exact strict path="/offering/:address" component={Offering} />
+                    <Route exact strict path="/my_wallet" component={MyWallet} />
+                    <Route path="/">
+                      <Redirect to="/" />
+                    </Route>
+                  </>
+                ) : isDaoframeSite() ? (
+                  <>
+                    <Route exact strict path="/create" component={Home} />
+                    <Route exact strict path="/building" component={Building} />
+                    <Route exact strict path="/building/launching/:hash" component={Launching} />
+                    <Route path="/">
+                      <Redirect to="create" />
+                    </Route>
+                  </>
+                ) : (
+                  <>
+                    <Route exact strict path="/" component={Daos} />
+                    <Route exact strict path="/detail/:address" component={DaoDetail} />
+                    <Route exact strict path="/offering/:address" component={Offering} />
+                    <Route exact strict path="/my_wallet" component={MyWallet} />
+
+                    <Route exact strict path="/create" component={Home} />
+                    <Route exact strict path="/building" component={Building} />
+                    <Route exact strict path="/building/launching/:hash" component={Launching} />
+                    <Route path="/">
+                      <Redirect to="/" />
+                    </Route>
+                  </>
+                )}
               </Switch>
             </Web3ReactManager>
             {/* </BodyWrapper> */}

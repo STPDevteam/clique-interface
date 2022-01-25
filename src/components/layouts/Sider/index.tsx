@@ -8,6 +8,8 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { useCreatedDao, useMultiDaoBaseInfo } from 'hooks/useDAOInfo'
 import Image from 'components/Image'
 import { useActiveWeb3React } from 'hooks'
+import { isMycliqueSite } from 'utils/dao'
+import { daoframeUrl } from '../../../constants'
 
 export default function Index() {
   const location = useLocation()
@@ -32,6 +34,14 @@ export default function Index() {
     [history]
   )
 
+  const createDao = useCallback(() => {
+    if (isMycliqueSite()) {
+      window.open(daoframeUrl + '#/create')
+    } else {
+      history.push(`/create`)
+    }
+  }, [history])
+
   return (
     <nav>
       {daoBaseInfoList.map((item, index) => (
@@ -43,7 +53,7 @@ export default function Index() {
           <Image src={item.token?.logo || IconDao} width={48} height={48} style={{ borderRadius: '50%' }} />
         </Button>
       ))}
-      <Button className="btn-add" onClick={() => history.push('/create')}>
+      <Button className="btn-add" onClick={createDao}>
         <img src={IconAdd} />
       </Button>
     </nav>

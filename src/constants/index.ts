@@ -145,3 +145,5 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
 
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
 export const serverBaseUrl = 'https://testnet-dao-api.stp.network/'
+export const mycliqueUrl = 'https://myclique.io/'
+export const daoframeUrl = 'https://daoframe.com/'

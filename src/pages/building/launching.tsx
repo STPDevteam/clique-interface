@@ -7,6 +7,8 @@ import IconDone from '../../assets/images/icon-launched.svg'
 import { Button } from 'antd'
 import { useHistory, useParams } from 'react-router-dom'
 import { useIsTransactionPending } from 'state/transactions/hooks'
+import { isDaoframeSite } from 'utils/dao'
+import { mycliqueUrl } from '../../constants'
 
 export default function Launching() {
   const history = useHistory()
@@ -33,7 +35,16 @@ export default function Launching() {
         <div className="state-done">
           <div className="wrapper">
             <img src={IconDone} />
-            <Button className="btn-common btn-03" onClick={() => history.replace(`/`)}>
+            <Button
+              className="btn-common btn-03"
+              onClick={() => {
+                if (isDaoframeSite()) {
+                  window.open(mycliqueUrl)
+                } else {
+                  history.replace(`/`)
+                }
+              }}
+            >
               Get Start
             </Button>
           </div>
