@@ -10,12 +10,16 @@ import { useProposalStatusDateline } from 'hooks/useBackedServer'
 import { timeStampToFormat } from 'utils/dao'
 import { getEtherscanLink } from 'utils'
 import { DefaultChainId } from '../../../../constants'
+import ProHistoryIcon from 'assets/images/pro-list-icon.png'
 
 const LineDot = styled('div')({
-  width: 24,
-  height: 24,
-  boxShadow: 'inset 2px 2px 5px rgba(105, 141, 173, 0.4)',
-  borderRadius: '5px'
+  width: 20,
+  height: 20,
+  // boxShadow: 'inset 2px 2px 5px rgba(31, 36, 41, 0.4)',
+  // boxShadow: '-3px -3px 8px rgba(255, 255, 255, 0.3), 5px 5px 13px rgba(174, 174, 174, 0.1)',
+  background: `url(${ProHistoryIcon})`,
+  borderRadius: '50%',
+  backgroundSize: '100% 100%'
 })
 const FlexBetween = styled(Box)({
   display: 'flex',
@@ -35,7 +39,6 @@ export default function TimelineStatus({
   const { account, chainId } = useActiveWeb3React()
   const { loading, result: dateline } = useProposalStatusDateline(votingAddress, detail.id, detail.status)
 
-  if (dateline.length === 0) return null
   return (
     <Box
       sx={{
@@ -73,6 +76,7 @@ export default function TimelineStatus({
           </Timeline.Item>
         ))}
       </Timeline>
+      {dateline.length === 0 && <Box sx={{ height: 20 }}></Box>}
       {account && detail.status === ProposalStatusProp.Executable && (
         <Button style={{ marginBottom: 20 }} onClick={onExecuteProposal}>
           Execute proposal
