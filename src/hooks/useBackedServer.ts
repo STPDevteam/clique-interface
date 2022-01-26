@@ -389,11 +389,12 @@ export function useProposalStatusDateline(
           hash: baseInfo.hash,
           timeStamp: baseInfo.timeStamp
         })
+        const activeTimeStamp = baseInfo.timeStamp > baseInfo.startTime ? baseInfo.timeStamp : baseInfo.startTime
         if (lastStatus === 'create') {
           if (currentTimeStamp > baseInfo.startTime) {
             ret.push({
               name: 'Active',
-              timeStamp: baseInfo.startTime
+              timeStamp: activeTimeStamp
             })
           }
 
@@ -415,7 +416,7 @@ export function useProposalStatusDateline(
           if (currentTimeStamp > baseInfo.startTime && lastInfo.timeStamp > baseInfo.startTime) {
             ret.push({
               name: 'Active',
-              timeStamp: baseInfo.startTime
+              timeStamp: activeTimeStamp
             })
           }
           ret.push({
@@ -428,7 +429,7 @@ export function useProposalStatusDateline(
         if (lastStatus === 'execute') {
           ret.push({
             name: 'Active',
-            timeStamp: baseInfo.startTime
+            timeStamp: activeTimeStamp
           })
           ret.push({
             name: 'Succeded',
