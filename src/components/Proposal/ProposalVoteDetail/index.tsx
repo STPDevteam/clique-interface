@@ -39,11 +39,11 @@ export default function Index({
     <div className={styles['vote-details']}>
       <Box display={'flex'} gap={20} alignItems={'center'} mb={10}>
         <Typography variant="h6" fontSize={20}>
-          Current Results
+          Results
         </Typography>
         <Typography>
-          (Minimum valid votes:{minimumValidVotes?.toSignificant(6, { groupSeparator: ',' })}{' '}
-          {minimumValidVotes?.token.symbol})
+          ({minimumValidVotes?.toSignificant(6, { groupSeparator: ',' })} {minimumValidVotes?.token.symbol} votes
+          required)
         </Typography>
       </Box>
       <div className={styles['vote-list']}>

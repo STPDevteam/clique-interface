@@ -39,10 +39,10 @@ export default function Index() {
     <div className="daos-container">
       <div className="daos-header">
         <div className="header-info">
-          <p className="title">STPT DAO</p>
+          <p className="title">Clique</p>
           <p className="text">
-            Build on-chain decentralized organization and issue governance token running on Verse by using
-            industry-based templates
+            Build decentralized automated organization and issue governance token running on Verse and Ethereum
+            blockchain within a few clicks.
           </p>
         </div>
         {/* <Search placeholder="DAO Name" onSearch={handleSearch} /> */}
@@ -63,10 +63,9 @@ export default function Index() {
           </div>
         </Box>
         <Typography fontSize={12} padding={'20px 10px'}>
-          The funds raised will be transferred to the DAO contract, and if you withdraw the funds you need to vote to
-          pass the vote before you can withdraw them. The STP protocol is open to anyone, and project configurations can
-          vary widely. There are risks associated with interacting with all projects on the protocol. You should do your
-          own research and understand the risks before committing your funds.
+          The funds raised will be locked in the corresponding DAO contract. Community votes will be needed to withdraw
+          the funds from the DAO contracts. Clique is open to anyone and there is risk interacting with the projects on
+          the Clique. You should do your own research and understand the risks before committing your funds.
         </Typography>
       </div>
       {currentTab === TypeTabs.DAO && (
@@ -126,7 +125,7 @@ export default function Index() {
                       </Typography>
                     </Box>
                     <Box display={'flex'} justifyContent={'space-between'} mt={10}>
-                      <Typography variant="body1">Proposal</Typography>
+                      <Typography variant="body1">Proposals</Typography>
                       <ShowProposalNumber votingAddress={item.votingAddress} daoAddress={item.daoAddress} />
                     </Box>
 

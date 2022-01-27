@@ -9,7 +9,11 @@ interface IHeaderProps {
 }
 
 export default function Index(props: IHeaderProps) {
-  const { title = 'Create DAO on STPT', stepItems = ['Basic', 'Config', 'Rule', 'Review'], step = 'Basic' } = props
+  const {
+    title = 'Create a DAO with Clique',
+    stepItems = ['Basic', 'Config', 'Rule', 'Review'],
+    step = 'Basic'
+  } = props
 
   return (
     <section className="building-header">

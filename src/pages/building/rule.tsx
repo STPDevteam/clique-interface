@@ -57,7 +57,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
           </Box>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
-              <span className="label">Minimum % to vote</span>
+              <span className="label">Minimum holding to vote</span>
               {/* <div className="progress-wrapper">
                 <Slider
                   min={1}
@@ -92,7 +92,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
           </Box>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
-              <span className="label">Minimum % create proposal</span>
+              <span className="label">Minimum holding to create proposal</span>
               <div className="progress-wrapper">
                 <Slider
                   min={1}
@@ -129,7 +129,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
 
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
-              <span className="label">Minimum valid votes</span>
+              <span className="label">Minimum voting participation rate</span>
               <div className="progress-wrapper">
                 <Slider
                   min={1}

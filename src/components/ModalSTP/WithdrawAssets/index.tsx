@@ -255,7 +255,7 @@ export default function WithdrawAssets({
               </span>
             </div>
             <div className="kv">
-              <span>Minimum needed</span>
+              <span>Stake to create proposal</span>
               <span>
                 {daoInfo.rule?.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' })} {daoInfo.token?.symbol}
               </span>

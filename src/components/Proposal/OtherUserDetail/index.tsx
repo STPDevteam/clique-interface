@@ -8,9 +8,9 @@ export default function Index({ detail }: { detail: ProposalInfoProp }) {
     <div className={styles['other-user-container']}>
       <p className={styles['out-title']}>Other user:</p>
       <div className={styles['other-user-detail']}>
-        <p className={styles['title']}>Details</p>
+        <p className={styles['title']}>Detail</p>
         <div className={styles['list-item']}>
-          <span className={styles['label']}>Proposer</span>
+          <span className={styles['label']}>Initiator</span>
           <span className={styles['value']}>{shortenAddress(detail.creator)}</span>
         </div>
         <div className={styles['list-item']}>

@@ -319,21 +319,21 @@ export default function ReviewInformation({
           >
             <section className="panel-rule">
               <div className="input-item">
-                <span className="label">Minimum to vote</span>
+                <span className="label">Minimum holding to vote</span>
                 <span className="value">{toFormatGroup(ruleData.minVoteNumber, 0)}</span>
                 {/* <span className="label">
                   ({getPerForAmount(basicData.tokenSupply, ruleData.minVoteNumber)}% per total supply)
                 </span> */}
               </div>
               <div className="input-item">
-                <span className="label">Minimum create proposal</span>
+                <span className="label">Minimum holding to create proposal</span>
                 <span className="value">{toFormatGroup(ruleData.minCreateProposalNumber, 0)}</span>
                 <span className="label">
                   ({getPerForAmount(basicData.tokenSupply, ruleData.minCreateProposalNumber)}% per total votes)
                 </span>
               </div>
               <div className="input-item mt-12">
-                <span className="label">Minimum valid votes</span>
+                <span className="label">Minimum voting participation rate</span>
                 <span className="value">{toFormatGroup(ruleData.minApprovalNumber, 0)}</span>
                 <span className="label">
                   ({getPerForAmount(basicData.tokenSupply, ruleData.minApprovalNumber)}% per total votes)
@@ -368,7 +368,7 @@ export default function ReviewInformation({
       </Wrapper>
       <Box className="btn-group" display={'flex'} justifyContent={'center'}>
         <Button style={{ width: 'auto' }} className="btn-common btn-01" disabled={!!createCheck} onClick={onCreate}>
-          I have confirmed and created the DAO
+          Confirm and create the DAO
         </Button>
       </Box>
     </>

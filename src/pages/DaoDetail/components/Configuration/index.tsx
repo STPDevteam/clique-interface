@@ -64,7 +64,7 @@ export default function Configuration({
         id: index + 1,
         address,
         amount: amount.toSignificant(6, { groupSeparator: ',' }),
-        per: getPerForAmount(totalSupply.toSignificant(), amount.toSignificant()),
+        per: getPerForAmount(totalSupply.toSignificant(), amount.toSignificant()) + '%',
         lock: timeStampToFormat(lockDate)
       })),
     [reserved, totalSupply]
@@ -235,7 +235,7 @@ export default function Configuration({
     <section className="configuration">
       <h1>Configuration</h1>
       <Box mb={20} mt={20}>
-        <Typography>Voting Contract Address</Typography>
+        <Typography>Governance contract address</Typography>
         <Typography variant="h6" fontSize={14}>
           {votingAddress}
         </Typography>
@@ -263,7 +263,7 @@ export default function Configuration({
         </Box>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <div className="input-item progress">
-            <span className="label">Minimum % to vote</span>
+            <span className="label">Minimum holding to vote</span>
             {/* <div className="progress-wrapper">
               <Slider
                 min={1}
@@ -301,7 +301,7 @@ export default function Configuration({
         </Box>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <div className="input-item progress">
-            <span className="label">Minimum % create proposal</span>
+            <span className="label">Minimum holding to create proposal</span>
             <div className="progress-wrapper">
               <Slider
                 min={1}
@@ -340,7 +340,7 @@ export default function Configuration({
 
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <div className="input-item progress">
-            <span className="label">Minimum valid votes</span>
+            <span className="label">Minimum voting participation rate</span>
             <div className="progress-wrapper">
               <Slider
                 min={1}

@@ -14,35 +14,34 @@ export default function Index() {
   const cardItems = [
     {
       icon: icon01,
-      title: 'Membership',
-      desc:
-        'Use a non-transferrable token to represent membership. Decisions are based on one-member-one-vote governance.',
-      onClick: () => history.push('/building/settings/memberShip'),
-      action: 'Build'
+      title: 'Membership DAO',
+      desc: 'Issue DAO governance tokens to represent membership and voting power'
+      // onClick: () => history.push('/building/settings/memberShip'),
+      // action: 'Build'
     },
     {
       icon: icon02,
       title: 'Project DAO',
-      desc: 'Initialized a transparent and accountable crowdfunding campaign for your organization.',
-      onClick: () => history.push('/building/settings/dao'),
-      action: 'Build'
+      desc: 'Launch a project DAO with transparent and accountable crowdfunding and token distribution process'
+      // onClick: () => history.push('/building/settings/dao'),
+      // action: 'Build'
     },
     {
       icon: icon03,
       title: 'Investment',
-      desc: 'Initialized a transparent and accountable crowdfunding campaign for your organization.',
-      onClick: () => history.push('/building/settings/invest'),
-      action: 'Build'
+      desc: 'Manage investment decisions and fund usage based on community votes'
+      // onClick: () => history.push('/building/settings/invest'),
+      // action: 'Build'
     }
   ]
   const { account } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
   return (
     <main className="home">
-      <h1>Create a DAO within a few minutes</h1>
+      <h1>Create a DAO within a few clicks</h1>
       <p>
-        Build on-chain decentralized organizations and issue governance token running on STP Smart Chain by using
-        industry-based templates
+        Build decentralized automated organization and issue governance token running on Verse and Ethereum blockchain
+        within a few clicks.
       </p>
       {account ? (
         <Button className="btn-common btn-01 btn-build" onClick={() => history.push('/building')}>

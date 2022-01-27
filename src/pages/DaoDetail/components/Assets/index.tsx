@@ -40,6 +40,14 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
     return ret
   }, [curPrivateReceivingTokens, daoInfo.token])
 
+  const getSymbolFromAddress = useCallback(
+    (address: string) => {
+      const ret = daoTokens.find(item => item.address.toLowerCase() === address.toLowerCase())
+      return ret?.symbol
+    },
+    [daoTokens]
+  )
+
   const onTokenTransferCallback = useTokenTransferCallback(selectDepositAddress)
   const onDepositCallback = useCallback(
     (to: string, value: string) => {
@@ -132,7 +140,9 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
               assetsTransferRecord.map((item, index) => (
                 <div key={index} className="history-item">
                   <div className="left">
-                    <span>{titleCase(item.type)} this token</span>
+                    <span>
+                      {titleCase(item.type)} {getSymbolFromAddress(item.tokenAddress)}
+                    </span>
                     <span>{timeStampToFormat(item.timeStamp)}</span>
                   </div>
                   <div className="right">

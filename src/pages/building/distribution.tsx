@@ -248,8 +248,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
             <Box>
               <Typography variant="h6">Reserved Tokens</Typography>
               <Typography color={'#798488'} fontSize={12}>
-                You can choose to set aside a portion of your tokens, and if you set a time lock on the address, the
-                total number of tokens locked will not be counted as votes.
+                Set reserved token portion and distribution schedule
               </Typography>
             </Box>
             {/* <Switch
@@ -280,8 +279,8 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                 >
                   <Typography variant="body1">Addresses</Typography>
                   <Typography variant="body1">Token Number</Typography>
-                  <Typography variant="body1">Per</Typography>
-                  <Typography variant="body1">Lock date</Typography>
+                  <Typography variant="body1">%</Typography>
+                  <Typography variant="body1">Unlock date</Typography>
                 </Box>
                 {distribution.reservedTokens.map((item, index) => (
                   <Box display={'grid'} gap={10} key={index}>
@@ -425,9 +424,8 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
             <Box>
               <Typography variant="h6">Whitelist sale</Typography>
               <Typography color={'#798488'} fontSize={12}>
-                You can set up both whitelist crowdfunding and public crowdfunding. Whitelisted crowdfunders need to
-                redeem their tokens at once. If the whitelist crowdfunding or public crowdfunding does not reach the
-                specified condiftions, the cowdfunding will fail and user can redeem their toekns back by themselves.
+                Setup a whitelist sale with allocation and unique price. Participants are able to redeem their funds if
+                the tokens are not sold out by the end of the event.
               </Typography>
             </Box>
             <Switch
@@ -497,7 +495,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                   <Typography variant="body1">Token Number</Typography>
                   <Typography variant="body1">Per</Typography>
                   <Typography variant="body1">Price</Typography>
-                  <Typography variant="body1">Pledged of value</Typography>
+                  <Typography variant="body1">Total value</Typography>
                 </Box>
                 {distribution.privateSale.map((item, index) => (
                   <Box display={'grid'} gap={10} key={index}>
@@ -642,7 +640,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                 </Typography>
               </Box>
               <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography variant="h6">Equivalent estimate</Typography>
+                <Typography variant="h6">Total value</Typography>
                 <Typography variant="h6">
                   {toFormatGroup(currentUsedTokenAmount.privateEquivalentEstimate, 0)}{' '}
                   {distribution.privateReceivingToken}
@@ -749,7 +747,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                   </Box>
                 </Box>
                 <Box display={'grid'} gap={5}>
-                  <Typography color={'#798488'}>Pledge limit (optional)</Typography>
+                  <Typography color={'#798488'}>Purchase limit</Typography>
                   <Box display={'flex'} gap={8}>
                     <Input
                       style={{ width: 80 }}
@@ -791,7 +789,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                 </Typography>
               </Box>
               <Box display={'flex'} justifyContent={'space-between'}>
-                <Typography variant="h6">Equivalent estimate</Typography>
+                <Typography variant="h6">Total value</Typography>
                 <Typography variant="h6">
                   {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate, 0)}{' '}
                   {distribution.privateReceivingToken}
@@ -829,7 +827,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
 
           <Box className="input-item">
             <Typography variant="h6" mb={10}>
-              About product
+              Token Offering Detail
             </Typography>
             <TextArea
               rows={4}

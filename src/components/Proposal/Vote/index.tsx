@@ -95,20 +95,20 @@ export default function Index({
     <div className={styles['vote-container']}>
       {isVoted ? (
         <div>
-          <p className={styles.title}>Your choose</p>
+          <p className={styles.title}>Your choice</p>
           <Box display={'grid'} gap={5}>
             <Typography variant="body1">Voting for</Typography>
             <Typography variant="h6">{voteResults ? list[voteResults.optionIndex].name : ''}</Typography>
             <Box display={'flex'} justifyContent={'space-between'}>
               <Typography variant="body1">Your Votes</Typography>
               <Typography variant="h6" fontSize={14}>
-                {balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'}
+                {balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'} {minimumVote?.token.symbol}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography variant="body1">Minimum to vote</Typography>
+              <Typography variant="body1">Minimum holding to vote</Typography>
               <Typography variant="h6" fontSize={14}>
-                {minimumVote?.toSignificant(6, { groupSeparator: ',' }) || '-'}
+                {minimumVote?.toSignificant(6, { groupSeparator: ',' }) || '-'} {minimumVote?.token.symbol}
               </Typography>
             </Box>
             {voteBtn}
@@ -133,15 +133,15 @@ export default function Index({
               </Space>
             </Radio.Group>
             <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography variant="body1">Your Vote</Typography>
+              <Typography variant="body1">Your Votes</Typography>
               <Typography variant="h6" fontSize={14}>
-                {balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'}
+                {balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'} {minimumVote?.token.symbol}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography variant="body1">Minimum to vote</Typography>
+              <Typography variant="body1">Minimum holding to vote</Typography>
               <Typography variant="h6" fontSize={14}>
-                {minimumVote?.toSignificant(6, { groupSeparator: ',' }) || '-'}
+                {minimumVote?.toSignificant(6, { groupSeparator: ',' }) || '-'} {minimumVote?.token.symbol}
               </Typography>
             </Box>
             {voteBtn}

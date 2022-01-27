@@ -43,7 +43,7 @@ export default function Members({ daoInfo }: { daoInfo: DaoInfoProps }) {
         <Column title="Rank" dataIndex="rank" key="id" align="center" />
         <Column align="center" title="Address" dataIndex="account" key="address" />
         <Column align="center" title="Quantity" dataIndex="balance" key="quantity" />
-        <Column title="Per" dataIndex="percentage" key="per" align="center" />
+        <Column title="%" dataIndex="percentage" key="per" align="center" />
         <Column title="Proposals" dataIndex="proposals" key="proposals" align="center" />
       </Table>
     </section>
