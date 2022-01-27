@@ -5,6 +5,7 @@ import JSBI from 'jsbi'
 import { ChainId } from './chain'
 import { PrivateReceivingTokenProps } from 'state/building/actions'
 import IconTokenSvg from '../assets/images/icon-token.svg'
+import { isDaoframeSite } from 'utils/dao'
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
@@ -111,8 +112,8 @@ export const BLOCKED_ADDRESSES: string[] = [
 ]
 
 export const DAO_FACTORY_ADDRESS = {
-  [ChainId.RINKEBY]: '0x72FFDa8Ac887c49a4061Ac7AcFd4A4AA3862b00b',
-  [ChainId.STP]: '0xc7765DC8ec1c496cAe8096fCe4d80eB56f07B18a'
+  [ChainId.RINKEBY]: '0x3Ba8449831F29c096dc130081E517A7578282D45',
+  [ChainId.STP]: '0x329D3B1Db5433f7d5EFd7ECb51604163841d2A8A'
 }
 
 export const DefaultChainId = ChainId.STP
@@ -127,7 +128,7 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
       value: 'TT',
       chainId: 4,
       logo: IconTokenSvg,
-      address: '0x61f1964d39305e818EDEf9c4FEb7cd5D37953459',
+      address: '0x86029a4deD57C14Bb8620ED177F3B2a4D300C040',
       decimals: 18
     }
   ],
@@ -137,13 +138,13 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
       value: 'TT',
       chainId: 72,
       logo: IconTokenSvg,
-      address: '0x7A348fB565a628B1358Fcf15f106535a1E516bE3',
+      address: '0x1030222B08320C659078537F80D03FD82B858Eb3',
       decimals: 18
     }
   ]
 }
 
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
-export const serverBaseUrl = 'https://testnet-dao-api.stp.network/'
+export const serverBaseUrl = isDaoframeSite() ? 'http://api.daoframe.com/' : 'http://api.myclique.io/'
 export const mycliqueUrl = 'https://myclique.io/'
 export const daoframeUrl = 'https://daoframe.com/'
