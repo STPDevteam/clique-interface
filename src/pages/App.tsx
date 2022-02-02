@@ -77,9 +77,6 @@ export default function App() {
                     <Route exact strict path="/detail/:address" component={DaoDetail} />
                     <Route exact strict path="/offering/:address" component={Offering} />
                     <Route exact strict path="/my_wallet" component={MyWallet} />
-                    <Route path="/">
-                      <Redirect to="/" />
-                    </Route>
                   </>
                 ) : isDaoframeSite() ? (
                   <>
@@ -100,9 +97,6 @@ export default function App() {
                     <Route exact strict path="/create" component={Home} />
                     <Route exact strict path="/building" component={Building} />
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
-                    <Route path="/">
-                      <Redirect to="/" />
-                    </Route>
                   </>
                 )}
               </Switch>

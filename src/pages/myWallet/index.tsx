@@ -3,15 +3,16 @@ import { useActiveWeb3React } from 'hooks'
 import { ReactComponent as MyWalletIcon } from 'assets/svg/my_wallet.svg'
 import { Empty, Pagination, Spin, Table, Tabs } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
-import { useAccountERC20Tokens } from 'hooks/useStpExplorerData'
+// import { useAccountERC20Tokens } from 'hooks/useStpExplorerData'
 import { useHistory } from 'react-router-dom'
-import { MyWalletHistoryProp, useMyWalletHistory, useQueryDaoByTokenAddress } from 'hooks/useBackedServer'
+import { MyWalletHistoryProp, useAccountDaoAssets, useMyWalletHistory } from 'hooks/useBackedServer'
 import { ExternalLink } from 'theme/components'
 import { shortenHashAddress, timeStampToFormat } from 'utils/dao'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { DefaultChainId } from '../../constants'
-import { useToken } from 'state/wallet/hooks'
+import { useSTPToken, useToken, useTokenBalance } from 'state/wallet/hooks'
 import { TokenAmount } from 'constants/token'
+import Image from 'components/Image'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -38,8 +39,28 @@ const { TabPane } = Tabs
 const { Column } = Table
 
 function GoDaoLink({ address }: { address: string }) {
-  const ret = useQueryDaoByTokenAddress(address)
-  return ret ? <ExternalLink href={'/detail/' + ret}>DAO</ExternalLink> : <>-</>
+  return (
+    <ExternalLink target="self" href={'/#/detail/' + address}>
+      DAO
+    </ExternalLink>
+  )
+}
+
+function ShowToken({ address }: { address: string }) {
+  const token = useSTPToken(address)
+  return (
+    <Box display={'flex'} justifyContent={'center'} alignItems={'center'} gap={5}>
+      <Image src={token?.logo || ''} width={20} height={20} style={{ borderRadius: '50%' }}></Image>
+      <Typography>{token?.symbol || '-'}</Typography>
+    </Box>
+  )
+}
+
+function ShowTokenBal({ address }: { address: string }) {
+  const token = useToken(address)
+  const { account } = useActiveWeb3React()
+  const bal = useTokenBalance(account || undefined, token)
+  return <Typography>{bal?.toSignificant(6, { groupSeparator: ',' }) || '-'}</Typography>
 }
 
 export default function Index() {
@@ -50,14 +71,16 @@ export default function Index() {
   }, [account, history])
   const TABS = ['Wallet', 'History']
   const [currentTab, setCurrentTab] = useState(TABS[0])
-  const { data: myTokens, loading: myTokensLoading } = useAccountERC20Tokens()
+  // const { data: myTokens, loading: myTokensLoading } = useAccountERC20Tokens()
+  const { loading: myTokensLoading, list: myTokens, page: walletPage } = useAccountDaoAssets()
   const myTokenData = useMemo(
     () =>
       myTokens.map(item => ({
-        asset: item.token.symbol,
+        asset: <ShowToken address={item.tokenAddress} />,
         price: '-',
-        balance: item.toSignificant(6, { groupSeparator: ',' }),
-        daoName: <GoDaoLink address={item.token.address} />,
+        // balance: item.toSignificant(6, { groupSeparator: ',' }),
+        balance: <ShowTokenBal address={item.tokenAddress} />,
+        daoName: <GoDaoLink address={item.daoAddress} />,
         value: '-'
       })),
     [myTokens]
@@ -90,19 +113,33 @@ export default function Index() {
             </Tabs>
 
             {currentTab === 'Wallet' && (
-              <Table
-                className="stp-table"
-                loading={myTokensLoading}
-                dataSource={myTokenData}
-                rowKey={'id'}
-                pagination={false}
-              >
-                <Column title="Asset" dataIndex="asset" key="id" align="center" />
-                <Column title="Price" dataIndex="price" key="id" align="center" />
-                <Column align="center" title="Balance" dataIndex="balance" key="quantity" />
-                <Column title="Value" dataIndex="value" key="id" align="center" />
-                <Column title="DAO Name" dataIndex="daoName" key="proposals" align="center" />
-              </Table>
+              <>
+                <Table
+                  className="stp-table"
+                  loading={myTokensLoading}
+                  dataSource={myTokenData}
+                  rowKey={'id'}
+                  pagination={false}
+                >
+                  <Column title="Asset" dataIndex="asset" key="id" align="center" />
+                  {/* <Column title="Price" dataIndex="price" key="id" align="center" /> */}
+                  <Column align="center" title="Balance" dataIndex="balance" key="quantity" />
+                  {/* <Column title="Value" dataIndex="value" key="id" align="center" /> */}
+                  <Column title="DAO Name" dataIndex="daoName" key="proposals" align="center" />
+                </Table>
+                <Box display={'flex'} justifyContent={'center'}>
+                  <Pagination
+                    simple
+                    size="default"
+                    hideOnSinglePage
+                    pageSize={walletPage.pageSize}
+                    style={{ marginTop: 20 }}
+                    current={walletPage.currentPage}
+                    total={walletPage.total}
+                    onChange={e => walletPage.setCurrentPage(e)}
+                  />
+                </Box>
+              </>
             )}
             {currentTab === 'History' && (
               <>

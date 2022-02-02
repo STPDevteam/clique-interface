@@ -9,7 +9,7 @@ import axios from 'axios'
 export interface IUploadProps {
   action?: string
   method?: 'POST' | 'PUT'
-  onDone?: (s?: any) => void
+  onPreviewStr?: (s?: any) => void
   children?: ReactNode
   setResult: (val: string) => void
 }
@@ -37,16 +37,17 @@ function beforeUpload(file: RcFile) {
 }
 
 const IUpload = (props: IUploadProps) => {
-  const { action = uploadPictureAddress(), method = 'post', children, onDone } = props
+  const { action = uploadPictureAddress(), method = 'post', children } = props
 
   const onChange = async ({ fileList: newFileList }: UploadChangeParam) => {
     const newFile = newFileList[newFileList.length - 1]
-    onDone &&
-      newFile &&
-      onDone({
-        file: newFile,
-        preview: newFile?.originFileObj ? await getBase64(newFile?.originFileObj) : ''
-      })
+    // onDone &&
+    //   newFile &&
+    //   onDone({
+    //     file: newFile,
+    //     preview: newFile?.originFileObj ? await getBase64(newFile?.originFileObj) : ''
+    //   })
+    props?.onPreviewStr && props.onPreviewStr(newFile?.originFileObj ? await getBase64(newFile?.originFileObj) : '')
     props.setResult(newFile.response?.data?.data || '')
   }
 

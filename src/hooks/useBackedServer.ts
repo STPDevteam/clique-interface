@@ -2,7 +2,9 @@ import { DefaultChainId } from '../constants'
 import { useActiveWeb3React } from 'hooks'
 import { useEffect, useState } from 'react'
 import {
+  getAccountDaoHolds,
   getAssetsTransferRecord,
+  getDaoMembers,
   getMyWalletHistory,
   getPriPubSwapList,
   getProposalStatusDateline,
@@ -454,5 +456,123 @@ export function useProposalStatusDateline(
   return {
     loading,
     result
+  }
+}
+
+export function useDaoMembers(daoTokenAddress: string | undefined) {
+  const { chainId } = useActiveWeb3React()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [total, setTotal] = useState<number>(0)
+  const pageSize = 8
+  const [result, setResult] = useState<
+    {
+      holderAddress: string
+      tokenAddress: string
+      balance: string
+    }[]
+  >([])
+
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId || !daoTokenAddress) {
+        setResult([])
+        return
+      }
+      setLoading(true)
+      try {
+        const res = await getDaoMembers(chainId, daoTokenAddress, currentPage, pageSize)
+        setLoading(false)
+        const data = res.data.data
+        if (!data) {
+          setResult([])
+          return
+        }
+        setTotal(data.totalCount)
+        const list = data.data.map((item: any) => {
+          return {
+            holderAddress: item.holderAddress,
+            tokenAddress: item.tokenAddress,
+            balance: item.balance
+          }
+        })
+        setResult(list)
+      } catch (error) {
+        setResult([])
+        setLoading(false)
+        console.error('useDaoMembers', error)
+      }
+    })()
+  }, [chainId, currentPage, daoTokenAddress])
+
+  return {
+    loading: loading,
+    page: {
+      setCurrentPage,
+      currentPage,
+      total,
+      pageSize
+    },
+    result
+  }
+}
+
+export function useAccountDaoAssets() {
+  const { chainId, account } = useActiveWeb3React()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [total, setTotal] = useState<number>(0)
+  const pageSize = 8
+  const [result, setResult] = useState<
+    {
+      holderAddress: string
+      tokenAddress: string
+      balance: string
+      daoAddress: string
+    }[]
+  >([])
+
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId || !account) {
+        setResult([])
+        return
+      }
+      setLoading(true)
+      try {
+        const res = await getAccountDaoHolds(chainId, account, currentPage, pageSize)
+        setLoading(false)
+        const data = res.data.data
+        if (!data) {
+          setResult([])
+          return
+        }
+        setTotal(data.totalCount)
+        const list = data.data.map((item: any) => {
+          return {
+            holderAddress: item.holderAddress,
+            tokenAddress: item.tokenAddress,
+            balance: item.balance,
+            daoAddress: item.daoAddress
+          }
+        })
+        setResult(list)
+      } catch (error) {
+        setResult([])
+        setLoading(false)
+        console.error('useAccountDaoAssets', error)
+      }
+    })()
+  }, [chainId, currentPage, account])
+
+  return {
+    loading: loading,
+    page: {
+      setCurrentPage,
+      currentPage,
+      total,
+      pageSize
+    },
+    list: result
   }
 }

@@ -50,3 +50,17 @@ export function getProposalVoteList(
     pageSize
   })
 }
+
+export function getDaoMembers(chainId: number, daoTokenAddress: string, pageNum: number, pageSize: number) {
+  return Axios.get(serverBaseUrl + `${chainId}/member/${daoTokenAddress}`, {
+    pageNum,
+    pageSize
+  })
+}
+
+export function getAccountDaoHolds(chainId: number, account: string, pageNum: number, pageSize: number) {
+  return Axios.get(serverBaseUrl + `${chainId}/hold/${account}`, {
+    pageNum,
+    pageSize
+  })
+}

@@ -125,25 +125,28 @@ export default function Configuration({
   const updateLog = useMemo(() => {
     const logArr: { [key in string]: string[] } = {}
     if (minVoteNumber !== rule.minimumVote.toSignificant()) {
-      logArr['Minimum to vote'] = [rule.minimumVote.toSignificant(6, { groupSeparator: ',' }), minVoteNumber]
+      logArr['Minimum holding to vote'] = [rule.minimumVote.toSignificant(6, { groupSeparator: ',' }), minVoteNumber]
     }
     if (minCreateProposalNumber !== rule.minimumCreateProposal.toSignificant()) {
-      logArr['Minimum create proposal'] = [
+      logArr['Minimum holding to create proposal'] = [
         rule.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' }),
         minCreateProposalNumber
       ]
     }
     if (minValidNumber !== rule.minimumValidVotes.toSignificant()) {
-      logArr['Minimum valid votes'] = [rule.minimumValidVotes.toSignificant(6, { groupSeparator: ',' }), minValidNumber]
+      logArr['Minimum voting participation rate'] = [
+        rule.minimumValidVotes.toSignificant(6, { groupSeparator: ',' }),
+        minValidNumber
+      ]
     }
     if (communityDuration !== rule.communityVotingDuration) {
       const _new = calcTime(Number(communityDuration))
       const _old = calcTime(Number(rule.communityVotingDuration))
       logArr['Community Voting Duration'] = [
-        `${_old.days} Days ${_old.hours} Hours ${_old.hours} Minutes ${
+        `${_old.days} Days ${_old.hours} Hours ${_old.minutes} Minutes ${
           Number(rule.communityVotingDuration) === 0 ? '(voters custom)' : ''
         }`,
-        `${_new.days} Days ${_new.hours} Hours ${_new.hours} Minutes ${
+        `${_new.days} Days ${_new.hours} Hours ${_new.minutes} Minutes ${
           Number(communityDuration) === 0 ? '(voters custom)' : ''
         }`
       ]
@@ -152,8 +155,8 @@ export default function Configuration({
       const _new = calcTime(Number(contractDuration))
       const _old = calcTime(Number(rule.contractVotingDuration))
       logArr['Contract Voting Duration'] = [
-        `${_old.days} Days ${_old.hours} Hours ${_old.hours} Minutes`,
-        `${_new.days} Days ${_new.hours} Hours ${_new.hours} Minutes`
+        `${_old.days} Days ${_old.hours} Hours ${_old.minutes} Minutes`,
+        `${_new.days} Days ${_new.hours} Hours ${_new.minutes} Minutes`
       ]
     }
     if (ruleContent !== rule.content) {

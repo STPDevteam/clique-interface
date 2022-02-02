@@ -7,7 +7,7 @@ import TextArea from 'antd/lib/input/TextArea'
 import { Box, Typography } from '@mui/material'
 import { useBuildingDataCallback } from 'state/building/hooks'
 import { CreateDaoDataBasic } from 'state/building/actions'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { toFormatMillion } from 'utils/dao'
 import AlertError from 'components/Alert/index'
 import BigNumber from 'bignumber.js'
@@ -17,6 +17,7 @@ type CreateDaoDataBasicKey = keyof CreateDaoDataBasic
 export default function Basic({ goNext }: { goNext: () => void }) {
   const { buildingDaoData, updateBasic } = useBuildingDataCallback()
   const { basic: basicData } = buildingDaoData
+  const [previewStr, setPreviewStr] = useState<any>('')
 
   const updateBasicCall = useCallback(
     (key: CreateDaoDataBasicKey, value: string | number) => {
@@ -129,12 +130,12 @@ export default function Basic({ goNext }: { goNext: () => void }) {
           <div className="input-item">
             <span className="label">Token Photo</span>
             <Box display={'flex'} alignItems={'center'} gap="5px">
-              <IUpload setResult={val => updateBasicCall('tokenPhoto', val)}>
+              <IUpload setResult={val => updateBasicCall('tokenPhoto', val)} onPreviewStr={str => setPreviewStr(str)}>
                 <Button className="btn-upload" style={{ padding: 5 }}>
                   <img
-                    src={basicData.tokenPhoto || IconUpload}
-                    width={basicData.tokenPhoto ? '100%' : 'auto'}
-                    height={basicData.tokenPhoto ? '100%' : 'auto'}
+                    src={previewStr || basicData.tokenPhoto || IconUpload}
+                    width={previewStr || basicData.tokenPhoto ? '100%' : 'auto'}
+                    height={previewStr || basicData.tokenPhoto ? '100%' : 'auto'}
                   />
                 </Button>
               </IUpload>

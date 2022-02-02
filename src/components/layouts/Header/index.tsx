@@ -5,14 +5,18 @@ import DaoframeLogo from 'assets/svg/create_logo.svg'
 import WalletStatus from '../WalletStatus'
 import { useHistory } from 'react-router-dom'
 import { isDaoframeSite } from 'utils/dao'
+import { Box, Typography } from '@mui/material'
 
 export default function Header() {
   const history = useHistory()
   return (
     <header>
-      <div className="logo link" onClick={() => history.push('/')}>
+      <Box className="logo link" onClick={() => history.push('/')}>
         <img src={isDaoframeSite() ? DaoframeLogo : Logo} />
-      </div>
+        <Typography variant="body2" ml={5} sx={{ transform: 'translateY(5px)' }}>
+          Beta
+        </Typography>
+      </Box>
       <div className="actions">
         <WalletStatus />
       </div>

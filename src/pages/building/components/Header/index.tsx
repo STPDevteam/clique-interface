@@ -10,7 +10,7 @@ interface IHeaderProps {
 
 export default function Index(props: IHeaderProps) {
   const {
-    title = 'Create a DAO with Clique',
+    title = 'Create a DAO with Framework',
     stepItems = ['Basic', 'Config', 'Rule', 'Review'],
     step = 'Basic'
   } = props

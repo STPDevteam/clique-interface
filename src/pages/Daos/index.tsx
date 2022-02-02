@@ -10,6 +10,7 @@ import PublicOfferingCard from './PublicOfferingCard'
 import Pagination from 'antd/lib/pagination'
 import ShowTokenHolders from './ShowTokenHolders'
 import { Empty, Spin } from 'antd'
+import { ExternalLink } from 'theme/components'
 
 enum TypeTabs {
   DAO,
@@ -44,6 +45,7 @@ export default function Index() {
             Build decentralized automated organization and issue governance token running on Verse and Ethereum
             blockchain within a few clicks.
           </p>
+          <ExternalLink href="https://stp-dao.gitbook.io/verse-network/">how it works</ExternalLink>
         </div>
         {/* <Search placeholder="DAO Name" onSearch={handleSearch} /> */}
       </div>

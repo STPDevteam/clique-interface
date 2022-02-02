@@ -197,12 +197,11 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
       if (!isValidPrivateReceivingToken.length) {
         return 'Receiving token invalid'
       }
+
+      if (!distribution.startTime) return 'Start time required'
+      if (!distribution.endTime) return 'End time required'
+      if (Number(distribution.startTime >= Number(distribution.endTime))) return 'Start time must be less than end time'
     }
-
-    if (!distribution.startTime) return 'Start time required'
-    if (!distribution.endTime) return 'End time required'
-
-    if (Number(distribution.startTime >= Number(distribution.endTime))) return 'Start time must be less than end time'
 
     if (isValidAmount(remainderTokenAmount))
       return 'There are remaining tokens that are not used, please click Next after the configuration is complete'
