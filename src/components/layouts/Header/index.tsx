@@ -13,7 +13,7 @@ export default function Header() {
     <header>
       <Box className="logo link" onClick={() => history.push('/')}>
         <img src={isDaoframeSite() ? DaoframeLogo : Logo} />
-        <Typography variant="body2" ml={5} sx={{ transform: 'translateY(5px)' }}>
+        <Typography variant="body2" ml={isDaoframeSite() ? '-15px' : 5} sx={{ transform: 'translateY(5px)' }}>
           Beta
         </Typography>
       </Box>

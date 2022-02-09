@@ -94,7 +94,7 @@ export default function Index(props: IProps) {
                   >
                     <Box>
                       <p className={styles['title']}>{item.title}</p>
-                      <p className={styles['desc']}>{item.content}</p>
+                      <p className={styles['desc']} dangerouslySetInnerHTML={{ __html: item.content }}></p>
                     </Box>
                     <div className={styles['footer']}>
                       <ProposalStatus status={item.status} />
