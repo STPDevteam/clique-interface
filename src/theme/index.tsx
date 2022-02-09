@@ -143,12 +143,12 @@ export const override: any = {
     styleOverrides: {
       body: { backgroundColor: theme.palette.background.default, fontSize: 16 },
       'html, input, textarea, button': {
-        fontFamily: 'Roboto, sans-serif',
+        fontFamily: 'Poppins, sans-serif',
         fontDisplay: 'fallback'
       },
       '@supports (font-variation-settings: normal)': {
         'html, input, textarea, button ': {
-          fontFamily: 'Roboto, sans-serif',
+          fontFamily: 'Poppins, sans-serif',
           fontDisplay: 'fallback'
         }
       }
@@ -237,7 +237,7 @@ export const override: any = {
   MuiTypography: {
     styleOverrides: {
       root: {
-        fontFamily: 'Roboto'
+        fontFamily: 'Poppins, sans-serif'
       },
       body1: {
         fontSize: 14,
