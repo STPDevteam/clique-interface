@@ -85,8 +85,8 @@ export function useCreateDaoCallback() {
       const _pubs = {
         amout: 0,
         price: 0,
-        startTime: distributionData.startTime,
-        endTime: distributionData.endTime,
+        startTime: distributionData.startTime || 0,
+        endTime: distributionData.endTime || 0,
         pledgeLimitMin: 0,
         pledgeLimitMax: 0
       }

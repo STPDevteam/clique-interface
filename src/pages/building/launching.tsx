@@ -49,7 +49,7 @@ export default function Launching() {
             </Button>
           </div>
           <h3>All Done!</h3>
-          <p>Your organization is ready</p>
+          <p>Your DAO has been created</p>
         </div>
       )}
     </main>
