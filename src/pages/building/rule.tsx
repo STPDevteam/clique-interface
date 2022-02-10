@@ -10,6 +10,7 @@ import TextArea from 'antd/lib/input/TextArea'
 import AlertError from 'components/Alert/index'
 import { getAmountForPer, getPerForAmount } from './function'
 import BigNumber from 'bignumber.js'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 type CreateDaoDataRuleKey = keyof CreateDaoDataRule
 
@@ -57,7 +58,15 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
           </Box>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
-              <span className="label">Minimum holding to vote</span>
+              <Box className="label" display={'flex'} alignItems={'center'}>
+                Minimum holding to vote
+                <Tooltip
+                  placement="top"
+                  title="the minimum number of token you need to hold to vote on a proposal. You are not able to vote if your token holding is less than the required amount. (The default value is 1)"
+                >
+                  <HelpOutlineIcon sx={{ marginLeft: 5, cursor: 'pointer' }} />
+                </Tooltip>
+              </Box>
               {/* <div className="progress-wrapper">
                 <Slider
                   min={1}
@@ -92,7 +101,12 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
           </Box>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
-              <span className="label">Minimum holding to create proposal</span>
+              <Box className="label" display={'flex'} alignItems={'center'}>
+                Minimum holding to create proposal
+                <Tooltip placement="top" title="the amount of token you need to stake when creating a proposal">
+                  <HelpOutlineIcon sx={{ marginLeft: 5, cursor: 'pointer' }} />
+                </Tooltip>
+              </Box>
               <div className="progress-wrapper">
                 <Slider
                   min={1}
@@ -129,7 +143,15 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
 
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
-              <span className="label">Minimum voting participation rate</span>
+              <Box className="label" display={'flex'} alignItems={'center'}>
+                Minimum total votes
+                <Tooltip
+                  placement="top"
+                  title="the minimum number of votes needed to make the result valid. By end of the countdown, if the sum of votes of all options is less than the required value, the proposal will be failed"
+                >
+                  <HelpOutlineIcon sx={{ marginLeft: 5, cursor: 'pointer' }} />
+                </Tooltip>
+              </Box>
               <div className="progress-wrapper">
                 <Slider
                   min={1}

@@ -333,7 +333,7 @@ export default function ReviewInformation({
                 </span>
               </div>
               <div className="input-item mt-12">
-                <span className="label">Minimum voting participation rate</span>
+                <span className="label">Minimum total votes</span>
                 <span className="value">{toFormatGroup(ruleData.minApprovalNumber, 0)}</span>
                 <span className="label">
                   ({getPerForAmount(basicData.tokenSupply, ruleData.minApprovalNumber)}% per total votes)
