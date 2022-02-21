@@ -21,6 +21,8 @@ import Launching from './building/launching'
 import Offering from './offering'
 import MyWallet from './myWallet'
 import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
+import { Alert } from 'antd'
+import { Box } from '@mui/material'
 
 // const AppWrapper = styled('div')(({ theme }) => ({
 //   display: 'flex',
@@ -62,6 +64,24 @@ export default function App() {
     <Suspense fallback={null}>
       <ModalProvider>
         <div id="app">
+          <Box sx={{ position: 'fixed', width: '100%' }}>
+            <Alert
+              message={
+                <>
+                  Participate in the Verse Testnet node competition, view{' '}
+                  <a
+                    target="_blank"
+                    href="https://stp-dao.gitbook.io/verse-network/wallet-setup/interact-with-verse-testnet-using-metamask"
+                    rel="noreferrer"
+                  >
+                    tutorials{' '}
+                  </a>
+                  .
+                </>
+              }
+              type="info"
+            />
+          </Box>
           {/* <ContentWrapper> */}
           <Layouts>
             {/* <BodyWrapper id="body"> */}
