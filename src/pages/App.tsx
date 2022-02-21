@@ -64,7 +64,7 @@ export default function App() {
     <Suspense fallback={null}>
       <ModalProvider>
         <div id="app">
-          <Box sx={{ position: 'fixed', width: '100%' }}>
+          <Box sx={{ position: 'fixed', width: '100%', zIndex: 999 }}>
             <Alert
               message={
                 <>
