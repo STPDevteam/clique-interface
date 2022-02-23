@@ -7,6 +7,7 @@ import user from './user/reducer'
 import transactions from './transactions/reducer'
 import multicall from './multicall/reducer'
 import buildingDao from './building/reducer'
+import externalBuildingDao from './externalBuilding/reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'buildingDao']
 
@@ -16,7 +17,8 @@ const store = configureStore({
     user,
     transactions,
     multicall,
-    buildingDao
+    buildingDao,
+    externalBuildingDao
   },
   middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS })],
   preloadedState: load({ states: PERSISTED_KEYS })

@@ -15,7 +15,7 @@ export interface CreateDaoData {
   rule: CreateDaoDataRule
 }
 
-export const initialDaoDataState: CreateDaoData = {
+const initialDaoDataState: CreateDaoData = {
   basic: {
     daoName: '',
     description: '',
