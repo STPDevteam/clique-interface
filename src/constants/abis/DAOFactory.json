@@ -8,12 +8,22 @@
       },
       {
         "internalType": "address",
+        "name": "_externalDaoImpl",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "_tokenImpl",
         "type": "address"
       },
       {
         "internalType": "address",
         "name": "_votingImpl",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_externalVotingImpl",
         "type": "address"
       }
     ],
@@ -290,6 +300,99 @@
   {
     "inputs": [
       {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "daoName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "daoDesc",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "website",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "twitter",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "discord",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "tokenLogo",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAOExternalInterface.DAOBasic",
+        "name": "basic",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "minimumVote",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumCreateProposal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumValidVotes",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "communityVotingDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "contractVotingDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "content",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAOInterface.DAORule",
+        "name": "rule",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "createDAOWithExternalToken",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "",
         "type": "address"
@@ -357,6 +460,32 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "externalDaoImpl",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "externalVotingImpl",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -370,6 +499,38 @@
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getCurId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "isExternalDao",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -430,6 +591,32 @@
       }
     ],
     "name": "updateDaoImpl",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_externalDaoImpl",
+        "type": "address"
+      }
+    ],
+    "name": "updateExternalDaoImpl",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_externalVotingImpl",
+        "type": "address"
+      }
+    ],
+    "name": "updateExternalVotingImpl",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -16,9 +16,33 @@ export function isAddress(value: any): string | false {
   }
 }
 
-const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
-  4: 'rinkeby.',
-  [ChainId.STP]: ''
+const explorers = {
+  etherscan: (link: string, data: string, type: 'transaction' | 'token' | 'address' | 'block') => {
+    switch (type) {
+      case 'transaction':
+        return `${link}/tx/${data}`
+      default:
+        return `${link}/${type}/${data}`
+    }
+  }
+}
+
+interface ChainObject {
+  [chainId: number]: {
+    link: string
+    builder: (chainName: string, data: string, type: 'transaction' | 'token' | 'address' | 'block') => string
+  }
+}
+
+const chains: ChainObject = {
+  [ChainId.RINKEBY]: {
+    link: 'https://rinkeby.etherscan.io',
+    builder: explorers.etherscan
+  },
+  [ChainId.STP]: {
+    link: 'https://testnet-explorer.stp.network',
+    builder: explorers.etherscan
+  }
 }
 
 export function getEtherscanLink(
@@ -26,23 +50,8 @@ export function getEtherscanLink(
   data: string,
   type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
-  const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[4]}etherscan.io`
-
-  switch (type) {
-    case 'transaction': {
-      return `${prefix}/tx/${data}`
-    }
-    case 'token': {
-      return `${prefix}/token/${data}`
-    }
-    case 'block': {
-      return `${prefix}/block/${data}`
-    }
-    case 'address':
-    default: {
-      return `${prefix}/address/${data}`
-    }
-  }
+  const chain = chains[chainId]
+  return chain.builder(chain.link, data, type)
 }
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
@@ -95,4 +104,15 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
 
 export function escapeRegExp(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+}
+
+export function calcTime(timeStamp: number) {
+  const days = Math.floor(timeStamp / 86400)
+  const hours = Math.floor((timeStamp - days * 86400) / 3600)
+  const minutes = Math.floor((timeStamp - days * 86400 - hours * 3600) / 60)
+  return {
+    days,
+    hours,
+    minutes
+  }
 }

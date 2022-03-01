@@ -5,7 +5,7 @@ import { Button } from 'antd'
 import IconDao from './assets/icon-dao.svg'
 import IconAdd from './assets/icon-add.svg'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useCreatedDao, useMultiDaoBaseInfo } from 'hooks/useDAOInfo'
+import { useCreatedDao, useIsExternalDaos, useMultiDaoBaseInfo } from 'hooks/useDAOInfo'
 import Image from 'components/Image'
 import { useActiveWeb3React } from 'hooks'
 import { isMycliqueSite } from 'utils/dao'
@@ -17,6 +17,7 @@ export default function Index() {
   const { account } = useActiveWeb3React()
   const createdAddressList = useCreatedDao(account || undefined)
   const { data: daoBaseInfoList } = useMultiDaoBaseInfo(createdAddressList || [])
+  const isExternalDaos = useIsExternalDaos(createdAddressList)
 
   // useParams does not take effect on this component
   // this is an alternative plan
@@ -30,6 +31,13 @@ export default function Index() {
   const chooseDao = useCallback(
     address => {
       history.push(`/detail/${address}`)
+    },
+    [history]
+  )
+
+  const chooseExternalDetail = useCallback(
+    address => {
+      history.push(`/external_detail/${address}`)
     },
     [history]
   )
@@ -48,9 +56,16 @@ export default function Index() {
         <Button
           key={index}
           className={`btn-dao ${item.daoAddress === activeAddress ? 'active' : ''}`}
-          onClick={() => chooseDao(item.daoAddress)}
+          onClick={() => {
+            if (isExternalDaos.loading) return
+            if (isExternalDaos.data[index]) {
+              chooseExternalDetail(item.daoAddress)
+            } else {
+              chooseDao(item.daoAddress)
+            }
+          }}
         >
-          <Image src={item.token?.logo || IconDao} width={48} height={48} style={{ borderRadius: '50%' }} />
+          <Image src={item.logo || IconDao} width={48} height={48} style={{ borderRadius: '50%' }} />
         </Button>
       ))}
       <Button className="btn-add" onClick={createDao}>

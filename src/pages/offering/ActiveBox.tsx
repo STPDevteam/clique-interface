@@ -62,12 +62,12 @@ export default function ActiveBox({ daoAddress, daoToken }: { daoAddress: string
       >
         <TabPane tab={OfferingActiveProps.PAY} key={OfferingActiveProps.PAY}>
           {swapLoading && (
-            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
               <Spin size="large" tip="Loading..." />
             </Box>
           )}
           {!swapLoading && swapList.length === 0 && (
-            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
               <Empty description="No records currently" />
             </Box>
           )}
@@ -90,12 +90,12 @@ export default function ActiveBox({ daoAddress, daoToken }: { daoAddress: string
         </TabPane>
         <TabPane tab={OfferingActiveProps.REDEEM} key={OfferingActiveProps.REDEEM}>
           {reservedLoading && (
-            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
               <Spin size="large" tip="Loading..." />
             </Box>
           )}
           {!reservedLoading && reservedList.length === 0 && (
-            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
               <Empty description="No records currently" />
             </Box>
           )}

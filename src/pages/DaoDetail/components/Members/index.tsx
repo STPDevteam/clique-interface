@@ -3,7 +3,7 @@ import './pc.less'
 import 'react'
 import { Pagination, Table } from 'antd'
 // import { useTokenHoldersByExplorer } from 'hooks/useStpExplorerData'
-import { DaoInfoProps, useCreatedDao } from 'hooks/useDAOInfo'
+import { DaoInfoProps, ExternalDaoInfoProps, useCreatedDao } from 'hooks/useDAOInfo'
 import { useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { useDaoMembers } from 'hooks/useBackedServer'
@@ -17,7 +17,7 @@ function AccountProposals({ account }: { account: string }) {
   return <>{res ? res.length : '-'}</>
 }
 
-export default function Members({ daoInfo }: { daoInfo: DaoInfoProps }) {
+export default function Members({ daoInfo }: { daoInfo: DaoInfoProps | ExternalDaoInfoProps }) {
   // const { loading, data: holderList } = useTokenHoldersByExplorer(daoInfo.token?.address)
   const { result, loading, page } = useDaoMembers(daoInfo.token?.address)
 

@@ -144,12 +144,12 @@ export default function Index() {
             {currentTab === 'History' && (
               <>
                 {loading && (
-                  <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+                  <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
                     <Spin size="large" tip="Loading..." />
                   </Box>
                 )}
                 {!loading && myWalletHistory.length === 0 && (
-                  <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+                  <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
                     <Empty description="No records currently" />
                   </Box>
                 )}

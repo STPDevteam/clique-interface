@@ -126,12 +126,12 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
       <Grid container spacing={20} className="transactions">
         <Grid item lg={8} xs={12}>
           {loading && (
-            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
               <Spin size="large" tip="Loading..." />
             </Box>
           )}
           {!loading && assetsTransferRecord.length === 0 && (
-            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
               <Empty description="No records currently" />
             </Box>
           )}

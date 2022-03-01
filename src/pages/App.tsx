@@ -16,48 +16,15 @@ import '../assets/styles/global.pc.less'
 import Home from './home'
 import Daos from './Daos'
 import DaoDetail from './DaoDetail'
+import ExternalDetail from './ExternalDetail'
 import Building from './building'
 import Launching from './building/launching'
+import ExternalBuilding from './ExternalBuilding'
 import Offering from './offering'
 import MyWallet from './myWallet'
 import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
 import { Alert } from 'antd'
 import { Box } from '@mui/material'
-
-// const AppWrapper = styled('div')(({ theme }) => ({
-//   display: 'flex',
-//   alignItems: 'flex-start',
-//   overflowX: 'hidden',
-//   [theme.breakpoints.down('md')]: {
-//     flexDirection: 'column',
-//     height: '100vh'
-//   }
-// }))
-
-// const ContentWrapper = styled('div')({
-//   width: '100%',
-//   maxHeight: '100vh',
-//   overflow: 'auto',
-//   alignItems: 'center'
-// })
-
-// const BodyWrapper = styled('div')(({ theme }) => ({
-//   display: 'flex',
-//   flexDirection: 'column',
-//   width: '100%',
-//   minHeight: `calc(100vh - ${theme.height.header} - ${theme.height.footer})`,
-//   padding: '50px 0 80px',
-//   justifyContent: 'center',
-//   alignItems: 'center',
-//   flex: 1,
-//   overflowY: 'auto',
-//   overflowX: 'hidden',
-//   position: 'relative',
-//   [theme.breakpoints.down('md')]: {
-//     minHeight: `calc(100vh - ${theme.height.header} - ${theme.height.mobileHeader})`,
-//     paddingTop: 20
-//   }
-// }))
 
 export default function App() {
   return (
@@ -95,6 +62,7 @@ export default function App() {
                   <>
                     <Route exact strict path="/" component={Daos} />
                     <Route exact strict path="/detail/:address" component={DaoDetail} />
+                    <Route exact strict path="/external_detail/:address" component={ExternalDetail} />
                     <Route exact strict path="/offering/:address" component={Offering} />
                     <Route exact strict path="/my_wallet" component={MyWallet} />
                   </>
@@ -103,6 +71,7 @@ export default function App() {
                     <Route exact strict path="/create" component={Home} />
                     <Route exact strict path="/building" component={Building} />
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
+                    <Route exact strict path="/external_building" component={ExternalBuilding} />
                     <Route path="/">
                       <Redirect to="create" />
                     </Route>
@@ -111,12 +80,14 @@ export default function App() {
                   <>
                     <Route exact strict path="/" component={Daos} />
                     <Route exact strict path="/detail/:address" component={DaoDetail} />
+                    <Route exact strict path="/external_detail/:address" component={ExternalDetail} />
                     <Route exact strict path="/offering/:address" component={Offering} />
                     <Route exact strict path="/my_wallet" component={MyWallet} />
 
                     <Route exact strict path="/create" component={Home} />
                     <Route exact strict path="/building" component={Building} />
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
+                    <Route exact strict path="/external_building" component={ExternalBuilding} />
                   </>
                 )}
               </Switch>

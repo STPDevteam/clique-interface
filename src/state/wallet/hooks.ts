@@ -205,3 +205,29 @@ export function useToken(tokenAddress: string | undefined, curChainId?: ChainId)
     return new Token(curChainId || chainId || 1, tokenAddress, decimal.result[0], symbol.result[0], tokenName.result[0])
   }, [chainId, curChainId, decimal.result, symbol.result, tokenAddress, tokenName.result])
 }
+
+export function useTokens(
+  tokenAddress: (string | undefined)[],
+  curChainId?: ChainId
+): undefined | (Token | undefined)[] {
+  const { chainId } = useActiveWeb3React()
+
+  const tokenNames = useMultipleContractSingleData(tokenAddress, DAO_ERC20_INTERFACE, 'name')
+  const symbols = useMultipleContractSingleData(tokenAddress, DAO_ERC20_INTERFACE, 'symbol')
+  const decimalss = useMultipleContractSingleData(tokenAddress, DAO_ERC20_INTERFACE, 'decimals')
+
+  return useMemo(() => {
+    if (!tokenAddress.length) return undefined
+    if (!tokenNames.length || !symbols.length || !decimalss.length) return undefined
+    if (!chainId && !curChainId) return undefined
+    if (tokenNames[0].loading || symbols[0].loading || decimalss[0].loading) return undefined
+    return tokenAddress.map((address, index) => {
+      const symbol = symbols[index].result
+      const tokenName = tokenNames[index].result
+      const decimal = decimalss[index].result
+      if (!symbol || !tokenName || !decimal || !address) return undefined
+
+      return new Token(curChainId || chainId || 1, address, decimal[0], symbol[0], tokenName[0])
+    })
+  }, [chainId, curChainId, decimalss, symbols, tokenAddress, tokenNames])
+}

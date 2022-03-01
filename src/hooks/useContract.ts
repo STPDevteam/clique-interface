@@ -16,6 +16,9 @@ import DAO_FACTORY_ABI from '../constants/abis/DAOFactory.json'
 import DAO_ABI from '../constants/abis/DAO.json'
 import STP_TOKEN_ABI from '../constants/abis/DAOToken.json'
 import VOTING_ABI from '../constants/abis/voting.json'
+import ExternalDAO_ABI from '../constants/abis/ExternalDAO.json'
+import ExternalToken_ABI from '../constants/abis/ExternalToken.json'
+import ExternalVoting_ABI from '../constants/abis/ExternalVoting.json'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -94,4 +97,16 @@ export function useVotingContract(votingAddress: string | undefined): Contract |
 
 export function useSTPTokenContract(tokenAddress: string | undefined): Contract | null {
   return useContract(tokenAddress, STP_TOKEN_ABI, true)
+}
+
+export function useExternalDaoContract(daoAddress: string | undefined): Contract | null {
+  return useContract(daoAddress, ExternalDAO_ABI, true)
+}
+
+export function useExternalVotingContract(votingAddress: string | undefined): Contract | null {
+  return useContract(votingAddress, ExternalVoting_ABI, true)
+}
+
+export function useExternalTokenContract(tokenAddress: string | undefined): Contract | null {
+  return useContract(tokenAddress, ExternalToken_ABI, true)
 }

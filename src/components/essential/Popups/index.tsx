@@ -32,7 +32,7 @@ const FixedPopupColumn = styled('div')(({ theme }) => ({
   right: 60,
   maxWidth: 320,
   width: '100%',
-  zIndex: 3,
+  zIndex: 101,
   display: 'grid',
   gridRowGap: 20,
   [theme.breakpoints.down('md')]: {

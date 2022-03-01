@@ -3,6 +3,7 @@ import { CreateDaoDataRule } from 'state/building/actions'
 
 export interface ExternalCreateDaoDataBasic {
   daoName: string
+  contractAddress: string
   description: string
   tokenPhoto: string
   websiteLink: string

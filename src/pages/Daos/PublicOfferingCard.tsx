@@ -1,8 +1,15 @@
 import { Avatar, Box, styled, Typography } from '@mui/material'
 import { Progress } from 'antd'
-import { DaoOpenStatus, DaoTypeStatus, useDaoInfoByAddress, useDaoStatus } from 'hooks/useDAOInfo'
+import {
+  DaoOpenStatus,
+  DaoTypeStatus,
+  useDaoInfoByAddress,
+  useDaoStatus,
+  useExternalDaoInfoByAddress
+} from 'hooks/useDAOInfo'
 import { useHistory } from 'react-router-dom'
 import { timeStampToFormat, toFormatMillion } from 'utils/dao'
+import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 
 const StyledText = styled(Typography)({
   overflow: 'hidden',
@@ -95,7 +102,9 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
       </Box>
       {daoStatus && <ShowStatus status={daoStatus.openStatus} />}
       <Box display={'grid'} gap={14} gridTemplateColumns={'58px 80px 1fr'} mb={22}>
-        <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.token?.logo}></Avatar>
+        <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.token?.logo}>
+          <IconDao />
+        </Avatar>
         <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'} pt={4} height={52}>
           <Typography
             variant="h6"
@@ -140,6 +149,72 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
           )}
         </Typography>
       </Box>
+    </Box>
+  )
+}
+
+export function NonePublicOfferingCard({ daoAddress }: { daoAddress: string | undefined }) {
+  const daoInfo = useExternalDaoInfoByAddress(daoAddress)
+
+  return (
+    <Box
+      padding={'35px 17px 28px'}
+      height={186}
+      sx={{
+        background: '#FFFFFF',
+        border: '0.5px solid #D8D8D8',
+        boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.2), -3px -3px 8px rgba(255, 255, 255, 0.6)',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        position: 'relative',
+        '&:hover': {
+          boxShadow: '5px 7px 13px hsla(0, 0%, 68.23529411764706%, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)'
+        }
+      }}
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '80px',
+          height: '28px',
+          left: 0,
+          top: 0,
+          background: '#FFFFFF',
+          boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.2), -3px -3px 8px rgba(255, 255, 255, 0.5)',
+          borderRadius: '8px 0px 0px 0px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Typography variant="body2" color={'#798488'}>
+          External
+        </Typography>
+      </Box>
+      <Box display={'grid'} gap={14} gridTemplateColumns={'58px 80px 1fr'} mb={22}>
+        <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.token?.logo}>
+          <IconDao />
+        </Avatar>
+        <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'} pt={4} height={52}>
+          <Typography
+            variant="h6"
+            sx={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}
+          >
+            {daoInfo?.daoName || '--'}
+          </Typography>
+          <Typography fontWeight={500} fontSize={14} color="#798488" sx={{ whiteSpace: 'nowrap' }}>
+            {daoInfo?.token?.symbol || '--'}
+          </Typography>
+        </Box>
+        <StyledText fontSize={10} pt={5}>
+          {daoInfo?.daoDesc}
+        </StyledText>
+      </Box>
+      <div />
     </Box>
   )
 }

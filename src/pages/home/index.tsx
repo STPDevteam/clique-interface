@@ -5,12 +5,12 @@ import { Button } from 'antd'
 import icon01 from '../../assets/images/icon-membership.svg'
 import icon02 from '../../assets/images/icon-dao.svg'
 import icon03 from '../../assets/images/icon-invest.svg'
-import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
+import CreateSelectModal from './CreateSelectModal'
+import useModal from 'hooks/useModal'
 
 export default function Index() {
-  const history = useHistory()
   const cardItems = [
     {
       icon: icon01,
@@ -36,6 +36,7 @@ export default function Index() {
   ]
   const { account } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
+  const { showModal, hideModal } = useModal()
   return (
     <main className="home">
       <h1>Create a DAO within a few clicks</h1>
@@ -44,7 +45,10 @@ export default function Index() {
         within a few clicks.
       </p>
       {account ? (
-        <Button className="btn-common btn-01 btn-build" onClick={() => history.push('/building')}>
+        <Button
+          className="btn-common btn-01 btn-build"
+          onClick={() => showModal(<CreateSelectModal hide={hideModal} />)}
+        >
           Build
         </Button>
       ) : (

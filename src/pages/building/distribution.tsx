@@ -439,38 +439,6 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
           </Box>
           {distribution.privateSaleOpen && (
             <Box mt={16} display={'grid'} gap={15}>
-              <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Typography variant="h6">Receiving Tokens</Typography>
-                <Box className="input-assets-selector" width={220}>
-                  <Select
-                    value={distribution.privateReceivingToken}
-                    suffixIcon={<img src={IconDownArrow} />}
-                    onChange={val => {
-                      updateDistributionCall('privateReceivingToken', val)
-                    }}
-                  >
-                    <Option value={''}>Please select token</Option>
-                    {curPrivateReceivingTokens.map(item => (
-                      <Option value={item.value} key={item.value}>
-                        <Box
-                          display={'flex'}
-                          alignItems={'center'}
-                          gap={5}
-                          sx={{
-                            '& img, & svg': {
-                              width: 20,
-                              height: 20
-                            }
-                          }}
-                        >
-                          <img src={item.logo} />
-                          {item.name}
-                        </Box>
-                      </Option>
-                    ))}
-                  </Select>
-                </Box>
-              </Box>
               <Box
                 display={'grid'}
                 gap={8}
@@ -799,6 +767,39 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
         </Box>
 
         <Box mt={20} display={'grid'} gap={15}>
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+            <Typography variant="h6">Receiving Tokens</Typography>
+            <Box className="input-assets-selector" width={220}>
+              <Select
+                value={distribution.privateReceivingToken}
+                suffixIcon={<img src={IconDownArrow} />}
+                onChange={val => {
+                  updateDistributionCall('privateReceivingToken', val)
+                }}
+              >
+                <Option value={''}>Please select token</Option>
+                {curPrivateReceivingTokens.map(item => (
+                  <Option value={item.value} key={item.value}>
+                    <Box
+                      display={'flex'}
+                      alignItems={'center'}
+                      gap={5}
+                      sx={{
+                        '& img, & svg': {
+                          width: 20,
+                          height: 20
+                        }
+                      }}
+                    >
+                      <img src={item.logo} />
+                      {item.name}
+                    </Box>
+                  </Option>
+                ))}
+              </Select>
+            </Box>
+          </Box>
+
           <Box display={'flex'} justifyContent={'space-between'} gap={15}>
             <Box display={'flex'} gap={24} alignItems={'center'}>
               <Typography variant="h6" sx={{ whiteSpace: 'nowrap' }}>

@@ -15,6 +15,7 @@ export interface ExternalCreateDaoData {
 const initialDaoDataState: ExternalCreateDaoData = {
   basic: {
     daoName: '',
+    contractAddress: '',
     description: '',
     tokenPhoto: '',
     websiteLink: '',

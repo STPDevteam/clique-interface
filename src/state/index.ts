@@ -9,7 +9,7 @@ import multicall from './multicall/reducer'
 import buildingDao from './building/reducer'
 import externalBuildingDao from './externalBuilding/reducer'
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'buildingDao']
+const PERSISTED_KEYS: string[] = ['user', 'transactions', 'buildingDao', 'externalBuildingDao']
 
 const store = configureStore({
   reducer: {

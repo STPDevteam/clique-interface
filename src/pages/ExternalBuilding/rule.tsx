@@ -1,27 +1,36 @@
-import './rule.pc.less'
+import '../building/rule.pc.less'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { InputNumber, Slider, Input, Button, Switch, Tooltip } from 'antd'
 import { Box, Typography } from '@mui/material'
-import { useBuildingDataCallback } from 'state/building/hooks'
 import { CreateDaoDataRule } from 'state/building/actions'
 import { toFormatGroup } from 'utils/dao'
 import TextArea from 'antd/lib/input/TextArea'
 import AlertError from 'components/Alert/index'
-import { getAmountForPer, getPerForAmount } from './function'
+import { getAmountForPer, getPerForAmount } from '../building/function'
 import BigNumber from 'bignumber.js'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import { useExternalTokenInfo } from 'hooks/external/useExternalTokenInfo'
+import { useExternalBuildingDataCallback } from 'state/externalBuilding/hooks'
 
 type CreateDaoDataRuleKey = keyof CreateDaoDataRule
 
 export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: () => void }) {
-  const { updateRule, buildingDaoData } = useBuildingDataCallback()
+  const { updateRule, buildingDaoData } = useExternalBuildingDataCallback()
   const { basic, rule } = buildingDaoData
-  // const [minVotePer, setMinVotePer] = useState(getPerForAmount(basic.tokenSupply, rule.minVoteNumber || 1))
-  const [minCreateProposalPer, setMinCreateProposalPer] = useState(
-    getPerForAmount(basic.tokenSupply, rule.minCreateProposalNumber || 1)
-  )
-  const [minApprovalPer, setMinApprovalPer] = useState(getPerForAmount(basic.tokenSupply, rule.minApprovalNumber || 0))
+  const externalTokenInfo = useExternalTokenInfo(basic.contractAddress)
+
+  const tokenSupply = externalTokenInfo.totalSupply?.toSignificant() || '1'
+
+  // const [minVotePer, setMinVotePer] = useState(getPerForAmount(tokenSupply, rule.minVoteNumber || 1))
+  const [minCreateProposalPer, setMinCreateProposalPer] = useState(0)
+  const [minApprovalPer, setMinApprovalPer] = useState(0)
+
+  useEffect(() => {
+    setMinCreateProposalPer(getPerForAmount(tokenSupply, rule.minCreateProposalNumber || 1))
+    setMinApprovalPer(getPerForAmount(tokenSupply, rule.minApprovalNumber || 1))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokenSupply])
 
   const updateRuleCall = useCallback(
     (key: CreateDaoDataRuleKey, value: any) => {
@@ -41,17 +50,17 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
     if (!rule.contractDays && !rule.contractHours && !rule.contractMinutes) {
       return 'Contract Voting Duration required'
     }
-    if (new BigNumber(rule.minApprovalNumber).gt(basic.tokenSupply)) {
+    if (new BigNumber(rule.minApprovalNumber).gt(tokenSupply)) {
       return 'Minimum total votes so large'
     }
-    if (new BigNumber(rule.minCreateProposalNumber).gt(basic.tokenSupply)) {
+    if (new BigNumber(rule.minCreateProposalNumber).gt(tokenSupply)) {
       return 'Minimum holding to create proposal so large'
     }
-    if (new BigNumber(rule.minVoteNumber).gt(basic.tokenSupply)) {
+    if (new BigNumber(rule.minVoteNumber).gt(tokenSupply)) {
       return 'Minimum holding to vote so large'
     }
     return undefined
-  }, [rule, basic.tokenSupply])
+  }, [rule, tokenSupply])
 
   return (
     <>
@@ -62,7 +71,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
               Total Supply
             </Typography>
             <Typography fontSize={20} variant="h6" fontWeight={600}>
-              {toFormatGroup(basic.tokenSupply, 0)}
+              {externalTokenInfo.totalSupply?.toSignificant(6, { groupSeparator: ',' })}
             </Typography>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
@@ -83,7 +92,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                   value={minVotePer}
                   onChange={e => {
                     setMinVotePer(e as number)
-                    updateRuleCall('minVoteNumber', getAmountForPer(basic.tokenSupply, e as number))
+                    updateRuleCall('minVoteNumber', getAmountForPer(tokenSupply, e as number))
                   }}
                 />
                 <span>{Number(minVotePer.toFixed(2))}%</span>
@@ -99,9 +108,9 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                     const _val = e.target.value
                     if (reg.test(_val)) {
                       // check max value
-                      const input = new BigNumber(_val).gt(basic.tokenSupply) ? basic.tokenSupply : _val
+                      const input = new BigNumber(_val).gt(tokenSupply) ? tokenSupply : _val
                       updateRuleCall('minVoteNumber', input)
-                      // setMinVotePer(getPerForAmount(basic.tokenSupply, input))
+                      // setMinVotePer(getPerForAmount(tokenSupply, input))
                     }
                   }}
                 />
@@ -123,7 +132,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                   value={minCreateProposalPer}
                   onChange={e => {
                     setMinCreateProposalPer(e as number)
-                    updateRuleCall('minCreateProposalNumber', getAmountForPer(basic.tokenSupply, e as number))
+                    updateRuleCall('minCreateProposalNumber', getAmountForPer(tokenSupply, e as number))
                   }}
                 />
                 <span>{Number(minCreateProposalPer.toFixed(2))}%</span>
@@ -140,9 +149,9 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                     const _val = e.target.value
                     if (reg.test(_val)) {
                       // check max value
-                      const input = new BigNumber(_val).gt(basic.tokenSupply) ? basic.tokenSupply : _val
+                      const input = new BigNumber(_val).gt(tokenSupply) ? tokenSupply : _val
                       updateRuleCall('minCreateProposalNumber', input)
-                      setMinCreateProposalPer(getPerForAmount(basic.tokenSupply, input))
+                      setMinCreateProposalPer(getPerForAmount(tokenSupply, input))
                     }
                   }}
                 />
@@ -168,7 +177,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                   value={minApprovalPer}
                   onChange={e => {
                     setMinApprovalPer(e as number)
-                    updateRuleCall('minApprovalNumber', getAmountForPer(basic.tokenSupply, e as number))
+                    updateRuleCall('minApprovalNumber', getAmountForPer(tokenSupply, e as number))
                   }}
                 />
                 <span>{Number(minApprovalPer.toFixed(2))}%</span>
@@ -185,9 +194,9 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                     const _val = e.target.value
                     if (reg.test(_val)) {
                       // check max value
-                      const input = new BigNumber(_val).gt(basic.tokenSupply) ? basic.tokenSupply : _val
+                      const input = new BigNumber(_val).gt(tokenSupply) ? tokenSupply : _val
                       updateRuleCall('minApprovalNumber', input)
-                      setMinApprovalPer(getPerForAmount(basic.tokenSupply, input))
+                      setMinApprovalPer(getPerForAmount(tokenSupply, input))
                     }
                   }}
                 />

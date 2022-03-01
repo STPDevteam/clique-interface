@@ -2,15 +2,17 @@ import './index.less'
 // import { Search, SearchParams } from './components/Search'
 // import IconDao from '../../assets/images/token-stpt.png'
 import { Avatar, Box, Grid, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useDaoAddressLists, useHomeDaoList } from 'hooks/useDaoList'
 import { useHistory } from 'react-router-dom'
 import { useProposalNumber } from 'hooks/useVoting'
-import PublicOfferingCard from './PublicOfferingCard'
+import PublicOfferingCard, { NonePublicOfferingCard } from './PublicOfferingCard'
 import Pagination from 'antd/lib/pagination'
 import ShowTokenHolders from './ShowTokenHolders'
 import { Empty, Spin } from 'antd'
 import { ExternalLink } from 'theme/components'
+import { useIsExternalDaos } from 'hooks/useDAOInfo'
+import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 
 enum TypeTabs {
   DAO,
@@ -21,20 +23,16 @@ export default function Index() {
   const [currentTab, setCurrentTab] = useState<TypeTabs>(TypeTabs.DAO)
   const history = useHistory()
   const { list: daoList, page: daoListPage, loading: daoListLoading } = useHomeDaoList()
+  const daoListAddresss = useMemo(() => daoList.map(item => item.daoAddress).filter(i => i), [daoList])
+  const isExternalDaos = useIsExternalDaos(daoListAddresss as string[])
+
   const {
-    daoAddresss: publicOfferingaddresss,
+    daoAddresss: publicOfferingAddresss,
     page: publicOfferingPage,
     loading: publicOfferingLoading
   } = useDaoAddressLists()
-  // const daos = new Array(4).fill({
-  //   name: 'DAO test',
-  //   token: 'DTC',
-  //   users: 3300,
-  //   proposals: 10
-  // })
-  // const handleSearch = (val: SearchParams) => {
-  //   console.log('🚀 ~ file: index.tsx ~ line 14 ~ handleSearch ~ val', val)
-  // }
+  const publicOfferingDaoListAddresss = useMemo(() => publicOfferingAddresss.filter(i => i), [publicOfferingAddresss])
+  const publicOfferingIsExternalDaos = useIsExternalDaos(publicOfferingDaoListAddresss as string[])
 
   return (
     <div className="daos-container">
@@ -73,21 +71,28 @@ export default function Index() {
       {currentTab === TypeTabs.DAO && (
         <>
           {daoListLoading && (
-            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
               <Spin size="large" tip="Loading..." />
             </Box>
           )}
           {!daoListLoading && daoList.length === 0 && (
-            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
               <Empty description="No daos currently" />
             </Box>
           )}
           <Grid container spacing={40}>
             {!daoListLoading &&
-              daoList.map(item => (
+              daoList.map((item, index) => (
                 <Grid key={item.daoAddress} item lg={3} md={4} sm={6} xs={12}>
                   <Box
-                    onClick={() => history.push('/detail/' + item.daoAddress)}
+                    onClick={() => {
+                      if (isExternalDaos.loading) return
+                      if (isExternalDaos.data[index]) {
+                        history.push('/external_detail/' + item.daoAddress)
+                      } else {
+                        history.push('/detail/' + item.daoAddress)
+                      }
+                    }}
                     padding={'25px 16px'}
                     height={186}
                     sx={{
@@ -102,7 +107,9 @@ export default function Index() {
                     }}
                   >
                     <Box display={'flex'} gap={16} mb={15}>
-                      <Avatar sx={{ width: 58, height: 58 }} src={item.token?.logo}></Avatar>
+                      <Avatar sx={{ width: 58, height: 58 }} src={item.logo}>
+                        <IconDao />
+                      </Avatar>
                       <Box
                         display={'flex'}
                         flexDirection={'column'}
@@ -158,20 +165,25 @@ export default function Index() {
       {currentTab === TypeTabs.OFFERING && (
         <>
           {publicOfferingLoading && (
-            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
               <Spin size="large" tip="Loading..." />
             </Box>
           )}
           {!publicOfferingLoading && daoList.length === 0 && (
-            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50}>
+            <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={50} mb={50}>
               <Empty description="No public offerings currently" />
             </Box>
           )}
           <Grid container spacing={12}>
             {!publicOfferingLoading &&
-              publicOfferingaddresss.map(daoAddress => (
+              !publicOfferingIsExternalDaos.loading &&
+              publicOfferingAddresss.map((daoAddress, index) => (
                 <Grid key={daoAddress} item lg={4} md={6} xs={12}>
-                  <PublicOfferingCard daoAddress={daoAddress} />
+                  {publicOfferingIsExternalDaos.data[index] ? (
+                    <NonePublicOfferingCard daoAddress={daoAddress} />
+                  ) : (
+                    <PublicOfferingCard daoAddress={daoAddress} />
+                  )}
                 </Grid>
               ))}
           </Grid>

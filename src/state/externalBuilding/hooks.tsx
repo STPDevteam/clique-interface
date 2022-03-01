@@ -10,7 +10,7 @@ import {
 } from './actions'
 
 export function useExternalBuildingDataCallback() {
-  const buildingDaoData = useSelector((state: AppState) => state.buildingDao)
+  const buildingDaoData = useSelector((state: AppState) => state.externalBuildingDao)
 
   const dispatch = useDispatch<AppDispatch>()
   const updateBasic = useCallback(
@@ -34,5 +34,29 @@ export function useExternalBuildingDataCallback() {
     updateRule,
     removeBuildingDaoData,
     buildingDaoData
+  }
+}
+
+export function useExternalCommitCreateDaoData() {
+  const buildingDaoData = useSelector((state: AppState) => state.externalBuildingDao)
+
+  const { basic, rule } = buildingDaoData
+  const basicData: ExternalCreateDaoDataBasic = Object.assign(
+    { ...basic },
+    {
+      daoName: basic.daoName.trim(),
+      description: basic.description.trim(),
+      contractAddress: basic.contractAddress.trim(),
+      tokenPhoto: basic.tokenPhoto.trim(),
+      websiteLink: basic.websiteLink.trim(),
+      twitterLink: basic.twitterLink.trim(),
+      discordLink: basic.discordLink.trim()
+    }
+  )
+  const ruleData: CreateDaoDataRule = Object.assign({ ...rule }, { rules: rule.rules.trim() })
+
+  return {
+    basicData,
+    ruleData
   }
 }

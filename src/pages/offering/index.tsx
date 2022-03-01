@@ -27,6 +27,7 @@ import { useTokenBalance } from 'state/wallet/hooks'
 import BigNumber from 'bignumber.js'
 import ShowTokenHolders from '../Daos/ShowTokenHolders'
 import ActiveBox from './ActiveBox'
+import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -388,7 +389,9 @@ export default function Offering() {
           <Grid item lg={8} xs={12} width={'100%'}>
             <StyledBetween alignItems={'center'}>
               <Box display={'flex'} gap={15}>
-                <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.token?.logo || ''}></Avatar>
+                <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.logo}>
+                  <IconDao />
+                </Avatar>
                 <Box padding={'4px 0'} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
                   <Typography variant="h6">{daoInfo?.daoName || '-'}</Typography>
                   <Typography variant="inherit" color={'#767676'}>

@@ -63,9 +63,9 @@ export function useProposalList(votingAddress: string | undefined) {
       endTime: Number(item.endTime.toString()),
       blkHeight: item.blkHeight.toString(),
       status: item.status,
-      minimumVote: item.minimumVote,
-      minimumValidVotes: item.minimumValidVotes,
-      minimumCreateProposal: item.minimumCreateProposal
+      minimumVote: item.minimumVote.toString(),
+      minimumValidVotes: item.minimumValidVotes.toString(),
+      minimumCreateProposal: item.minimumCreateProposal.toString()
     }
     // const curTime = getCurrentTimeStamp()
     // if (item.status === 0 && ret.startTime < curTime && ret.endTime > curTime) {

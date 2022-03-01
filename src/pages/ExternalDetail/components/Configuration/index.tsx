@@ -1,11 +1,11 @@
-import './pc.less'
+import '../../../DaoDetail/components/Configuration/pc.less'
 
 import 'react'
-import { Input, Slider, Tooltip, Switch, InputNumber, Table } from 'antd'
+import { Input, Slider, Tooltip, Switch, InputNumber } from 'antd'
 import { Box, Typography } from '@mui/material'
 import { useCallback, useMemo, useState } from 'react'
 import AlertError from 'components/Alert/index'
-import { amountAddDecimals, getCurrentTimeStamp, timeStampToFormat, toFormatGroup } from 'utils/dao'
+import { amountAddDecimals, getCurrentTimeStamp, toFormatGroup } from 'utils/dao'
 import { calcVotingDuration, getAmountForPer, getPerForAmount } from 'pages/building/function'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
@@ -13,22 +13,20 @@ import TextArea from 'antd/lib/input/TextArea'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
-import { useCreateContractProposalCallback } from 'hooks/useCreateContractProposalCallback'
 import useModal from 'hooks/useModal'
 import { TokenAmount } from 'constants/token'
 import Confirm from './Confirm'
 import { useActiveWeb3React } from 'hooks'
 import OutlineButton from 'components/Button/OutlineButton'
 import { calcTime } from 'utils'
-const { Column } = Table
+import { useCreateContractProposalCallback } from 'hooks/useCreateContractProposalCallback'
 
 // const { TextArea } = Input
 
 export default function Configuration({
   rule,
   totalSupply,
-  votingAddress,
-  reserved
+  votingAddress
 }: {
   rule: {
     minimumVote: TokenAmount
@@ -40,25 +38,9 @@ export default function Configuration({
   }
   totalSupply: TokenAmount
   votingAddress: string | undefined
-  reserved: {
-    address: string
-    amount: TokenAmount
-    lockDate: number
-  }[]
 }) {
   const { account } = useActiveWeb3React()
   const { hideModal, showModal } = useModal()
-  const reservedData = useMemo(
-    () =>
-      reserved.map(({ address, amount, lockDate }, index) => ({
-        id: index + 1,
-        address,
-        amount: amount.toSignificant(6, { groupSeparator: ',' }),
-        per: getPerForAmount(totalSupply.toSignificant(), amount.toSignificant()) + '%',
-        lock: timeStampToFormat(lockDate)
-      })),
-    [reserved, totalSupply]
-  )
   const [minVoteNumber, setMinVoteNumber] = useState(rule.minimumVote.toSignificant())
   const [minCreateProposalNumber, setMinCreateProposalNumber] = useState(rule?.minimumCreateProposal.toSignificant())
   const [minValidNumber, setMinValidNumber] = useState(rule.minimumValidVotes.toSignificant())
@@ -216,10 +198,9 @@ export default function Configuration({
         startTime={startTime}
         endTime={endTime}
         updateLog={updateLog}
-        votingAddress={votingAddress}
       />
     )
-  }, [endTime, onCommit, rule.minimumCreateProposal, showModal, startTime, updateLog, votingAddress])
+  }, [endTime, onCommit, rule.minimumCreateProposal, showModal, startTime, updateLog])
 
   return (
     <section className="configuration">
@@ -236,20 +217,10 @@ export default function Configuration({
           {totalSupply.token.address}
         </Typography>
       </Box>
-      <Box>
-        <Typography>Lock Address</Typography>
-        <Table className="stp-table" dataSource={reservedData} rowKey={'id'} pagination={false}>
-          <Column title="#" dataIndex="id" key="id" align="center" />
-          <Column title="Addresses" dataIndex="address" key="id" align="center" />
-          <Column title="Amount" dataIndex="amount" key="id" align="center" />
-          <Column title="%" dataIndex="per" key="id" align="center" />
-          <Column title="Lock until" dataIndex="lock" key="id" align="center" />
-        </Table>
-      </Box>
       <Box display="grid" gap="10px">
         <Box display={'flex'} justifyContent={'space-between'} mb={20} mt={10}>
           <Typography variant="h6">Total Supply</Typography>
-          <Typography variant="h6">{toFormatGroup(totalSupply.toSignificant())}</Typography>
+          <Typography variant="h6">{totalSupply.toSignificant(6, { groupSeparator: ',' })}</Typography>
         </Box>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <div className="input-item progress">
