@@ -7,35 +7,52 @@ import IconDownArrow from '../assets/icon-down-arrow.svg'
 // import IconToken from '../../../assets/images/icon-token.svg'
 import Modal from 'components/Modal'
 import { Box, Typography } from '@mui/material'
-import { Token } from 'constants/token'
-import { useEffect, useMemo, useState } from 'react'
-import { useTokenBalance } from 'state/wallet/hooks'
+import { ETHER, Token } from 'constants/token'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import BigNumber from 'bignumber.js'
 import { tryParseAmount } from 'state/application/hooks'
+import { ZERO_ADDRESS } from '../../../constants'
+import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import { useTokenTransferCallback } from 'hooks/useTokenTransferCallback'
+import useModal from 'hooks/useModal'
 
 const { Option } = Select
 
-export default function DepositAssets({
-  daoTokens,
-  daoAddress,
-  setSelectDepositAddress,
-  onDeposit
-}: {
-  daoTokens: Token[]
-  daoAddress: string
-  onDeposit: (to: string, value: string) => void
-  setSelectDepositAddress: (v: string) => void
-}) {
+export default function DepositAssets({ daoTokens, daoAddress }: { daoTokens: Token[]; daoAddress: string }) {
   const [tokenAddress, setTokenAddress] = useState<string>()
   const [input, setInput] = useState('')
   const { account } = useActiveWeb3React()
   const curToken = useMemo(() => daoTokens.find(item => item.address === tokenAddress), [daoTokens, tokenAddress])
-  const curBalance = useTokenBalance(account || undefined, curToken)
+  const curBalance = useCurrencyBalance(account || undefined, curToken?.address === ZERO_ADDRESS ? ETHER : curToken)
+  const { showModal, hideModal } = useModal()
 
   useEffect(() => {
     setInput('')
   }, [curToken])
+
+  const onTokenTransferCallback = useTokenTransferCallback(tokenAddress)
+  const onDepositCallback = useCallback(
+    (to: string, value: string, isETHER: boolean) => {
+      showModal(<TransactionPendingModal />)
+      onTokenTransferCallback(to, value, isETHER)
+        .then(() => {
+          hideModal()
+          showModal(<TransactionSubmittedModal />)
+        })
+        .catch((err: any) => {
+          hideModal()
+          showModal(
+            <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+          )
+          console.error(err)
+        })
+    },
+    [showModal, onTokenTransferCallback, hideModal]
+  )
 
   const getActions = useMemo(() => {
     const _bal = tryParseAmount(input, curToken)
@@ -46,11 +63,14 @@ export default function DepositAssets({
         </Button>
       )
     return (
-      <Button width="240px" onClick={() => onDeposit(daoAddress, _bal.raw.toString())}>
+      <Button
+        width="240px"
+        onClick={() => onDepositCallback(daoAddress, _bal.raw.toString(), tokenAddress === ZERO_ADDRESS)}
+      >
         Submit
       </Button>
     )
-  }, [curToken, daoAddress, input, onDeposit])
+  }, [curToken, daoAddress, input, onDepositCallback, tokenAddress])
 
   return (
     <Modal closeIcon>
@@ -72,7 +92,6 @@ export default function DepositAssets({
               <Select
                 defaultValue=""
                 onChange={e => {
-                  setSelectDepositAddress(e)
                   setTokenAddress(e)
                 }}
                 suffixIcon={<img src={IconDownArrow} />}

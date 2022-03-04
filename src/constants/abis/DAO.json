@@ -656,7 +656,7 @@
     "inputs": [],
     "name": "partPriSale",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -669,7 +669,7 @@
     ],
     "name": "partPubSale",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {

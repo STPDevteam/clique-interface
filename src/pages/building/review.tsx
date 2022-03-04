@@ -203,25 +203,6 @@ export default function ReviewInformation({
 
             {distributionData.privateSaleOpen && (
               <Box padding={'20px 35px'} borderBottom={'0.5px solid #D8D8D8'} width={'100%'}>
-                <Box display={'flex'} justifyContent={'space-between'} padding={'0 30px'}>
-                  <Typography fontSize={14} color="#798488" style={{ fontWeight: 400 }}>
-                    Receiving Token
-                  </Typography>
-                  <Box
-                    display={'flex'}
-                    alignItems={'center'}
-                    gap={5}
-                    sx={{
-                      '& img, & svg': {
-                        width: 20,
-                        height: 20
-                      }
-                    }}
-                  >
-                    <Image src={currentReceivingToken.logo} />
-                    <Typography variant="h6">{currentReceivingToken.name}</Typography>
-                  </Box>
-                </Box>
                 <Box
                   display={'flex'}
                   justifyContent={'space-between'}
@@ -298,6 +279,25 @@ export default function ReviewInformation({
               </Box>
             )}
             <Box padding={'20px 65px'} width={'100%'} display={'grid'} gap={8}>
+              {(distributionData.publicSaleOpen || distributionData.privateSaleOpen) && (
+                <Box display={'flex'} justifyContent={'space-between'}>
+                  <Typography variant="h6">Receiving Token</Typography>
+                  <Box
+                    display={'flex'}
+                    alignItems={'center'}
+                    gap={5}
+                    sx={{
+                      '& img, & svg': {
+                        width: 20,
+                        height: 20
+                      }
+                    }}
+                  >
+                    <Image src={currentReceivingToken.logo} />
+                    <Typography variant="h6">{currentReceivingToken.name}</Typography>
+                  </Box>
+                </Box>
+              )}
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Typography variant="h6">Start time: {timeStampToFormat(distributionData.startTime)}</Typography>
                 <Typography variant="h6">End time: {timeStampToFormat(distributionData.endTime)}</Typography>

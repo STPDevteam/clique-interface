@@ -11,24 +11,27 @@ export function usePartPubSaleCallback(daoAddress: string | undefined) {
   const { account } = useActiveWeb3React()
 
   return useCallback(
-    (amountInt: string) => {
+    (isETHER: boolean, payAmountInt: string, amountInt: string) => {
       if (!account) throw new Error('none account')
       if (!daoContract) throw new Error('none daoContract')
 
-      return daoContract.estimateGas.partPubSale(amountInt, { from: account }).then(estimatedGasLimit => {
-        return daoContract
-          .partPubSale(amountInt, {
-            gasLimit: calculateGasMargin(estimatedGasLimit),
-            // gasLimit: '3500000',
-            from: account
-          })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              summary: 'Buy token'
+      return daoContract.estimateGas
+        .partPubSale(amountInt, { from: account, value: isETHER ? payAmountInt : undefined })
+        .then(estimatedGasLimit => {
+          return daoContract
+            .partPubSale(amountInt, {
+              gasLimit: calculateGasMargin(estimatedGasLimit),
+              // gasLimit: '3500000',
+              from: account,
+              value: isETHER ? payAmountInt : undefined
             })
-            return response.hash
-          })
-      })
+            .then((response: TransactionResponse) => {
+              addTransaction(response, {
+                summary: 'Buy token'
+              })
+              return response.hash
+            })
+        })
     },
     [account, addTransaction, daoContract]
   )

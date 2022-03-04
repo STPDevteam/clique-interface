@@ -5,6 +5,7 @@ import JSBI from 'jsbi'
 import { ChainId } from './chain'
 import { PrivateReceivingTokenProps } from 'state/building/actions'
 import IconTokenSvg from '../assets/images/icon-token.svg'
+import ETHTokenImg from '../assets/images/token-eth.png'
 import { isDaoframeSite } from 'utils/dao'
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
@@ -112,7 +113,7 @@ export const BLOCKED_ADDRESSES: string[] = [
 ]
 
 export const DAO_FACTORY_ADDRESS = {
-  [ChainId.RINKEBY]: '0x90dD8DAe211c19E734CC788cf400a1A0bAAe2d5F',
+  [ChainId.RINKEBY]: '0xCe1850834037f0CBbc7F0EB1c198FBBBf0F0FCC4',
   [ChainId.STP]: '0xE102b44c0614679E8521f32B05904F6D7e899E96'
 }
 
@@ -129,6 +130,14 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
       chainId: 4,
       logo: IconTokenSvg,
       address: '0x86029a4deD57C14Bb8620ED177F3B2a4D300C040',
+      decimals: 18
+    },
+    {
+      name: 'ETH',
+      value: 'ETH',
+      chainId: 4,
+      logo: ETHTokenImg,
+      address: ZERO_ADDRESS,
       decimals: 18
     }
   ],

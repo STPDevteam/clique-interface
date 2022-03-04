@@ -7,28 +7,22 @@ import { WithdrawAssets, DepositAssets } from '../../../../components/ModalSTP'
 import { Box, Grid } from '@mui/material'
 import useModal from 'hooks/useModal'
 import { DaoInfoProps } from 'hooks/useDAOInfo'
-import { useCallback, useMemo, useState } from 'react'
-import { Token, TokenAmount } from 'constants/token'
+import { useCallback, useMemo } from 'react'
+import { ETHER, Token, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
-import { useToken, useTokenBalance } from 'state/wallet/hooks'
+import { useCurrencyBalance, useToken } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
-import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
-import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
-import MessageBox from 'components/Modal/TransactionModals/MessageBox'
-import { useTokenTransferCallback } from 'hooks/useTokenTransferCallback'
-import { useCreateContractProposalCallback } from 'hooks/useCreateContractProposalCallback'
 import { useCurPrivateReceivingTokens } from 'state/building/hooks'
 import { AssetsTransferRecordProp, useAssetsTransferRecord } from 'hooks/useBackedServer'
 import { Empty, Pagination, Spin } from 'antd'
 import { timeStampToFormat, titleCase } from 'utils/dao'
 import { ExternalLink } from 'theme/components'
 import { getEtherscanLink } from 'utils'
-import { DefaultChainId } from '../../../../constants'
+import { DefaultChainId, ZERO_ADDRESS } from '../../../../constants'
 
 export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
-  const { showModal, hideModal } = useModal()
+  const { showModal } = useModal()
   const { account, chainId } = useActiveWeb3React()
-  const [selectDepositAddress, setSelectDepositAddress] = useState<string>()
 
   const curPrivateReceivingTokens = useCurPrivateReceivingTokens()
 
@@ -48,45 +42,6 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
     [daoTokens]
   )
 
-  const onTokenTransferCallback = useTokenTransferCallback(selectDepositAddress)
-  const onDepositCallback = useCallback(
-    (to: string, value: string) => {
-      showModal(<TransactionPendingModal />)
-      onTokenTransferCallback(to, value)
-        .then(() => {
-          hideModal()
-          showModal(<TransactionSubmittedModal />)
-        })
-        .catch((err: any) => {
-          hideModal()
-          showModal(
-            <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
-          )
-          console.error(err)
-        })
-    },
-    [showModal, onTokenTransferCallback, hideModal]
-  )
-
-  const { withdrawAssetCallback } = useCreateContractProposalCallback(daoInfo.votingAddress)
-  const onWithdrawCallback = useCallback(
-    (title: string, content: string, startTime: number, endTime: number, tokenAddress: string, amount: string) => {
-      showModal(<TransactionPendingModal />)
-      withdrawAssetCallback(title, content, tokenAddress, amount)
-        .then(() => {
-          hideModal()
-          showModal(<TransactionSubmittedModal />)
-        })
-        .catch((err: any) => {
-          hideModal()
-          showModal(
-            <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
-          )
-          console.error(err)
-        })
-    },
-    [showModal, withdrawAssetCallback, hideModal]
-  )
   const { page, loading, result: assetsTransferRecord } = useAssetsTransferRecord(daoInfo.daoAddress)
 
   return (
@@ -98,24 +53,13 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
             <>
               <Button
                 width={'150px'}
-                onClick={() =>
-                  showModal(
-                    <DepositAssets
-                      daoTokens={daoTokens}
-                      setSelectDepositAddress={val => setSelectDepositAddress(val)}
-                      daoAddress={daoInfo.daoAddress}
-                      onDeposit={onDepositCallback}
-                    />
-                  )
-                }
+                onClick={() => showModal(<DepositAssets daoTokens={daoTokens} daoAddress={daoInfo.daoAddress} />)}
               >
                 Deposit
               </Button>
               <Button
                 width={'150px'}
-                onClick={() =>
-                  showModal(<WithdrawAssets daoInfo={daoInfo} daoTokens={daoTokens} onWithdraw={onWithdrawCallback} />)
-                }
+                onClick={() => showModal(<WithdrawAssets daoInfo={daoInfo} daoTokens={daoTokens} />)}
               >
                 Withdraw
               </Button>
@@ -190,7 +134,7 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
 }
 
 function ShowTokenBalance({ token, account }: { token: Token; account: string }) {
-  const balance = useTokenBalance(account, token)
+  const balance = useCurrencyBalance(account, token.address === ZERO_ADDRESS ? ETHER : token)
 
   return <>{balance?.toSignificant(6, { groupSeparator: ',' }) || '-'}</>
 }

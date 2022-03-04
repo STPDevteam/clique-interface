@@ -6,9 +6,9 @@ import IconDownArrow from '../assets/icon-down-arrow.svg'
 // import IconToken from '../../../assets/images/icon-token.svg'
 import { Box, Typography } from '@mui/material'
 import Modal from 'components/Modal'
-import { Token } from 'constants/token'
+import { ETHER, Token } from 'constants/token'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useTokenBalance } from 'state/wallet/hooks'
+import { useCurrencyBalance } from 'state/wallet/hooks'
 import { tryParseAmount } from 'state/application/hooks'
 import BigNumber from 'bignumber.js'
 import { DaoInfoProps } from 'hooks/useDAOInfo'
@@ -19,6 +19,12 @@ import { styled } from '@mui/system'
 import OutlineButton from 'components/Button/OutlineButton'
 import Button from 'components/Button/Button'
 import { getCurrentTimeStamp, timeStampToFormat } from 'utils/dao'
+import { ZERO_ADDRESS } from '../../../constants'
+import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import useModal from 'hooks/useModal'
+import { useCreateContractProposalCallback } from 'hooks/useCreateContractProposalCallback'
 
 const FlexBetween = styled(Box)({
   display: 'flex',
@@ -28,30 +34,16 @@ const FlexBetween = styled(Box)({
 
 const { Option } = Select
 
-export default function WithdrawAssets({
-  daoTokens,
-  daoInfo,
-  onWithdraw
-}: {
-  daoTokens: Token[]
-  daoInfo: DaoInfoProps
-  onWithdraw: (
-    title: string,
-    content: string,
-    startTime: number,
-    endTime: number,
-    tokenAddress: string,
-    amount: string
-  ) => void
-}) {
+export default function WithdrawAssets({ daoTokens, daoInfo }: { daoTokens: Token[]; daoInfo: DaoInfoProps }) {
   const [tokenAddress, setTokenAddress] = useState<string>()
   const [showConfirm, setShowConfirm] = useState(false)
   const { account } = useActiveWeb3React()
   const [input, setInput] = useState('')
   const curToken = useMemo(() => daoTokens.find(item => item.address === tokenAddress), [daoTokens, tokenAddress])
-  const curDaoBalance = useTokenBalance(daoInfo.daoAddress, curToken)
-  const curAccountBalance = useTokenBalance(account || undefined, daoInfo.token)
+  const curDaoBalance = useCurrencyBalance(daoInfo.daoAddress, curToken?.address === ZERO_ADDRESS ? ETHER : curToken)
+  const curAccountBalance = useCurrencyBalance(account || undefined, daoInfo.token)
   const [justification, setJustification] = useState('')
+  const { showModal, hideModal } = useModal()
   const [approvalState, approvalCallback] = useApproveCallback(
     daoInfo.rule?.minimumCreateProposal,
     daoInfo.votingAddress
@@ -69,9 +61,29 @@ export default function WithdrawAssets({
     startTime
   ])
 
+  const { withdrawAssetCallback } = useCreateContractProposalCallback(daoInfo.votingAddress)
+  const onWithdrawCallback = useCallback(
+    (title: string, content: string, startTime: number, endTime: number, tokenAddress: string, amount: string) => {
+      showModal(<TransactionPendingModal />)
+      withdrawAssetCallback(title, content, tokenAddress, amount)
+        .then(() => {
+          hideModal()
+          showModal(<TransactionSubmittedModal />)
+        })
+        .catch((err: any) => {
+          hideModal()
+          showModal(
+            <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+          )
+          console.error(err)
+        })
+    },
+    [showModal, withdrawAssetCallback, hideModal]
+  )
+
   const onWithdrawCall = useCallback(() => {
     if (!daoInfo.rule?.contractVotingDuration || !justification || !tokenAddress || !inputBal) return
-    onWithdraw(
+    onWithdrawCallback(
       justification,
       `Withdraw ${inputBal.toSignificant()} ${curToken?.symbol}`,
       startTime,
@@ -85,7 +97,7 @@ export default function WithdrawAssets({
     endTime,
     inputBal,
     justification,
-    onWithdraw,
+    onWithdrawCallback,
     startTime,
     tokenAddress
   ])

@@ -14,7 +14,7 @@ import { useReservedClaimCallback } from 'hooks/useReservedClaimCallback'
 import { usePartPriSaleCallback } from 'hooks/usePartPriSaleCallback'
 import { usePartPubSaleCallback } from 'hooks/usePartPubSaleCallback'
 import { useReservedClaimed, useIsPriSoldAddress, usePubSoldAmt, usePubSoldAmtPerAddress } from 'hooks/useDaoOffering'
-import { TokenAmount } from 'constants/token'
+import { ETHER, TokenAmount } from 'constants/token'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from 'hooks/useModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
@@ -23,11 +23,12 @@ import { tryParseAmount, useWalletModalToggle } from 'state/application/hooks'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import Image from 'components/Image'
 import JSBI from 'jsbi'
-import { useTokenBalance } from 'state/wallet/hooks'
+import { useCurrencyBalance, useTokenBalance } from 'state/wallet/hooks'
 import BigNumber from 'bignumber.js'
 import ShowTokenHolders from '../Daos/ShowTokenHolders'
 import ActiveBox from './ActiveBox'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
+import { ZERO_ADDRESS } from '../../constants'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -168,6 +169,9 @@ export default function Offering() {
     currentPubReceiveTokenAmount,
     daoInfo?.daoAddress
   )
+  const receiveTokenIsEther = useMemo(() => (daoInfo?.receiveToken?.address === ZERO_ADDRESS ? true : false), [
+    daoInfo?.receiveToken
+  ])
 
   const reservedClaimCallback = useReservedClaimCallback(daoInfo?.daoAddress)
   const partPriSaleCallback = usePartPriSaleCallback(daoInfo?.daoAddress)
@@ -178,8 +182,9 @@ export default function Offering() {
     if (!ca || !ca.greaterThan('0')) {
       return
     }
+    if (!currentPubReceiveTokenAmount) return
     showModal(<TransactionPendingModal />)
-    partPubSaleCallback(ca.raw.toString())
+    partPubSaleCallback(receiveTokenIsEther, currentPubReceiveTokenAmount.raw.toString(), ca.raw.toString())
       .then(() => {
         hideModal()
         setPublicAmount('')
@@ -192,11 +197,20 @@ export default function Offering() {
         )
         console.error(err)
       })
-  }, [daoInfo?.token, hideModal, partPubSaleCallback, publicAmount, showModal])
+  }, [
+    currentPubReceiveTokenAmount,
+    daoInfo?.token,
+    hideModal,
+    partPubSaleCallback,
+    publicAmount,
+    receiveTokenIsEther,
+    showModal
+  ])
 
   const onPartPriSaleCallback = useCallback(() => {
+    if (!priSalePayAmount) return
     showModal(<TransactionPendingModal />)
-    partPriSaleCallback()
+    partPriSaleCallback(receiveTokenIsEther, priSalePayAmount.raw.toString())
       .then(() => {
         hideModal()
         showModal(<TransactionSubmittedModal />)
@@ -208,7 +222,7 @@ export default function Offering() {
         )
         console.error(err)
       })
-  }, [hideModal, partPriSaleCallback, showModal])
+  }, [hideModal, partPriSaleCallback, priSalePayAmount, receiveTokenIsEther, showModal])
 
   const onReservedClaim = useCallback(() => {
     showModal(<TransactionPendingModal />)
@@ -227,6 +241,7 @@ export default function Offering() {
   }, [hideModal, reservedClaimCallback, showModal])
 
   const payBalance = useTokenBalance(account || undefined, daoInfo?.receiveToken)
+  const ethBalance = useCurrencyBalance(account || undefined, ETHER)
 
   const getPriSaleActions = useMemo(() => {
     if (!account) {
@@ -252,26 +267,35 @@ export default function Offering() {
       return <OutlineButton disabled>Not open hours</OutlineButton>
     }
 
-    if (!payBalance || !priSalePayAmount || payBalance.lessThan(priSalePayAmount)) {
-      return <OutlineButton disabled>Balance Insufficient</OutlineButton>
-    }
-    if (priSaleApprovalState !== ApprovalState.APPROVED) {
-      if (priSaleApprovalState === ApprovalState.PENDING) {
-        return (
-          <OutlineButton disabled>
-            Approval
-            <Dots />
-          </OutlineButton>
-        )
-      } else if (priSaleApprovalState === ApprovalState.NOT_APPROVED) {
-        return <OutlineButton onClick={priSaleApprovalCallback}>Approval</OutlineButton>
-      } else {
-        return <OutlineButton disabled>Pay</OutlineButton>
+    if (receiveTokenIsEther) {
+      if (!ethBalance || !priSalePayAmount || ethBalance.lessThan(priSalePayAmount)) {
+        return <OutlineButton disabled>Balance Insufficient</OutlineButton>
+      }
+    } else {
+      if (!payBalance || !priSalePayAmount || payBalance.lessThan(priSalePayAmount)) {
+        return <OutlineButton disabled>Balance Insufficient</OutlineButton>
+      }
+      if (priSaleApprovalState !== ApprovalState.APPROVED) {
+        if (priSaleApprovalState === ApprovalState.PENDING) {
+          return (
+            <OutlineButton disabled>
+              Approval
+              <Dots />
+            </OutlineButton>
+          )
+        } else if (priSaleApprovalState === ApprovalState.NOT_APPROVED) {
+          return <OutlineButton onClick={priSaleApprovalCallback}>Approval</OutlineButton>
+        } else {
+          return <OutlineButton disabled>Pay</OutlineButton>
+        }
       }
     }
+
     return <OutlineButton onClick={onPartPriSaleCallback}>Pay</OutlineButton>
   }, [
     account,
+    receiveTokenIsEther,
+    ethBalance,
     isPriSoldAddress,
     onPartPriSaleCallback,
     payBalance,
@@ -294,37 +318,47 @@ export default function Offering() {
       return <OutlineButton disabled>Not open hours</OutlineButton>
     }
     if (!currentPubReceiveTokenAmount) return <OutlineButton disabled>Pay</OutlineButton>
-    if (!payBalance || payBalance.lessThan(currentPubReceiveTokenAmount)) {
-      return <OutlineButton disabled>Balance Insufficient</OutlineButton>
-    }
-    if (pubSaleApprovalState !== ApprovalState.APPROVED) {
-      if (pubSaleApprovalState === ApprovalState.PENDING) {
-        return (
-          <OutlineButton disabled>
-            Approval
-            <Dots />
-          </OutlineButton>
-        )
-      } else if (pubSaleApprovalState === ApprovalState.NOT_APPROVED) {
-        return <OutlineButton onClick={pubSaleApprovalCallback}>Approval</OutlineButton>
-      } else {
-        return <OutlineButton disabled>Pay</OutlineButton>
+
+    if (receiveTokenIsEther) {
+      if (!ethBalance || ethBalance.lessThan(currentPubReceiveTokenAmount)) {
+        return <OutlineButton disabled>Balance Insufficient</OutlineButton>
+      }
+    } else {
+      if (!payBalance || payBalance.lessThan(currentPubReceiveTokenAmount)) {
+        return <OutlineButton disabled>Balance Insufficient</OutlineButton>
+      }
+      if (pubSaleApprovalState !== ApprovalState.APPROVED) {
+        if (pubSaleApprovalState === ApprovalState.PENDING) {
+          return (
+            <OutlineButton disabled>
+              Approval
+              <Dots />
+            </OutlineButton>
+          )
+        } else if (pubSaleApprovalState === ApprovalState.NOT_APPROVED) {
+          return <OutlineButton onClick={pubSaleApprovalCallback}>Approval</OutlineButton>
+        } else {
+          return <OutlineButton disabled>Pay</OutlineButton>
+        }
       }
     }
+
     if (new BigNumber(currentPublicMaxInput).lt(0.1)) {
       return <OutlineButton disabled>Sale Ended</OutlineButton>
     }
     return <OutlineButton onClick={onPartPubSaleCallback}>Pay</OutlineButton>
   }, [
     account,
+    pubPriSaleIsOpen,
     currentPubReceiveTokenAmount,
+    receiveTokenIsEther,
     currentPublicMaxInput,
     onPartPubSaleCallback,
+    toggleWalletModal,
+    ethBalance,
     payBalance,
-    pubPriSaleIsOpen,
-    pubSaleApprovalCallback,
     pubSaleApprovalState,
-    toggleWalletModal
+    pubSaleApprovalCallback
   ])
 
   const getReservedActions = useMemo(() => {
@@ -586,7 +620,7 @@ export default function Offering() {
                   <StyledBetween>
                     <Typography variant="body1">You pay</Typography>
                     <Typography variant="h6">
-                      {priSalePayAmount ? toFormatGroup(priSalePayAmount.toSignificant(), 2) : '-'}{' '}
+                      {priSalePayAmount ? priSalePayAmount.toSignificant(6, { groupSeparator: ',' }) : '-'}{' '}
                       {isPriSaleAccount.price.token.symbol}
                     </Typography>
                   </StyledBetween>

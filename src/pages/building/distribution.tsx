@@ -583,7 +583,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       />
                     </Tooltip>
                     <Typography fontSize={14} fontWeight={500} display={'flex'} alignItems={'center'}>
-                      {toFormatGroup(calcTotalAmountValue(item.tokenNumber, item.price), 0)}{' '}
+                      {toFormatGroup(calcTotalAmountValue(item.tokenNumber, item.price), 1)}{' '}
                       {distribution.privateReceivingToken}
                     </Typography>
                     <StyledExtraBg width={32} height={36} svgSize={16} onClick={() => removePrivateSaleItem(index)}>
@@ -609,7 +609,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Typography variant="h6">Total value</Typography>
                 <Typography variant="h6">
-                  {toFormatGroup(currentUsedTokenAmount.privateEquivalentEstimate, 0)}{' '}
+                  {toFormatGroup(currentUsedTokenAmount.privateEquivalentEstimate, 1)}{' '}
                   {distribution.privateReceivingToken}
                 </Typography>
               </Box>
@@ -758,7 +758,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Typography variant="h6">Total value</Typography>
                 <Typography variant="h6">
-                  {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate, 0)}{' '}
+                  {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate, 1)}{' '}
                   {distribution.privateReceivingToken}
                 </Typography>
               </Box>
