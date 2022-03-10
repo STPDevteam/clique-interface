@@ -42,6 +42,10 @@ const chains: ChainObject = {
   [ChainId.STP]: {
     link: 'https://testnet-explorer.stp.network',
     builder: explorers.etherscan
+  },
+  [ChainId.KLAYTN_BAOBAB]: {
+    link: 'https://baobab.scope.klaytn.com',
+    builder: explorers.etherscan
   }
 }
 

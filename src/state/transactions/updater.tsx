@@ -1,3 +1,4 @@
+import { useWeb3Instance } from 'hooks/useWeb3Instance'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
@@ -28,6 +29,7 @@ export function shouldCheck(
 
 export default function Updater(): null {
   const { chainId, library } = useActiveWeb3React()
+  const web3 = useWeb3Instance()
 
   const lastBlockNumber = useBlockNumber()
 
@@ -82,10 +84,45 @@ export default function Updater(): null {
             }
           })
           .catch(error => {
+            web3?.eth.getTransactionReceipt(hash).then(defaultReceipt => {
+              const receipt = library.formatter.receipt(defaultReceipt)
+              if (receipt) {
+                dispatch(
+                  finalizeTransaction({
+                    chainId,
+                    hash,
+                    receipt: {
+                      blockHash: receipt.blockHash,
+                      blockNumber: receipt.blockNumber,
+                      contractAddress: receipt.contractAddress,
+                      from: receipt.from,
+                      status: receipt.status,
+                      to: receipt.to,
+                      transactionHash: receipt.transactionHash,
+                      transactionIndex: receipt.transactionIndex
+                    }
+                  })
+                )
+
+                addPopup(
+                  {
+                    txn: {
+                      hash,
+                      success: receipt.status === 1,
+                      summary: transactions[hash]?.summary
+                    }
+                  },
+                  hash
+                )
+              } else {
+                dispatch(checkedTransaction({ chainId, hash, blockNumber: lastBlockNumber }))
+              }
+            })
+
             console.error(`failed to check transaction hash: ${hash}`, error)
           })
       })
-  }, [chainId, library, transactions, lastBlockNumber, dispatch, addPopup])
+  }, [chainId, web3, library, transactions, lastBlockNumber, dispatch, addPopup])
 
   return null
 }

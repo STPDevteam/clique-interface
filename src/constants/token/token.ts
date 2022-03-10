@@ -65,5 +65,12 @@ export function currencyEquals(currencyA: Currency, currencyB: Currency): boolea
 
 export const WETH = {
   [ChainId.RINKEBY]: new Token(ChainId.RINKEBY, '0x5545153ccfca01fbd7dd11c0b23ba694d9509a6f', 18, 'WHT', 'Wrapped HT'),
-  [ChainId.STP]: new Token(ChainId.STP, '0x5545153ccfca01fbd7dd11c0b23ba694d9509a6f', 18, 'WHT', 'Wrapped HT')
+  [ChainId.STP]: new Token(ChainId.STP, '0x5545153ccfca01fbd7dd11c0b23ba694d9509a6f', 18, 'WHT', 'Wrapped HT'),
+  [ChainId.KLAYTN_BAOBAB]: new Token(
+    ChainId.KLAYTN_BAOBAB,
+    '0x5545153ccfca01fbd7dd11c0b23ba694d9509a6f',
+    18,
+    'WHT',
+    'Wrapped HT'
+  )
 }

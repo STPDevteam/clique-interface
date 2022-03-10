@@ -3,10 +3,13 @@ import { ReactComponent as ETH } from 'assets/svg/eth_logo.svg'
 import EthUrl from 'assets/svg/eth_logo.svg'
 import STPSvg from '../assets/images/icon-token.svg'
 import { ReactComponent as STPLogo } from '../assets/images/icon-token.svg'
+import KlaytnSvg from '../assets/svg/klaytn_logo.svg'
+import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
 
 export enum ChainId {
   RINKEBY = 4,
-  STP = 72
+  STP = 72,
+  KLAYTN_BAOBAB = 1001
 }
 
 export const ChainList = [
@@ -25,6 +28,14 @@ export const ChainList = [
     name: 'Verse Network',
     id: ChainId.STP,
     hex: '0x48'
+  },
+  {
+    icon: <KlaytnLogo />,
+    logo: KlaytnSvg,
+    symbol: 'Klaytn Baobab',
+    name: 'Klaytn Baobab',
+    id: ChainId.KLAYTN_BAOBAB,
+    hex: '0x3e9'
   }
 ]
 
@@ -69,5 +80,16 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://rinkeby.infura.io/v3/'],
     blockExplorerUrls: ['https://rinkeby.etherscan.io/']
+  },
+  [ChainId.KLAYTN_BAOBAB]: {
+    chainId: '0x3e9',
+    chainName: 'Klaytn Baobab',
+    nativeCurrency: {
+      name: 'Klaytn Baobab',
+      symbol: 'KLAY',
+      decimals: 18
+    },
+    rpcUrls: ['https://api.baobab.klaytn.net:8651/'],
+    blockExplorerUrls: ['https://baobab.scope.klaytn.com/']
   }
 }

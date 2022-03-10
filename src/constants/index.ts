@@ -13,7 +13,14 @@ export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16))
 
 export const BAST_TOKEN: { [chainId in ChainId]: Token } = {
   [ChainId.RINKEBY]: new Token(ChainId.RINKEBY, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter'),
-  [ChainId.STP]: new Token(ChainId.STP, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter')
+  [ChainId.STP]: new Token(ChainId.STP, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter'),
+  [ChainId.KLAYTN_BAOBAB]: new Token(
+    ChainId.KLAYTN_BAOBAB,
+    '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+    18,
+    'MATTER',
+    'Matter'
+  )
 }
 
 export const ROUTER_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
@@ -114,7 +121,8 @@ export const BLOCKED_ADDRESSES: string[] = [
 
 export const DAO_FACTORY_ADDRESS = {
   [ChainId.RINKEBY]: '0x0AC40a90d5066D2AddAA30cf9C349609D97078E3',
-  [ChainId.STP]: '0xC0eDe5c50EC4f58230C0f9e6be54892A3F0adC44'
+  [ChainId.STP]: '0xC0eDe5c50EC4f58230C0f9e6be54892A3F0adC44',
+  [ChainId.KLAYTN_BAOBAB]: '0x4e5c8115543b5c2d91a0c40a70e508361382f8bf'
 }
 
 export const DefaultChainId = ChainId.STP
@@ -150,10 +158,21 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
       address: '0x1030222B08320C659078537F80D03FD82B858Eb3',
       decimals: 18
     }
+  ],
+  [ChainId.KLAYTN_BAOBAB]: [
+    {
+      name: 'TT',
+      value: 'TT',
+      chainId: 1001,
+      logo: IconTokenSvg,
+      address: '0xc8f97936d7aad25466213f0712036f3e7561a3d9',
+      decimals: 18
+    }
   ]
 }
 
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
-export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
+// export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
+export const serverBaseUrl = isDaoframeSite() ? 'https://testapi.daoframe.com/' : 'https://testapi.daoframe.com/'
 export const mycliqueUrl = 'https://myclique.io/'
 export const daoframeUrl = 'https://daoframe.com/'
