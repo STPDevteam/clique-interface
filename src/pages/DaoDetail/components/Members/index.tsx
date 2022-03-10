@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js'
 import { useDaoMembers } from 'hooks/useBackedServer'
 import { TokenAmount } from 'constants/token'
 import { Box } from '@mui/material'
+import { toFormatGroup } from 'utils/dao'
 
 const { Column } = Table
 
@@ -43,8 +44,8 @@ export default function Members({ daoInfo }: { daoInfo: DaoInfoProps | ExternalD
 
   return (
     <section className="members">
-      <h1>Members</h1>
-      <p>Total holders {daoInfo.totalSupply?.toSignificant(6, { groupSeparator: ',' })}</p>
+      <h1>Holders</h1>
+      <p>Total holders {toFormatGroup(page.total)}</p>
       <Table className="panel-config stp-table" loading={loading} dataSource={list} rowKey={'id'} pagination={false}>
         <Column title="Rank" dataIndex="rank" key="id" align="center" />
         <Column align="center" title="Address" dataIndex="account" key="address" />

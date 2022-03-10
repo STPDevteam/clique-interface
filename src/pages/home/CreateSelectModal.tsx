@@ -3,9 +3,11 @@ import Modal from '../../components/Modal'
 import { ReactComponent as CreateTokenIcon } from 'assets/svg/create_token_icon.svg'
 import { ReactComponent as ExternalTokenIcon } from 'assets/svg/external_token_icon.svg'
 import { useHistory } from 'react-router-dom'
+import { useActiveWeb3React } from 'hooks'
+import { ChainId } from 'constants/chain'
 
 const Item = styled(Box)({
-  padding: '30px 23px 20px',
+  padding: '30px 20px 20px',
   cursor: 'pointer',
   width: '160px',
   height: '160px',
@@ -24,6 +26,7 @@ const Item = styled(Box)({
 
 export default function CreateSelectModal({ hide }: { hide: () => void }) {
   const history = useHistory()
+  const { chainId } = useActiveWeb3React()
 
   return (
     <Modal closeIcon>
@@ -46,8 +49,10 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
         </Item>
         <Item
           onClick={() => {
-            hide()
-            history.push('/external_building')
+            if (chainId === ChainId.RINKEBY) {
+              hide()
+              history.push('/external_building')
+            }
           }}
         >
           <Box display={'grid'} gap="24px" justifyItems={'center'} alignItems="center">

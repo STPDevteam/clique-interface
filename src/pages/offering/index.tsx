@@ -23,7 +23,7 @@ import { tryParseAmount, useWalletModalToggle } from 'state/application/hooks'
 import { ApprovalState, useApproveCallback } from 'hooks/useApproveCallback'
 import Image from 'components/Image'
 import JSBI from 'jsbi'
-import { useCurrencyBalance, useTokenBalance } from 'state/wallet/hooks'
+import { useCurrencyBalance } from 'state/wallet/hooks'
 import BigNumber from 'bignumber.js'
 import ShowTokenHolders from '../Daos/ShowTokenHolders'
 import ActiveBox from './ActiveBox'
@@ -240,7 +240,7 @@ export default function Offering() {
       })
   }, [hideModal, reservedClaimCallback, showModal])
 
-  const payBalance = useTokenBalance(account || undefined, daoInfo?.receiveToken)
+  const payBalance = useCurrencyBalance(account || undefined, daoInfo?.receiveToken)
   const ethBalance = useCurrencyBalance(account || undefined, ETHER)
 
   const getPriSaleActions = useMemo(() => {
@@ -567,7 +567,7 @@ export default function Offering() {
                       <Typography variant="body1">Pay</Typography>
                       <Typography variant="body1">
                         Balance: {payBalance ? payBalance?.toSignificant(6, { groupSeparator: ',' }) : '-'}{' '}
-                        {payBalance?.token.symbol}
+                        {daoInfo?.receiveToken?.symbol}
                       </Typography>
                     </StyledBetween>
                     <Input
