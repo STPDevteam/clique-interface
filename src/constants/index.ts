@@ -5,6 +5,7 @@ import JSBI from 'jsbi'
 import { ChainId } from './chain'
 import { PrivateReceivingTokenProps } from 'state/building/actions'
 import IconTokenSvg from '../assets/images/icon-token.svg'
+import KlaytnTokenSvg from '../assets/svg/klaytn_logo.svg'
 import ETHTokenImg from '../assets/images/token-eth.png'
 import { isDaoframeSite } from 'utils/dao'
 
@@ -151,6 +152,14 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
   ],
   [ChainId.STP]: [
     {
+      name: 'STPT',
+      value: 'STPT',
+      chainId: 72,
+      logo: IconTokenSvg,
+      address: ZERO_ADDRESS,
+      decimals: 18
+    },
+    {
       name: 'TT',
       value: 'TT',
       chainId: 72,
@@ -166,6 +175,14 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
       chainId: 1001,
       logo: IconTokenSvg,
       address: '0xc8f97936d7aad25466213f0712036f3e7561a3d9',
+      decimals: 18
+    },
+    {
+      name: 'KLAY',
+      value: 'KLAY',
+      chainId: 1001,
+      logo: KlaytnTokenSvg,
+      address: ZERO_ADDRESS,
       decimals: 18
     }
   ]
