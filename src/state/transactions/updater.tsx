@@ -84,8 +84,7 @@ export default function Updater(): null {
             }
           })
           .catch(error => {
-            web3?.eth.getTransactionReceipt(hash).then(defaultReceipt => {
-              const receipt = library.formatter.receipt(defaultReceipt)
+            web3?.eth.getTransactionReceipt(hash).then(receipt => {
               if (receipt) {
                 dispatch(
                   finalizeTransaction({
@@ -94,9 +93,9 @@ export default function Updater(): null {
                     receipt: {
                       blockHash: receipt.blockHash,
                       blockNumber: receipt.blockNumber,
-                      contractAddress: receipt.contractAddress,
+                      contractAddress: receipt.contractAddress || '',
                       from: receipt.from,
-                      status: receipt.status,
+                      status: receipt.status === true ? 1 : 0,
                       to: receipt.to,
                       transactionHash: receipt.transactionHash,
                       transactionIndex: receipt.transactionIndex
@@ -108,7 +107,7 @@ export default function Updater(): null {
                   {
                     txn: {
                       hash,
-                      success: receipt.status === 1,
+                      success: receipt.status === true,
                       summary: transactions[hash]?.summary
                     }
                   },
