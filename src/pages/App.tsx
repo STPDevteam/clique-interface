@@ -23,39 +23,22 @@ import ExternalBuilding from './ExternalBuilding'
 import Offering from './offering'
 import MyWallet from './myWallet'
 import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
-import { Alert } from 'antd'
-import { Box } from '@mui/material'
+import TopAlert from './TopAlert'
 
 export default function App() {
   return (
     <Suspense fallback={null}>
       <ModalProvider>
-        <div id="app">
-          <Box sx={{ position: 'fixed', width: '100%', zIndex: 999 }}>
-            <Alert
-              message={
-                <>
-                  Participate in the Verse Testnet node competition, view{' '}
-                  <a
-                    target="_blank"
-                    href="https://stp-dao.gitbook.io/verse-network/wallet-setup/interact-with-verse-testnet-using-metamask"
-                    rel="noreferrer"
-                  >
-                    tutorials{' '}
-                  </a>
-                  .
-                </>
-              }
-              type="info"
-            />
-          </Box>
-          {/* <ContentWrapper> */}
-          <Layouts>
-            {/* <BodyWrapper id="body"> */}
-            <Popups />
-            <Polling />
-            {/* <WarningModal /> */}
-            <Web3ReactManager>
+        <Web3ReactManager>
+          <div id="app">
+            {/* <ContentWrapper> */}
+            <TopAlert />
+            <Layouts>
+              {/* <BodyWrapper id="body"> */}
+              <Popups />
+              <Polling />
+              {/* <WarningModal /> */}
+
               <Switch>
                 {/* <Route exact strict path="/test1" component={ComingSoon} /> */}
                 {isMycliqueSite() ? (
@@ -91,12 +74,12 @@ export default function App() {
                   </>
                 )}
               </Switch>
-            </Web3ReactManager>
-            {/* </BodyWrapper> */}
-          </Layouts>
-          {/* <Footer /> */}
-          {/* </ContentWrapper> */}
-        </div>
+              {/* </BodyWrapper> */}
+            </Layouts>
+            {/* <Footer /> */}
+            {/* </ContentWrapper> */}
+          </div>
+        </Web3ReactManager>
       </ModalProvider>
     </Suspense>
   )
