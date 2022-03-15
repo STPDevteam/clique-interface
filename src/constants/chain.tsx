@@ -54,6 +54,7 @@ export const SUPPORTED_NETWORKS: {
       name: string
       symbol: string
       decimals: number
+      logo: string
     }
     rpcUrls: string[]
     blockExplorerUrls: string[]
@@ -63,9 +64,10 @@ export const SUPPORTED_NETWORKS: {
     chainId: '0x48',
     chainName: 'Verse',
     nativeCurrency: {
-      name: 'STP',
-      symbol: 'STP',
-      decimals: 18
+      name: 'STPT',
+      symbol: 'STPT',
+      decimals: 18,
+      logo: STPSvg
     },
     rpcUrls: ['https://test-gearrpc.stp.network'],
     blockExplorerUrls: ['https://testnet-explorer.stp.network/']
@@ -76,7 +78,8 @@ export const SUPPORTED_NETWORKS: {
     nativeCurrency: {
       name: 'Rinkeby',
       symbol: 'ETH',
-      decimals: 18
+      decimals: 18,
+      logo: EthUrl
     },
     rpcUrls: ['https://rinkeby.infura.io/v3/'],
     blockExplorerUrls: ['https://rinkeby.etherscan.io/']
@@ -87,7 +90,8 @@ export const SUPPORTED_NETWORKS: {
     nativeCurrency: {
       name: 'Klaytn Baobab',
       symbol: 'KLAY',
-      decimals: 18
+      decimals: 18,
+      logo: KlaytnSvg
     },
     rpcUrls: ['https://api.baobab.klaytn.net:8651/'],
     blockExplorerUrls: ['https://baobab.scope.klaytn.com/']

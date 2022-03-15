@@ -10,8 +10,8 @@ import { ExternalLink } from 'theme/components'
 import { shortenHashAddress, timeStampToFormat } from 'utils/dao'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { DefaultChainId } from '../../constants'
-import { useSTPToken, useToken, useTokenBalance } from 'state/wallet/hooks'
-import { TokenAmount } from 'constants/token'
+import { useCurrencyBalance, useSTPToken, useToken, useTokenBalance } from 'state/wallet/hooks'
+import { Currency, ETHER, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
 
 const StyledHeader = styled(Box)({
@@ -64,27 +64,48 @@ function ShowTokenBal({ address }: { address: string }) {
 }
 
 export default function Index() {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const history = useHistory()
   useEffect(() => {
     if (!account) history.replace('/')
   }, [account, history])
   const TABS = ['Wallet', 'History']
   const [currentTab, setCurrentTab] = useState(TABS[0])
+
+  const currentEthToken = useMemo(() => {
+    if (!chainId) return undefined
+    return Currency.get_ETH_TOKEN(chainId)
+  }, [chainId])
+  const currentEthTokenBalance = useCurrencyBalance(account || undefined, ETHER)
+
   // const { data: myTokens, loading: myTokensLoading } = useAccountERC20Tokens()
   const { loading: myTokensLoading, list: myTokens, page: walletPage } = useAccountDaoAssets()
-  const myTokenData = useMemo(
-    () =>
-      myTokens.map(item => ({
-        asset: <ShowToken address={item.tokenAddress} />,
+  const myTokenData = useMemo(() => {
+    const ret = myTokens.map(item => ({
+      asset: <ShowToken address={item.tokenAddress} />,
+      price: '-',
+      // balance: item.toSignificant(6, { groupSeparator: ',' }),
+      balance: <ShowTokenBal address={item.tokenAddress} />,
+      daoName: <GoDaoLink address={item.daoAddress} />,
+      value: '-'
+    }))
+    if (walletPage.currentPage === 1) {
+      ret.unshift({
+        asset: (
+          <Box display={'flex'} justifyContent={'center'} alignItems={'center'} gap={5}>
+            <Image src={currentEthToken?.logo || ''} width={20} height={20} style={{ borderRadius: '50%' }}></Image>
+            <Typography>{currentEthToken?.symbol || '-'}</Typography>
+          </Box>
+        ),
         price: '-',
         // balance: item.toSignificant(6, { groupSeparator: ',' }),
-        balance: <ShowTokenBal address={item.tokenAddress} />,
-        daoName: <GoDaoLink address={item.daoAddress} />,
+        balance: <Typography>{currentEthTokenBalance?.toSignificant(6, { groupSeparator: ',' }) || '-'}</Typography>,
+        daoName: <>-</>,
         value: '-'
-      })),
-    [myTokens]
-  )
+      })
+    }
+    return ret
+  }, [currentEthToken?.logo, currentEthToken?.symbol, currentEthTokenBalance, myTokens, walletPage.currentPage])
   const { result: myWalletHistory, page, loading } = useMyWalletHistory()
 
   return (

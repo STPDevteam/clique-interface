@@ -10,7 +10,7 @@ import { DaoInfoProps } from 'hooks/useDAOInfo'
 import { useCallback, useMemo } from 'react'
 import { ETHER, Token, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
-import { useCurrencyBalance, useToken } from 'state/wallet/hooks'
+import { useCurrencyBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { useCurPrivateReceivingTokens } from 'state/building/hooks'
 import { AssetsTransferRecordProp, useAssetsTransferRecord } from 'hooks/useBackedServer'
@@ -90,7 +90,7 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
                     <span>{timeStampToFormat(item.timeStamp)}</span>
                   </div>
                   <div className="right">
-                    <ShowTransferValue data={item} />
+                    <ShowTransferValue data={item} daoTokens={daoTokens} />
                     <ExternalLink
                       href={getEtherscanLink(chainId || DefaultChainId, item.hash, 'transaction')}
                       className="link"
@@ -139,8 +139,12 @@ function ShowTokenBalance({ token, account }: { token: Token; account: string })
   return <>{balance?.toSignificant(6, { groupSeparator: ',' }) || '-'}</>
 }
 
-function ShowTransferValue({ data }: { data: AssetsTransferRecordProp }) {
-  const token = useToken(data.tokenAddress)
+function ShowTransferValue({ data, daoTokens }: { data: AssetsTransferRecordProp; daoTokens: Token[] }) {
+  // const token = useToken(data.tokenAddress)
+  const token = useMemo(() => daoTokens.find(item => item.address === data.tokenAddress), [
+    daoTokens,
+    data.tokenAddress
+  ])
   const curValue = useMemo(() => {
     if (!token) return undefined
     return new TokenAmount(token, data.value)
