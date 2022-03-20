@@ -12,6 +12,9 @@ export const Axios = {
   },
   post<T = any>(url: string, data: { [key: string]: any }, params = {}): AxiosPromise<ResponseType<T>> {
     return axiosInstance.post(url, data, { params })
+  },
+  put<T = any>(url: string, data: { [key: string]: any }, params = {}): AxiosPromise<ResponseType<T>> {
+    return axiosInstance.put(url, data, { params })
   }
 }
 

@@ -34,7 +34,7 @@ export default function TransactionPopup({
           href={getEtherscanLink(chainId ? chainId : 1, hash, 'transaction')}
           style={{ margin: '9px 32px', color: '#000' }}
         >
-          View on Etherscan
+          View on explorer
         </ExternalLink>
       )}
     </Box>

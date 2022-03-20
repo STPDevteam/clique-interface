@@ -247,7 +247,8 @@ export const override: any = {
         fontSize: 12
       },
       h5: {
-        fontSize: 20
+        fontSize: 20,
+        color: '#22304A'
       },
       h6: {
         fontSize: 16

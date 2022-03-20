@@ -13,14 +13,14 @@ import { isDaoframeSite } from 'utils/dao'
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
 export const BAST_TOKEN: { [chainId in ChainId]: Token } = {
-  [ChainId.RINKEBY]: new Token(ChainId.RINKEBY, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter'),
-  [ChainId.STP]: new Token(ChainId.STP, '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', 18, 'MATTER', 'Matter'),
+  [ChainId.RINKEBY]: new Token(ChainId.RINKEBY, '0x719a98d252b36bacf8354a02222a57276d663d72', 18, 'STPT', 'STPT'),
+  [ChainId.STP]: new Token(ChainId.STP, '0x719a98d252b36bacf8354a02222a57276d663d72', 18, 'STPT', 'STPT'),
   [ChainId.KLAYTN_BAOBAB]: new Token(
     ChainId.KLAYTN_BAOBAB,
-    '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
+    '0x719a98d252b36bacf8354a02222a57276d663d72',
     18,
-    'MATTER',
-    'Matter'
+    'STPT',
+    'STPT'
   )
 }
 
@@ -124,6 +124,12 @@ export const DAO_FACTORY_ADDRESS = {
   [ChainId.RINKEBY]: '0x0AC40a90d5066D2AddAA30cf9C349609D97078E3',
   [ChainId.STP]: '0xC0eDe5c50EC4f58230C0f9e6be54892A3F0adC44',
   [ChainId.KLAYTN_BAOBAB]: '0x4e5c8115543b5c2d91a0c40a70e508361382f8bf'
+}
+
+export const FARM_STAKING_ADDRESS = {
+  [ChainId.RINKEBY]: '0xFf6A96D541fc4226223004cB88cDE5686689135B',
+  [ChainId.STP]: '',
+  [ChainId.KLAYTN_BAOBAB]: ''
 }
 
 export const DefaultChainId = ChainId.STP

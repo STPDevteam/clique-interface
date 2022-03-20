@@ -17,9 +17,10 @@ export default function CurrencyLogo({
 }) {
   const srcs: string[] = useMemo(() => {
     if (currency instanceof Token) {
+      if (currency.logo) return [currency.logo || '', getTokenLogoURL(currency.address)]
       return [getTokenLogoURL(currency.address)]
     }
-    return []
+    return [currency?.logo || '']
   }, [currency])
   return (
     <Logo

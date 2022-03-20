@@ -24,6 +24,8 @@ import Offering from './offering'
 import MyWallet from './myWallet'
 import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
 import TopAlert from './TopAlert'
+import Staking from './staking'
+import StakingCreate from './staking/Create'
 
 export default function App() {
   return (
@@ -48,6 +50,8 @@ export default function App() {
                     <Route exact strict path="/external_detail/:address" component={ExternalDetail} />
                     <Route exact strict path="/offering/:address" component={Offering} />
                     <Route exact strict path="/my_wallet" component={MyWallet} />
+                    <Route exact strict path="/staking" component={Staking} />
+                    <Route exact strict path="/staking/create" component={StakingCreate} />
                   </>
                 ) : isDaoframeSite() ? (
                   <>
@@ -55,6 +59,8 @@ export default function App() {
                     <Route exact strict path="/building" component={Building} />
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
                     <Route exact strict path="/external_building" component={ExternalBuilding} />
+                    <Route exact strict path="/staking" component={Staking} />
+                    <Route exact strict path="/staking/create" component={StakingCreate} />
                     <Route path="/">
                       <Redirect to="create" />
                     </Route>
@@ -71,6 +77,9 @@ export default function App() {
                     <Route exact strict path="/building" component={Building} />
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
                     <Route exact strict path="/external_building" component={ExternalBuilding} />
+
+                    <Route exact strict path="/staking" component={Staking} />
+                    <Route exact strict path="/staking/create" component={StakingCreate} />
                   </>
                 )}
               </Switch>

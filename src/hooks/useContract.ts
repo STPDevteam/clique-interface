@@ -1,7 +1,7 @@
 import { Contract } from '@ethersproject/contracts'
 import ANTIMATTER_ABI from '../constants/abis/antimatter.json'
 import { useMemo } from 'react'
-import { DAO_FACTORY_ADDRESS } from '../constants'
+import { DAO_FACTORY_ADDRESS, FARM_STAKING_ADDRESS } from '../constants'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
@@ -19,6 +19,7 @@ import VOTING_ABI from '../constants/abis/voting.json'
 import ExternalDAO_ABI from '../constants/abis/ExternalDAO.json'
 import ExternalToken_ABI from '../constants/abis/ExternalToken.json'
 import ExternalVoting_ABI from '../constants/abis/ExternalVoting.json'
+import FARM_STAKING_ABI from '../constants/abis/farm_staking.json'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -109,4 +110,13 @@ export function useExternalVotingContract(votingAddress: string | undefined): Co
 
 export function useExternalTokenContract(tokenAddress: string | undefined): Contract | null {
   return useContract(tokenAddress, ExternalToken_ABI, true)
+}
+
+export function useFarmStakingContract(): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(
+    chainId && ChainId.RINKEBY === chainId ? FARM_STAKING_ADDRESS[chainId] : undefined,
+    FARM_STAKING_ABI,
+    true
+  )
 }
