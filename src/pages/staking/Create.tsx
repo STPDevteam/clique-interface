@@ -9,13 +9,15 @@ import useModal from 'hooks/useModal'
 import PublishModal from './PublishModal'
 import CreateModal from './CreateModal'
 import EditModal from './EditModal'
-import { useMyAirdropList } from 'hooks/staking/useServerData'
+import { MyAirdropResProp, useMyAirdropList } from 'hooks/staking/useServerData'
 import { useMemo } from 'react'
 import { ExternalLink } from 'theme/components'
 import { timeStampToFormat, toFormatGroup } from 'utils/dao'
 import Copy from 'components/essential/Copy'
 import Pagination from 'antd/lib/pagination'
 import { useActiveWeb3React } from 'hooks'
+import { useAirdropClaimed } from 'hooks/staking/useAirdropinfo'
+import { TokenAmount } from 'constants/token'
 
 const Main = styled('main')({
   display: 'flex',
@@ -63,7 +65,7 @@ export default function Create() {
         </Box>
       ),
       amount: <TableText>{toFormatGroup(item.airdropAmount)}</TableText>,
-      claimed: item.status === 'onChain' ? <TableText>0</TableText> : '--',
+      claimed: item.status === 'onChain' && item.airdropId ? <ClaimTotal item={item} /> : '--',
       startTime: <TableText>{timeStampToFormat(item.airdropTime)}</TableText>,
       operation: (
         <Box display={'flex'} gap="5px">
@@ -133,4 +135,13 @@ export default function Create() {
       </Main>
     </Box>
   )
+}
+
+function ClaimTotal({ item }: { item: MyAirdropResProp }) {
+  const { result } = useAirdropClaimed(item.airdropId)
+  const amount = useMemo(() => {
+    if (!result || !item.token) return undefined
+    return new TokenAmount(item.token, result)
+  }, [result, item.token])
+  return <TableText>{amount?.toSignificant(6, { groupSeparator: ',' }) || '-'}</TableText>
 }

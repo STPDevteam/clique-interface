@@ -7,13 +7,16 @@ import { ReactComponent as OpenGarpLink } from 'assets/svg/open-gary-link.svg'
 import { Pagination, Table } from 'antd'
 import { Box, styled, Typography } from '@mui/material'
 import Button from 'components/Button/Button'
-import { useAirdropData, useUserAirdropClaimable, useUserAirdropClaimed } from 'hooks/staking/useAirdropinfo'
+import { useTimeStampByBlockNumber, useUserAirdropClaimable, useUserAirdropClaimed } from 'hooks/staking/useAirdropinfo'
 import { useAirdropClaimCallback } from 'hooks/staking/useAirdropClaimCallback'
 import { useActiveWeb3React } from 'hooks'
 import { TokenAmount } from 'constants/token'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import useModal from 'hooks/useModal'
+import JSBI from 'jsbi'
+import { useBlockNumber } from 'state/application/hooks'
+import { Timer } from 'components/Timer'
 
 const TableText = styled(Typography)({
   color: '#22304A',
@@ -23,27 +26,10 @@ const TableText = styled(Typography)({
 const { Column } = Table
 
 export default function AirdropTable() {
-  const { showModal } = useModal()
   const { list: airdropListData, loading: airdropListLoading, page: airdropListPage } = useAirdropList()
-
-  useAirdropData(3)
-
-  const airdropClaimCallback = useAirdropClaimCallback()
-  const onAirdropClaimCallback = useCallback(
-    (id: number) => {
-      airdropClaimCallback(id)
-        .then(hash => {
-          showModal(<TransactionSubmittedModal hash={hash} />)
-        })
-        .catch(err => {
-          showModal(
-            <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
-          )
-          console.error(err)
-        })
-    },
-    [airdropClaimCallback, showModal]
-  )
+  const curBlockNumber = useBlockNumber()
+  const curBlockTime = useTimeStampByBlockNumber(curBlockNumber)
+  console.log('🚀 ~ file: AirdropTable.tsx ~ line 32 ~ AirdropTable ~ curBlockTime', curBlockTime)
 
   const airdropList = useMemo(
     () =>
@@ -54,7 +40,7 @@ export default function AirdropTable() {
             <TableText>{item.token?.name || '--'}</TableText>
             {item.mediumLink && (
               <ExternalLink href={item.mediumLink}>
-                <OpenGarpLink width={16} height={16} />
+                <OpenGarpLink width={16} height={16} style={{ marginTop: '6px' }} />
               </ExternalLink>
             )}
           </Box>
@@ -69,18 +55,9 @@ export default function AirdropTable() {
         // blockNumber: <TableText>{item.blockNumber}</TableText>,
         rewards: <MyRewards item={item} />,
         claimed: <Claimed airdropId={item.airdropId} />,
-        operation: (
-          <Button
-            onClick={() => onAirdropClaimCallback(item.airdropId)}
-            height="24px"
-            width="137px"
-            style={{ borderRadius: '4px', fontSize: 12 }}
-          >
-            Claim
-          </Button>
-        )
+        operation: curBlockTime ? <ClaimOperation item={item} curBlockTime={curBlockTime} /> : ''
       })),
-    [airdropListData, onAirdropClaimCallback]
+    [airdropListData, curBlockTime]
   )
   return (
     <>
@@ -145,4 +122,60 @@ function Claimed({ airdropId }: { airdropId: number }) {
   }, [result])
 
   return <TableText>{str}</TableText>
+}
+
+function ClaimOperation({ item, curBlockTime }: { item: AirdropResProp; curBlockTime: number }) {
+  const { showModal } = useModal()
+  const { account } = useActiveWeb3React()
+  const { result: claimable } = useUserAirdropClaimable(account || undefined, item.airdropId)
+  const { result: claimed } = useUserAirdropClaimed(account || undefined, item.airdropId)
+
+  const airdropClaimCallback = useAirdropClaimCallback()
+  const onAirdropClaimCallback = useCallback(
+    (id: number) => {
+      airdropClaimCallback(id)
+        .then(hash => {
+          showModal(<TransactionSubmittedModal hash={hash} />)
+        })
+        .catch(err => {
+          showModal(
+            <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+          )
+          console.error(err)
+        })
+    },
+    [airdropClaimCallback, showModal]
+  )
+
+  const btn = useMemo(() => {
+    if (!account) {
+      return ''
+    }
+    if (curBlockTime < item.startTime) {
+      return (
+        <Button disabled height="24px" width="140px" style={{ borderRadius: '4px', fontSize: 12 }}>
+          start at <Timer showDay timer={item.startTime} />
+        </Button>
+      )
+    }
+    if (!claimable || !JSBI.GT(JSBI.BigInt(claimable), JSBI.BigInt(0)) || claimed === undefined || claimed) {
+      return (
+        <Button disabled height="24px" width="140px" style={{ borderRadius: '4px', fontSize: 12 }}>
+          Claim
+        </Button>
+      )
+    }
+    return (
+      <Button
+        onClick={() => onAirdropClaimCallback(item.airdropId)}
+        height="24px"
+        width="140px"
+        style={{ borderRadius: '4px', fontSize: 12 }}
+      >
+        Claim
+      </Button>
+    )
+  }, [account, claimable, claimed, curBlockTime, item.airdropId, item.startTime, onAirdropClaimCallback])
+
+  return <>{btn}</>
 }

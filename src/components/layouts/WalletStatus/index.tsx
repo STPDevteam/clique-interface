@@ -48,6 +48,11 @@ export default function Index() {
       )}
       {account && (
         <Box display={'flex'} gap={20}>
+          <OutlineButton width={140}>
+            <Typography variant="h6" onClick={() => history.push('/staking')}>
+              Staking
+            </Typography>
+          </OutlineButton>
           <NetworkSelect />
           {!isDaoframeSite() && (
             <OutlineButton width={140}>

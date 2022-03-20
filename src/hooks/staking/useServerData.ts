@@ -14,6 +14,7 @@ export interface MyAirdropResProp {
   status: 'offChain' | 'onChain'
   tokenContractAddress: string
   tokenLogo: string
+  airdropId: number
   token?: Token
 }
 
@@ -47,6 +48,10 @@ export function useMyAirdropList() {
     setLoading(true)
     setCurrentPage(p)
   }, [])
+
+  const reload = useCallback(() => {
+    setIndex(index + 1)
+  }, [index])
 
   useEffect(() => {
     ;(async () => {
@@ -88,7 +93,7 @@ export function useMyAirdropList() {
 
   return {
     loading: loading,
-    reload: () => setIndex(index + 1),
+    reload,
     page: {
       setCurrentPage: changePage,
       currentPage,

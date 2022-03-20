@@ -1,6 +1,7 @@
 import { useFarmStakingContract } from '../useContract'
 import { useSingleCallResult } from '../../state/multicall/hooks'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useActiveWeb3React } from 'hooks'
 
 export function useUserAirdropClaimable(
   account: string | undefined,
@@ -12,7 +13,6 @@ export function useUserAirdropClaimable(
   const contract = useFarmStakingContract()
 
   const res = useSingleCallResult(account && airdropId ? contract : null, 'claimable', [account, airdropId])
-  console.log('🚀 ~ file: useAirdropinfo.ts ~ line 37 ~ res', res.result?.[0].toString(), airdropId)
 
   const ret = useMemo(() => {
     if (!res.result) return undefined
@@ -72,10 +72,31 @@ export function useAirdropData(id: number) {
   const contract = useFarmStakingContract()
 
   const res = useSingleCallResult(contract, 'airdropMap', [id])
-  console.log('🚀 ~ file: useAirdropinfo.ts ~ line 74 ~ useAirdropData ~ res', res.result?.amount.toString())
 
   return {
     loading: res.loading,
     result: res.result
   }
+}
+
+export function useTimeStampByBlockNumber(block: number | undefined) {
+  const { library } = useActiveWeb3React()
+  const [time, setTime] = useState<number>()
+
+  useEffect(() => {
+    if (!library || !block) {
+      setTime(undefined)
+      return
+    }
+    library
+      .getBlock(block)
+      .then(res => {
+        setTime(res.timestamp)
+      })
+      .catch(() => {
+        setTime(undefined)
+      })
+  }, [block, library])
+
+  return time
 }
