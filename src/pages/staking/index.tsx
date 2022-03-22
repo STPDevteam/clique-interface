@@ -4,7 +4,7 @@ import Button from 'components/Button/Button'
 import { BAST_TOKEN, FARM_STAKING_ADDRESS } from '../../constants'
 import { useCallback, useMemo, useState } from 'react'
 import StakingHeader from './StakingHeader'
-import TextPanel from './TextPanel'
+import TextIntr from './TextIntr'
 import { useActiveWeb3React } from 'hooks'
 import { useStakeInfo } from 'hooks/staking/useStakeinfo'
 import { useTokenBalance } from 'state/wallet/hooks'
@@ -225,7 +225,7 @@ export default function Index() {
       <Main>
         <Container>
           <Box>
-            <Grid container spacing={'20px'}>
+            <Grid container spacing={20}>
               <Grid item lg={6} xs={12}>
                 <Box pt={'32px'}>
                   <Box mb={'27px'}>
@@ -383,7 +383,7 @@ export default function Index() {
               * Changes in the weighted value affect the number of tokens to be claimed.
             </Typography>
 
-            <TextPanel />
+            <TextIntr />
           </Box>
         </Container>
       </Main>
