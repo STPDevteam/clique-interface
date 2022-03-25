@@ -26,6 +26,8 @@ import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
 import TopAlert from './TopAlert'
 import Staking from './staking'
 import StakingCreate from './staking/Create'
+import BigNumber from 'bignumber.js'
+BigNumber.config({ EXPONENTIAL_AT: [-7, 40] })
 
 export default function App() {
   return (
