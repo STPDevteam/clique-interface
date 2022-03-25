@@ -8,7 +8,7 @@ import { Box, Typography } from '@mui/material'
 import { useBuildingDataCallback } from 'state/building/hooks'
 import { CreateDaoDataBasic } from 'state/building/actions'
 import { useCallback, useMemo, useState } from 'react'
-import { toFormatMillion } from 'utils/dao'
+import { toFormatGroup } from 'utils/dao'
 import AlertError from 'components/Alert/index'
 import BigNumber from 'bignumber.js'
 
@@ -94,7 +94,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
           <Box className="input-item" display="grid !important" gridTemplateColumns="2fr 1fr" gap="20px">
             <Box display="grid">
               <span className="label">Token Supply</span>
-              <Tooltip placement="top" title={toFormatMillion(basicData.tokenSupply)}>
+              <Tooltip placement="top" title={toFormatGroup(basicData.tokenSupply)}>
                 <Input
                   placeholder="10000000000"
                   maxLength={30}

@@ -8,7 +8,7 @@ import {
   useExternalDaoInfoByAddress
 } from 'hooks/useDAOInfo'
 import { useHistory } from 'react-router-dom'
-import { timeStampToFormat, toFormatMillion } from 'utils/dao'
+import { timeStampToFormat } from 'utils/dao'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 
 const StyledText = styled(Typography)({
@@ -132,7 +132,7 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
       <Box display={'flex'} justifyContent={'space-between'} mt={10}>
         <Typography variant="body2">
           {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC && daoInfo?.pubSale?.amount
-            ? toFormatMillion(daoInfo?.pubSale?.amount.toSignificant()) +
+            ? toFormatGroup(daoInfo?.pubSale?.amount.toSignificant()) +
               ' ' +
               (daoInfo.receiveToken?.name || '') +
               ' pledged'

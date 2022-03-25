@@ -12,7 +12,7 @@ import {
   useTrueCommitCreateDaoData
 } from 'state/building/hooks'
 import { useCallback, useMemo } from 'react'
-import { timeStampToFormat, toFormatGroup, toFormatMillion } from 'utils/dao'
+import { timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { calcTotalAmountValue, getPerForAmount } from './function'
 import { shortenAddress } from 'utils'
 import TextArea from 'antd/lib/input/TextArea'
@@ -58,7 +58,7 @@ export default function ReviewInformation({
     return distributionData.reservedTokens.map((item, index) => ({
       id: index + 1,
       address: (item.address && shortenAddress(item.address)) || '',
-      amount: toFormatMillion(item.tokenNumber || '') + ' ' + basicData.tokenSymbol,
+      amount: toFormatGroup(item.tokenNumber || '') + ' ' + basicData.tokenSymbol,
       per: getPerForAmount(basicData.tokenSupply, item.tokenNumber || '') + '%',
       lockUntil: timeStampToFormat(item.lockdate)
     }))
