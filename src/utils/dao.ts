@@ -1,4 +1,3 @@
-import JSBI from 'jsbi'
 import moment from 'moment'
 import toFormat from 'toformat'
 import _Big from 'big.js'

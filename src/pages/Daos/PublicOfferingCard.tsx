@@ -8,7 +8,7 @@ import {
   useExternalDaoInfoByAddress
 } from 'hooks/useDAOInfo'
 import { useHistory } from 'react-router-dom'
-import { timeStampToFormat } from 'utils/dao'
+import { timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 
 const StyledText = styled(Typography)({
