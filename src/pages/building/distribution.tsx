@@ -418,6 +418,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
             paddingBottom: 15,
             borderBottom: '1px solid #D2D2D2'
           }}
+          className="hide"
         >
           <Box display={'flex'} justifyContent={'space-between'} gap={15}>
             <Box>
@@ -625,6 +626,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
             paddingBottom: 15,
             borderBottom: '1px solid #D2D2D2'
           }}
+          className="hide"
         >
           <Box display={'flex'} justifyContent={'space-between'} gap={15}>
             <Box>
@@ -766,7 +768,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
           )}
         </Box>
 
-        <Box mt={20} display={'grid'} gap={15}>
+        <Box mt={20} display={'grid'} gap={15} className="hide">
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <Typography variant="h6">Receiving Tokens</Typography>
             <Box className="input-assets-selector" width={220}>

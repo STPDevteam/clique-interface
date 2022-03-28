@@ -367,7 +367,7 @@ export default function Configuration({
           </div>
         </Box>
 
-        <Box display={'grid'} gap="15px">
+        <Box display={'grid'} gap="15px" className="hide">
           <div className="input-item">
             <span className="label">Community Voting Duration</span>
             <Box display={'flex'} justifyContent={'space-between'} gap={20} width={'100%'}>
@@ -528,12 +528,12 @@ export default function Configuration({
       </Box>
 
       {!!verifyMsg && (
-        <Box mt={15}>
+        <Box mt={15} className="hide">
           <AlertError>{verifyMsg}</AlertError>
         </Box>
       )}
       {account && (
-        <Box mt={15}>
+        <Box mt={15} className="hide">
           <OutlineButton width={120} disabled={!updateLog.length} onClick={onUpdateConfirm}>
             Update
           </OutlineButton>

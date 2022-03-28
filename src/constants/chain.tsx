@@ -1,10 +1,10 @@
 import { Chain } from 'models/chain'
 import { ReactComponent as ETH } from 'assets/svg/eth_logo.svg'
 import EthUrl from 'assets/svg/eth_logo.svg'
-import STPSvg from '../assets/images/icon-token.svg'
-import { ReactComponent as STPLogo } from '../assets/images/icon-token.svg'
-import KlaytnSvg from '../assets/svg/klaytn_logo.svg'
-import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
+// import STPSvg from '../assets/images/icon-token.svg'
+// import { ReactComponent as STPLogo } from '../assets/images/icon-token.svg'
+// import KlaytnSvg from '../assets/svg/klaytn_logo.svg'
+// import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
 
 export enum ChainId {
   RINKEBY = 4,
@@ -20,23 +20,23 @@ export const ChainList = [
     name: 'Rinkeby Testnet',
     id: ChainId.RINKEBY,
     hex: '0x4'
-  },
-  {
-    icon: <STPLogo />,
-    logo: STPSvg,
-    symbol: 'Verse',
-    name: 'Verse Network',
-    id: ChainId.STP,
-    hex: '0x48'
-  },
-  {
-    icon: <KlaytnLogo />,
-    logo: KlaytnSvg,
-    symbol: 'Klaytn Baobab',
-    name: 'Klaytn Baobab',
-    id: ChainId.KLAYTN_BAOBAB,
-    hex: '0x3e9'
   }
+  // {
+  //   icon: <STPLogo />,
+  //   logo: STPSvg,
+  //   symbol: 'Verse',
+  //   name: 'Verse Network',
+  //   id: ChainId.STP,
+  //   hex: '0x48'
+  // },
+  // {
+  //   icon: <KlaytnLogo />,
+  //   logo: KlaytnSvg,
+  //   symbol: 'Klaytn Baobab',
+  //   name: 'Klaytn Baobab',
+  //   id: ChainId.KLAYTN_BAOBAB,
+  //   hex: '0x3e9'
+  // }
 ]
 
 export const ChainListMap: {
@@ -60,18 +60,18 @@ export const SUPPORTED_NETWORKS: {
     blockExplorerUrls: string[]
   }
 } = {
-  [ChainId.STP]: {
-    chainId: '0x48',
-    chainName: 'Verse',
-    nativeCurrency: {
-      name: 'STPT',
-      symbol: 'STPT',
-      decimals: 18,
-      logo: STPSvg
-    },
-    rpcUrls: ['https://test-gearrpc.stp.network'],
-    blockExplorerUrls: ['https://testnet-explorer.stp.network/']
-  },
+  // [ChainId.STP]: {
+  //   chainId: '0x48',
+  //   chainName: 'Verse',
+  //   nativeCurrency: {
+  //     name: 'STPT',
+  //     symbol: 'STPT',
+  //     decimals: 18,
+  //     logo: STPSvg
+  //   },
+  //   rpcUrls: ['https://test-gearrpc.stp.network'],
+  //   blockExplorerUrls: ['https://testnet-explorer.stp.network/']
+  // },
   [ChainId.RINKEBY]: {
     chainId: '0x4',
     chainName: 'Rinkeby',
@@ -83,17 +83,17 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://rinkeby.infura.io/v3/'],
     blockExplorerUrls: ['https://rinkeby.etherscan.io/']
-  },
-  [ChainId.KLAYTN_BAOBAB]: {
-    chainId: '0x3e9',
-    chainName: 'Klaytn Baobab',
-    nativeCurrency: {
-      name: 'Klaytn Baobab',
-      symbol: 'KLAY',
-      decimals: 18,
-      logo: KlaytnSvg
-    },
-    rpcUrls: ['https://api.baobab.klaytn.net:8651/'],
-    blockExplorerUrls: ['https://baobab.scope.klaytn.com/']
   }
+  // [ChainId.KLAYTN_BAOBAB]: {
+  //   chainId: '0x3e9',
+  //   chainName: 'Klaytn Baobab',
+  //   nativeCurrency: {
+  //     name: 'Klaytn Baobab',
+  //     symbol: 'KLAY',
+  //     decimals: 18,
+  //     logo: KlaytnSvg
+  //   },
+  //   rpcUrls: ['https://api.baobab.klaytn.net:8651/'],
+  //   blockExplorerUrls: ['https://baobab.scope.klaytn.com/']
+  // }
 }

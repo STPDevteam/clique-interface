@@ -16,7 +16,8 @@ import { ProposalInfoProp } from 'hooks/useVoting'
 import ShowTokenHolders from '../Daos/ShowTokenHolders'
 
 export default function Index() {
-  const links = ['Proposal', 'Assets', 'Holders', 'Configuration']
+  // const links = ['Proposal', 'Assets', 'Holders', 'Configuration']
+  const links = ['Proposal', 'Holders', 'Configuration']
   const { address: daoAddress } = useParams<{ address: string }>()
 
   const [currentLink, setCurrentLink] = useState(links[0])

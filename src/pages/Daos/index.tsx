@@ -48,7 +48,7 @@ export default function Index() {
         {/* <Search placeholder="DAO Name" onSearch={handleSearch} /> */}
       </div>
       <div>
-        <Box className="dao-group-btn" display={'grid'} gridTemplateColumns={'100px 2fr'} mt={10}>
+        <Box className="dao-group-btn hide" display={'grid'} gridTemplateColumns={'100px 2fr'} mt={10}>
           <div
             className={`one ${TypeTabs.DAO === currentTab ? 'active' : ''}`}
             onClick={() => setCurrentTab(TypeTabs.DAO)}

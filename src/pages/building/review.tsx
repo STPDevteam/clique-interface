@@ -298,11 +298,11 @@ export default function ReviewInformation({
                   </Box>
                 </Box>
               )}
-              <Box display={'flex'} justifyContent={'space-between'}>
+              <Box display={'flex'} justifyContent={'space-between'} className="hide">
                 <Typography variant="h6">Start time: {timeStampToFormat(distributionData.startTime)}</Typography>
                 <Typography variant="h6">End time: {timeStampToFormat(distributionData.endTime)}</Typography>
               </Box>
-              <Box className="input-item">
+              <Box className="input-item hide">
                 <TextArea value={distributionData.aboutProduct} disabled rows={5} />
               </Box>
             </Box>
@@ -339,7 +339,7 @@ export default function ReviewInformation({
                   ({getPerForAmount(basicData.tokenSupply, ruleData.minApprovalNumber)}% per total votes)
                 </span>
               </div>
-              <div className="input-item mt-12">
+              <div className="input-item mt-12 hide">
                 <span className="label">Community Voting Duration</span>
                 <Typography variant="h6">
                   {ruleData.votersCustom
@@ -347,13 +347,13 @@ export default function ReviewInformation({
                     : `${ruleData.days} Day ${ruleData.hours} Hour ${ruleData.minutes} Minute`}
                 </Typography>
               </div>
-              <div className="input-item mt-12" rules-agreement>
+              <div className="input-item mt-12 hide" rules-agreement>
                 <span className="label">Contract Voting Duration</span>
                 <Typography variant="h6">
                   {ruleData.contractDays} Day {ruleData.contractHours} Hour {ruleData.contractMinutes} Minute
                 </Typography>
               </div>
-              <div className="input-item mt-12 rules-agreement">
+              <div className="input-item mt-12 rules-agreement hide">
                 <span className="label">Rules/Agreement</span>
                 <Typography fontSize={12}>{ruleData.rules}</Typography>
               </div>
