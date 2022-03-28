@@ -73,7 +73,7 @@ export default function Index({
     return votingOptionsStatus.list.map(item => {
       return {
         name: item.name,
-        per: _amount && item.votes && _amount.greaterThan('0') ? Number(item.votes.divide(_amount).toFixed(0)) : 0,
+        per: _amount && item.votes && _amount.greaterThan('0') ? Number(item.votes.divide(_amount).toFixed(3)) : 0,
         votes: item.votes
       }
     })

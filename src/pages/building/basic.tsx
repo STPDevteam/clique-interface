@@ -97,7 +97,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
               <Tooltip placement="top" title={toFormatGroup(basicData.tokenSupply)}>
                 <Input
                   placeholder="10000000000"
-                  maxLength={30}
+                  maxLength={16}
                   value={basicData.tokenSupply}
                   onChange={e => {
                     const reg = new RegExp('^[0-9]+$')
