@@ -339,7 +339,7 @@ export default function ReviewInformation({
                   ({getPerForAmount(basicData.tokenSupply, ruleData.minApprovalNumber)}% per total votes)
                 </span>
               </div>
-              <div className="input-item mt-12 hide">
+              <div className="input-item mt-12">
                 <span className="label">Community Voting Duration</span>
                 <Typography variant="h6">
                   {ruleData.votersCustom
@@ -347,13 +347,13 @@ export default function ReviewInformation({
                     : `${ruleData.days} Day ${ruleData.hours} Hour ${ruleData.minutes} Minute`}
                 </Typography>
               </div>
-              <div className="input-item mt-12 hide" rules-agreement>
+              <div className="input-item mt-12" rules-agreement>
                 <span className="label">Contract Voting Duration</span>
                 <Typography variant="h6">
                   {ruleData.contractDays} Day {ruleData.contractHours} Hour {ruleData.contractMinutes} Minute
                 </Typography>
               </div>
-              <div className="input-item mt-12 rules-agreement hide">
+              <div className="input-item mt-12 rules-agreement">
                 <span className="label">Rules/Agreement</span>
                 <Typography fontSize={12}>{ruleData.rules}</Typography>
               </div>

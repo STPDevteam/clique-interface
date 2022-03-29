@@ -195,7 +195,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
             </div>
           </Box>
 
-          <Box display={'grid'} gap="15px" className="hide">
+          <Box display={'grid'} gap="15px">
             <div className="input-item">
               <span className="label">Community Voting Duration</span>
               <Box display={'flex'} justifyContent={'space-between'} gap={20} width={'100%'}>
