@@ -26,6 +26,9 @@ import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
 import TopAlert from './TopAlert'
 import Staking from './staking'
 import StakingCreate from './staking/Create'
+
+import CrossBuilding from './CrossBuilding'
+
 import BigNumber from 'bignumber.js'
 BigNumber.config({ EXPONENTIAL_AT: [-7, 40] })
 
@@ -79,6 +82,7 @@ export default function App() {
                     <Route exact strict path="/building" component={Building} />
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
                     <Route exact strict path="/external_building" component={ExternalBuilding} />
+                    <Route exact strict path="/cross_building" component={CrossBuilding} />
 
                     <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} />
