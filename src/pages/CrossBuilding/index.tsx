@@ -50,7 +50,7 @@ export default function Index() {
 
   return (
     <main className="building">
-      <BuildingHeader step={step} stepItems={stepItems} title="Create DAO on Verse" />
+      <BuildingHeader step={step} stepItems={stepItems} title="Create DAO on STPT" />
       <NextComp />
     </main>
   )
