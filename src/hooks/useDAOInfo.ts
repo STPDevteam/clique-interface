@@ -222,7 +222,7 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
   const ruleRes = useSingleCallResult(daoContract, 'getDaoRule', [])
   const websiteRes = useSingleCallResult(daoContract, 'website', [])
   const twitterRes = useSingleCallResult(daoContract, 'twitter', [])
-  const discordRes = useSingleCallResult(daoContract, 'twitter', [])
+  const discordRes = useSingleCallResult(daoContract, 'discord', [])
   const reservedRes = useSingleCallResult(daoContract, 'getReserved', [])
   const priSaleRes = useSingleCallResult(daoContract, 'getPriSales', [])
   const pubSaleRes = useSingleCallResult(daoContract, 'pubSale', [])
