@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 // import { styled } from '@mui/material'
 import Layouts from '../components/layouts/index'
 import Polling from '../components/essential/Polling'
@@ -24,8 +24,8 @@ import Offering from './offering'
 import MyWallet from './myWallet'
 import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
 import TopAlert from './TopAlert'
-import Staking from './staking'
-import StakingCreate from './staking/Create'
+// import Staking from './staking'
+// import StakingCreate from './staking/Create'
 import BigNumber from 'bignumber.js'
 BigNumber.config({ EXPONENTIAL_AT: [-7, 40] })
 
@@ -52,20 +52,18 @@ export default function App() {
                     <Route exact strict path="/external_detail/:address" component={ExternalDetail} />
                     <Route exact strict path="/offering/:address" component={Offering} />
                     <Route exact strict path="/my_wallet" component={MyWallet} />
-                    <Route exact strict path="/staking" component={Staking} />
-                    <Route exact strict path="/staking/create" component={StakingCreate} />
+                    {/* <Route exact strict path="/staking" component={Staking} />
+                    <Route exact strict path="/staking/create" component={StakingCreate} /> */}
                   </>
                 ) : isDaoframeSite() ? (
                   <>
+                    <Route exact strict path="/" component={Home} />
                     <Route exact strict path="/create" component={Home} />
                     <Route exact strict path="/building" component={Building} />
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
                     <Route exact strict path="/external_building" component={ExternalBuilding} />
-                    <Route exact strict path="/staking" component={Staking} />
-                    <Route exact strict path="/staking/create" component={StakingCreate} />
-                    <Route path="/">
-                      <Redirect to="create" />
-                    </Route>
+                    {/* <Route exact strict path="/staking" component={Staking} />
+                    <Route exact strict path="/staking/create" component={StakingCreate} /> */}
                   </>
                 ) : (
                   <>
@@ -79,9 +77,9 @@ export default function App() {
                     <Route exact strict path="/building" component={Building} />
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
                     <Route exact strict path="/external_building" component={ExternalBuilding} />
-
+                    {/* 
                     <Route exact strict path="/staking" component={Staking} />
-                    <Route exact strict path="/staking/create" component={StakingCreate} />
+                    <Route exact strict path="/staking/create" component={StakingCreate} /> */}
                   </>
                 )}
               </Switch>
