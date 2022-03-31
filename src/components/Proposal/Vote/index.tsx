@@ -58,7 +58,7 @@ export default function Index({
         </Button>
       )
     }
-    if (!balanceAt || !minimumVote || !balanceAt.greaterThan(minimumVote)) {
+    if (!balanceAt || !minimumVote || minimumVote.greaterThan(balanceAt)) {
       return (
         <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
           You votes insufficient

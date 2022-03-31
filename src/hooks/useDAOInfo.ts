@@ -454,7 +454,7 @@ export function useExternalDaoInfoByAddress(daoAddress: string | undefined): Ext
   const ruleRes = useSingleCallResult(daoContract, 'getDaoRule', [])
   const websiteRes = useSingleCallResult(daoContract, 'website', [])
   const twitterRes = useSingleCallResult(daoContract, 'twitter', [])
-  const discordRes = useSingleCallResult(daoContract, 'twitter', [])
+  const discordRes = useSingleCallResult(daoContract, 'discord', [])
 
   const votingAddressRes = useSingleCallResult(daoContract ?? undefined, 'voting', [])
   const votingAddress: string | undefined = useMemo(() => votingAddressRes.result?.[0], [votingAddressRes])

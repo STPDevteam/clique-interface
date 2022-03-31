@@ -60,7 +60,7 @@ export default function Index(props: Props) {
     createCommunityProposalCallback(title, desc, startTime, endTime, curOption)
       .then(() => {
         hideModal()
-        showModal(<TransactionSubmittedModal />)
+        showModal(<TransactionSubmittedModal hideFunc={onBack} />)
         setTitle('')
         setDesc('')
         setStartTime(undefined)
@@ -73,7 +73,7 @@ export default function Index(props: Props) {
         )
         console.error(err)
       })
-  }, [createCommunityProposalCallback, desc, endTime, hideModal, option, showModal, startTime, title])
+  }, [createCommunityProposalCallback, desc, endTime, hideModal, onBack, option, showModal, startTime, title])
 
   const addOption = useCallback(() => {
     if (option.length >= 6) return
@@ -266,14 +266,15 @@ export default function Index(props: Props) {
             <Box display={'flex'} justifyContent={'space-between'} mb={10}>
               <Typography>Your balance</Typography>
               <Typography>
-                {daoTokenBalance ? toFormatGroup(daoTokenBalance?.toSignificant()) : '-'} {daoInfo?.token?.symbol}
+                {daoTokenBalance ? daoTokenBalance?.toSignificant(6, { groupSeparator: ',' }) : '-'}{' '}
+                {daoInfo?.token?.symbol}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} mb={10}>
               <Typography>Create a proposal need stakes</Typography>
               <Typography>
                 {daoInfo?.rule?.minimumCreateProposal
-                  ? toFormatGroup(daoInfo?.rule?.minimumCreateProposal.toSignificant())
+                  ? daoInfo?.rule?.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' })
                   : '-'}{' '}
                 {daoInfo?.token?.symbol}
               </Typography>

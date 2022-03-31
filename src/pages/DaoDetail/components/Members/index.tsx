@@ -3,7 +3,7 @@ import './pc.less'
 import 'react'
 import { Pagination, Table } from 'antd'
 // import { useTokenHoldersByExplorer } from 'hooks/useStpExplorerData'
-import { DaoInfoProps, ExternalDaoInfoProps, useCreatedDao } from 'hooks/useDAOInfo'
+import { DaoInfoProps, ExternalDaoInfoProps } from 'hooks/useDAOInfo'
 import { useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 import { useDaoMembers } from 'hooks/useBackedServer'
@@ -14,10 +14,10 @@ import ReservedClaim from './ReservedClaim'
 
 const { Column } = Table
 
-function AccountProposals({ account }: { account: string }) {
-  const res = useCreatedDao(account)
-  return <>{res ? res.length : '-'}</>
-}
+// function AccountProposals({ account }: { account: string }) {
+//   const res = useCreatedDao(account)
+//   return <>{res ? res.length : '-'}</>
+// }
 
 export default function Members({ daoInfo }: { daoInfo: DaoInfoProps | ExternalDaoInfoProps }) {
   // const { loading, data: holderList } = useTokenHoldersByExplorer(daoInfo.token?.address)
@@ -38,7 +38,7 @@ export default function Members({ daoInfo }: { daoInfo: DaoInfoProps | ExternalD
               .dividedBy(daoInfo.totalSupply.raw.toString())
               .toFixed(2, 1) + '%'
           : '-',
-        proposals: <AccountProposals account={item.holderAddress} />
+        proposals: item.proposalCounter
       }))
     )
   }, [daoInfo.token, daoInfo.totalSupply, result])
