@@ -6,6 +6,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount, Percent } from '../constants/token/fractions'
 import JSBI from 'jsbi'
 import { ChainId } from '../constants/chain'
+import emojiRegex from 'emoji-regex'
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
@@ -119,4 +120,9 @@ export function calcTime(timeStamp: number) {
     hours,
     minutes
   }
+}
+
+export function removeEmoji(text: string) {
+  const regex = emojiRegex()
+  return text.replace(regex, '')
 }

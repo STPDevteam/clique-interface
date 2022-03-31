@@ -470,6 +470,7 @@ export function useDaoMembers(daoTokenAddress: string | undefined) {
       holderAddress: string
       tokenAddress: string
       balance: string
+      proposalCounter: number
     }[]
   >([])
 
@@ -493,7 +494,8 @@ export function useDaoMembers(daoTokenAddress: string | undefined) {
           return {
             holderAddress: item.holderAddress,
             tokenAddress: item.tokenAddress,
-            balance: item.balance
+            balance: item.balance,
+            proposalCounter: item.proposalCounter !== undefined ? item.proposalCounter : ''
           }
         })
         setResult(list)

@@ -11,6 +11,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { toFormatGroup } from 'utils/dao'
 import AlertError from 'components/Alert/index'
 import BigNumber from 'bignumber.js'
+import { removeEmoji } from 'utils'
 
 type CreateDaoDataBasicKey = keyof CreateDaoDataBasic
 
@@ -34,6 +35,9 @@ export default function Basic({ goNext }: { goNext: () => void }) {
     if (!basicData.tokenName.trim()) {
       return 'Token name required'
     }
+    if (!basicData.tokenPhoto) {
+      return 'Token photo required'
+    }
     if (!basicData.tokenSymbol.trim()) {
       return 'Token symbol required'
     }
@@ -41,7 +45,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
       return 'Token supply required'
     }
     return undefined
-  }, [basicData.daoName, basicData.tokenName, basicData.tokenSupply, basicData.tokenSymbol])
+  }, [basicData.daoName, basicData.tokenName, basicData.tokenPhoto, basicData.tokenSupply, basicData.tokenSymbol])
 
   return (
     <>
@@ -74,7 +78,9 @@ export default function Basic({ goNext }: { goNext: () => void }) {
                 placeholder="MEMBERSHIP"
                 maxLength={20}
                 value={basicData.tokenName}
-                onChange={e => updateBasicCall('tokenName', e.target.value)}
+                onChange={e => {
+                  updateBasicCall('tokenName', removeEmoji(e.target.value))
+                }}
               />
             </Box>
             <Box display="grid">
