@@ -37,6 +37,9 @@ export default function Basic({ goNext }: { goNext: () => void }) {
     if (!basicData.daoName.trim()) {
       return 'Dao name required'
     }
+    if (!basicData.tokenPhoto) {
+      return 'Token photo required'
+    }
     if (!basicData.contractAddress.trim()) {
       return 'Contract address required'
     }
@@ -44,7 +47,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
       return 'The token contract snapshots are not supported'
     }
     return undefined
-  }, [basicData.contractAddress, basicData.daoName, externalTokenInfo.isSupportShot])
+  }, [basicData.contractAddress, basicData.daoName, basicData.tokenPhoto, externalTokenInfo.isSupportShot])
 
   return (
     <>

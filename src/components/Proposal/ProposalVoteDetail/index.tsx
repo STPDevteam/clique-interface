@@ -52,7 +52,9 @@ export default function Index({
             <Box display={'flex'} gap={50} className={styles['vote-data-container']}>
               <p className={styles['vote-desc']}>{item.name}</p>
               <div className={styles['vote-data']}>
-                <p>{item.per * 100}%</p>
+                <p>
+                  <ShowPer per={item.per} />
+                </p>
                 <p>{item.votes?.toSignificant(6, { groupSeparator: ',' })} Votes</p>
               </div>
             </Box>
@@ -74,4 +76,13 @@ export default function Index({
       </div>
     </div>
   )
+}
+
+function ShowPer({ per }: { per: number }) {
+  const _p = per * 100
+  if (_p === 0) return <>-%</>
+  if (_p < 1) {
+    return <>{'<1%'}</>
+  }
+  return <>{Math.floor(_p) + '%'}</>
 }
