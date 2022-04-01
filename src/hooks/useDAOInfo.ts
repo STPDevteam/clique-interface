@@ -422,22 +422,28 @@ export function useMultiDaoBaseInfo(
   }
 }
 
-export function useIsExternalDao(daoAddress: string | undefined) {
-  const contract = useDaoFactoryContract()
-  const res = useSingleCallResult(daoAddress ? contract : null, 'isExternalDao', [daoAddress])
-  return res.result?.[0]
+export enum DaoTypeProp {
+  RawDao = '0',
+  ExternalDao = '1',
+  CrossGovDao = '2'
 }
 
-export function useIsExternalDaos(daoAddresss: string[] | undefined) {
+export function useGetDaoType(daoAddress: string | undefined): undefined | DaoTypeProp {
+  const contract = useDaoFactoryContract()
+  const res = useSingleCallResult(daoAddress ? contract : null, 'getDaoType', [daoAddress])
+  return res.result?.[0].toString()
+}
+
+export function useGetDaoTypes(daoAddresss: string[] | undefined) {
   const contract = useDaoFactoryContract()
   const res = useSingleContractMultipleData(
     daoAddresss && daoAddresss.length ? contract : null,
-    'isExternalDao',
+    'getDaoType',
     daoAddresss && daoAddresss.length ? daoAddresss.map(i => [i]) : []
   )
 
-  const ret: boolean[] = useMemo(() => {
-    return res.map(item => item.result?.[0])
+  const ret: (undefined | DaoTypeProp)[] = useMemo(() => {
+    return res.map(item => item.result?.[0].toString())
   }, [res])
 
   return {

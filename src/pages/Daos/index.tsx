@@ -11,7 +11,7 @@ import Pagination from 'antd/lib/pagination'
 import ShowTokenHolders from './ShowTokenHolders'
 import { Empty, Spin } from 'antd'
 import { ExternalLink } from 'theme/components'
-import { useIsExternalDaos } from 'hooks/useDAOInfo'
+import { DaoTypeProp, useGetDaoTypes } from 'hooks/useDAOInfo'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 
 enum TypeTabs {
@@ -24,7 +24,7 @@ export default function Index() {
   const history = useHistory()
   const { list: daoList, page: daoListPage, loading: daoListLoading } = useHomeDaoList()
   const daoListAddresss = useMemo(() => daoList.map(item => item.daoAddress).filter(i => i), [daoList])
-  const isExternalDaos = useIsExternalDaos(daoListAddresss as string[])
+  const daoTypes = useGetDaoTypes(daoListAddresss as string[])
 
   const {
     daoAddresss: publicOfferingAddresss,
@@ -32,7 +32,7 @@ export default function Index() {
     loading: publicOfferingLoading
   } = useDaoAddressLists()
   const publicOfferingDaoListAddresss = useMemo(() => publicOfferingAddresss.filter(i => i), [publicOfferingAddresss])
-  const publicOfferingIsExternalDaos = useIsExternalDaos(publicOfferingDaoListAddresss as string[])
+  const publicOfferingDaoTypes = useGetDaoTypes(publicOfferingDaoListAddresss as string[])
 
   return (
     <div className="daos-container">
@@ -86,10 +86,10 @@ export default function Index() {
                 <Grid key={item.daoAddress} item lg={3} md={4} sm={6} xs={12}>
                   <Box
                     onClick={() => {
-                      if (isExternalDaos.loading) return
-                      if (isExternalDaos.data[index]) {
+                      if (daoTypes.loading) return
+                      if (daoTypes.data[index] === DaoTypeProp.ExternalDao) {
                         history.push('/external_detail/' + item.daoAddress)
-                      } else {
+                      } else if (daoTypes.data[index] === DaoTypeProp.RawDao) {
                         history.push('/detail/' + item.daoAddress)
                       }
                     }}
@@ -176,13 +176,13 @@ export default function Index() {
           )}
           <Grid container spacing={12}>
             {!publicOfferingLoading &&
-              !publicOfferingIsExternalDaos.loading &&
+              !publicOfferingDaoTypes.loading &&
               publicOfferingAddresss.map((daoAddress, index) => (
                 <Grid key={daoAddress} item lg={4} md={6} xs={12}>
-                  {publicOfferingIsExternalDaos.data[index] ? (
-                    <NonePublicOfferingCard daoAddress={daoAddress} />
-                  ) : (
+                  {publicOfferingDaoTypes.data[index] === DaoTypeProp.RawDao ? (
                     <PublicOfferingCard daoAddress={daoAddress} />
+                  ) : (
+                    <NonePublicOfferingCard daoAddress={daoAddress} />
                   )}
                 </Grid>
               ))}
