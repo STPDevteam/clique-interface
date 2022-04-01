@@ -5,7 +5,7 @@ import { Button } from 'antd'
 import IconDao from './assets/icon-dao.svg'
 import IconAdd from './assets/icon-add.svg'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useCreatedDao, useIsExternalDaos, useMultiDaoBaseInfo } from 'hooks/useDAOInfo'
+import { DaoTypeProp, useCreatedDao, useGetDaoTypes, useMultiDaoBaseInfo } from 'hooks/useDAOInfo'
 import Image from 'components/Image'
 import { useActiveWeb3React } from 'hooks'
 import { isMycliqueSite } from 'utils/dao'
@@ -17,7 +17,7 @@ export default function Index() {
   const { account } = useActiveWeb3React()
   const createdAddressList = useCreatedDao(account || undefined)
   const { data: daoBaseInfoList } = useMultiDaoBaseInfo(createdAddressList || [])
-  const isExternalDaos = useIsExternalDaos(createdAddressList)
+  const daoTypes = useGetDaoTypes(createdAddressList)
 
   // useParams does not take effect on this component
   // this is an alternative plan
@@ -57,10 +57,10 @@ export default function Index() {
           key={index}
           className={`btn-dao ${item.daoAddress === activeAddress ? 'active' : ''}`}
           onClick={() => {
-            if (isExternalDaos.loading) return
-            if (isExternalDaos.data[index]) {
+            if (daoTypes.loading) return
+            if (daoTypes.data[index] === DaoTypeProp.ExternalDao) {
               chooseExternalDetail(item.daoAddress)
-            } else {
+            } else if (daoTypes.data[index] === DaoTypeProp.RawDao) {
               chooseDao(item.daoAddress)
             }
           }}
