@@ -74,7 +74,7 @@ export function useDaoBaseInfoByAddress(
   const votingAddress: string | undefined = useMemo(() => votingAddressRes.result?.[0], [votingAddressRes])
   const proposalNumber = useProposalNumber(votingAddress, daoAddress)
 
-  const daoTokenRes = useSingleCallResult(daoContract ?? undefined, 'daoToken', [])
+  const daoTokenRes = useSingleCallResult(daoContract ?? undefined, 'getDaoToken', [])
   const tokenAddress: string | undefined = useMemo(() => daoTokenRes.result?.[0], [daoTokenRes])
   const token = useSTPToken(tokenAddress, DefaultChainId)
 
@@ -235,7 +235,7 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
   const votingAddress: string | undefined = useMemo(() => votingAddressRes.result?.[0], [votingAddressRes])
   const proposalNumber = useProposalNumber(votingAddress, daoAddress)
 
-  const daoTokenRes = useSingleCallResult(daoContract ?? undefined, 'daoToken', [])
+  const daoTokenRes = useSingleCallResult(daoContract ?? undefined, 'getDaoToken', [])
   const tokenAddress: string | undefined = useMemo(() => daoTokenRes.result?.[0], [daoTokenRes])
   const token = useSTPToken(tokenAddress, DefaultChainId)
   const tokenContract = useSTPTokenContract(tokenAddress)
@@ -400,7 +400,7 @@ export function useMultiDaoBaseInfo(
   const tokenLogoRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'tokenLogo')
   const tokenLogos: (string | undefined)[] = useMemo(() => tokenLogoRes.map(item => item.result?.[0]), [tokenLogoRes])
 
-  const daoTokenRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'daoToken')
+  const daoTokenRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'getDaoToken')
   const tokenAddresss: (string | undefined)[] = useMemo(() => daoTokenRes.map(item => item.result?.[0]), [daoTokenRes])
   const tokens = useTokens(tokenAddresss, DefaultChainId)
 
@@ -466,7 +466,7 @@ export function useExternalDaoInfoByAddress(daoAddress: string | undefined): Ext
   const votingAddress: string | undefined = useMemo(() => votingAddressRes.result?.[0], [votingAddressRes])
   const proposalNumber = useProposalNumber(votingAddress, daoAddress)
 
-  const daoTokenRes = useSingleCallResult(daoContract ?? undefined, 'daoToken', [])
+  const daoTokenRes = useSingleCallResult(daoContract ?? undefined, 'getDaoToken', [])
   const tokenAddress: string | undefined = useMemo(() => daoTokenRes.result?.[0], [daoTokenRes])
   const token = useToken(tokenAddress, DefaultChainId)
   const totalSupply = useTotalSupply(token)
