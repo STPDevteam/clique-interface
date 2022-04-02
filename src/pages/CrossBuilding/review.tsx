@@ -12,12 +12,12 @@ import useModal from 'hooks/useModal'
 import TransacitonPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import { useHistory } from 'react-router-dom'
 import AlertError from 'components/Alert/index'
-import { useExternalCreateDaoCallback } from 'hooks/external/useExternalCreateDaoCallback'
+import { useCrossGovCreateDaoCallback } from 'hooks/useCrossGovCreateDaoCallback'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
-import { useExternalBuildingDataCallback, useExternalCommitCreateDaoData } from 'state/externalBuilding/hooks'
-import { useExternalTokenInfo } from 'hooks/external/useExternalTokenInfo'
+import { useCrossBuildingDataCallback, useCrossCommitCreateDaoData } from 'state/crossBuilding/hooks'
+import { useTokenByChain } from 'state/wallet/hooks'
 
 const Wrapper = styled('section')({
   '& p': {
@@ -32,15 +32,15 @@ const Wrapper = styled('section')({
 const { Panel } = Collapse
 
 export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' | 'Rule' | 'Review') => void }) {
-  const { removeBuildingDaoData } = useExternalBuildingDataCallback()
+  const { removeBuildingDaoData } = useCrossBuildingDataCallback()
   const { showModal, hideModal } = useModal()
   const history = useHistory()
-  const createDaoCallback = useExternalCreateDaoCallback()
+  const createDaoCallback = useCrossGovCreateDaoCallback()
   const { account } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
 
-  const { basicData, ruleData } = useExternalCommitCreateDaoData()
-  const externalTokenInfo = useExternalTokenInfo(basicData.contractAddress)
+  const { basicData, ruleData } = useCrossCommitCreateDaoData()
+  const crossTokenInfo = useTokenByChain(basicData.contractAddress, basicData.baseChainId)
 
   const onCreate = useCallback(() => {
     showModal(<TransacitonPendingModal />)
@@ -104,16 +104,16 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
                 <img className="icon-token" src={basicData.tokenPhoto} />
                 <div className="input-item">
                   <span className="label">Token Name</span>
-                  <span className="value">{externalTokenInfo.token?.name}</span>
+                  <span className="value">{crossTokenInfo?.token?.name}</span>
                 </div>
                 <div className="input-item">
                   <span className="label">Symbol</span>
-                  <span className="value">{externalTokenInfo.token?.symbol}</span>
+                  <span className="value">{crossTokenInfo?.token?.symbol}</span>
                 </div>
                 <div className="input-item">
                   <span className="label">Total Supply</span>
                   <span className="value">
-                    {externalTokenInfo.totalSupply?.toSignificant(6, { groupSeparator: ',' })}
+                    {crossTokenInfo?.totalSupply?.toSignificant(6, { groupSeparator: ',' })}
                   </span>
                 </div>
               </Box>
@@ -146,8 +146,8 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
                 <span className="value">{toFormatGroup(ruleData.minCreateProposalNumber, 0)}</span>
                 <span className="label">
                   (
-                  {externalTokenInfo.totalSupply
-                    ? getPerForAmount(externalTokenInfo.totalSupply.toSignificant(), ruleData.minCreateProposalNumber)
+                  {crossTokenInfo?.totalSupply
+                    ? getPerForAmount(crossTokenInfo?.totalSupply.toSignificant(), ruleData.minCreateProposalNumber)
                     : '- '}
                   % per total votes)
                 </span>
@@ -157,8 +157,8 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
                 <span className="value">{toFormatGroup(ruleData.minApprovalNumber, 0)}</span>
                 <span className="label">
                   (
-                  {externalTokenInfo.totalSupply
-                    ? getPerForAmount(externalTokenInfo.totalSupply.toSignificant(), ruleData.minApprovalNumber)
+                  {crossTokenInfo?.totalSupply
+                    ? getPerForAmount(crossTokenInfo?.totalSupply.toSignificant(), ruleData.minApprovalNumber)
                     : '- '}
                   % per total votes)
                 </span>

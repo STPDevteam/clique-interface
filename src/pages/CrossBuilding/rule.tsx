@@ -10,23 +10,24 @@ import AlertError from 'components/Alert/index'
 import { getAmountForPer, getPerForAmount } from '../building/function'
 import BigNumber from 'bignumber.js'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
-import { useExternalTokenInfo } from 'hooks/external/useExternalTokenInfo'
-import { useExternalBuildingDataCallback } from 'state/externalBuilding/hooks'
+import { useCrossBuildingDataCallback } from 'state/crossBuilding/hooks'
+import { useTokenByChain } from 'state/wallet/hooks'
 
 type CreateDaoDataRuleKey = keyof CreateDaoDataRule
 
 export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: () => void }) {
-  const { updateRule, buildingDaoData } = useExternalBuildingDataCallback()
+  const { updateRule, buildingDaoData } = useCrossBuildingDataCallback()
   const { basic, rule } = buildingDaoData
-  const externalTokenInfo = useExternalTokenInfo(basic.contractAddress)
 
-  const tokenSupply = externalTokenInfo.totalSupply?.toSignificant() || '1'
+  const crossTokenInfo = useTokenByChain(basic.contractAddress, basic.baseChainId)
+  const tokenSupply = useMemo(() => crossTokenInfo?.totalSupply?.toSignificant(), [crossTokenInfo?.totalSupply])
 
   // const [minVotePer, setMinVotePer] = useState(getPerForAmount(tokenSupply, rule.minVoteNumber || 1))
   const [minCreateProposalPer, setMinCreateProposalPer] = useState(0)
   const [minApprovalPer, setMinApprovalPer] = useState(0)
 
   useEffect(() => {
+    if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) return
     setMinCreateProposalPer(getPerForAmount(tokenSupply, rule.minCreateProposalNumber || 1))
     setMinApprovalPer(getPerForAmount(tokenSupply, rule.minApprovalNumber || 1))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,6 +51,9 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
     if (!rule.contractDays && !rule.contractHours && !rule.contractMinutes) {
       return 'Contract Voting Duration required'
     }
+    if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) {
+      return 'loading'
+    }
     if (new BigNumber(rule.minApprovalNumber).gt(tokenSupply)) {
       return 'Minimum total votes so large'
     }
@@ -71,7 +75,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
               Total Supply
             </Typography>
             <Typography fontSize={20} variant="h6" fontWeight={600}>
-              {externalTokenInfo.totalSupply?.toSignificant(6, { groupSeparator: ',' })}
+              {crossTokenInfo?.totalSupply?.toSignificant(6, { groupSeparator: ',' })}
             </Typography>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
@@ -107,6 +111,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                     const reg = new RegExp('^[0-9]*$')
                     const _val = e.target.value
                     if (reg.test(_val)) {
+                      if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) return
                       // check max value
                       const input = new BigNumber(_val).gt(tokenSupply) ? tokenSupply : _val
                       updateRuleCall('minVoteNumber', input)
@@ -131,6 +136,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                   max={100}
                   value={minCreateProposalPer}
                   onChange={e => {
+                    if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) return
                     setMinCreateProposalPer(e as number)
                     updateRuleCall('minCreateProposalNumber', getAmountForPer(tokenSupply, e as number))
                   }}
@@ -148,6 +154,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                     const reg = new RegExp('^[0-9]*$')
                     const _val = e.target.value
                     if (reg.test(_val)) {
+                      if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) return
                       // check max value
                       const input = new BigNumber(_val).gt(tokenSupply) ? tokenSupply : _val
                       updateRuleCall('minCreateProposalNumber', input)
@@ -176,6 +183,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                   max={100}
                   value={minApprovalPer}
                   onChange={e => {
+                    if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) return
                     setMinApprovalPer(e as number)
                     updateRuleCall('minApprovalNumber', getAmountForPer(tokenSupply, e as number))
                   }}
@@ -193,6 +201,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                     const reg = new RegExp('^[0-9]*$')
                     const _val = e.target.value
                     if (reg.test(_val)) {
+                      if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) return
                       // check max value
                       const input = new BigNumber(_val).gt(tokenSupply) ? tokenSupply : _val
                       updateRuleCall('minApprovalNumber', input)

@@ -93,7 +93,7 @@ export const SUPPORTED_NETWORKS: {
       decimals: 18,
       logo: KlaytnSvg
     },
-    rpcUrls: ['https://api.baobab.klaytn.net:8651/'],
+    rpcUrls: ['https://public-node-api.klaytnapi.com/v1/baobab'],
     blockExplorerUrls: ['https://baobab.scope.klaytn.com/']
   }
 }

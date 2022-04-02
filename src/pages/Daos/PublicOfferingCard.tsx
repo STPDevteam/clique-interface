@@ -153,7 +153,13 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
   )
 }
 
-export function NonePublicOfferingCard({ daoAddress }: { daoAddress: string | undefined }) {
+export function NonePublicOfferingCard({
+  daoAddress,
+  typeName
+}: {
+  daoAddress: string | undefined
+  typeName?: string
+}) {
   const daoInfo = useExternalDaoInfoByAddress(daoAddress)
 
   return (
@@ -188,11 +194,11 @@ export function NonePublicOfferingCard({ daoAddress }: { daoAddress: string | un
         }}
       >
         <Typography variant="body2" color={'#798488'}>
-          External
+          {typeName || 'External'}
         </Typography>
       </Box>
       <Box display={'grid'} gap={14} gridTemplateColumns={'58px 80px 1fr'} mb={22}>
-        <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.token?.logo}>
+        <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.logo}>
           <IconDao />
         </Avatar>
         <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'} pt={4} height={52}>

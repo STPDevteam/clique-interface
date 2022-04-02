@@ -1,21 +1,27 @@
 import '../building/basic.pc.less'
 
-import { Input, Button } from 'antd'
+import { Input, Button, Select } from 'antd'
 import IconUpload from '../../assets/images/icon-upload.svg'
 import IUpload from '../../components/IUpload'
 import TextArea from 'antd/lib/input/TextArea'
 import { Box, Typography } from '@mui/material'
-import { ExternalCreateDaoDataBasic } from 'state/externalBuilding/actions'
+import { CrossCreateDaoDataBasic } from 'state/crossBuilding/actions'
 import { useCallback, useMemo, useState } from 'react'
 import AlertError from 'components/Alert/index'
-import { useExternalBuildingDataCallback } from 'state/externalBuilding/hooks'
-import { useExternalTokenInfo } from 'hooks/external/useExternalTokenInfo'
+import { useCrossBuildingDataCallback } from 'state/crossBuilding/hooks'
 import { isAddress } from 'utils'
+import IconDownArrow from 'components/ModalSTP/assets/icon-down-arrow.svg'
+import { useTokenByChain } from 'state/wallet/hooks'
+import { ChainList } from 'constants/chain'
+import { CROSS_SUPPORT_NETWORK } from '../../constants'
 
-type ExternalCreateDaoDataBasicKey = keyof ExternalCreateDaoDataBasic
+const { Option } = Select
+type CrossCreateDaoDataBasicKey = keyof CrossCreateDaoDataBasic
+
+const supportNet = ChainList.filter(i => CROSS_SUPPORT_NETWORK.includes(i.id))
 
 export default function Basic({ goNext }: { goNext: () => void }) {
-  const { buildingDaoData, updateBasic } = useExternalBuildingDataCallback()
+  const { buildingDaoData, updateBasic } = useCrossBuildingDataCallback()
   const { basic: basicData } = buildingDaoData
   const [previewStr, setPreviewStr] = useState<any>('')
 
@@ -23,33 +29,68 @@ export default function Basic({ goNext }: { goNext: () => void }) {
     () => (basicData.contractAddress && isAddress(basicData.contractAddress) ? basicData.contractAddress : undefined),
     [basicData.contractAddress]
   )
-  const externalTokenInfo = useExternalTokenInfo(validAddress)
+  const crossTokenInfo = useTokenByChain(validAddress, basicData.baseChainId)
 
   const updateBasicCall = useCallback(
-    (key: ExternalCreateDaoDataBasicKey, value: string | number) => {
-      const _updateData: ExternalCreateDaoDataBasic = Object.assign({ ...basicData }, { [key]: value })
+    (key: CrossCreateDaoDataBasicKey, value: string | number) => {
+      const _updateData: CrossCreateDaoDataBasic = Object.assign({ ...basicData }, { [key]: value })
       updateBasic(_updateData)
     },
     [basicData, updateBasic]
   )
 
   const verifyMsg = useMemo(() => {
+    if (!basicData.baseChainId) {
+      return 'Base network required'
+    }
     if (!basicData.daoName.trim()) {
       return 'Dao name required'
     }
     if (!basicData.contractAddress.trim()) {
-      return 'Contract address required'
+      return 'Token contract address required'
     }
-    if (!externalTokenInfo.isSupportShot) {
-      return 'The token contract snapshots are not supported'
+    if (!basicData.tokenPhoto) {
+      return 'Token photo required'
     }
     return undefined
-  }, [basicData.contractAddress, basicData.daoName, externalTokenInfo.isSupportShot])
+  }, [basicData.baseChainId, basicData.contractAddress, basicData.daoName, basicData.tokenPhoto])
 
   return (
     <>
       <section className="basic">
         <div>
+          <div className="input-item">
+            <span className="label">Base network</span>
+            <Box className="input-assets-selector" width={'100%'}>
+              <Select
+                value={basicData.baseChainId}
+                suffixIcon={<img src={IconDownArrow} />}
+                onChange={e => {
+                  e && updateBasicCall('baseChainId', e)
+                }}
+                placeholder="Please select network"
+              >
+                {supportNet.map(item => (
+                  <Option value={item.id} key={item.id}>
+                    <Box
+                      display={'flex'}
+                      alignItems={'center'}
+                      gap={5}
+                      sx={{
+                        '& img, & svg': {
+                          width: 20,
+                          height: 20
+                        }
+                      }}
+                    >
+                      <img src={item.logo} />
+                      {item.name}
+                    </Box>
+                  </Option>
+                ))}
+              </Select>
+            </Box>
+          </div>
           <div className="input-item">
             <span className="label">Dao Name</span>
             <div className="suffix-wrapper">
@@ -86,11 +127,11 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             ></TextArea>
           </div>
           <Box style={{ display: 'grid', marginBottom: '10px' }} gridTemplateColumns="1fr 1fr" className="input-item">
-            <span className="label">Token name: {externalTokenInfo.token?.name || '--'}</span>
-            <span className="label">Token symbol: {externalTokenInfo.token?.symbol || '--'}</span>
-            <span className="label">Token Decimals: {externalTokenInfo.token?.decimals || '--'}</span>
+            <span className="label">Token name: {crossTokenInfo?.token.name || '--'}</span>
+            <span className="label">Token symbol: {crossTokenInfo?.token.symbol || '--'}</span>
+            <span className="label">Token Decimals: {crossTokenInfo?.token.decimals || '--'}</span>
             <span className="label">
-              Token Supply: {externalTokenInfo.totalSupply?.toSignificant(6, { groupSeparator: ',' }) || '--'}
+              Token Supply: {crossTokenInfo?.totalSupply.toSignificant(6, { groupSeparator: ',' }) || '--'}
             </span>
           </Box>
           <div className="input-item">

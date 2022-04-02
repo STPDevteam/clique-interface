@@ -91,6 +91,8 @@ export default function Index() {
                         history.push('/external_detail/' + item.daoAddress)
                       } else if (daoTypes.data[index] === DaoTypeProp.RawDao) {
                         history.push('/detail/' + item.daoAddress)
+                      } else {
+                        history.push(`/cross_detail/${item.daoAddress}`)
                       }
                     }}
                     padding={'25px 16px'}
@@ -182,7 +184,12 @@ export default function Index() {
                   {publicOfferingDaoTypes.data[index] === DaoTypeProp.RawDao ? (
                     <PublicOfferingCard daoAddress={daoAddress} />
                   ) : (
-                    <NonePublicOfferingCard daoAddress={daoAddress} />
+                    <NonePublicOfferingCard
+                      daoAddress={daoAddress}
+                      typeName={
+                        publicOfferingDaoTypes.data[index] === DaoTypeProp.CrossGovDao ? 'Cross gov' : undefined
+                      }
+                    />
                   )}
                 </Grid>
               ))}

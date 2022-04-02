@@ -37,7 +37,7 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
         <Item
           onClick={() => {
             hide()
-            history.push('/building')
+            history.replace('/building')
           }}
         >
           <Box display={'grid'} gap="24px" justifyItems={'center'} alignItems="center">
@@ -51,7 +51,7 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
           onClick={() => {
             if (chainId === ChainId.RINKEBY) {
               hide()
-              history.push('/external_building')
+              history.replace('/external_building')
             }
           }}
         >
@@ -64,9 +64,9 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
         </Item>
         <Item
           onClick={() => {
-            if (chainId !== ChainId.STP) {
+            if (chainId === ChainId.STP) {
               hide()
-              history.push('/cross_building')
+              history.replace('/cross_building')
             }
           }}
         >
