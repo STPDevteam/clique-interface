@@ -7,7 +7,7 @@ import ProposalDetail from './components/ProposalDetail'
 import CreateProposal from './components/CreateProposal'
 import Configuration from './components/Configuration'
 import Copy from 'components/essential/Copy'
-import { useExternalDaoInfoByAddress } from 'hooks/useDAOInfo'
+import { useCrossDaoInfoByAddress } from 'hooks/useDAOInfo'
 import { useParams } from 'react-router-dom'
 import { shortenAddress } from 'utils'
 import { ProposalInfoProp } from 'hooks/useVoting'
@@ -21,7 +21,7 @@ export default function Index() {
   const [currentLink, setCurrentLink] = useState(links[0])
   const [currentProposal, setCurrentProposal] = useState<ProposalInfoProp>()
   const [showCreate, setShowCreate] = useState(false)
-  const daoInfo = useExternalDaoInfoByAddress(daoAddress)
+  const daoInfo = useCrossDaoInfoByAddress(daoAddress)
 
   useEffect(() => {
     if (daoAddress) {

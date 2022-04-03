@@ -3,23 +3,14 @@ import '../../../DaoDetail/components/Configuration/pc.less'
 import 'react'
 import { Input, Slider, Tooltip, Switch, InputNumber } from 'antd'
 import { Box, Typography } from '@mui/material'
-import { useCallback, useMemo, useState } from 'react'
-import AlertError from 'components/Alert/index'
-import { amountAddDecimals, getCurrentTimeStamp, toFormatGroup } from 'utils/dao'
-import { calcVotingDuration, getAmountForPer, getPerForAmount } from 'pages/building/function'
+import { useState } from 'react'
+import { toFormatGroup } from 'utils/dao'
+import { getAmountForPer, getPerForAmount } from 'pages/building/function'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 import TextArea from 'antd/lib/input/TextArea'
-import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
-import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
-import MessageBox from 'components/Modal/TransactionModals/MessageBox'
-import useModal from 'hooks/useModal'
 import { TokenAmount } from 'constants/token'
-import Confirm from './Confirm'
-import { useActiveWeb3React } from 'hooks'
-import OutlineButton from 'components/Button/OutlineButton'
 import { calcTime } from 'utils'
-import { useCreateContractProposalCallback } from 'hooks/useCreateContractProposalCallback'
 
 // const { TextArea } = Input
 
@@ -39,8 +30,7 @@ export default function Configuration({
   totalSupply: TokenAmount
   votingAddress: string | undefined
 }) {
-  const { account } = useActiveWeb3React()
-  const { hideModal, showModal } = useModal()
+  // const { account } = useActiveWeb3React()
   const [minVoteNumber, setMinVoteNumber] = useState(rule.minimumVote.toSignificant())
   const [minCreateProposalNumber, setMinCreateProposalNumber] = useState(rule?.minimumCreateProposal.toSignificant())
   const [minValidNumber, setMinValidNumber] = useState(rule.minimumValidVotes.toSignificant())
@@ -60,147 +50,6 @@ export default function Configuration({
   const [contractData, setContractData] = useState(calcTime(Number(rule?.contractVotingDuration || 0)))
 
   const [ruleContent, setRuleContent] = useState(rule.content)
-
-  const { updateConfigurationCallback } = useCreateContractProposalCallback(votingAddress)
-
-  const verifyMsg = useMemo(() => {
-    if (!minVoteNumber || !minCreateProposalNumber || !minValidNumber) return 'Votes required'
-    if (!votersCustom) {
-      if (!communityData.days && !communityData.hours && !communityData.minutes) {
-        return 'Community Voting Duration required'
-      }
-    }
-    if (!contractData.days && !contractData.hours && !contractData.minutes) {
-      return 'Contract Voting Duration required'
-    }
-    return undefined
-  }, [communityData, contractData, minCreateProposalNumber, minValidNumber, minVoteNumber, votersCustom])
-
-  const startTime = getCurrentTimeStamp()
-  const endTime = useMemo(() => Number(rule?.contractVotingDuration || 0) + startTime, [
-    rule?.contractVotingDuration,
-    startTime
-  ])
-
-  const communityDuration = useMemo(
-    () =>
-      votersCustom
-        ? '0'
-        : calcVotingDuration(communityData.days, communityData.hours, communityData.minutes).toString(),
-    [communityData.days, communityData.hours, communityData.minutes, votersCustom]
-  )
-  const contractDuration = useMemo(
-    () => calcVotingDuration(contractData.days, contractData.hours, contractData.minutes).toString(),
-    [contractData]
-  )
-
-  const updateLog = useMemo(() => {
-    const logArr: { [key in string]: string[] } = {}
-    if (minVoteNumber !== rule.minimumVote.toSignificant()) {
-      logArr['Minimum holding to vote'] = [rule.minimumVote.toSignificant(6, { groupSeparator: ',' }), minVoteNumber]
-    }
-    if (minCreateProposalNumber !== rule.minimumCreateProposal.toSignificant()) {
-      logArr['Minimum holding to create proposal'] = [
-        rule.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' }),
-        minCreateProposalNumber
-      ]
-    }
-    if (minValidNumber !== rule.minimumValidVotes.toSignificant()) {
-      logArr['Minimum total votes'] = [rule.minimumValidVotes.toSignificant(6, { groupSeparator: ',' }), minValidNumber]
-    }
-    if (communityDuration !== rule.communityVotingDuration) {
-      const _new = calcTime(Number(communityDuration))
-      const _old = calcTime(Number(rule.communityVotingDuration))
-      logArr['Community Voting Duration'] = [
-        `${_old.days} Days ${_old.hours} Hours ${_old.minutes} Minutes ${
-          Number(rule.communityVotingDuration) === 0 ? '(voters custom)' : ''
-        }`,
-        `${_new.days} Days ${_new.hours} Hours ${_new.minutes} Minutes ${
-          Number(communityDuration) === 0 ? '(voters custom)' : ''
-        }`
-      ]
-    }
-    if (contractDuration !== rule.contractVotingDuration) {
-      const _new = calcTime(Number(contractDuration))
-      const _old = calcTime(Number(rule.contractVotingDuration))
-      logArr['Contract Voting Duration'] = [
-        `${_old.days} Days ${_old.hours} Hours ${_old.minutes} Minutes`,
-        `${_new.days} Days ${_new.hours} Hours ${_new.minutes} Minutes`
-      ]
-    }
-    if (ruleContent !== rule.content) {
-      logArr['Rules / Agreement'] = [rule.content, ruleContent]
-    }
-    const ret: string[] = []
-    for (const key in logArr) {
-      if (Object.prototype.hasOwnProperty.call(logArr, key)) {
-        const item = logArr[key]
-        ret.push(`${key}: ${item[0]} --> ${item[1]}`)
-      }
-    }
-    return ret.join(' <br /> ')
-  }, [
-    communityDuration,
-    contractDuration,
-    minCreateProposalNumber,
-    minValidNumber,
-    minVoteNumber,
-    rule.communityVotingDuration,
-    rule.content,
-    rule.contractVotingDuration,
-    rule.minimumCreateProposal,
-    rule.minimumValidVotes,
-    rule.minimumVote,
-    ruleContent
-  ])
-
-  const onCommit = useCallback(() => {
-    showModal(<TransactionPendingModal />)
-    updateConfigurationCallback(
-      'Update Contract Configuration',
-      updateLog,
-      amountAddDecimals(minVoteNumber, totalSupply.token.decimals),
-      amountAddDecimals(minCreateProposalNumber, totalSupply.token.decimals),
-      amountAddDecimals(minValidNumber, totalSupply.token.decimals),
-      Number(contractDuration),
-      Number(contractDuration),
-      ruleContent
-    )
-      .then(() => {
-        hideModal()
-        showModal(<TransactionSubmittedModal />)
-      })
-      .catch((err: any) => {
-        hideModal()
-        showModal(
-          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
-        )
-        console.error(err)
-      })
-  }, [
-    contractDuration,
-    hideModal,
-    minCreateProposalNumber,
-    minValidNumber,
-    minVoteNumber,
-    ruleContent,
-    showModal,
-    totalSupply.token.decimals,
-    updateConfigurationCallback,
-    updateLog
-  ])
-
-  const onUpdateConfirm = useCallback(() => {
-    showModal(
-      <Confirm
-        minimumCreateProposal={rule.minimumCreateProposal}
-        onCommit={onCommit}
-        startTime={startTime}
-        endTime={endTime}
-        updateLog={updateLog}
-      />
-    )
-  }, [endTime, onCommit, rule.minimumCreateProposal, showModal, startTime, updateLog])
 
   return (
     <section className="configuration">
@@ -498,18 +347,18 @@ export default function Configuration({
         </Box>
       </Box>
 
-      {!!verifyMsg && (
+      {/* {!!verifyMsg && (
         <Box mt={15}>
           <AlertError>{verifyMsg}</AlertError>
         </Box>
-      )}
-      {account && (
+      )} */}
+      {/* {account && (
         <Box mt={15}>
           <OutlineButton width={120} disabled={!updateLog.length} onClick={onUpdateConfirm}>
             Update
           </OutlineButton>
         </Box>
-      )}
+      )} */}
     </section>
   )
 }

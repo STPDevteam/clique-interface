@@ -8,7 +8,6 @@ import { calculateGasMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useTokenByChain } from 'state/wallet/hooks'
-import { ChainId, ChainListMap } from 'constants/chain'
 
 export function useCrossGovCreateDaoCallback() {
   const { basicData, ruleData } = useCrossCommitCreateDaoData()
@@ -20,10 +19,9 @@ export function useCrossGovCreateDaoCallback() {
 
   const args = useMemo(() => {
     const _basicParams = {
-      baseNetwork: ChainListMap[basicData.baseChainId as ChainId]?.name || '',
+      daoName: basicData.daoName,
       chainId: basicData.baseChainId,
       contractAddress: basicData.contractAddress,
-      // daoName: basicData.daoName,
       daoDesc: basicData.description,
       website: basicData.websiteLink,
       twitter: basicData.twitterLink,

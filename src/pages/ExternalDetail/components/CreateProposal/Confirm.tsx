@@ -54,7 +54,7 @@ export default function Confirm({
 
         <Box display={'flex'} justifyContent={'center'}>
           <Button width="240px" style={{ maxWidth: '65%' }} onClick={onCreate}>
-            Stake {minimumCreateProposal?.token?.symbol} and Create
+            Create
           </Button>
         </Box>
       </Box>

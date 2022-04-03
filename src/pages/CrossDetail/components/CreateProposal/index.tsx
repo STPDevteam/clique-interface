@@ -8,7 +8,6 @@ import DatePicker from 'components/DatePicker'
 import InputOptions from 'components/Input/InputOptions'
 import { ExternalDaoInfoProps } from 'hooks/useDAOInfo'
 import { useCallback, useMemo, useState } from 'react'
-import { useTokenBalance } from 'state/wallet/hooks'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
@@ -17,8 +16,9 @@ import TransactionSubmittedModal from 'components/Modal/TransactionModals/Transa
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { toFormatGroup } from 'utils/dao'
 import Confirm from './Confirm'
-import { useCreateCommunityProposalCallback } from 'hooks/useCreateCommunityProposalCallback'
-
+import { useCreateCrossProposalCallback } from 'hooks/useCreateCommunityProposalCallback'
+import { useCreateProposalSignData } from 'hooks/useBackedCrossServer'
+import { TokenAmount } from 'constants/token'
 interface Props {
   onBack: () => void
   daoInfo: ExternalDaoInfoProps | undefined
@@ -34,9 +34,16 @@ export default function Index(props: Props) {
   const [endTime, setEndTime] = useState<number>()
   const toggleWalletModal = useWalletModalToggle()
   const { hideModal, showModal } = useModal()
-  const createCommunityProposalCallback = useCreateCommunityProposalCallback(daoInfo?.votingAddress)
+  const createCommunityProposalCallback = useCreateCrossProposalCallback(daoInfo?.votingAddress)
+  const createProposalSignData = useCreateProposalSignData(daoInfo?.token?.chainId, daoInfo?.daoAddress)
 
-  const daoTokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
+  const usrBalance = useMemo(
+    () =>
+      daoInfo?.token && createProposalSignData
+        ? new TokenAmount(daoInfo.token, createProposalSignData.balance)
+        : undefined,
+    [createProposalSignData, daoInfo?.token]
+  )
 
   const endTimeDIsabled = useMemo(() => {
     if (!daoInfo?.rule) return true
@@ -47,10 +54,18 @@ export default function Index(props: Props) {
   }, [daoInfo?.rule])
 
   const onCreateCommunityProposalCallback = useCallback(() => {
-    if (!title.trim() || !startTime || !endTime) return
+    if (!title.trim() || !startTime || !endTime || !createProposalSignData) return
     const curOption = option.filter(i => i.trim())
     showModal(<TransactionPendingModal />)
-    createCommunityProposalCallback(title, desc, startTime, endTime, curOption)
+    createCommunityProposalCallback(
+      { title, content: desc, startTime, endTime, options: curOption },
+      createProposalSignData.userAddress,
+      createProposalSignData.balance,
+      createProposalSignData.chainId,
+      createProposalSignData.votingAddress,
+      createProposalSignData.nonce,
+      createProposalSignData.sign
+    )
       .then(() => {
         hideModal()
         showModal(<TransactionSubmittedModal hideFunc={onBack} />)
@@ -66,14 +81,24 @@ export default function Index(props: Props) {
         )
         console.error(err)
       })
-  }, [createCommunityProposalCallback, desc, endTime, hideModal, onBack, option, showModal, startTime, title])
+  }, [
+    createCommunityProposalCallback,
+    createProposalSignData,
+    desc,
+    endTime,
+    hideModal,
+    onBack,
+    option,
+    showModal,
+    startTime,
+    title
+  ])
 
   const addOption = useCallback(() => {
     if (option.length >= 6) return
     setOption([...option, ''])
   }, [option])
 
-  const tokenBalance = useTokenBalance(account || undefined, daoInfo?.token)
   const getActions = useMemo(() => {
     if (!account) {
       return (
@@ -119,9 +144,9 @@ export default function Index(props: Props) {
     }
 
     if (
-      !tokenBalance ||
+      !usrBalance ||
       !daoInfo?.rule?.minimumCreateProposal ||
-      tokenBalance?.lessThan(daoInfo?.rule?.minimumCreateProposal)
+      usrBalance?.lessThan(daoInfo?.rule?.minimumCreateProposal)
     ) {
       return (
         <MButton width="233px" height="48px" style={{ margin: 'auto' }} disabled>
@@ -141,7 +166,7 @@ export default function Index(props: Props) {
               title={title}
               endTime={endTime}
               startTime={startTime}
-              minimumCreateProposal={daoInfo.rule?.minimumCreateProposal}
+              minimumCreateProposal={daoInfo?.rule?.minimumCreateProposal}
               onCreate={onCreateCommunityProposalCallback}
             />
           )
@@ -160,7 +185,7 @@ export default function Index(props: Props) {
     startTime,
     title,
     toggleWalletModal,
-    tokenBalance
+    usrBalance
   ])
 
   return (
@@ -242,8 +267,7 @@ export default function Index(props: Props) {
             <Box display={'flex'} justifyContent={'space-between'} mb={10}>
               <Typography>Your balance</Typography>
               <Typography>
-                {daoTokenBalance ? daoTokenBalance?.toSignificant(6, { groupSeparator: ',' }) : '-'}{' '}
-                {daoInfo?.token?.symbol}
+                {usrBalance ? usrBalance?.toSignificant(6, { groupSeparator: ',' }) : '-'} {daoInfo?.token?.symbol}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} mb={10}>

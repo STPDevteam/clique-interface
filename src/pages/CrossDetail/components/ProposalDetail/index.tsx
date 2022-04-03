@@ -9,9 +9,9 @@ import OtherUserDetail from '../../../../components/Proposal/OtherUserDetail'
 // import ExecutableVoteResult from '../../../../components/Proposal/ExecutableVoteResult'
 import Vote from '../../../../components/Proposal/Vote'
 import { Grid } from '@mui/material'
-import { ProposalInfoProp, useBalanceOfAt, useVoteResults, useVotingOptionsById } from 'hooks/useVoting'
+import { ProposalInfoProp, useVoteResults, useVotingOptionsById } from 'hooks/useVoting'
 // import { ProposalType } from 'hooks/useCreateCommunityProposalCallback'
-import { useVoteCallback } from 'hooks/useVoteCallback'
+import { useCrossVoteCallback } from 'hooks/useVoteCallback'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import useModal from 'hooks/useModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
@@ -24,6 +24,7 @@ import JSBI from 'jsbi'
 // import { useResolveVotingResultCallback } from 'hooks/useResolveVotingResultCallback'
 import { useExecuteProposalCallback } from 'hooks/useExecuteProposalCallback'
 import TimelineStatus from 'pages/DaoDetail/components/ProposalDetail/TimelineStatus'
+import { useVotingSignData } from 'hooks/useBackedCrossServer'
 
 export default function Index({
   detail,
@@ -34,12 +35,13 @@ export default function Index({
   onBack: () => void
   daoInfo: ExternalDaoInfoProps
 }) {
-  const voteCallback = useVoteCallback(daoInfo.votingAddress)
-  const balanceOfAt = useBalanceOfAt(daoInfo.token?.address, detail.blkHeight)
+  const voteCallback = useCrossVoteCallback(daoInfo.votingAddress)
+  const votInfo = useVotingSignData(daoInfo.token?.chainId, daoInfo.daoAddress, Number(detail.id))
+  // const balanceOfAt = useCrossBalanceOfAt(daoInfo.token?.chainId, daoInfo.daoAddress, detail.id)
   const myDaoBalanceAt = useMemo(() => {
-    if (!balanceOfAt || !daoInfo.token) return undefined
-    return new TokenAmount(daoInfo.token, balanceOfAt)
-  }, [balanceOfAt, daoInfo.token])
+    if (!votInfo?.balance || !daoInfo.token) return undefined
+    return new TokenAmount(daoInfo.token, votInfo.balance)
+  }, [votInfo?.balance, daoInfo.token])
   const { account } = useActiveWeb3React()
 
   const currentProVoteInfo = useMemo(() => {
@@ -87,8 +89,17 @@ export default function Index({
 
   const onVoteCallback = useCallback(
     (index: number) => {
+      if (!votInfo) return
       showModal(<TransactionPendingModal />)
-      voteCallback(detail.id, index)
+      voteCallback(
+        { id: detail.id, index },
+        votInfo.userAddress,
+        votInfo.balance,
+        votInfo.chainId,
+        votInfo.votingAddress,
+        votInfo.nonce,
+        votInfo.sign
+      )
         .then(() => {
           hideModal()
           showModal(<TransactionSubmittedModal />)
@@ -101,7 +112,7 @@ export default function Index({
           console.error(err)
         })
     },
-    [detail.id, hideModal, showModal, voteCallback]
+    [detail.id, hideModal, showModal, votInfo, voteCallback]
   )
 
   // const resolveVotingResultCallback = useResolveVotingResultCallback(daoInfo.votingAddress)
