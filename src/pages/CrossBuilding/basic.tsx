@@ -43,9 +43,9 @@ export default function Basic({ goNext }: { goNext: () => void }) {
     if (!basicData.baseChainId) {
       return 'Base network required'
     }
-    if (!basicData.daoName.trim()) {
-      return 'Dao name required'
-    }
+    // if (!basicData.daoName.trim()) {
+    //   return 'Dao name required'
+    // }
     if (!basicData.contractAddress.trim()) {
       return 'Token contract address required'
     }
@@ -56,7 +56,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
       return 'Token photo required'
     }
     return undefined
-  }, [basicData.baseChainId, basicData.contractAddress, basicData.daoName, basicData.tokenPhoto, crossTokenInfo])
+  }, [basicData.baseChainId, basicData.contractAddress, basicData.tokenPhoto, crossTokenInfo])
 
   return (
     <>
@@ -94,7 +94,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
               </Select>
             </Box>
           </div>
-          <div className="input-item">
+          {/* <div className="input-item">
             <span className="label">Dao Name</span>
             <div className="suffix-wrapper">
               <Input
@@ -103,9 +103,8 @@ export default function Basic({ goNext }: { goNext: () => void }) {
                 value={basicData.daoName}
                 onChange={e => updateBasicCall('daoName', e.target.value)}
               />
-              {/* <span className="suffix">.STPDAO</span> */}
             </div>
-          </div>
+          </div> */}
           <div className="input-item">
             <span className="label">Contract address</span>
             <div className="suffix-wrapper">

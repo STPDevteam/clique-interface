@@ -19,7 +19,7 @@ export function useCrossGovCreateDaoCallback() {
 
   const args = useMemo(() => {
     const _basicParams = {
-      daoName: basicData.daoName,
+      daoName: tokenInfo?.token.name,
       chainId: basicData.baseChainId,
       contractAddress: basicData.contractAddress,
       daoDesc: basicData.description,
@@ -45,7 +45,7 @@ export function useCrossGovCreateDaoCallback() {
     })
 
     return [Object.values(_basicParams), _rule]
-  }, [basicData, ruleData, token])
+  }, [basicData, ruleData, token?.decimals, tokenInfo?.token.name])
 
   return useCallback(() => {
     if (!daoFactoryContract) {
