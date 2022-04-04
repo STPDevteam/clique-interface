@@ -46,6 +46,7 @@ export function useVotingSignData(
 ) {
   const { chainId, account } = useActiveWeb3React()
   const [result, setResult] = useState<CrossSignDataProp>()
+  const [reload, setReload] = useState(0)
   useEffect(() => {
     ;(async () => {
       if (!chainId || !account || !targetChainId || !daoAddress || !proposalId) {
@@ -58,22 +59,17 @@ export function useVotingSignData(
         console.log('🚀 ~ file: useBackedCrossServer.ts ~ line 49 ~ ; ~ data', data)
         if (!data) {
           setResult(undefined)
+          setTimeout(() => setReload(reload + 1), 6000)
           return
         }
-        setResult({
-          balance: data.balance,
-          chainId: data.chainId,
-          nonce: data.noce,
-          sign: data.sign,
-          userAddress: data.userAddress,
-          votingAddress: data.votingAddress
-        })
+        setResult(data)
       } catch (error) {
         setResult(undefined)
+        setTimeout(() => setReload(reload + 1), 6000)
         console.error('useVotingSignData', error)
       }
     })()
-  }, [account, chainId, daoAddress, proposalId, targetChainId])
+  }, [account, chainId, daoAddress, proposalId, targetChainId, reload])
 
   return result
 }

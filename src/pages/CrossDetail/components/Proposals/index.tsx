@@ -8,7 +8,7 @@ import { ExternalDaoInfoProps } from 'hooks/useDAOInfo'
 // import { useTokenBalance } from 'state/wallet/hooks'
 // import { useActiveWeb3React } from 'hooks'
 import { timeStampToFormat, toFormatGroup } from 'utils/dao'
-import { ProposalInfoProp, useProposalList } from 'hooks/useVoting'
+import { ProposalInfoProp, useCrossProposalList } from 'hooks/useVoting'
 import { ProposalStatusProp } from 'hooks/useCreateCommunityProposalCallback'
 import Button from 'components/Button/Button'
 
@@ -23,7 +23,7 @@ export default function Index(props: IProps) {
   const TABS = ['ALL']
   // const TABS = ['ALL', 'Executable', 'Open', 'Closed']
   const [currentTab, setCurrentTab] = useState(TABS[0])
-  const { list: proposalList, page: proposalListPage, loading: proposalListLoading } = useProposalList(
+  const { list: proposalList, page: proposalListPage, loading: proposalListLoading } = useCrossProposalList(
     daoInfo?.votingAddress
   )
 

@@ -54,6 +54,7 @@ export function useCrossVoteCallback(votingAddress: string | undefined) {
       if (!votingContract) throw new Error('none votingContract')
 
       const args = [...Object.values(voteInfo), [user, weight, chainId, voting, nonce, CrossSigType.Vote], signature]
+      console.log('🚀 ~ file: useVoteCallback.ts ~ line 57 ~ useCrossVoteCallback ~ args', args, JSON.stringify(args))
 
       return votingContract.estimateGas.vote(...args, { from: account }).then(estimatedGasLimit => {
         return votingContract

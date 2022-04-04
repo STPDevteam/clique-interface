@@ -49,11 +49,14 @@ export default function Basic({ goNext }: { goNext: () => void }) {
     if (!basicData.contractAddress.trim()) {
       return 'Token contract address required'
     }
+    if (!crossTokenInfo) {
+      return 'Token not found'
+    }
     if (!basicData.tokenPhoto) {
       return 'Token photo required'
     }
     return undefined
-  }, [basicData.baseChainId, basicData.contractAddress, basicData.daoName, basicData.tokenPhoto])
+  }, [basicData.baseChainId, basicData.contractAddress, basicData.daoName, basicData.tokenPhoto, crossTokenInfo])
 
   return (
     <>
