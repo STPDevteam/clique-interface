@@ -14,6 +14,8 @@ import { useParams } from 'react-router-dom'
 import { shortenAddress } from 'utils'
 import { ProposalInfoProp } from 'hooks/useVoting'
 import ShowTokenHolders from '../Daos/ShowTokenHolders'
+import { VerifiedTag } from 'pages/Daos'
+import { Box } from '@mui/material'
 
 export default function Index() {
   // const links = ['Proposal', 'Assets', 'Holders', 'Configuration']
@@ -35,7 +37,10 @@ export default function Index() {
   return (
     <div className={styles['dao-detail']}>
       <div className={styles['detail-header']}>
-        <p className={styles['title']}>{daoInfo?.daoName || '--'}</p>
+        <Box className={styles['title']} display="flex" alignItems={'center'} gap="5px">
+          {daoInfo?.daoName || '--'}
+          <VerifiedTag address={daoInfo?.daoAddress} />
+        </Box>
         <p className={styles['text']}>
           {' '}
           <ShowTokenHolders address={daoInfo?.token?.address} /> Holders

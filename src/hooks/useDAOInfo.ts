@@ -16,6 +16,8 @@ import { getCurrentTimeStamp } from 'utils/dao'
 import { useCurPrivateReceivingTokens } from 'state/building/hooks'
 import BigNumber from 'bignumber.js'
 import { useTotalSupply } from 'data/TotalSupply'
+import { useActiveWeb3React } from 'hooks'
+import { Verified_ADDRESS } from 'constants/verified'
 
 export function useLastDaoId() {
   const daoFactoryContract = useDaoFactoryContract()
@@ -511,4 +513,14 @@ export function useExternalDaoInfoByAddress(daoAddress: string | undefined): Ext
     rule,
     logo: tokenLogoRes.result?.[0] || ''
   }
+}
+
+export function useIsVerifiedDao(address: string | undefined) {
+  const { chainId } = useActiveWeb3React()
+
+  return useMemo(() => {
+    if (!chainId || !address) return false
+    if (!Verified_ADDRESS[chainId] || !Verified_ADDRESS[chainId].length) return false
+    return Verified_ADDRESS[chainId].includes(address)
+  }, [address, chainId])
 }

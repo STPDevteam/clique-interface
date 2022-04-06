@@ -11,7 +11,7 @@ import Pagination from 'antd/lib/pagination'
 import ShowTokenHolders from './ShowTokenHolders'
 import { Empty, Spin } from 'antd'
 import { ExternalLink } from 'theme/components'
-import { DaoTypeProp, useGetDaoTypes } from 'hooks/useDAOInfo'
+import { DaoTypeProp, useGetDaoTypes, useIsVerifiedDao } from 'hooks/useDAOInfo'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 
 enum TypeTabs {
@@ -62,11 +62,11 @@ export default function Index() {
             Public Offering
           </div>
         </Box>
-        <Typography fontSize={12} padding={'20px 10px'}>
+        {/* <Typography fontSize={12} padding={'20px 10px'}>
           The funds raised will be locked in the corresponding DAO contract. Community votes will be needed to withdraw
           the funds from the DAO contracts. Clique is open to anyone and there is risk interacting with the projects on
           the Clique. You should do your own research and understand the risks before committing your funds.
-        </Typography>
+        </Typography> */}
       </div>
       {currentTab === TypeTabs.DAO && (
         <>
@@ -119,9 +119,13 @@ export default function Index() {
                           width: 'calc(100% - 74px)'
                         }}
                       >
-                        <Typography variant="h6" noWrap>
-                          {item.daoName}
-                        </Typography>
+                        <Box display={'flex'} alignItems="center" gap="5px">
+                          <Typography variant="h6" noWrap>
+                            {item.daoName}
+                          </Typography>
+                          <VerifiedTag address={item.daoAddress} />
+                        </Box>
+
                         <Typography fontWeight={500} fontSize={14} color="#798488">
                           {item.token?.symbol}
                         </Typography>
@@ -211,4 +215,17 @@ function ShowProposalNumber({
 }) {
   const proposalNumber = useProposalNumber(votingAddress, daoAddress)
   return <Typography variant="h6">{proposalNumber === undefined ? '--' : proposalNumber}</Typography>
+}
+
+export function VerifiedTag({ address }: { address?: string }) {
+  const isVerified = useIsVerifiedDao(address)
+  if (!isVerified) return null
+  return (
+    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M8.90445 15.64H8.15008L6.3757 13.8125H3.75133L3.1882 13.2812V10.71L1.39258 8.88248V8.12811L3.1882 6.30061V3.71873L3.75133 3.18748H6.3757L8.15008 1.37061H8.90445L10.732 3.18748H13.3138L13.8451 3.70811V6.30061L15.662 8.12811V8.88248L13.8132 10.71V13.2812L13.282 13.8125H10.732L8.90445 15.64V15.64ZM7.15133 11.135H7.9057L11.9113 7.12936L11.157 6.37498L7.53383 10.0087L6.06758 8.54248L5.3132 9.29686L7.15133 11.135Z"
+        fill="#3898FC"
+      />
+    </svg>
+  )
 }
