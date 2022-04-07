@@ -56,7 +56,6 @@ export function useVotingSignData(
       try {
         const res = await getCrossVotingSign(chainId, targetChainId, daoAddress, account, proposalId)
         const data = res.data.data
-        console.log('🚀 ~ file: useBackedCrossServer.ts ~ line 49 ~ ; ~ data', data)
         if (!data) {
           setResult(undefined)
           setTimeout(() => setReload(reload + 1), 6000)
@@ -130,7 +129,7 @@ export function useCrossBalanceOfAt(
           setBalance(undefined)
           return
         }
-        setBalance(data.tokenAddress)
+        setBalance(data)
       } catch (error) {
         setBalance(undefined)
         console.error('useCrossBalanceOfAt', error)

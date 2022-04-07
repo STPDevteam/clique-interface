@@ -24,7 +24,9 @@ import JSBI from 'jsbi'
 // import { useResolveVotingResultCallback } from 'hooks/useResolveVotingResultCallback'
 import { useExecuteProposalCallback } from 'hooks/useExecuteProposalCallback'
 import TimelineStatus from 'pages/DaoDetail/components/ProposalDetail/TimelineStatus'
-import { useVotingSignData } from 'hooks/useBackedCrossServer'
+import { getCrossVotingSign } from 'utils/fetch/server'
+import { useCrossBalanceOfAt } from 'hooks/useBackedCrossServer'
+// import { useVotingSignData } from 'hooks/useBackedCrossServer'
 
 export default function Index({
   detail,
@@ -36,13 +38,13 @@ export default function Index({
   daoInfo: ExternalDaoInfoProps
 }) {
   const voteCallback = useCrossVoteCallback(daoInfo.votingAddress)
-  const votInfo = useVotingSignData(daoInfo.token?.chainId, daoInfo.daoAddress, Number(detail.id))
-  // const balanceOfAt = useCrossBalanceOfAt(daoInfo.token?.chainId, daoInfo.daoAddress, detail.id)
+  // const votInfo = useVotingSignData(daoInfo.token?.chainId, daoInfo.daoAddress, Number(detail.id))
+  const balanceOfAt = useCrossBalanceOfAt(daoInfo.token?.chainId, daoInfo.daoAddress, detail.id)
   const myDaoBalanceAt = useMemo(() => {
-    if (!votInfo?.balance || !daoInfo.token) return undefined
-    return new TokenAmount(daoInfo.token, votInfo.balance)
-  }, [votInfo?.balance, daoInfo.token])
-  const { account } = useActiveWeb3React()
+    if (!balanceOfAt || !daoInfo.token) return undefined
+    return new TokenAmount(daoInfo.token, balanceOfAt)
+  }, [balanceOfAt, daoInfo.token])
+  const { account, chainId } = useActiveWeb3React()
 
   const currentProVoteInfo = useMemo(() => {
     if (!daoInfo.token) return undefined
@@ -88,31 +90,49 @@ export default function Index({
   const { hideModal, showModal } = useModal()
 
   const onVoteCallback = useCallback(
-    (index: number) => {
-      if (!votInfo) return
+    async (index: number) => {
+      if (!chainId || !account || !daoInfo.token?.chainId || !daoInfo.daoAddress || !detail.id) {
+        return
+      }
       showModal(<TransactionPendingModal />)
-      voteCallback(
-        { id: detail.id, index },
-        votInfo.userAddress,
-        votInfo.balance,
-        votInfo.chainId,
-        votInfo.votingAddress,
-        votInfo.nonce,
-        votInfo.sign
-      )
-        .then(() => {
-          hideModal()
-          showModal(<TransactionSubmittedModal />)
-        })
-        .catch(err => {
-          hideModal()
-          showModal(
-            <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
-          )
-          console.error(err)
-        })
+      try {
+        const res = await getCrossVotingSign(
+          chainId,
+          daoInfo.token.chainId,
+          daoInfo.daoAddress,
+          account,
+          Number(detail.id)
+        )
+        const votInfo = res.data.data
+        if (!votInfo) {
+          showModal(<MessageBox type="error">get sign failed</MessageBox>)
+          return
+        }
+        voteCallback(
+          { id: detail.id, index },
+          votInfo.userAddress,
+          votInfo.balance,
+          votInfo.chainId,
+          votInfo.votingAddress,
+          votInfo.nonce,
+          votInfo.sign
+        )
+          .then(() => {
+            hideModal()
+            showModal(<TransactionSubmittedModal />)
+          })
+          .catch(err => {
+            hideModal()
+            showModal(
+              <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+            )
+            console.error(err)
+          })
+      } catch (error) {
+        showModal(<MessageBox type="error">get sign failed</MessageBox>)
+      }
     },
-    [detail.id, hideModal, showModal, votInfo, voteCallback]
+    [account, chainId, daoInfo.daoAddress, daoInfo?.token?.chainId, detail.id, hideModal, showModal, voteCallback]
   )
 
   // const resolveVotingResultCallback = useResolveVotingResultCallback(daoInfo.votingAddress)

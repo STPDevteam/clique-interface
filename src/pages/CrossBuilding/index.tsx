@@ -7,6 +7,7 @@ import Rule from './rule'
 import Review from './review'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks'
+import { ChainId } from 'constants/chain'
 
 const stepItems = ['Basic', 'Rule', 'Review'] as const
 
@@ -16,10 +17,10 @@ export default function Index() {
   const history = useHistory()
   const [step, setStep] = useState<Step>('Basic')
   const goToStep = useCallback((step: Step) => setStep(step), [])
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   useEffect(() => {
-    if (!account) history.replace('/create')
-  }, [account, history])
+    if (!account || chainId !== ChainId.STP) history.replace('/create')
+  }, [account, history, chainId])
 
   const goBack = useCallback(() => {
     const index = stepItems.findIndex(item => item === step)
