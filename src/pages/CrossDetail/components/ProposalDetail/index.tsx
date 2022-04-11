@@ -26,6 +26,7 @@ import { useExecuteProposalCallback } from 'hooks/useExecuteProposalCallback'
 import TimelineStatus from 'pages/DaoDetail/components/ProposalDetail/TimelineStatus'
 import { getCrossVotingSign } from 'utils/fetch/server'
 import { useCrossBalanceOfAt, useCrossProposalBlockNumber } from 'hooks/useBackedCrossServer'
+import { useTagCompletedTx } from 'state/transactions/hooks'
 // import { useVotingSignData } from 'hooks/useBackedCrossServer'
 
 export default function Index({
@@ -37,7 +38,8 @@ export default function Index({
   onBack: () => void
   daoInfo: ExternalDaoInfoProps
 }) {
-  const voteCallback = useCrossVoteCallback(daoInfo.votingAddress)
+  const voteCallback = useCrossVoteCallback(daoInfo.votingAddress, 'cross_' + detail.id)
+  const isVoting = useTagCompletedTx('proposalVote', 'cross_' + detail.id, daoInfo.votingAddress)
   // const votInfo = useVotingSignData(daoInfo.token?.chainId, daoInfo.daoAddress, Number(detail.id))
   const balanceOfAt = useCrossBalanceOfAt(daoInfo.token?.chainId, daoInfo.daoAddress, detail.id)
   const myDaoBalanceAt = useMemo(() => {
@@ -137,7 +139,8 @@ export default function Index({
   )
 
   // const resolveVotingResultCallback = useResolveVotingResultCallback(daoInfo.votingAddress)
-  const executeProposalCallback = useExecuteProposalCallback(daoInfo.votingAddress)
+  const executeProposalCallback = useExecuteProposalCallback(daoInfo.votingAddress, 'cross_' + detail.id)
+  const isProposalExec = useTagCompletedTx('proposalExec', 'cross_' + detail.id, daoInfo.votingAddress)
 
   const onExecuteProposalCallback = useCallback(() => {
     showModal(<TransactionPendingModal />)
@@ -182,6 +185,7 @@ export default function Index({
             detail={detail}
             voteResults={voteResults}
             onVote={onVoteCallback}
+            isVoting={isVoting}
             list={votingOptionsList}
             minimumVote={currentProVoteInfo?.minimumVote}
             balanceAt={myDaoBalanceAt}
@@ -189,10 +193,11 @@ export default function Index({
           <TimelineStatus
             votingAddress={daoInfo?.votingAddress}
             detail={detail}
+            isProposalExec={isProposalExec}
             onExecuteProposal={onExecuteProposalCallback}
           />
           {isCreator ? (
-            <CancelProposalUndo snapshot={crossProposalBlockNumber} detail={detail} daoInfo={daoInfo} />
+            <CancelProposalUndo tagKey="cross_" snapshot={crossProposalBlockNumber} detail={detail} daoInfo={daoInfo} />
           ) : (
             <OtherUserDetail snapshot={crossProposalBlockNumber} detail={detail} />
           )}

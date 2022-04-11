@@ -5,7 +5,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import { useVotingContract } from './useContract'
 
-export function useClaimProposalTokenCallback(votingAddress: string | undefined) {
+export function useClaimProposalTokenCallback(votingAddress: string | undefined, tagKey: string) {
   const addTransaction = useTransactionAdder()
   const votingContract = useVotingContract(votingAddress)
   const { account } = useActiveWeb3React()
@@ -13,7 +13,7 @@ export function useClaimProposalTokenCallback(votingAddress: string | undefined)
   return useCallback(
     (id: string) => {
       if (!account) throw new Error('none account')
-      if (!votingContract) throw new Error('none votingContract')
+      if (!votingContract || !votingAddress) throw new Error('none votingContract')
 
       return votingContract.estimateGas.claimToken(id, { from: account }).then(estimatedGasLimit => {
         return votingContract
@@ -24,12 +24,17 @@ export function useClaimProposalTokenCallback(votingAddress: string | undefined)
           })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
-              summary: 'Claim proposal token'
+              summary: 'Claim proposal token',
+              tag: {
+                type: 'claimProposalToken',
+                key: tagKey,
+                id: votingAddress
+              }
             })
             return response.hash
           })
       })
     },
-    [account, addTransaction, votingContract]
+    [account, addTransaction, tagKey, votingAddress, votingContract]
   )
 }

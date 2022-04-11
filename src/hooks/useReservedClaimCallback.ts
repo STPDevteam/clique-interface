@@ -12,7 +12,7 @@ export function useReservedClaimCallback(daoAddress: string | undefined) {
 
   return useCallback((): Promise<string> => {
     if (!account) throw new Error('none account')
-    if (!daoContract) throw new Error('none daoContract')
+    if (!daoContract || !daoAddress) throw new Error('none daoContract')
 
     return daoContract.estimateGas.withdrawReserved({ from: account }).then(estimatedGasLimit => {
       return daoContract
@@ -23,10 +23,15 @@ export function useReservedClaimCallback(daoAddress: string | undefined) {
         })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
-            summary: 'Claim private token'
+            summary: 'Claim private token',
+            tag: {
+              type: 'claimReserved',
+              key: '',
+              id: daoAddress
+            }
           })
           return response.hash
         })
     })
-  }, [account, addTransaction, daoContract])
+  }, [account, addTransaction, daoAddress, daoContract])
 }

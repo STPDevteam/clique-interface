@@ -11,18 +11,23 @@ import useModal from 'hooks/useModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { shortenAddress } from 'utils'
+import { useTagCompletedTx } from 'state/transactions/hooks'
+import { Dots } from 'theme/components'
 
 export default function CancelProposalUndo({
   detail,
   daoInfo,
+  tagKey,
   snapshot
 }: {
   detail: ProposalInfoProp
   daoInfo: ExternalDaoInfoProps
   snapshot?: string
+  tagKey: string
 }) {
   const { showModal, hideModal } = useModal()
-  const cancelProposalCallback = useCancelProposalCallback(daoInfo.votingAddress)
+  const cancelProposalCallback = useCancelProposalCallback(daoInfo.votingAddress, tagKey + detail.id)
+  const isCancelProposaling = useTagCompletedTx('proposalCancel', tagKey + detail.id, daoInfo.votingAddress)
 
   const onCancelProposalCallback = useCallback(() => {
     showModal(<TransactionPendingModal />)
@@ -41,11 +46,19 @@ export default function CancelProposalUndo({
   }, [detail.id, hideModal, showModal, cancelProposalCallback])
 
   const getBtn = useMemo(() => {
+    if (isCancelProposaling) {
+      return (
+        <OutlineButton disabled>
+          Canceling
+          <Dots />
+        </OutlineButton>
+      )
+    }
     if (detail.status === ProposalStatusProp.Review || detail.status === ProposalStatusProp.Active) {
       return <OutlineButton onClick={onCancelProposalCallback}>Undo proposals</OutlineButton>
     }
     return undefined
-  }, [detail.status, onCancelProposalCallback])
+  }, [detail.status, isCancelProposaling, onCancelProposalCallback])
 
   return (
     <div className={styles['undo-claim-container']}>

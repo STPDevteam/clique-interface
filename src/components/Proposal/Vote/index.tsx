@@ -10,6 +10,7 @@ import JSBI from 'jsbi'
 import { TokenAmount } from 'constants/token'
 import Confirm from './confirm'
 import useModal from 'hooks/useModal'
+import { Dots } from 'theme/components'
 
 export default function Index({
   detail,
@@ -17,11 +18,13 @@ export default function Index({
   onVote,
   balanceAt,
   voteResults,
-  minimumVote
+  minimumVote,
+  isVoting
 }: {
   onVote: (index: number) => void
   balanceAt: TokenAmount | undefined
   detail: ProposalInfoProp
+  isVoting?: boolean
   list: {
     name: string
     per: number
@@ -58,6 +61,14 @@ export default function Index({
         </Button>
       )
     }
+    if (isVoting) {
+      return (
+        <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
+          Voting
+          <Dots />
+        </Button>
+      )
+    }
     if (!balanceAt || !minimumVote || minimumVote.greaterThan(balanceAt)) {
       return (
         <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
@@ -89,7 +100,7 @@ export default function Index({
         Vote Now
       </Button>
     )
-  }, [balanceAt, detail.status, hideModal, isVoted, list, minimumVote, onVote, showModal, voteIndex])
+  }, [balanceAt, detail.status, hideModal, isVoted, isVoting, list, minimumVote, onVote, showModal, voteIndex])
 
   return (
     <div className={styles['vote-container']}>

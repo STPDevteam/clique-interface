@@ -1,6 +1,6 @@
 import { Box, styled, Typography } from '@mui/material'
 import { Spin, Timeline } from 'antd'
-import { ExternalLink } from 'theme/components'
+import { Dots, ExternalLink } from 'theme/components'
 import { ReactComponent as OpenLink } from 'assets/svg/open-gary-link.svg'
 import Button from 'components/Button/Button'
 import { useActiveWeb3React } from 'hooks'
@@ -30,11 +30,13 @@ const FlexBetween = styled(Box)({
 export default function TimelineStatus({
   detail,
   onExecuteProposal,
-  votingAddress
+  votingAddress,
+  isProposalExec
 }: {
   detail: ProposalInfoProp
   onExecuteProposal: () => void
   votingAddress: string | undefined
+  isProposalExec?: boolean
 }) {
   const { account, chainId } = useActiveWeb3React()
   const { loading, result: dateline } = useProposalStatusDateline(votingAddress, detail.id, detail.status)
@@ -77,10 +79,18 @@ export default function TimelineStatus({
         ))}
       </Timeline>
       {dateline.length === 0 && <Box sx={{ height: 20 }}></Box>}
-      {account && detail.status === ProposalStatusProp.Executable && (
-        <Button style={{ marginBottom: 20 }} onClick={onExecuteProposal}>
-          Execute proposal
+      {isProposalExec ? (
+        <Button style={{ marginBottom: 20 }} disabled>
+          Executing
+          <Dots />
         </Button>
+      ) : (
+        account &&
+        detail.status === ProposalStatusProp.Executable && (
+          <Button style={{ marginBottom: 20 }} onClick={onExecuteProposal}>
+            Execute proposal
+          </Button>
+        )
       )}
     </Box>
   )

@@ -29,6 +29,7 @@ import ShowTokenHolders from '../Daos/ShowTokenHolders'
 import ActiveBox from './ActiveBox'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 import { ZERO_ADDRESS } from '../../constants'
+import { useTagCompletedTx } from 'state/transactions/hooks'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -176,6 +177,8 @@ export default function Offering() {
   const reservedClaimCallback = useReservedClaimCallback(daoInfo?.daoAddress)
   const partPriSaleCallback = usePartPriSaleCallback(daoInfo?.daoAddress)
   const partPubSaleCallback = usePartPubSaleCallback(daoInfo?.daoAddress)
+
+  const isReserving = useTagCompletedTx('claimReserved', '', daoInfo?.daoAddress)
 
   const onPartPubSaleCallback = useCallback(() => {
     const ca = tryParseAmount(publicAmount, daoInfo?.token)
@@ -380,12 +383,20 @@ export default function Offering() {
     if (isReservedClaimed) {
       return <OutlineButton disabled>Claimed</OutlineButton>
     }
+    if (isReserving) {
+      return (
+        <OutlineButton disabled>
+          Claiming
+          <Dots />
+        </OutlineButton>
+      )
+    }
     if (!isReservedAccount || isReservedAccount.isLocked) {
       return <OutlineButton disabled>Lock tIme</OutlineButton>
     }
 
     return <OutlineButton onClick={onReservedClaim}>Claim</OutlineButton>
-  }, [account, isReservedAccount, isReservedClaimed, onReservedClaim, toggleWalletModal])
+  }, [account, isReservedAccount, isReservedClaimed, isReserving, onReservedClaim, toggleWalletModal])
 
   return (
     <div>

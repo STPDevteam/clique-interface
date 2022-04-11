@@ -6,7 +6,7 @@ import { useActiveWeb3React } from '.'
 import { useVotingContract, useCrossVotingContract } from './useContract'
 import { CrossSigType } from './useCreateCommunityProposalCallback'
 
-export function useVoteCallback(votingAddress: string | undefined) {
+export function useVoteCallback(votingAddress: string | undefined, tagKey: string) {
   const addTransaction = useTransactionAdder()
   const votingContract = useVotingContract(votingAddress)
   const { account } = useActiveWeb3React()
@@ -14,7 +14,7 @@ export function useVoteCallback(votingAddress: string | undefined) {
   return useCallback(
     (id: string, index: number) => {
       if (!account) throw new Error('none account')
-      if (!votingContract) throw new Error('none votingContract')
+      if (!votingContract || !votingAddress) throw new Error('none votingContract')
 
       return votingContract.estimateGas.vote(id, index, { from: account }).then(estimatedGasLimit => {
         return votingContract
@@ -25,17 +25,22 @@ export function useVoteCallback(votingAddress: string | undefined) {
           })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
-              summary: 'Vote'
+              summary: 'Vote',
+              tag: {
+                type: 'proposalVote',
+                key: tagKey,
+                id: votingAddress
+              }
             })
             return response.hash
           })
       })
     },
-    [account, addTransaction, votingContract]
+    [account, addTransaction, tagKey, votingAddress, votingContract]
   )
 }
 
-export function useCrossVoteCallback(votingAddress: string | undefined) {
+export function useCrossVoteCallback(votingAddress: string | undefined, tagKey: string) {
   const addTransaction = useTransactionAdder()
   const votingContract = useCrossVotingContract(votingAddress)
   const { account } = useActiveWeb3React()
@@ -51,10 +56,9 @@ export function useCrossVoteCallback(votingAddress: string | undefined) {
       signature: string
     ) => {
       if (!account) throw new Error('none account')
-      if (!votingContract) throw new Error('none votingContract')
+      if (!votingContract || !votingAddress) throw new Error('none votingContract')
 
       const args = [...Object.values(voteInfo), [user, weight, chainId, voting, nonce, CrossSigType.Vote], signature]
-      console.log('🚀 ~ file: useVoteCallback.ts ~ line 57 ~ useCrossVoteCallback ~ args', args, JSON.stringify(args))
 
       return votingContract.estimateGas.vote(...args, { from: account }).then(estimatedGasLimit => {
         return votingContract
@@ -65,12 +69,17 @@ export function useCrossVoteCallback(votingAddress: string | undefined) {
           })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
-              summary: 'Vote'
+              summary: 'Vote',
+              tag: {
+                type: 'proposalVote',
+                key: tagKey,
+                id: votingAddress
+              }
             })
             return response.hash
           })
       })
     },
-    [account, addTransaction, votingContract]
+    [account, addTransaction, tagKey, votingAddress, votingContract]
   )
 }
