@@ -91,6 +91,7 @@ export default function Configuration({
             {/* <span className="label">Votes</span> */}
             <Tooltip placement="top" title={toFormatGroup(minVoteNumber, 0)}>
               <Input
+                readOnly
                 className="input-common"
                 value={minVoteNumber}
                 onChange={e => {
@@ -115,6 +116,7 @@ export default function Configuration({
             <div className="progress-wrapper">
               <Slider
                 min={1}
+                disabled
                 max={100}
                 value={minCreateProposalPer}
                 onChange={e => {
@@ -130,6 +132,7 @@ export default function Configuration({
             <Tooltip placement="top" title={toFormatGroup(minCreateProposalNumber)}>
               <Input
                 className="input-common"
+                readOnly
                 value={minCreateProposalNumber}
                 onChange={e => {
                   const reg = new RegExp('^[0-9]*$')
@@ -153,6 +156,7 @@ export default function Configuration({
             <span className="label">Minimum total votes</span>
             <div className="progress-wrapper">
               <Slider
+                disabled
                 min={1}
                 max={100}
                 value={minValidPer}
@@ -168,6 +172,7 @@ export default function Configuration({
             <span className="label">Votes</span>
             <Tooltip placement="top" title={toFormatGroup(minValidNumber)}>
               <Input
+                readOnly
                 className="input-common"
                 value={minValidNumber}
                 onChange={e => {
@@ -199,6 +204,7 @@ export default function Configuration({
               >
                 <div className="datetime-wrapper">
                   <InputNumber
+                    readOnly
                     min={0}
                     className="input-number-common"
                     value={communityData.days}
@@ -219,6 +225,7 @@ export default function Configuration({
                 </div>
                 <div className="datetime-wrapper">
                   <InputNumber
+                    readOnly
                     min={0}
                     className="input-number-common"
                     value={communityData.hours}
@@ -240,6 +247,7 @@ export default function Configuration({
                 </div>
                 <div className="datetime-wrapper">
                   <InputNumber
+                    readOnly
                     min={0}
                     className="input-number-common"
                     value={communityData.minutes}
@@ -262,6 +270,7 @@ export default function Configuration({
               </Box>
               <Box display={'flex'} alignItems={'center'} gap={5}>
                 <Switch
+                  disabled
                   checked={votersCustom}
                   onChange={val => {
                     setVotersCustom(val)
@@ -281,6 +290,7 @@ export default function Configuration({
             >
               <div className="datetime-wrapper">
                 <InputNumber
+                  readOnly
                   min={0}
                   className="input-number-common"
                   value={contractData.days}
@@ -300,6 +310,7 @@ export default function Configuration({
               </div>
               <div className="datetime-wrapper">
                 <InputNumber
+                  readOnly
                   min={0}
                   className="input-number-common"
                   value={contractData.hours}
@@ -320,6 +331,7 @@ export default function Configuration({
               </div>
               <div className="datetime-wrapper">
                 <InputNumber
+                  readOnly
                   min={0}
                   className="input-number-common"
                   value={contractData.minutes}
@@ -342,7 +354,7 @@ export default function Configuration({
           </div>
           <div className="input-item">
             <span className="label">Rules / Agreement</span>
-            <TextArea rows={5} value={ruleContent} onChange={e => setRuleContent(e.target.value)} />
+            <TextArea readOnly rows={5} value={ruleContent} onChange={e => setRuleContent(e.target.value)} />
           </div>
         </Box>
       </Box>
