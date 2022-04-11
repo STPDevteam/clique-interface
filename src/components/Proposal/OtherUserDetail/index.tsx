@@ -3,7 +3,7 @@ import { shortenAddress } from 'utils'
 import { timeStampToFormat } from 'utils/dao'
 import styles from './index.module.less'
 
-export default function Index({ detail }: { detail: ProposalInfoProp }) {
+export default function Index({ detail, snapshot }: { detail: ProposalInfoProp; snapshot?: string }) {
   return (
     <div className={styles['other-user-container']}>
       <p className={styles['out-title']}>Other user:</p>
@@ -15,7 +15,7 @@ export default function Index({ detail }: { detail: ProposalInfoProp }) {
         </div>
         <div className={styles['list-item']}>
           <span className={styles['label']}>Snapshot</span>
-          <span className={styles['value']}>{detail.blkHeight}</span>
+          <span className={styles['value']}>{detail.blkHeight || snapshot || '-'}</span>
         </div>
         <div className={styles['list-item']}>
           <span className={styles['label']}>Start time</span>

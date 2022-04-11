@@ -14,10 +14,12 @@ import { shortenAddress } from 'utils'
 
 export default function CancelProposalUndo({
   detail,
-  daoInfo
+  daoInfo,
+  snapshot
 }: {
   detail: ProposalInfoProp
   daoInfo: ExternalDaoInfoProps
+  snapshot?: string
 }) {
   const { showModal, hideModal } = useModal()
   const cancelProposalCallback = useCancelProposalCallback(daoInfo.votingAddress)
@@ -54,7 +56,7 @@ export default function CancelProposalUndo({
       </div>
       <div className={styles['list-item']}>
         <span className={styles['label']}>Snapshot</span>
-        <span className={styles['value']}>{detail.blkHeight}</span>
+        <span className={styles['value']}>{detail.blkHeight || snapshot || '-'}</span>
       </div>
       <div className={styles['list-item']}>
         <span className={styles['label']}>Start time</span>

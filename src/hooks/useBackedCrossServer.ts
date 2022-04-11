@@ -1,4 +1,10 @@
-import { getCreateProposalSign, getCrossBalance, getCrossTokenInfo, getCrossVotingSign } from '../utils/fetch/server'
+import {
+  getCreateProposalSign,
+  getCrossBalance,
+  getCrossProBlockNum,
+  getCrossTokenInfo,
+  getCrossVotingSign
+} from '../utils/fetch/server'
 import { useActiveWeb3React } from '.'
 import { useEffect, useState } from 'react'
 import { useCrossVotingContract } from './useContract'
@@ -138,4 +144,35 @@ export function useCrossBalanceOfAt(
   }, [account, chainId, daoAddress, proposalId, targetChainId])
 
   return balance
+}
+
+export function useCrossProposalBlockNumber(
+  targetChainId: number | undefined,
+  daoAddress: string,
+  proposalId: number | string
+) {
+  const { chainId } = useActiveWeb3React()
+  const [block, setBlock] = useState<string>()
+  useEffect(() => {
+    ;(async () => {
+      if (!chainId || !targetChainId || !daoAddress || !proposalId) {
+        setBlock(undefined)
+        return
+      }
+      try {
+        const res = await getCrossProBlockNum(chainId, targetChainId, daoAddress, proposalId)
+        const data = res.data.data
+        if (!data) {
+          setBlock(undefined)
+          return
+        }
+        setBlock(data)
+      } catch (error) {
+        setBlock(undefined)
+        console.error('useCrossProposalBlockNumber', error)
+      }
+    })()
+  }, [chainId, daoAddress, proposalId, targetChainId])
+
+  return block
 }

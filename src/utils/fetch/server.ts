@@ -103,3 +103,15 @@ export function getCrossBalance(
     proposalId
   })
 }
+
+export function getCrossProBlockNum(
+  chainId: number,
+  targetChainId: number,
+  daoAddress: string,
+  proposalId: number | string
+) {
+  return Axios.get(serverBaseUrl + `${chainId}/${targetChainId}/blocknum`, {
+    daoAddress,
+    proposalId
+  })
+}

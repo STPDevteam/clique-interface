@@ -25,7 +25,7 @@ import JSBI from 'jsbi'
 import { useExecuteProposalCallback } from 'hooks/useExecuteProposalCallback'
 import TimelineStatus from 'pages/DaoDetail/components/ProposalDetail/TimelineStatus'
 import { getCrossVotingSign } from 'utils/fetch/server'
-import { useCrossBalanceOfAt } from 'hooks/useBackedCrossServer'
+import { useCrossBalanceOfAt, useCrossProposalBlockNumber } from 'hooks/useBackedCrossServer'
 // import { useVotingSignData } from 'hooks/useBackedCrossServer'
 
 export default function Index({
@@ -45,6 +45,7 @@ export default function Index({
     return new TokenAmount(daoInfo.token, balanceOfAt)
   }, [balanceOfAt, daoInfo.token])
   const { account, chainId } = useActiveWeb3React()
+  const crossProposalBlockNumber = useCrossProposalBlockNumber(daoInfo.token?.chainId, daoInfo.daoAddress, detail.id)
 
   const currentProVoteInfo = useMemo(() => {
     if (!daoInfo.token) return undefined
@@ -190,7 +191,11 @@ export default function Index({
             detail={detail}
             onExecuteProposal={onExecuteProposalCallback}
           />
-          {isCreator ? <CancelProposalUndo detail={detail} daoInfo={daoInfo} /> : <OtherUserDetail detail={detail} />}
+          {isCreator ? (
+            <CancelProposalUndo snapshot={crossProposalBlockNumber} detail={detail} daoInfo={daoInfo} />
+          ) : (
+            <OtherUserDetail snapshot={crossProposalBlockNumber} detail={detail} />
+          )}
         </Grid>
       </Grid>
     </div>
