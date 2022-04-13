@@ -13,20 +13,26 @@ import TransactionSubmittedModal from 'components/Modal/TransactionModals/Transa
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { shortenAddress } from 'utils'
 import { TokenAmount } from 'constants/token'
+import { useTagCompletedTx } from 'state/transactions/hooks'
+import { Dots } from 'theme/components'
 
 export default function Index({
   detail,
   daoInfo,
-  stakedToken
+  stakedToken,
+  tagKey
 }: {
   detail: ProposalInfoProp
   daoInfo: DaoInfoProps
   stakedToken: TokenAmount | undefined
+  tagKey: string
 }) {
   const isClaimed = useVotingClaimed(daoInfo.votingAddress, detail.id)
   const { showModal, hideModal } = useModal()
-  const cancelProposalCallback = useCancelProposalCallback(daoInfo.votingAddress)
-  const claimProposalTokenCallback = useClaimProposalTokenCallback(daoInfo.votingAddress)
+  const cancelProposalCallback = useCancelProposalCallback(daoInfo.votingAddress, tagKey + detail.id)
+  const isCancelProposaling = useTagCompletedTx('proposalCancel', tagKey + detail.id, daoInfo.votingAddress)
+  const claimProposalTokenCallback = useClaimProposalTokenCallback(daoInfo.votingAddress, tagKey + detail.id)
+  const isClaimProposalTokening = useTagCompletedTx('claimProposalToken', tagKey + detail.id, daoInfo.votingAddress)
 
   const onCancelProposalCallback = useCallback(() => {
     showModal(<TransactionPendingModal />)
@@ -61,6 +67,14 @@ export default function Index({
   }, [detail.id, hideModal, showModal, claimProposalTokenCallback])
 
   const getBtn = useMemo(() => {
+    if (isCancelProposaling) {
+      return (
+        <OutlineButton disabled>
+          Canceling
+          <Dots />
+        </OutlineButton>
+      )
+    }
     if (detail.status === ProposalStatusProp.Review || detail.status === ProposalStatusProp.Active) {
       return <OutlineButton onClick={onCancelProposalCallback}>Undo proposals and claim my assets</OutlineButton>
     }
@@ -69,10 +83,27 @@ export default function Index({
       detail.status === ProposalStatusProp.Success ||
       detail.status === ProposalStatusProp.Executed
     ) {
-      if (isClaimed === false) return <OutlineButton onClick={onClaimProposalTokenCallback}>Claim</OutlineButton>
+      if (isClaimed === false) {
+        if (isClaimProposalTokening) {
+          return (
+            <OutlineButton disabled>
+              Claiming
+              <Dots />
+            </OutlineButton>
+          )
+        }
+        return <OutlineButton onClick={onClaimProposalTokenCallback}>Claim</OutlineButton>
+      }
     }
     return undefined
-  }, [detail.status, isClaimed, onCancelProposalCallback, onClaimProposalTokenCallback])
+  }, [
+    detail.status,
+    isCancelProposaling,
+    isClaimProposalTokening,
+    isClaimed,
+    onCancelProposalCallback,
+    onClaimProposalTokenCallback
+  ])
 
   return (
     <div className={styles['undo-claim-container']}>

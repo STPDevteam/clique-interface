@@ -24,6 +24,7 @@ import JSBI from 'jsbi'
 // import { useResolveVotingResultCallback } from 'hooks/useResolveVotingResultCallback'
 import { useExecuteProposalCallback } from 'hooks/useExecuteProposalCallback'
 import TimelineStatus from './TimelineStatus'
+import { useTagCompletedTx } from 'state/transactions/hooks'
 
 export default function Index({
   detail,
@@ -34,7 +35,9 @@ export default function Index({
   onBack: () => void
   daoInfo: DaoInfoProps
 }) {
-  const voteCallback = useVoteCallback(daoInfo.votingAddress)
+  const voteCallback = useVoteCallback(daoInfo.votingAddress, 'default_' + detail.id)
+  const isVoting = useTagCompletedTx('proposalVote', 'default_' + detail.id, daoInfo.votingAddress)
+
   const balanceOfAt = useBalanceOfAt(daoInfo.token?.address, detail.blkHeight)
   const myDaoBalanceAt = useMemo(() => {
     if (!balanceOfAt || !daoInfo.token) return undefined
@@ -105,7 +108,8 @@ export default function Index({
   )
 
   // const resolveVotingResultCallback = useResolveVotingResultCallback(daoInfo.votingAddress)
-  const executeProposalCallback = useExecuteProposalCallback(daoInfo.votingAddress)
+  const executeProposalCallback = useExecuteProposalCallback(daoInfo.votingAddress, 'default_' + detail.id)
+  const isProposalExec = useTagCompletedTx('proposalExec', 'default_' + detail.id, daoInfo.votingAddress)
 
   // const onResolveVotingResult = useCallback(() => {
   //   showModal(<TransactionPendingModal />)
@@ -172,6 +176,7 @@ export default function Index({
             detail={detail}
             voteResults={voteResults}
             onVote={onVoteCallback}
+            isVoting={isVoting}
             list={votingOptionsList}
             minimumVote={currentProVoteInfo?.minimumVote}
             balanceAt={myDaoBalanceAt}
@@ -179,6 +184,7 @@ export default function Index({
           <TimelineStatus
             votingAddress={daoInfo?.votingAddress}
             detail={detail}
+            isProposalExec={isProposalExec}
             onExecuteProposal={onExecuteProposalCallback}
           />
           {isCreator ? (
@@ -186,6 +192,7 @@ export default function Index({
               stakedToken={currentProVoteInfo?.minimumCreateProposal}
               detail={detail}
               daoInfo={daoInfo}
+              tagKey={'default_'}
             />
           ) : (
             <OtherUserDetail detail={detail} />

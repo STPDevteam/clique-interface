@@ -29,15 +29,15 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
   const { chainId } = useActiveWeb3React()
 
   return (
-    <Modal closeIcon>
+    <Modal closeIcon maxWidth={'650px'}>
       <Typography variant="h4" fontWeight={500} fontSize={24}>
         Select creation method
       </Typography>
-      <Box display={'flex'} justifyContent="space-between" padding="40px 10px 10px">
+      <Box display={'flex'} justifyContent="center" gap={'20px'} padding="40px 10px 10px">
         <Item
           onClick={() => {
             hide()
-            history.push('/building')
+            history.replace('/building')
           }}
         >
           <Box display={'grid'} gap="24px" justifyItems={'center'} alignItems="center">
@@ -51,7 +51,7 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
           onClick={() => {
             if (chainId === ChainId.RINKEBY) {
               hide()
-              history.push('/external_building')
+              history.replace('/external_building')
             }
           }}
         >
@@ -59,6 +59,21 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
             <ExternalTokenIcon />
             <Typography variant="body2" textAlign={'center'} fontWeight={500} color="#22304A">
               External Contracts (Rinkeby)
+            </Typography>
+          </Box>
+        </Item>
+        <Item
+          onClick={() => {
+            if (chainId === ChainId.STP) {
+              hide()
+              history.replace('/cross_building')
+            }
+          }}
+        >
+          <Box display={'grid'} gap="24px" justifyItems={'center'} alignItems="center">
+            <ExternalTokenIcon />
+            <Typography variant="body2" textAlign={'center'} fontWeight={500} color="#22304A">
+              Cross-chain Governance (Verse)
             </Typography>
           </Box>
         </Item>

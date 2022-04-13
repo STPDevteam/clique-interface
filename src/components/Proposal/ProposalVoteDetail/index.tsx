@@ -80,7 +80,7 @@ export default function Index({
 
 function ShowPer({ per }: { per: number }) {
   const _p = per * 100
-  if (_p === 0) return <>-%</>
+  // if (_p === 0) return <>-%</>
   if (_p < 1) {
     return <>{'<1%'}</>
   }

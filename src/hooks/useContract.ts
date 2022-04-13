@@ -19,6 +19,7 @@ import VOTING_ABI from '../constants/abis/voting.json'
 import ExternalDAO_ABI from '../constants/abis/ExternalDAO.json'
 import ExternalToken_ABI from '../constants/abis/ExternalToken.json'
 import ExternalVoting_ABI from '../constants/abis/ExternalVoting.json'
+import CrossVoting_ABI from '../constants/abis/CrossVoting.json'
 import FARM_STAKING_ABI from '../constants/abis/farm_staking.json'
 
 // returns null on errors
@@ -119,4 +120,8 @@ export function useFarmStakingContract(): Contract | null {
     FARM_STAKING_ABI,
     true
   )
+}
+
+export function useCrossVotingContract(votingAddress: string | undefined): Contract | null {
+  return useContract(votingAddress, CrossVoting_ABI, true)
 }

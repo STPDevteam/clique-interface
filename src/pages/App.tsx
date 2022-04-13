@@ -17,6 +17,7 @@ import Home from './home'
 import Daos from './Daos'
 import DaoDetail from './DaoDetail'
 import ExternalDetail from './ExternalDetail'
+import CrossDetail from './CrossDetail'
 import Building from './building'
 import Launching from './building/launching'
 import ExternalBuilding from './ExternalBuilding'
@@ -26,6 +27,9 @@ import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
 import TopAlert from './TopAlert'
 // import Staking from './staking'
 // import StakingCreate from './staking/Create'
+
+import CrossBuilding from './CrossBuilding'
+
 import BigNumber from 'bignumber.js'
 BigNumber.config({ EXPONENTIAL_AT: [-7, 40] })
 
@@ -50,6 +54,7 @@ export default function App() {
                     <Route exact strict path="/" component={Daos} />
                     <Route exact strict path="/detail/:address" component={DaoDetail} />
                     <Route exact strict path="/external_detail/:address" component={ExternalDetail} />
+                    <Route exact strict path="/cross_detail/:address" component={CrossDetail} />
                     <Route exact strict path="/offering/:address" component={Offering} />
                     <Route exact strict path="/my_wallet" component={MyWallet} />
                     {/* <Route exact strict path="/staking" component={Staking} />
@@ -62,6 +67,7 @@ export default function App() {
                     <Route exact strict path="/building" component={Building} />
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
                     <Route exact strict path="/external_building" component={ExternalBuilding} />
+                    <Route exact strict path="/cross_building" component={CrossBuilding} />
                     {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}
                   </>
@@ -70,6 +76,7 @@ export default function App() {
                     <Route exact strict path="/" component={Daos} />
                     <Route exact strict path="/detail/:address" component={DaoDetail} />
                     <Route exact strict path="/external_detail/:address" component={ExternalDetail} />
+                    <Route exact strict path="/cross_detail/:address" component={CrossDetail} />
                     <Route exact strict path="/offering/:address" component={Offering} />
                     <Route exact strict path="/my_wallet" component={MyWallet} />
 
@@ -77,8 +84,10 @@ export default function App() {
                     <Route exact strict path="/building" component={Building} />
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
                     <Route exact strict path="/external_building" component={ExternalBuilding} />
-                    {/* 
-                    <Route exact strict path="/staking" component={Staking} />
+
+                    <Route exact strict path="/cross_building" component={CrossBuilding} />
+
+                    {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}
                   </>
                 )}

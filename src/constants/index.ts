@@ -121,9 +121,9 @@ export const BLOCKED_ADDRESSES: string[] = [
 ]
 
 export const DAO_FACTORY_ADDRESS = {
-  [ChainId.RINKEBY]: '0xeE33C3c2d2216c4c8d649b578eCFeE9EDB61E58d',
-  [ChainId.STP]: '0xA9A516d55f03f08613B9d87134Be13000BDE55ee',
-  [ChainId.KLAYTN_BAOBAB]: '0xc11819292760910a80979aca8c180cc709ba7912'
+  [ChainId.RINKEBY]: '0x9C15CD1F9069A11E8D1b64F57633bBE4Aa671239',
+  [ChainId.STP]: '0x706d4f4E574Fd1A919c4Dad4cDCf6349a5bB1759',
+  [ChainId.KLAYTN_BAOBAB]: '0x4cAdc16713DbFDbFe9F505A5Cf8140a3C52c9571'
 }
 
 export const FARM_STAKING_ADDRESS = {
@@ -194,6 +194,7 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
   ]
 }
 
+export const CROSS_SUPPORT_NETWORK = [4]
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
 export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
 // export const serverBaseUrl = isDaoframeSite() ? 'https://testapi.daoframe.com/' : 'https://testapi.daoframe.com/'

@@ -1,14 +1,16 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ERC20_INTERFACE, { DAO_ERC20_INTERFACE } from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract, useSTPTokenContract, useTokenContract } from '../../hooks/useContract'
-import { isAddress } from '../../utils'
+import { getContract, isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData, useSingleCallResult } from '../multicall/hooks'
 import { CurrencyAmount, TokenAmount } from '../../constants/token/fractions'
 import JSBI from 'jsbi'
 import { Currency, ETHER, Token } from '../../constants/token'
 import { BAST_TOKEN } from '../../constants'
 import { ChainId } from 'constants/chain'
+import { getOtherNetworkLibrary } from 'connectors/MultiNetworkConnector'
+import ERC20_ABI from 'constants/abis/erc20.json'
 
 /**
  * Returns a map of the given addresses to their eventually consistent ETH balances.
@@ -230,4 +232,49 @@ export function useTokens(
       return new Token(curChainId || chainId || 1, address, decimal[0], symbol[0], tokenName[0])
     })
   }, [chainId, curChainId, decimalss, symbols, tokenAddress, tokenNames])
+}
+
+export function useTokenByChain(
+  tokenAddress: string | undefined,
+  curChainId: ChainId | undefined
+):
+  | undefined
+  | {
+      token: Token
+      totalSupply: TokenAmount
+    } {
+  const [name, setName] = useState<string>()
+  const [decimals, setDecimals] = useState<number>()
+  const [symbol, setSymbol] = useState<string>()
+  const [totalSupply, setTotalSupply] = useState<string>()
+
+  const contract = useMemo(() => {
+    if (!tokenAddress || !curChainId) return undefined
+    const library = getOtherNetworkLibrary(curChainId)
+    if (!library) return undefined
+    return getContract(tokenAddress, ERC20_ABI, library, undefined)
+  }, [curChainId, tokenAddress])
+
+  useEffect(() => {
+    if (!contract) {
+      setName(undefined)
+      setSymbol(undefined)
+      setDecimals(undefined)
+      return
+    }
+    contract.name().then((res: string) => setName(res))
+    contract.symbol().then((res: string) => setSymbol(res))
+    contract.decimals().then((res: number) => setDecimals(res))
+    contract.totalSupply().then((res: string) => setTotalSupply(res.toString()))
+  }, [contract])
+
+  return useMemo(() => {
+    if (!contract || !curChainId || !tokenAddress) return undefined
+    if (!name || !symbol || !decimals) return undefined
+    const token = new Token(curChainId, tokenAddress, decimals, symbol, name)
+    return {
+      token,
+      totalSupply: new TokenAmount(token, totalSupply || '0')
+    }
+  }, [contract, curChainId, decimals, name, symbol, tokenAddress, totalSupply])
 }
