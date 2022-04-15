@@ -29,6 +29,8 @@ export default function Index() {
     }
   }, [daoAddress])
 
+  if (!daoInfo?.votingAddress) return null
+
   return (
     <Spin spinning={!daoInfo?.token} tip="Dao creating" delay={1000} size="large">
       <div className={styles['dao-detail']}>
