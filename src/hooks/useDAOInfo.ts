@@ -205,7 +205,8 @@ export function useDaoStatus(daoInfo: DaoInfoProps | undefined): DaoStatusProps 
       : Number(
           new BigNumber(daoInfo.pubSoldAmt.raw.toString() || 0)
             .dividedBy(daoInfo.pubSale.amount.raw.toString())
-            .toFixed(2)
+            .multipliedBy(100)
+            .toFixed(2, 1)
         )
 
   return {

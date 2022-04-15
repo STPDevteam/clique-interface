@@ -46,7 +46,7 @@ const StyledItem = styled(Box)({
 
 export enum OfferingActiveProps {
   PAY = 'Pay',
-  REDEEM = 'Redeem'
+  REDEEM = 'Reserve'
 }
 export default function ActiveBox({ daoAddress, daoToken }: { daoAddress: string | undefined; daoToken: Token }) {
   const { loading: swapLoading, swap: swapList, page: swapPage } = useOfferingSwapRecord(daoAddress)

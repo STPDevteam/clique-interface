@@ -53,6 +53,14 @@ function ShowStatus({ status }: { status: DaoOpenStatus }) {
   )
 }
 
+function ShowPer(per: number) {
+  if (per === 0) return '-'
+  if (per < 1) {
+    return `${'<1'}`
+  }
+  return `${Math.floor(per)}`
+}
+
 export default function PublicOfferingCard({ daoAddress }: { daoAddress: string | undefined }) {
   const daoInfo = useDaoInfoByAddress(daoAddress)
   const daoStatus = useDaoStatus(daoInfo)
@@ -139,7 +147,7 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
             : ''}
         </Typography>
         <Typography variant="body2" color={'#798488'}>
-          {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC ? daoStatus.pubSoldPer + '% funded' : ''}
+          {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC ? ShowPer(daoStatus.pubSoldPer) + '% funded' : ''}
         </Typography>
         <Typography variant="body2" color={'#798488'}>
           {daoStatus?.openStatus === DaoOpenStatus.COMING_SOON ? (

@@ -180,14 +180,22 @@ export default function Offering() {
 
   const isReserving = useTagCompletedTx('claimReserved', '', daoInfo?.daoAddress)
 
+  const publicCurrencyAmount = useMemo(() => tryParseAmount(publicAmount, daoInfo?.token), [
+    daoInfo?.token,
+    publicAmount
+  ])
+
   const onPartPubSaleCallback = useCallback(() => {
-    const ca = tryParseAmount(publicAmount, daoInfo?.token)
-    if (!ca || !ca.greaterThan('0')) {
+    if (!publicCurrencyAmount || !publicCurrencyAmount.greaterThan('0')) {
       return
     }
     if (!currentPubReceiveTokenAmount) return
     showModal(<TransactionPendingModal />)
-    partPubSaleCallback(receiveTokenIsEther, currentPubReceiveTokenAmount.raw.toString(), ca.raw.toString())
+    partPubSaleCallback(
+      receiveTokenIsEther,
+      currentPubReceiveTokenAmount.raw.toString(),
+      publicCurrencyAmount.raw.toString()
+    )
       .then(() => {
         hideModal()
         setPublicAmount('')
@@ -202,10 +210,9 @@ export default function Offering() {
       })
   }, [
     currentPubReceiveTokenAmount,
-    daoInfo?.token,
+    publicCurrencyAmount,
     hideModal,
     partPubSaleCallback,
-    publicAmount,
     receiveTokenIsEther,
     showModal
   ])
@@ -322,6 +329,14 @@ export default function Offering() {
     }
     if (!currentPubReceiveTokenAmount) return <OutlineButton disabled>Pay</OutlineButton>
 
+    if (!daoInfo?.pubSale || !publicCurrencyAmount) return null
+    if (
+      daoInfo.pubSale.pledgeLimitMin.greaterThan('0') &&
+      daoInfo.pubSale.pledgeLimitMin.greaterThan(publicCurrencyAmount)
+    ) {
+      return <OutlineButton disabled>Amount is too small</OutlineButton>
+    }
+
     if (receiveTokenIsEther) {
       if (!ethBalance || ethBalance.lessThan(currentPubReceiveTokenAmount)) {
         return <OutlineButton disabled>Balance Insufficient</OutlineButton>
@@ -354,6 +369,8 @@ export default function Offering() {
     account,
     pubPriSaleIsOpen,
     currentPubReceiveTokenAmount,
+    daoInfo?.pubSale,
+    publicCurrencyAmount,
     receiveTokenIsEther,
     currentPublicMaxInput,
     onPartPubSaleCallback,
@@ -392,7 +409,7 @@ export default function Offering() {
       )
     }
     if (!isReservedAccount || isReservedAccount.isLocked) {
-      return <OutlineButton disabled>Lock tIme</OutlineButton>
+      return <OutlineButton disabled>Lock time</OutlineButton>
     }
 
     return <OutlineButton onClick={onReservedClaim}>Claim</OutlineButton>
@@ -481,7 +498,7 @@ export default function Offering() {
                       <Typography variant="inherit" color={'#767676'}>
                         Holders
                       </Typography>
-                      <Typography variant="h6">-</Typography>
+                      <ShowTokenHolders address={daoInfo?.token?.address} />
                     </Box>
                     <Box textAlign={'right'}>
                       <Typography variant="inherit" color={'#767676'}>
@@ -499,7 +516,7 @@ export default function Offering() {
                   About
                 </div>
                 <div className={`item ${tabInfo === 'active' ? 'active' : ''}`} onClick={() => setTabInfo('active')}>
-                  Active
+                  Activity
                 </div>
               </StyledTabBox>
               {tabInfo === 'about' && <Typography>{daoInfo?.introduction}</Typography>}
@@ -600,7 +617,7 @@ export default function Offering() {
                     />
                   </Box>
                   <Typography variant="body1">
-                    Claimable balance: {toFormatGroup(currentPublicMaxInput)} {daoInfo?.token?.symbol}
+                    Claimable amount: {toFormatGroup(currentPublicMaxInput)} {daoInfo?.token?.symbol}
                   </Typography>
                   <Typography variant="body1" fontSize={10} mt={10}>
                     *You should do your own research and understand the risks before committing you funds.

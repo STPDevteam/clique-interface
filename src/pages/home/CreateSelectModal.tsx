@@ -7,10 +7,10 @@ import { useActiveWeb3React } from 'hooks'
 import { ChainId } from 'constants/chain'
 
 const Item = styled(Box)({
-  padding: '30px 20px 20px',
+  padding: '30px 10px 20px',
   cursor: 'pointer',
-  width: '160px',
-  height: '160px',
+  width: '200px',
+  height: '180px',
   border: '0.5px solid #D8D8D8',
   background: '#FAFAFA',
   boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)',
@@ -29,7 +29,7 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
   const { chainId } = useActiveWeb3React()
 
   return (
-    <Modal closeIcon maxWidth={'650px'}>
+    <Modal closeIcon maxWidth={'700px'}>
       <Typography variant="h4" fontWeight={500} fontSize={24}>
         Select creation method
       </Typography>
@@ -57,7 +57,13 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
         >
           <Box display={'grid'} gap="24px" justifyItems={'center'} alignItems="center">
             <ExternalTokenIcon />
-            <Typography variant="body2" textAlign={'center'} fontWeight={500} color="#22304A">
+            <Typography
+              variant="body2"
+              sx={{ wordBreak: 'break-word' }}
+              textAlign={'center'}
+              fontWeight={500}
+              color="#22304A"
+            >
               External Contracts (Rinkeby)
             </Typography>
           </Box>
@@ -72,7 +78,13 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
         >
           <Box display={'grid'} gap="24px" justifyItems={'center'} alignItems="center">
             <ExternalTokenIcon />
-            <Typography variant="body2" textAlign={'center'} fontWeight={500} color="#22304A">
+            <Typography
+              variant="body2"
+              sx={{ wordBreak: 'break-word' }}
+              textAlign={'center'}
+              fontWeight={500}
+              color="#22304A"
+            >
               Cross-chain Governance (Verse)
             </Typography>
           </Box>
