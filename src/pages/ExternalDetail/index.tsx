@@ -30,6 +30,8 @@ export default function Index() {
     }
   }, [daoAddress])
 
+  if (!daoInfo?.votingAddress) return null
+
   return (
     <div className={styles['dao-detail']}>
       <div className={styles['detail-header']}>
