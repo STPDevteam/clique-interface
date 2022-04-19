@@ -180,7 +180,7 @@ export default function Configuration({
       amountAddDecimals(minVoteNumber, totalSupply.token.decimals),
       amountAddDecimals(minCreateProposalNumber, totalSupply.token.decimals),
       amountAddDecimals(minValidNumber, totalSupply.token.decimals),
-      Number(contractDuration),
+      Number(communityDuration),
       Number(contractDuration),
       ruleContent
     )
@@ -197,6 +197,7 @@ export default function Configuration({
       })
   }, [
     contractDuration,
+    communityDuration,
     hideModal,
     minCreateProposalNumber,
     minValidNumber,

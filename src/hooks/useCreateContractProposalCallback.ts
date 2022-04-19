@@ -136,7 +136,8 @@ export function useCreateCrossContractProposalCallback(votingAddress: string | u
       ]
       console.log(
         '🚀 ~ file: useCreateContractProposalCallback.ts ~ line 137 ~ useCreateCrossContractProposalCallback ~ args',
-        args
+        args,
+        JSON.stringify(args)
       )
 
       return votingContract.estimateGas.createContractProposal(...args, { from: account }).then(estimatedGasLimit => {
