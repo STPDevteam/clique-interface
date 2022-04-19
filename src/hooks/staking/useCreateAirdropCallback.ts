@@ -25,7 +25,12 @@ export function useCreateAirdropCallback() {
           })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
-              summary: 'Airdrop publish'
+              summary: 'Airdrop publish',
+              tag: {
+                type: 'airdropPublish',
+                key: '',
+                id: tag
+              }
             })
             return response.hash
           })

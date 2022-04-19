@@ -137,8 +137,8 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
         percent={daoStatus?.pubSoldPer || 0}
         showInfo={false}
       />
-      <Box display={'flex'} justifyContent={'space-between'} mt={10}>
-        <Typography variant="body2">
+      <Box display={'flex'} justifyContent={'space-between'} gap="10px" mt={10}>
+        <Typography variant="body2" maxWidth={'100px'} noWrap>
           {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC && daoInfo?.pubSale?.amount
             ? toFormatGroup(daoInfo?.pubSale?.amount.toSignificant()) +
               ' ' +

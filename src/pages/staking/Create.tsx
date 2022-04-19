@@ -18,6 +18,7 @@ import Pagination from 'antd/lib/pagination'
 import { useActiveWeb3React } from 'hooks'
 import { useAirdropClaimed } from 'hooks/staking/useAirdropinfo'
 import { TokenAmount } from 'constants/token'
+import { useTagCompletedTx } from 'state/transactions/hooks'
 
 const Main = styled('main')({
   display: 'flex',
@@ -78,14 +79,7 @@ export default function Create() {
             Edit
           </Button>
           {item.creatorAddress === account && item.status === 'offChain' && (
-            <Button
-              onClick={() => showModal(<PublishModal item={item} />)}
-              height="24px"
-              width="60px"
-              style={{ borderRadius: '4px', fontSize: 12 }}
-            >
-              publish
-            </Button>
+            <PublishButton id={item.id} event={() => showModal(<PublishModal item={item} />)}></PublishButton>
           )}
         </Box>
       )
@@ -144,4 +138,20 @@ function ClaimTotal({ item }: { item: MyAirdropResProp }) {
     return new TokenAmount(item.token, result)
   }, [result, item.token])
   return <TableText>{amount?.toSignificant(6, { groupSeparator: ',' }) || '-'}</TableText>
+}
+
+function PublishButton({ id, event }: { id: number; event: () => void }) {
+  const isPublishing = useTagCompletedTx('airdropPublish', '', id)
+
+  return (
+    <Button
+      disabled={isPublishing}
+      onClick={event}
+      height="24px"
+      width="60px"
+      style={{ borderRadius: '4px', fontSize: 12 }}
+    >
+      publish
+    </Button>
+  )
 }
