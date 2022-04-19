@@ -48,11 +48,7 @@ export default function Index({
 
   const voteBtn = useMemo(() => {
     if (detail.status !== ProposalStatusProp.Active) {
-      return (
-        <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
-          Close
-        </Button>
-      )
+      return null
     }
     if (isVoted) {
       return (

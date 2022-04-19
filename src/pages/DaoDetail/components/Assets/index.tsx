@@ -119,8 +119,10 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
             <h3>DAO Tokens</h3>
             {daoTokens.map((item, index) => (
               <div key={index} className="token">
-                <Image className="icon" width={20} src={item.logo || IconLogo} />
-                <span className="name">{item.symbol}</span>
+                <Box>
+                  <Image className="icon" width={20} src={item.logo || IconLogo} />
+                  <span className="name">{item.symbol}</span>
+                </Box>
                 <span className="number">
                   <ShowTokenBalance token={item} account={daoInfo.daoAddress}></ShowTokenBalance>
                 </span>
@@ -141,10 +143,10 @@ function ShowTokenBalance({ token, account }: { token: Token; account: string })
 
 function ShowTransferValue({ data, daoTokens }: { data: AssetsTransferRecordProp; daoTokens: Token[] }) {
   // const token = useToken(data.tokenAddress)
-  const token = useMemo(() => daoTokens.find(item => item.address === data.tokenAddress), [
-    daoTokens,
-    data.tokenAddress
-  ])
+  const token = useMemo(
+    () => daoTokens.find(item => item.address.toLocaleLowerCase() === data.tokenAddress.toLocaleLowerCase()),
+    [daoTokens, data.tokenAddress]
+  )
   const curValue = useMemo(() => {
     if (!token) return undefined
     return new TokenAmount(token, data.value)
