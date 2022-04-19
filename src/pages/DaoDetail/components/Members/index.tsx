@@ -20,7 +20,7 @@ const { Column } = Table
 
 export default function Members({ daoInfo }: { daoInfo: DaoInfoProps | ExternalDaoInfoProps }) {
   // const { loading, data: holderList } = useTokenHoldersByExplorer(daoInfo.token?.address)
-  const { result, loading, page } = useDaoMembers(daoInfo.token?.address)
+  const { result, loading, page, holderCount } = useDaoMembers(daoInfo.token?.address)
 
   const list = useMemo(() => {
     return (
@@ -45,7 +45,7 @@ export default function Members({ daoInfo }: { daoInfo: DaoInfoProps | ExternalD
   return (
     <section className="members">
       <h1>Holders</h1>
-      <p>Total holders {toFormatGroup(page.total)}</p>
+      <p>Total holders {toFormatGroup(holderCount)}</p>
       <Table className="panel-config stp-table" loading={loading} dataSource={list} rowKey={'id'} pagination={false}>
         <Column title="Rank" dataIndex="rank" key="id" align="center" />
         <Column align="center" title="Address" dataIndex="account" key="address" />
