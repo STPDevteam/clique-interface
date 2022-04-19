@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useVotingContract } from './useContract'
+import { useCrossVotingContract, useVotingContract } from './useContract'
 import { calculateGasMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
@@ -90,4 +90,70 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
     withdrawAssetCallback,
     updateConfigurationCallback
   }
+}
+
+export function useCreateCrossContractProposalCallback(votingAddress: string | undefined) {
+  const votingContract = useCrossVotingContract(votingAddress)
+  const { account } = useActiveWeb3React()
+  const addTransaction = useTransactionAdder()
+
+  return useCallback(
+    (
+      title: string,
+      content: string,
+      minimumVote: string,
+      minimumCreateProposal: string,
+      minimumValidVotes: string,
+      communityVotingDuration: number,
+      contractVotingDuration: number,
+      descContent: string,
+      signData: {
+        user: string
+        weight: string
+        chainId: number
+        voting: string
+        nonce: number
+      },
+      signature: string
+    ) => {
+      if (!votingContract) throw new Error('none contract')
+
+      const args = [
+        title,
+        content,
+        [...Object.values(signData), '0'],
+        signature,
+        daoContract.methods
+          .updateDaoRule([
+            minimumVote,
+            minimumCreateProposal,
+            minimumValidVotes,
+            communityVotingDuration,
+            contractVotingDuration,
+            descContent
+          ])
+          .encodeABI()
+      ]
+      console.log(
+        '🚀 ~ file: useCreateContractProposalCallback.ts ~ line 137 ~ useCreateCrossContractProposalCallback ~ args',
+        args
+      )
+
+      return votingContract.estimateGas.createContractProposal(...args, { from: account }).then(estimatedGasLimit => {
+        return votingContract
+          .createContractProposal(...args, {
+            gasLimit: calculateGasMargin(estimatedGasLimit),
+            // gasLimit: '3500000',
+            from: account
+          })
+          .then((response: TransactionResponse) => {
+            addTransaction(response, {
+              summary: 'Create contract proposal'
+            })
+            return response.hash
+          })
+      })
+    },
+    [account, addTransaction, votingContract]
+  )
 }

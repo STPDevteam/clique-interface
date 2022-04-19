@@ -6,7 +6,13 @@ import {
   useSingleCallResult,
   useSingleContractMultipleData
 } from '../state/multicall/hooks'
-import { useDaoContract, useExternalDaoContract, useDaoFactoryContract, useSTPTokenContract } from './useContract'
+import {
+  useDaoContract,
+  useExternalDaoContract,
+  useDaoFactoryContract,
+  useSTPTokenContract,
+  useCrossDaoContract
+} from './useContract'
 import { DAO_INTERFACE } from '../constants/abis/erc20'
 import { useProposalNumber } from './useVoting'
 import { DefaultChainId, PriceDecimals } from '../constants'
@@ -516,7 +522,7 @@ export function useExternalDaoInfoByAddress(daoAddress: string | undefined): Ext
 }
 
 export function useCrossDaoInfoByAddress(daoAddress: string | undefined): ExternalDaoInfoProps | undefined {
-  const daoContract = useExternalDaoContract(daoAddress)
+  const daoContract = useCrossDaoContract(daoAddress)
 
   const daoNameRes = useSingleCallResult(daoContract, 'name', [])
   const descRes = useSingleCallResult(daoContract, 'desc', [])

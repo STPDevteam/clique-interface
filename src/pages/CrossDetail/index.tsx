@@ -12,9 +12,13 @@ import { useParams } from 'react-router-dom'
 import { shortenAddress } from 'utils'
 import { ProposalInfoProp } from 'hooks/useVoting'
 import { Spin } from 'antd'
+import { useActiveWeb3React } from 'hooks'
+import { ChainId } from 'constants/chain'
+import { Box } from '@mui/material'
 
 export default function Index() {
   const links = ['Proposal', 'Configuration']
+  const { chainId } = useActiveWeb3React()
   const { address: daoAddress } = useParams<{ address: string }>()
 
   const [currentLink, setCurrentLink] = useState(links[0])
@@ -30,6 +34,7 @@ export default function Index() {
   }, [daoAddress])
 
   if (!daoInfo?.votingAddress) return null
+  if (chainId !== ChainId.STP) return <Box padding="20px">Cross-chain Governance is only available in verse</Box>
 
   return (
     <Spin spinning={!daoInfo?.token} tip="Dao creating" delay={1000} size="large">
@@ -94,6 +99,7 @@ export default function Index() {
                   totalSupply={daoInfo.totalSupply}
                   votingAddress={daoInfo.votingAddress}
                   rule={daoInfo.rule}
+                  daoAddress={daoInfo.daoAddress}
                 />
               )}
             </div>
