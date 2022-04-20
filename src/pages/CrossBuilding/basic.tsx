@@ -13,12 +13,12 @@ import { isAddress } from 'utils'
 import IconDownArrow from 'components/ModalSTP/assets/icon-down-arrow.svg'
 import { useTokenByChain } from 'state/wallet/hooks'
 import { ChainList } from 'constants/chain'
-import { CROSS_SUPPORT_NETWORK } from '../../constants'
+import { CROSS_SUPPORT_IMPORT_NETWORK } from '../../constants'
 
 const { Option } = Select
 type CrossCreateDaoDataBasicKey = keyof CrossCreateDaoDataBasic
 
-const supportNet = ChainList.filter(i => CROSS_SUPPORT_NETWORK.includes(i.id))
+const supportNet = ChainList.filter(i => CROSS_SUPPORT_IMPORT_NETWORK.includes(i.id))
 
 export default function Basic({ goNext }: { goNext: () => void }) {
   const { buildingDaoData, updateBasic } = useCrossBuildingDataCallback()

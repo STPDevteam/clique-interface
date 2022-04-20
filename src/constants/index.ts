@@ -193,8 +193,10 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
     }
   ]
 }
+export const EXTERNAL_SUPPORT_NETWORK = [4]
 
-export const CROSS_SUPPORT_NETWORK = [4]
+export const CROSS_SUPPORT_IMPORT_NETWORK = [4]
+export const CROSS_SUPPORT_CREATE_NETWORK = [72]
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
 // export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
 export const serverBaseUrl = isDaoframeSite() ? 'https://testapi.daoframe.com/' : 'https://testapi.daoframe.com/'
