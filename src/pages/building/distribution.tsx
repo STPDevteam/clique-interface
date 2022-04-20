@@ -725,8 +725,15 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       onChange={e => {
                         const reg = new RegExp('^[0-9]*$')
                         const _val = e.target.value
-                        if (reg.test(_val)) updatePublicSaleCall('pledgeLimitMin', _val)
-                        else updatePublicSaleCall('pledgeLimitMin', distribution.publicSale.pledgeLimitMin || '')
+                        if (reg.test(_val)) {
+                          if (new BigNumber(_val).gt(distribution.publicSale.pledgeLimitMax || '')) {
+                            updatePublicSaleCall('pledgeLimitMin', distribution.publicSale.pledgeLimitMax || '')
+                          } else if (new BigNumber(_val).gt(distribution.publicSale.offeringAmount)) {
+                            updatePublicSaleCall('pledgeLimitMin', distribution.publicSale.offeringAmount)
+                          } else {
+                            updatePublicSaleCall('pledgeLimitMin', _val)
+                          }
+                        } else updatePublicSaleCall('pledgeLimitMin', distribution.publicSale.pledgeLimitMin || '')
                       }}
                     />
                     <Typography display={'flex'} alignItems={'center'}>
@@ -741,8 +748,15 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       onChange={e => {
                         const reg = new RegExp('^[0-9]*$')
                         const _val = e.target.value
-                        if (reg.test(_val)) updatePublicSaleCall('pledgeLimitMax', _val)
-                        else updatePublicSaleCall('pledgeLimitMax', distribution.publicSale.pledgeLimitMax || '')
+                        if (reg.test(_val)) {
+                          if (new BigNumber(_val).gt(distribution.publicSale.offeringAmount)) {
+                            updatePublicSaleCall('pledgeLimitMax', distribution.publicSale.offeringAmount)
+                          } else if (new BigNumber(_val).lt(distribution.publicSale.pledgeLimitMin || '')) {
+                            updatePublicSaleCall('pledgeLimitMax', distribution.publicSale.pledgeLimitMin || '')
+                          } else {
+                            updatePublicSaleCall('pledgeLimitMax', _val)
+                          }
+                        } else updatePublicSaleCall('pledgeLimitMax', distribution.publicSale.pledgeLimitMax || '')
                       }}
                     />
                   </Box>

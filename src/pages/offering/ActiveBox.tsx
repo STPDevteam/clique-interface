@@ -123,8 +123,8 @@ function SwapItem({
     if (receiveToken instanceof Token) {
       return new TokenAmount(receiveToken, item.receiveAmt)
     }
-    return CurrencyAmount.ether(item.daoAmt)
-  }, [item.daoAmt, item.receiveAmt, receiveToken])
+    return CurrencyAmount.ether(item.receiveAmt)
+  }, [item.receiveAmt, receiveToken])
 
   return (
     <StyledItem>
