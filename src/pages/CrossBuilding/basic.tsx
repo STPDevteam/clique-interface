@@ -94,7 +94,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
               </Select>
             </Box>
           </div>
-          {/* <div className="input-item">
+          <div className="input-item">
             <span className="label">Dao Name</span>
             <div className="suffix-wrapper">
               <Input
@@ -104,7 +104,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
                 onChange={e => updateBasicCall('daoName', e.target.value)}
               />
             </div>
-          </div> */}
+          </div>
           <div className="input-item">
             <span className="label">Contract address</span>
             <div className="suffix-wrapper">

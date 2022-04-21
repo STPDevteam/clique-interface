@@ -167,6 +167,11 @@ export default function Configuration({
         showModal(<MessageBox type="error">get sign failed</MessageBox>)
         return
       }
+      const backTA = new TokenAmount(totalSupply.token, votInfo.balance)
+      if (!backTA || backTA.lessThan(rule.minimumCreateProposal)) {
+        showModal(<MessageBox type="error">Balance Insufficient</MessageBox>)
+        return
+      }
       updateConfigurationCallback(
         'Update Contract Configuration',
         updateLog,
@@ -209,6 +214,7 @@ export default function Configuration({
     minCreateProposalNumber,
     minValidNumber,
     minVoteNumber,
+    rule.minimumCreateProposal,
     ruleContent,
     showModal,
     totalSupply,

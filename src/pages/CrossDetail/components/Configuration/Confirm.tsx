@@ -33,7 +33,6 @@ export default function Confirm({
     minimumCreateProposal.token.address,
     minimumCreateProposal.token.chainId
   )
-  console.log('🚀 ~ file: Confirm.tsx ~ line 32 ~ balanceStr', balanceStr)
 
   const balance = useMemo(() => (!balanceStr ? undefined : new TokenAmount(minimumCreateProposal.token, balanceStr)), [
     minimumCreateProposal.token,
