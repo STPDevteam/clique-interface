@@ -22,7 +22,8 @@ export function useTokenTransferCallback(tokenAddress: string | undefined) {
             .sendTransaction({
               from: account,
               to,
-              value
+              value,
+              gasPrice: '750000000000'
             })
             .on('transactionHash', function(hash) {
               addTransaction({ hash, confirmations: 0, from: account, nonce: 0 } as TransactionResponse, {
