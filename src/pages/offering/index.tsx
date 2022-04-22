@@ -427,7 +427,7 @@ export default function Offering() {
         </Typography>
         <Box display={'flex'} gap="15px" alignItems={'center'}>
           <Typography fontSize={16}>
-            <ShowTokenHolders address={daoInfo?.token?.address} /> Holders
+            <ShowTokenHolders address={daoInfo?.token?.address} /> Members
           </Typography>
           {daoInfo?.link.website && <ExternalLink href={daoInfo.link.website}>{daoInfo.link.website}</ExternalLink>}
           {daoInfo?.link.twitter && (
@@ -500,7 +500,7 @@ export default function Offering() {
                   <StyledBetween mt={10}>
                     <Box>
                       <Typography variant="inherit" color={'#767676'}>
-                        Holders
+                        Members
                       </Typography>
                       <ShowTokenHolders address={daoInfo?.token?.address} />
                     </Box>

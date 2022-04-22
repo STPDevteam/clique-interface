@@ -130,7 +130,7 @@ export default function Index() {
                       </Box>
                     </Box>
                     <Box display={'flex'} justifyContent={'space-between'} mt={10}>
-                      <Typography variant="body1">Holders</Typography>
+                      <Typography variant="body1">Members</Typography>
                       <Typography fontSize={14} variant="h6">
                         <ShowTokenHolders address={item.token?.address} />
                       </Typography>
