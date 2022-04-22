@@ -48,7 +48,7 @@ function DaoTokenBalPer({
 
 export default function Members({ daoInfo }: { daoInfo: DaoInfoProps | ExternalDaoInfoProps }) {
   // const { loading, data: holderList } = useTokenHoldersByExplorer(daoInfo.token?.address)
-  const { result, loading, page, holderCount } = useDaoMembers(daoInfo.token?.address)
+  const { result, loading, page } = useDaoMembers(daoInfo.token?.address)
 
   const list = useMemo(() => {
     return (
@@ -67,8 +67,8 @@ export default function Members({ daoInfo }: { daoInfo: DaoInfoProps | ExternalD
 
   return (
     <section className="members">
-      <h1>Holders</h1>
-      <p>Total holders {toFormatGroup(holderCount)}</p>
+      <h1>Members</h1>
+      <p>Total Members {toFormatGroup(page.total || 0)}</p>
       <Table className="panel-config stp-table" loading={loading} dataSource={list} rowKey={'id'} pagination={false}>
         <Column title="Rank" dataIndex="rank" key="id" align="center" />
         <Column align="center" title="Address" dataIndex="account" key="address" />

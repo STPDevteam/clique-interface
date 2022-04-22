@@ -16,7 +16,7 @@ import { ProposalInfoProp } from 'hooks/useVoting'
 import ShowTokenHolders from '../Daos/ShowTokenHolders'
 
 export default function Index() {
-  const links = ['Proposal', 'Assets', 'Holders', 'Configuration']
+  const links = ['Proposal', 'Assets', 'Members', 'Configuration']
   const { address: daoAddress } = useParams<{ address: string }>()
 
   const [currentLink, setCurrentLink] = useState(links[0])
@@ -39,7 +39,7 @@ export default function Index() {
         <p className={styles['title']}>{daoInfo?.daoName || '--'}</p>
         <p className={styles['text']}>
           {' '}
-          <ShowTokenHolders address={daoInfo?.token?.address} /> Holders
+          <ShowTokenHolders address={daoInfo?.token?.address} /> Members
         </p>
         <p>{daoInfo?.daoDesc}</p>
         {/* <Button className={'btn-common btn-01'}>Join</Button> */}
@@ -94,7 +94,7 @@ export default function Index() {
               />
             )}
             {currentLink === 'Assets' && daoInfo && <Assets daoInfo={daoInfo} />}
-            {currentLink === 'Holders' && daoInfo && <Members daoInfo={daoInfo} />}
+            {currentLink === 'Members' && daoInfo && <Members daoInfo={daoInfo} />}
             {currentLink === 'Configuration' && daoInfo && daoInfo.rule && daoInfo.totalSupply && (
               <Configuration
                 totalSupply={daoInfo.totalSupply}
