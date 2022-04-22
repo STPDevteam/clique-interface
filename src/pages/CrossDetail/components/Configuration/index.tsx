@@ -3,21 +3,32 @@ import '../../../DaoDetail/components/Configuration/pc.less'
 import 'react'
 import { Input, Slider, Tooltip, Switch, InputNumber } from 'antd'
 import { Box, Typography } from '@mui/material'
-import { useState } from 'react'
-import { toFormatGroup } from 'utils/dao'
-import { getAmountForPer, getPerForAmount } from 'pages/building/function'
+import { useCallback, useMemo, useState } from 'react'
+import AlertError from 'components/Alert/index'
+import { amountAddDecimals, getCurrentTimeStamp, toFormatGroup } from 'utils/dao'
+import { calcVotingDuration, getAmountForPer, getPerForAmount } from 'pages/building/function'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 import TextArea from 'antd/lib/input/TextArea'
+import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import useModal from 'hooks/useModal'
 import { TokenAmount } from 'constants/token'
+import Confirm from './Confirm'
+import { useActiveWeb3React } from 'hooks'
+import OutlineButton from 'components/Button/OutlineButton'
 import { calcTime } from 'utils'
+import { useCreateCrossContractProposalCallback } from 'hooks/useCreateContractProposalCallback'
+import { getCreateProposalSign } from 'utils/fetch/server'
 
 // const { TextArea } = Input
 
 export default function Configuration({
   rule,
   totalSupply,
-  votingAddress
+  votingAddress,
+  daoAddress
 }: {
   rule: {
     minimumVote: TokenAmount
@@ -29,8 +40,10 @@ export default function Configuration({
   }
   totalSupply: TokenAmount
   votingAddress: string | undefined
+  daoAddress: string
 }) {
-  // const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
+  const { hideModal, showModal } = useModal()
   const [minVoteNumber, setMinVoteNumber] = useState(rule.minimumVote.toSignificant())
   const [minCreateProposalNumber, setMinCreateProposalNumber] = useState(rule?.minimumCreateProposal.toSignificant())
   const [minValidNumber, setMinValidNumber] = useState(rule.minimumValidVotes.toSignificant())
@@ -50,6 +63,176 @@ export default function Configuration({
   const [contractData, setContractData] = useState(calcTime(Number(rule?.contractVotingDuration || 0)))
 
   const [ruleContent, setRuleContent] = useState(rule.content)
+
+  const updateConfigurationCallback = useCreateCrossContractProposalCallback(votingAddress)
+
+  const verifyMsg = useMemo(() => {
+    if (!minVoteNumber || !minCreateProposalNumber || !minValidNumber) return 'Votes required'
+    if (!votersCustom) {
+      if (!communityData.days && !communityData.hours && !communityData.minutes) {
+        return 'Community Voting Duration required'
+      }
+    }
+    if (!contractData.days && !contractData.hours && !contractData.minutes) {
+      return 'Contract Voting Duration required'
+    }
+    return undefined
+  }, [communityData, contractData, minCreateProposalNumber, minValidNumber, minVoteNumber, votersCustom])
+
+  const startTime = getCurrentTimeStamp()
+  const endTime = useMemo(() => Number(rule?.contractVotingDuration || 0) + startTime, [
+    rule?.contractVotingDuration,
+    startTime
+  ])
+
+  const communityDuration = useMemo(
+    () =>
+      votersCustom
+        ? '0'
+        : calcVotingDuration(communityData.days, communityData.hours, communityData.minutes).toString(),
+    [communityData.days, communityData.hours, communityData.minutes, votersCustom]
+  )
+  const contractDuration = useMemo(
+    () => calcVotingDuration(contractData.days, contractData.hours, contractData.minutes).toString(),
+    [contractData]
+  )
+
+  const updateLog = useMemo(() => {
+    const logArr: { [key in string]: string[] } = {}
+    if (minVoteNumber !== rule.minimumVote.toSignificant()) {
+      logArr['Minimum holding to vote'] = [rule.minimumVote.toSignificant(6, { groupSeparator: ',' }), minVoteNumber]
+    }
+    if (minCreateProposalNumber !== rule.minimumCreateProposal.toSignificant()) {
+      logArr['Minimum holding to create proposal'] = [
+        rule.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' }),
+        minCreateProposalNumber
+      ]
+    }
+    if (minValidNumber !== rule.minimumValidVotes.toSignificant()) {
+      logArr['Minimum total votes'] = [rule.minimumValidVotes.toSignificant(6, { groupSeparator: ',' }), minValidNumber]
+    }
+    if (communityDuration !== rule.communityVotingDuration) {
+      const _new = calcTime(Number(communityDuration))
+      const _old = calcTime(Number(rule.communityVotingDuration))
+      logArr['Community Voting Duration'] = [
+        `${_old.days} Days ${_old.hours} Hours ${_old.minutes} Minutes ${
+          Number(rule.communityVotingDuration) === 0 ? '(voters custom)' : ''
+        }`,
+        `${_new.days} Days ${_new.hours} Hours ${_new.minutes} Minutes ${
+          Number(communityDuration) === 0 ? '(voters custom)' : ''
+        }`
+      ]
+    }
+    if (contractDuration !== rule.contractVotingDuration) {
+      const _new = calcTime(Number(contractDuration))
+      const _old = calcTime(Number(rule.contractVotingDuration))
+      logArr['Contract Voting Duration'] = [
+        `${_old.days} Days ${_old.hours} Hours ${_old.minutes} Minutes`,
+        `${_new.days} Days ${_new.hours} Hours ${_new.minutes} Minutes`
+      ]
+    }
+    if (ruleContent !== rule.content) {
+      logArr['Rules / Agreement'] = [rule.content, ruleContent]
+    }
+    const ret: string[] = []
+    for (const key in logArr) {
+      if (Object.prototype.hasOwnProperty.call(logArr, key)) {
+        const item = logArr[key]
+        ret.push(`${key}: ${item[0]} --> ${item[1]}`)
+      }
+    }
+    return ret.join(' <br /> ')
+  }, [
+    communityDuration,
+    contractDuration,
+    minCreateProposalNumber,
+    minValidNumber,
+    minVoteNumber,
+    rule.communityVotingDuration,
+    rule.content,
+    rule.contractVotingDuration,
+    rule.minimumCreateProposal,
+    rule.minimumValidVotes,
+    rule.minimumVote,
+    ruleContent
+  ])
+
+  const onCommit = useCallback(async () => {
+    if (!chainId || !totalSupply || !account) return
+    showModal(<TransactionPendingModal />)
+    try {
+      const res = await getCreateProposalSign(chainId, totalSupply.token.chainId, daoAddress, account)
+      const votInfo = res.data.data
+      if (!votInfo) {
+        showModal(<MessageBox type="error">get sign failed</MessageBox>)
+        return
+      }
+      const backTA = new TokenAmount(totalSupply.token, votInfo.balance)
+      if (!backTA || backTA.lessThan(rule.minimumCreateProposal)) {
+        showModal(<MessageBox type="error">Balance Insufficient</MessageBox>)
+        return
+      }
+      updateConfigurationCallback(
+        'Update Contract Configuration',
+        updateLog,
+        amountAddDecimals(minVoteNumber, totalSupply.token.decimals),
+        amountAddDecimals(minCreateProposalNumber, totalSupply.token.decimals),
+        amountAddDecimals(minValidNumber, totalSupply.token.decimals),
+        Number(communityDuration),
+        Number(contractDuration),
+        ruleContent,
+        {
+          user: votInfo.userAddress,
+          weight: votInfo.balance,
+          chainId: votInfo.chainId,
+          voting: votInfo.votingAddress,
+          nonce: votInfo.nonce
+        },
+        votInfo.sign
+      )
+        .then(() => {
+          hideModal()
+          showModal(<TransactionSubmittedModal />)
+        })
+        .catch((err: any) => {
+          hideModal()
+          showModal(
+            <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+          )
+          console.error(err)
+        })
+    } catch (error) {
+      showModal(<MessageBox type="error">get sign failed</MessageBox>)
+    }
+  }, [
+    account,
+    chainId,
+    communityDuration,
+    contractDuration,
+    daoAddress,
+    hideModal,
+    minCreateProposalNumber,
+    minValidNumber,
+    minVoteNumber,
+    rule.minimumCreateProposal,
+    ruleContent,
+    showModal,
+    totalSupply,
+    updateConfigurationCallback,
+    updateLog
+  ])
+
+  const onUpdateConfirm = useCallback(() => {
+    showModal(
+      <Confirm
+        minimumCreateProposal={rule.minimumCreateProposal}
+        onCommit={onCommit}
+        startTime={startTime}
+        endTime={endTime}
+        updateLog={updateLog}
+      />
+    )
+  }, [endTime, onCommit, rule.minimumCreateProposal, showModal, startTime, updateLog])
 
   return (
     <section className="configuration">
@@ -91,7 +274,6 @@ export default function Configuration({
             {/* <span className="label">Votes</span> */}
             <Tooltip placement="top" title={toFormatGroup(minVoteNumber, 0)}>
               <Input
-                readOnly
                 className="input-common"
                 value={minVoteNumber}
                 onChange={e => {
@@ -116,7 +298,6 @@ export default function Configuration({
             <div className="progress-wrapper">
               <Slider
                 min={1}
-                disabled
                 max={100}
                 value={minCreateProposalPer}
                 onChange={e => {
@@ -132,7 +313,6 @@ export default function Configuration({
             <Tooltip placement="top" title={toFormatGroup(minCreateProposalNumber)}>
               <Input
                 className="input-common"
-                readOnly
                 value={minCreateProposalNumber}
                 onChange={e => {
                   const reg = new RegExp('^[0-9]*$')
@@ -156,7 +336,6 @@ export default function Configuration({
             <span className="label">Minimum total votes</span>
             <div className="progress-wrapper">
               <Slider
-                disabled
                 min={1}
                 max={100}
                 value={minValidPer}
@@ -172,7 +351,6 @@ export default function Configuration({
             <span className="label">Votes</span>
             <Tooltip placement="top" title={toFormatGroup(minValidNumber)}>
               <Input
-                readOnly
                 className="input-common"
                 value={minValidNumber}
                 onChange={e => {
@@ -204,7 +382,6 @@ export default function Configuration({
               >
                 <div className="datetime-wrapper">
                   <InputNumber
-                    readOnly
                     min={0}
                     className="input-number-common"
                     value={communityData.days}
@@ -225,7 +402,6 @@ export default function Configuration({
                 </div>
                 <div className="datetime-wrapper">
                   <InputNumber
-                    readOnly
                     min={0}
                     className="input-number-common"
                     value={communityData.hours}
@@ -247,7 +423,6 @@ export default function Configuration({
                 </div>
                 <div className="datetime-wrapper">
                   <InputNumber
-                    readOnly
                     min={0}
                     className="input-number-common"
                     value={communityData.minutes}
@@ -270,7 +445,6 @@ export default function Configuration({
               </Box>
               <Box display={'flex'} alignItems={'center'} gap={5}>
                 <Switch
-                  disabled
                   checked={votersCustom}
                   onChange={val => {
                     setVotersCustom(val)
@@ -290,7 +464,6 @@ export default function Configuration({
             >
               <div className="datetime-wrapper">
                 <InputNumber
-                  readOnly
                   min={0}
                   className="input-number-common"
                   value={contractData.days}
@@ -310,7 +483,6 @@ export default function Configuration({
               </div>
               <div className="datetime-wrapper">
                 <InputNumber
-                  readOnly
                   min={0}
                   className="input-number-common"
                   value={contractData.hours}
@@ -331,7 +503,6 @@ export default function Configuration({
               </div>
               <div className="datetime-wrapper">
                 <InputNumber
-                  readOnly
                   min={0}
                   className="input-number-common"
                   value={contractData.minutes}
@@ -354,23 +525,23 @@ export default function Configuration({
           </div>
           <div className="input-item">
             <span className="label">Rules / Agreement</span>
-            <TextArea readOnly rows={5} value={ruleContent} onChange={e => setRuleContent(e.target.value)} />
+            <TextArea rows={5} value={ruleContent} onChange={e => setRuleContent(e.target.value)} />
           </div>
         </Box>
       </Box>
 
-      {/* {!!verifyMsg && (
+      {!!verifyMsg && (
         <Box mt={15}>
           <AlertError>{verifyMsg}</AlertError>
         </Box>
-      )} */}
-      {/* {account && (
+      )}
+      {account && (
         <Box mt={15}>
           <OutlineButton width={120} disabled={!updateLog.length} onClick={onUpdateConfirm}>
             Update
           </OutlineButton>
         </Box>
-      )} */}
+      )}
     </section>
   )
 }

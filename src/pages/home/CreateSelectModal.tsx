@@ -4,7 +4,7 @@ import { ReactComponent as CreateTokenIcon } from 'assets/svg/create_token_icon.
 import { ReactComponent as ExternalTokenIcon } from 'assets/svg/external_token_icon.svg'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks'
-import { ChainId } from 'constants/chain'
+import { EXTERNAL_SUPPORT_NETWORK, CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
 
 const Item = styled(Box)({
   padding: '30px 10px 20px',
@@ -49,7 +49,7 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
         </Item>
         <Item
           onClick={() => {
-            if (chainId === ChainId.RINKEBY) {
+            if (chainId && EXTERNAL_SUPPORT_NETWORK.includes(chainId)) {
               hide()
               history.replace('/external_building')
             }
@@ -70,7 +70,7 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
         </Item>
         <Item
           onClick={() => {
-            if (chainId === ChainId.STP) {
+            if (chainId && CROSS_SUPPORT_CREATE_NETWORK.includes(chainId)) {
               hide()
               history.replace('/cross_building')
             }

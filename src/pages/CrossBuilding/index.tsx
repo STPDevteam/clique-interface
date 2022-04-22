@@ -7,7 +7,8 @@ import Rule from './rule'
 import Review from './review'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks'
-import { ChainId } from 'constants/chain'
+import { CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
+import { ChainListMap } from 'constants/chain'
 
 const stepItems = ['Basic', 'Rule', 'Review'] as const
 
@@ -19,7 +20,7 @@ export default function Index() {
   const goToStep = useCallback((step: Step) => setStep(step), [])
   const { account, chainId } = useActiveWeb3React()
   useEffect(() => {
-    if (!account || chainId !== ChainId.STP) history.replace('/create')
+    if (!account || !chainId || !CROSS_SUPPORT_CREATE_NETWORK.includes(chainId)) history.replace('/create')
   }, [account, history, chainId])
 
   const goBack = useCallback(() => {
@@ -51,7 +52,7 @@ export default function Index() {
 
   return (
     <main className="building">
-      <BuildingHeader step={step} stepItems={stepItems} title="Create DAO on STPT" />
+      <BuildingHeader step={step} stepItems={stepItems} title={`Create DAO on ${ChainListMap[chainId || 1]?.symbol}`} />
       <NextComp />
     </main>
   )

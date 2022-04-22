@@ -464,6 +464,7 @@ export function useDaoMembers(daoTokenAddress: string | undefined) {
   const [loading, setLoading] = useState<boolean>(false)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [total, setTotal] = useState<number>(0)
+  const [holderCount, setHolderCount] = useState<number>(0)
   const pageSize = 8
   const [result, setResult] = useState<
     {
@@ -490,6 +491,7 @@ export function useDaoMembers(daoTokenAddress: string | undefined) {
           return
         }
         setTotal(data.totalCount)
+        setHolderCount(data.holderCount)
         const list = data.data.map((item: any) => {
           return {
             holderAddress: item.holderAddress,
@@ -515,6 +517,7 @@ export function useDaoMembers(daoTokenAddress: string | undefined) {
       total,
       pageSize
     },
+    holderCount,
     result
   }
 }

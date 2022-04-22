@@ -1,0 +1,484 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minimumVote",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minimumCreateProposal",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minimumValidVotes",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "communityVotingDuration",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "contractVotingDuration",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "content",
+        "type": "string"
+      }
+    ],
+    "name": "UpdateDaoRule",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "PRICE_DECIMALS",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "baseNetwork",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "desc",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "discord",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getDaoRule",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "minimumVote",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumCreateProposal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumValidVotes",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "communityVotingDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "contractVotingDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "content",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAOCrossGovInterface.DAORule",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getDaoToken",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "contractAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "daoDesc",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "website",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "twitter",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "discord",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "tokenLogo",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAOCrossGovInterface.DAOBasic",
+        "name": "basic",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "minimumVote",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumCreateProposal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumValidVotes",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "communityVotingDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "contractVotingDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "content",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAOCrossGovInterface.DAORule",
+        "name": "_rule",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "_voting",
+        "type": "address"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "rule",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "minimumVote",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumCreateProposal",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minimumValidVotes",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "communityVotingDuration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "contractVotingDuration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "content",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "snapshotTokenAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tokenLogo",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "twitter",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "minimumVote",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumCreateProposal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumValidVotes",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "communityVotingDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "contractVotingDuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "content",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IDAOCrossGovInterface.DAORule",
+        "name": "_rule",
+        "type": "tuple"
+      }
+    ],
+    "name": "updateDaoRule",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "voting",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "website",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

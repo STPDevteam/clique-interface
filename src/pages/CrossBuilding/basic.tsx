@@ -13,12 +13,12 @@ import { isAddress } from 'utils'
 import IconDownArrow from 'components/ModalSTP/assets/icon-down-arrow.svg'
 import { useTokenByChain } from 'state/wallet/hooks'
 import { ChainList } from 'constants/chain'
-import { CROSS_SUPPORT_NETWORK } from '../../constants'
+import { CROSS_SUPPORT_IMPORT_NETWORK } from '../../constants'
 
 const { Option } = Select
 type CrossCreateDaoDataBasicKey = keyof CrossCreateDaoDataBasic
 
-const supportNet = ChainList.filter(i => CROSS_SUPPORT_NETWORK.includes(i.id))
+const supportNet = ChainList.filter(i => CROSS_SUPPORT_IMPORT_NETWORK.includes(i.id))
 
 export default function Basic({ goNext }: { goNext: () => void }) {
   const { buildingDaoData, updateBasic } = useCrossBuildingDataCallback()
@@ -94,7 +94,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
               </Select>
             </Box>
           </div>
-          {/* <div className="input-item">
+          <div className="input-item">
             <span className="label">Dao Name</span>
             <div className="suffix-wrapper">
               <Input
@@ -104,7 +104,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
                 onChange={e => updateBasicCall('daoName', e.target.value)}
               />
             </div>
-          </div> */}
+          </div>
           <div className="input-item">
             <span className="label">Contract address</span>
             <div className="suffix-wrapper">

@@ -41,6 +41,12 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "ty",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "from",
         "type": "address"
@@ -78,18 +84,18 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isSuccess",
+        "type": "bool"
       }
     ],
-    "name": "OwnershipTransferred",
+    "name": "ExecuteProposal",
     "type": "event"
   },
   {
@@ -244,6 +250,71 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "content",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "user",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "weight",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "chainId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "voting",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nonce",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum CrossGovVoting.SigType",
+            "name": "sigType",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct CrossGovVoting.VoteInfo",
+        "name": "voteInfo",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "createContractProposal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "curId",
     "outputs": [
@@ -267,6 +338,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "executeProposal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -342,6 +426,11 @@
             "type": "uint256"
           },
           {
+            "internalType": "enum ICrossGovVotingInterface.ProposalType",
+            "name": "proType",
+            "type": "uint8"
+          },
+          {
             "internalType": "address",
             "name": "creator",
             "type": "address"
@@ -385,6 +474,11 @@
             "internalType": "enum ICrossGovVotingInterface.ProposalStatus",
             "name": "status",
             "type": "uint8"
+          },
+          {
+            "internalType": "bytes",
+            "name": "data",
+            "type": "bytes"
           }
         ],
         "internalType": "struct ICrossGovVotingInterface.Proposal",
@@ -496,39 +590,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

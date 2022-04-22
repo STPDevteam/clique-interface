@@ -10,7 +10,7 @@ import {
 const now = () => new Date().getTime()
 
 export interface TransactionTag {
-  type: 'claimReserved' | 'proposalVote' | 'proposalCancel' | 'claimProposalToken' | 'proposalExec'
+  type: 'claimReserved' | 'proposalVote' | 'proposalCancel' | 'claimProposalToken' | 'proposalExec' | 'airdropPublish'
   key: string
   id: number | string
 }

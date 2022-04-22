@@ -19,6 +19,7 @@ import VOTING_ABI from '../constants/abis/voting.json'
 import ExternalDAO_ABI from '../constants/abis/ExternalDAO.json'
 import ExternalToken_ABI from '../constants/abis/ExternalToken.json'
 import ExternalVoting_ABI from '../constants/abis/ExternalVoting.json'
+import CrossDAO_ABI from '../constants/abis/CrossDAO.json'
 import CrossVoting_ABI from '../constants/abis/CrossVoting.json'
 import FARM_STAKING_ABI from '../constants/abis/farm_staking.json'
 
@@ -103,6 +104,9 @@ export function useSTPTokenContract(tokenAddress: string | undefined): Contract 
 
 export function useExternalDaoContract(daoAddress: string | undefined): Contract | null {
   return useContract(daoAddress, ExternalDAO_ABI, true)
+}
+export function useCrossDaoContract(daoAddress: string | undefined): Contract | null {
+  return useContract(daoAddress, CrossDAO_ABI, true)
 }
 
 export function useExternalVotingContract(votingAddress: string | undefined): Contract | null {

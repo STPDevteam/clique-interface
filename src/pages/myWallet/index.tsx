@@ -9,9 +9,9 @@ import { MyWalletHistoryProp, useAccountDaoAssets, useMyWalletHistory } from 'ho
 import { ExternalLink } from 'theme/components'
 import { shortenHashAddress, timeStampToFormat } from 'utils/dao'
 import { getEtherscanLink, shortenAddress } from 'utils'
-import { DefaultChainId } from '../../constants'
+import { DefaultChainId, ZERO_ADDRESS } from '../../constants'
 import { useCurrencyBalance, useSTPToken, useToken, useTokenBalance } from 'state/wallet/hooks'
-import { Currency, ETHER, TokenAmount } from 'constants/token'
+import { Currency, CurrencyAmount, ETHER, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
 
 const StyledHeader = styled(Box)({
@@ -248,15 +248,25 @@ function ShowTokenAmtInfo({
     mark: string
   }
 }) {
+  const { chainId } = useActiveWeb3React()
   const token = useToken(data.address)
   const bal = useMemo(() => {
+    if (data.address === ZERO_ADDRESS) {
+      return CurrencyAmount.ether(data.value)
+    }
     if (!token) return undefined
     return new TokenAmount(token, data.value)
-  }, [data.value, token])
+  }, [data.address, data.value, token])
+
+  const symbol = useMemo(() => {
+    if (data.address === ZERO_ADDRESS) return Currency.get_ETH_TOKEN(chainId || 1)?.symbol
+    return token?.symbol
+  }, [chainId, data.address, token?.symbol])
+
   return (
     <Typography variant="h6">
       {data.mark}
-      {bal?.toSignificant(6, { groupSeparator: ',' })} {token?.symbol}
+      {bal?.toSignificant(6, { groupSeparator: ',' })} {symbol}
     </Typography>
   )
 }

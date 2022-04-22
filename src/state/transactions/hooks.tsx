@@ -115,7 +115,7 @@ export function useUserHasSubmittedClaim(
 }
 
 export function useTagCompletedTx(
-  type: 'claimReserved' | 'proposalVote' | 'proposalCancel' | 'claimProposalToken' | 'proposalExec',
+  type: 'claimReserved' | 'proposalVote' | 'proposalCancel' | 'claimProposalToken' | 'proposalExec' | 'airdropPublish',
   key: string | undefined,
   id: number | string | undefined
 ) {

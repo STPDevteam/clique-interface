@@ -127,7 +127,7 @@ export const DAO_FACTORY_ADDRESS = {
 }
 
 export const FARM_STAKING_ADDRESS = {
-  [ChainId.RINKEBY]: '0xC23C09cc65429ac1519f633dF07312da935C3C0D',
+  [ChainId.RINKEBY]: '0xd533AB014c8138fA99A24169Ed31a19c0b42CC26',
   [ChainId.STP]: '',
   [ChainId.KLAYTN_BAOBAB]: ''
 }
@@ -193,8 +193,10 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
     }
   ]
 }
+export const EXTERNAL_SUPPORT_NETWORK = [4]
 
-export const CROSS_SUPPORT_NETWORK = [4]
+export const CROSS_SUPPORT_IMPORT_NETWORK = [4]
+export const CROSS_SUPPORT_CREATE_NETWORK = [72]
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
 export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
 // export const serverBaseUrl = isDaoframeSite() ? 'https://testapi.daoframe.com/' : 'https://testapi.daoframe.com/'

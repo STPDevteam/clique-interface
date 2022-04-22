@@ -278,3 +278,28 @@ export function useTokenByChain(
     }
   }, [contract, curChainId, decimals, name, symbol, tokenAddress, totalSupply])
 }
+
+export function useTokenBalanceByChain(
+  account: string | undefined,
+  tokenAddress: string | undefined,
+  curChainId: ChainId | undefined
+) {
+  const [balance, setBalance] = useState<string>()
+
+  const contract = useMemo(() => {
+    if (!tokenAddress || !curChainId) return undefined
+    const library = getOtherNetworkLibrary(curChainId)
+    if (!library) return undefined
+    return getContract(tokenAddress, ERC20_ABI, library, undefined)
+  }, [curChainId, tokenAddress])
+
+  useEffect(() => {
+    if (!contract) {
+      setBalance(undefined)
+      return
+    }
+    contract.balanceOf(account).then((res: string) => setBalance(res.toString()))
+  }, [account, contract])
+
+  return balance
+}

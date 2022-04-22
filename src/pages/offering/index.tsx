@@ -112,9 +112,13 @@ export default function Offering() {
   const currentPublicMaxInput = useMemo(() => {
     if (!daoInfo?.pubSale || !remainingPubSaleAmount || !currentAccountPubSoldTokenAmount) return '0'
     if (daoInfo.pubSale.pledgeLimitMax.greaterThan('0')) {
-      return daoInfo.pubSale.pledgeLimitMax.subtract(currentAccountPubSoldTokenAmount).toSignificant()
+      const _selfAmount = daoInfo.pubSale.pledgeLimitMax.subtract(currentAccountPubSoldTokenAmount)
+      return _selfAmount.greaterThan(remainingPubSaleAmount)
+        ? remainingPubSaleAmount.toSignificant()
+        : _selfAmount.toSignificant()
+    } else {
+      return remainingPubSaleAmount.toSignificant()
     }
-    return remainingPubSaleAmount.toSignificant()
   }, [currentAccountPubSoldTokenAmount, daoInfo?.pubSale, remainingPubSaleAmount])
 
   const isPriSaleAccount = useMemo(() => {
@@ -594,7 +598,10 @@ export default function Offering() {
                     <StyledBetween>
                       <Typography variant="body1">Pay</Typography>
                       <Typography variant="body1">
-                        Balance: {payBalance ? payBalance?.toSignificant(6, { groupSeparator: ',' }) : '-'}{' '}
+                        Balance:{' '}
+                        {receiveTokenIsEther
+                          ? ethBalance?.toSignificant(6, { groupSeparator: ',' }) || '-'
+                          : payBalance?.toSignificant(6, { groupSeparator: ',' }) || '-'}{' '}
                         {daoInfo?.receiveToken?.symbol}
                       </Typography>
                     </StyledBetween>
