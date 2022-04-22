@@ -278,7 +278,7 @@ export default function Configuration({
             </div>
           </div>
           <div className="input-item votes">
-            <span className="label">Votes</span>
+            <span className="label">Tokens</span>
             <Tooltip placement="top" title={toFormatGroup(minCreateProposalNumber)}>
               <Input
                 className="input-common"
