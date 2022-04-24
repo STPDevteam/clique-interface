@@ -1,9 +1,10 @@
 import { Box, styled, Typography } from '@mui/material'
-import { Select } from 'antd'
+// import { Select } from 'antd'
 import { ReactComponent as StakingSVG } from 'assets/svg/staking_cover.svg'
-import IconDownArrow from 'components/ModalSTP/assets/icon-down-arrow.svg'
+import OutlineButton from 'components/Button/OutlineButton'
+// import IconDownArrow from 'components/ModalSTP/assets/icon-down-arrow.svg'
 
-const { Option } = Select
+// const { Option } = Select
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -25,7 +26,17 @@ export default function index() {
             <Typography variant="body2" mb="10px">
               Stake STPT(ERC20) to earn more tokens.
             </Typography>
-            <Box className="input-assets-selector" width={220}>
+            <OutlineButton
+              onClick={() => {
+                window.open(
+                  'https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xde7d85157d9714eadf595045cc12ca4a5f3e2adb&chain=mainnet'
+                )
+              }}
+              width={220}
+            >
+              Buy STPT
+            </OutlineButton>
+            {/* <Box className="input-assets-selector" width={220}>
               <Select value={'Buy STPT'} suffixIcon={<img src={IconDownArrow} />} onChange={() => {}}>
                 <Option value={''} style={{ color: '#798488' }}>
                   Buy STPT
@@ -48,7 +59,7 @@ export default function index() {
                   </Option>
                 ))}
               </Select>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       </Box>

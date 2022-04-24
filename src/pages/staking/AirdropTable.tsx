@@ -29,7 +29,6 @@ export default function AirdropTable() {
   const { list: airdropListData, loading: airdropListLoading, page: airdropListPage } = useAirdropList()
   const curBlockNumber = useBlockNumber()
   const curBlockTime = useTimeStampByBlockNumber(curBlockNumber)
-  console.log('🚀 ~ file: AirdropTable.tsx ~ line 32 ~ AirdropTable ~ curBlockTime', curBlockTime)
 
   const airdropList = useMemo(
     () =>
