@@ -19,6 +19,9 @@ const VerseTestNetwork = new NetworkConnector({
 const KlaytnTestNetwork = new NetworkConnector({
   urls: { 1001: 'https://public-node-api.klaytnapi.com/v1/baobab' }
 })
+const PolygonTestNetwork = new NetworkConnector({
+  urls: { 80001: 'https://matic-mumbai.chainstacklabs.com' }
+})
 
 export function getOtherNetworkLibrary(chainId: number) {
   switch (chainId) {
@@ -34,6 +37,8 @@ export function getOtherNetworkLibrary(chainId: number) {
       return new Web3Provider(VerseTestNetwork.provider as any)
     case 1001:
       return new Web3Provider(KlaytnTestNetwork.provider as any)
+    case 80001:
+      return new Web3Provider(PolygonTestNetwork.provider as any)
     default:
       return undefined
   }

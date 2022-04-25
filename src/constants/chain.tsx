@@ -3,13 +3,17 @@ import { ReactComponent as ETH } from 'assets/svg/eth_logo.svg'
 import EthUrl from 'assets/svg/eth_logo.svg'
 import STPSvg from '../assets/images/icon-token.svg'
 import { ReactComponent as STPLogo } from '../assets/images/icon-token.svg'
+import MaticSvg from '../assets/svg/matic.svg'
+import { ReactComponent as MaticLogo } from '../assets/svg/matic.svg'
 import KlaytnSvg from '../assets/svg/klaytn_logo.svg'
 import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
 
 export enum ChainId {
   RINKEBY = 4,
   STP = 72,
-  KLAYTN_BAOBAB = 1001
+  KLAYTN_BAOBAB = 1001,
+  MATIC = 137,
+  POLYGON_TESTNET = 80001
 }
 
 export const ChainList = [
@@ -36,6 +40,14 @@ export const ChainList = [
     name: 'Klaytn Baobab',
     id: ChainId.KLAYTN_BAOBAB,
     hex: '0x3e9'
+  },
+  {
+    icon: <MaticLogo />,
+    logo: MaticSvg,
+    symbol: 'Polygon Testnet',
+    name: 'Polygon Testnet',
+    id: ChainId.POLYGON_TESTNET,
+    hex: '0x13881'
   }
 ]
 

@@ -152,14 +152,14 @@ function ClaimOperation({ item, curBlockTime }: { item: AirdropResProp; curBlock
     }
     if (curBlockTime < item.startTime) {
       return (
-        <Button disabled height="24px" width="140px" style={{ borderRadius: '4px', fontSize: 12 }}>
+        <Button disabled height="24px" width="160px" style={{ borderRadius: '4px', fontSize: 12 }}>
           start at <Timer showDay timer={item.startTime} />
         </Button>
       )
     }
     if (!claimable || !JSBI.GT(JSBI.BigInt(claimable), JSBI.BigInt(0)) || claimed === undefined || claimed) {
       return (
-        <Button disabled height="24px" width="140px" style={{ borderRadius: '4px', fontSize: 12 }}>
+        <Button disabled height="24px" width="160px" style={{ borderRadius: '4px', fontSize: 12 }}>
           Claim
         </Button>
       )
