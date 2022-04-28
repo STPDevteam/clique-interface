@@ -107,5 +107,17 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://public-node-api.klaytnapi.com/v1/baobab'],
     blockExplorerUrls: ['https://baobab.scope.klaytn.com/']
+  },
+  [ChainId.POLYGON_TESTNET]: {
+    chainId: '0x13881',
+    chainName: 'Polygon Testnet',
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+      logo: MaticSvg
+    },
+    rpcUrls: ['https://matic-mumbai.chainstacklabs.com'],
+    blockExplorerUrls: ['https://mumbai.polygonscan.com/']
   }
 }
