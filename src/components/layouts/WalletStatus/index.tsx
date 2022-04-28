@@ -53,7 +53,6 @@ export default function Index() {
               Staking
             </Typography>
           </OutlineButton>
-          <NetworkSelect />
           {!isDaoframeSite() && (
             <OutlineButton width={140}>
               <Typography variant="h6" onClick={() => history.push('/my_wallet')}>
@@ -61,6 +60,7 @@ export default function Index() {
               </Typography>
             </OutlineButton>
           )}
+          <NetworkSelect />
           <OutlineButton
             onClick={toggleWalletModal}
             width={160}

@@ -34,7 +34,7 @@ export default function AirdropTable() {
     () =>
       airdropListData.map(item => ({
         token: (
-          <Box display={'flex'} alignItems="center" gap="2px" justifyContent={'center'}>
+          <Box display={'flex'} alignItems="center" gap="2px">
             <Image width={'24px'} height="24px" src={item.tokenLogo} />
             <TableText>{item.token?.name || '--'}</TableText>
             {item.mediumLink && (
@@ -67,12 +67,12 @@ export default function AirdropTable() {
         rowKey={'id'}
         pagination={false}
       >
-        <Column title="Token" dataIndex="token" key="token" align="center" />
-        <Column align="center" title="Total airdrop" dataIndex="totalAirdrop" key="totalAirdrop" />
+        <Column title="Token" dataIndex="token" key="token" align="left" />
+        <Column align="right" title="Total airdrop" dataIndex="totalAirdrop" key="totalAirdrop" />
         <Column align="center" title="Start time(estimate)" dataIndex="startDate" key="startDate" />
         {/* <Column align="center" title="Start block number" dataIndex="blockNumber" key="blockNumber" /> */}
-        <Column align="center" title="My est. rewards" dataIndex="rewards" key="rewards" />
-        <Column title="Claimed" dataIndex="claimed" key="claimed" align="center" />
+        <Column align="right" title="My est. rewards" dataIndex="rewards" key="rewards" />
+        <Column title="Claimed" dataIndex="claimed" key="claimed" align="right" />
         <Column title="Operation" dataIndex="operation" key="operation" align="center" />
       </Table>
 
