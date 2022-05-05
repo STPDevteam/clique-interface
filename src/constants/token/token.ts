@@ -72,5 +72,13 @@ export const WETH = {
     18,
     'WHT',
     'Wrapped HT'
+  ),
+  [ChainId.MATIC]: new Token(ChainId.MATIC, '0x5545153ccfca01fbd7dd11c0b23ba694d9509a6f', 18, 'WHT', 'Wrapped HT'),
+  [ChainId.POLYGON_TESTNET]: new Token(
+    ChainId.POLYGON_TESTNET,
+    '0x5545153ccfca01fbd7dd11c0b23ba694d9509a6f',
+    18,
+    'WHT',
+    'Wrapped HT'
   )
 }

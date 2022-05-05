@@ -8,6 +8,7 @@ import Rule from './rule'
 import Review from './review'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks'
+import { BASE_DAO_SUPPORT_NETWORK } from '../../constants'
 
 const stepItems = ['Basic', 'Distribution', 'Rule', 'Review'] as const
 
@@ -17,10 +18,13 @@ export default function Index() {
   const history = useHistory()
   const [step, setStep] = useState<Step>('Basic')
   const goToStep = useCallback((step: Step) => setStep(step), [])
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   useEffect(() => {
-    if (!account) history.replace('/create')
-  }, [account, history])
+    if (!account || !chainId || !BASE_DAO_SUPPORT_NETWORK.includes(chainId)) {
+      history.replace('/create')
+      return
+    }
+  }, [account, chainId, history])
 
   const goBack = useCallback(() => {
     const index = stepItems.findIndex(item => item === step)

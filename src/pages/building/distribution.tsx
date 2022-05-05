@@ -609,7 +609,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Typography variant="h6">Total value</Typography>
                 <Typography variant="h6">
-                  {toFormatGroup(currentUsedTokenAmount.privateEquivalentEstimate, 1)}{' '}
+                  {toFormatGroup(currentUsedTokenAmount.privateEquivalentEstimate, 6)}{' '}
                   {distribution.privateReceivingToken}
                 </Typography>
               </Box>
@@ -772,7 +772,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Typography variant="h6">Total value</Typography>
                 <Typography variant="h6">
-                  {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate, 1)}{' '}
+                  {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate, 6)}{' '}
                   {distribution.privateReceivingToken}
                 </Typography>
               </Box>

@@ -117,7 +117,8 @@ export function useUserHasSubmittedClaim(
 export function useTagCompletedTx(
   type: 'claimReserved' | 'proposalVote' | 'proposalCancel' | 'claimProposalToken' | 'proposalExec' | 'airdropPublish',
   key: string | undefined,
-  id: number | string | undefined
+  id: number | string | undefined,
+  isRecent = false
 ) {
   const allTransactions = useAllTransactions()
   const { account } = useActiveWeb3React()
@@ -133,14 +134,26 @@ export function useTagCompletedTx(
         } else {
           const tagTx = tx.tag
           if (!tagTx) continue
-          if (tagTx.type === type && tagTx.key === key && tagTx.id === id) {
-            const rt = tx.receipt as any
-            return rt?.status !== 1 && isTransactionRecent(tx)
+          if (isRecent) {
+            if (
+              tagTx.type === type &&
+              tagTx.key === key &&
+              tagTx.id === id &&
+              new Date().getTime() - tx.addedTime < 10 * 60 * 1000
+            ) {
+              return isTransactionRecent(tx)
+            }
+            continue
+          } else {
+            if (tagTx.type === type && tagTx.key === key && tagTx.id === id) {
+              const rt = tx.receipt as any
+              return rt?.status !== 1 && isTransactionRecent(tx)
+            }
+            continue
           }
-          continue
         }
       }
     }
     return undefined
-  }, [allTransactions, account, type, key, id])
+  }, [key, id, allTransactions, account, isRecent, type])
 }

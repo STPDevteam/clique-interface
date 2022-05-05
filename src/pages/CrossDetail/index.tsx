@@ -13,8 +13,8 @@ import { shortenAddress } from 'utils'
 import { ProposalInfoProp } from 'hooks/useVoting'
 import { Spin } from 'antd'
 import { useActiveWeb3React } from 'hooks'
-import { ChainId } from 'constants/chain'
 import { Box } from '@mui/material'
+import { CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
 
 export default function Index() {
   const links = ['Proposal', 'Configuration']
@@ -34,7 +34,8 @@ export default function Index() {
   }, [daoAddress])
 
   if (!daoInfo?.votingAddress) return null
-  if (chainId !== ChainId.STP) return <Box padding="20px">Cross-chain Governance is only available in verse</Box>
+  if (!chainId || !CROSS_SUPPORT_CREATE_NETWORK.includes(chainId))
+    return <Box padding="20px">Cross-chain Governance unavailable on current chain</Box>
 
   return (
     <Spin spinning={!daoInfo?.token} tip="Dao creating" delay={1000} size="large">

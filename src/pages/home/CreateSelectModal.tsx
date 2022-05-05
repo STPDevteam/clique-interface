@@ -2,9 +2,11 @@ import { Box, styled, Typography } from '@mui/material'
 import Modal from '../../components/Modal'
 import { ReactComponent as CreateTokenIcon } from 'assets/svg/create_token_icon.svg'
 import { ReactComponent as ExternalTokenIcon } from 'assets/svg/external_token_icon.svg'
+import { ReactComponent as CrossTokenIcon } from 'assets/svg/cross_token_icon.svg'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks'
-import { EXTERNAL_SUPPORT_NETWORK, CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
+import { BASE_DAO_SUPPORT_NETWORK, EXTERNAL_SUPPORT_NETWORK, CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
+import { triggerSwitchChain } from 'utils/triggerSwitchChain'
 
 const Item = styled(Box)({
   padding: '30px 10px 20px',
@@ -26,7 +28,7 @@ const Item = styled(Box)({
 
 export default function CreateSelectModal({ hide }: { hide: () => void }) {
   const history = useHistory()
-  const { chainId } = useActiveWeb3React()
+  const { chainId, library, account } = useActiveWeb3React()
 
   return (
     <Modal closeIcon maxWidth={'700px'}>
@@ -36,8 +38,12 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
       <Box display={'flex'} justifyContent="center" gap={'20px'} padding="40px 10px 10px">
         <Item
           onClick={() => {
-            hide()
-            history.replace('/building')
+            if (!BASE_DAO_SUPPORT_NETWORK.includes(chainId || 0)) {
+              account && triggerSwitchChain(library, BASE_DAO_SUPPORT_NETWORK[0], account)
+            } else {
+              hide()
+              history.replace('/building')
+            }
           }}
         >
           <Box display={'grid'} gap="24px" justifyItems={'center'} alignItems="center">
@@ -52,6 +58,8 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
             if (chainId && EXTERNAL_SUPPORT_NETWORK.includes(chainId)) {
               hide()
               history.replace('/external_building')
+            } else {
+              account && triggerSwitchChain(library, EXTERNAL_SUPPORT_NETWORK[0], account)
             }
           }}
         >
@@ -73,11 +81,13 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
             if (chainId && CROSS_SUPPORT_CREATE_NETWORK.includes(chainId)) {
               hide()
               history.replace('/cross_building')
+            } else {
+              account && triggerSwitchChain(library, CROSS_SUPPORT_CREATE_NETWORK[0], account)
             }
           }}
         >
           <Box display={'grid'} gap="24px" justifyItems={'center'} alignItems="center">
-            <ExternalTokenIcon />
+            <CrossTokenIcon />
             <Typography
               variant="body2"
               sx={{ wordBreak: 'break-word' }}
@@ -85,7 +95,7 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
               fontWeight={500}
               color="#22304A"
             >
-              Cross-chain Governance (Verse)
+              Cross-chain Governance (Verse & Polygon)
             </Typography>
           </Box>
         </Item>

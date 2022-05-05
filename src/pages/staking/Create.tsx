@@ -141,7 +141,7 @@ function ClaimTotal({ item }: { item: MyAirdropResProp }) {
 }
 
 function PublishButton({ id, event }: { id: number; event: () => void }) {
-  const isPublishing = useTagCompletedTx('airdropPublish', '', id)
+  const isPublishing = useTagCompletedTx('airdropPublish', '', id, true)
 
   return (
     <Button

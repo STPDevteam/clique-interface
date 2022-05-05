@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { faucetClaimTT } from 'utils/fetch/faucet'
 import { Alert, message } from 'antd'
 import { Box } from '@mui/material'
+import { ChainListMap } from 'constants/chain'
 
 export default function TopAlert() {
   const { account, chainId } = useActiveWeb3React()
@@ -14,7 +15,7 @@ export default function TopAlert() {
           message.warning(res.data.msg)
           return
         }
-        message.success('Claim TT success on Klaytn Baobab')
+        message.success(`Claim TT success on ${ChainListMap[chainId].name}`)
       })
       .catch(() => {
         message.error('Network error')
@@ -23,7 +24,7 @@ export default function TopAlert() {
 
   return (
     <Box sx={{ position: 'fixed', width: '100%', zIndex: 999 }}>
-      {chainId === 1001 && account ? (
+      {(chainId === 1001 || chainId === 80001) && account ? (
         <Alert
           message={
             <>
