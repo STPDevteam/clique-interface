@@ -28,7 +28,7 @@ export default function Index() {
     },
     {
       icon: icon03,
-      title: 'Investment',
+      title: 'Investment DAO',
       desc: 'Manage investment decisions and fund usage based on community votes'
       // onClick: () => history.push('/building/settings/invest'),
       // action: 'Build'
@@ -41,8 +41,8 @@ export default function Index() {
     <main className="home">
       <h1>Create a DAO within a few clicks</h1>
       <p>
-        Build decentralized automated organization and issue governance token running on Verse and Ethereum blockchain
-        within a few clicks.
+        Build your decentralized autonomous organization and create its governance token running on Polygon through the
+        Ethereum blockchain
       </p>
       {account ? (
         <Button

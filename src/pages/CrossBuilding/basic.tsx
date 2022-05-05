@@ -63,7 +63,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
       <section className="basic">
         <div>
           <div className="input-item">
-            <span className="label">Base network</span>
+            <span className="label">Base network *</span>
             <Box className="input-assets-selector" width={'100%'}>
               <Select
                 value={basicData.baseChainId}
@@ -95,7 +95,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             </Box>
           </div>
           <div className="input-item">
-            <span className="label">Dao Name</span>
+            <span className="label">Dao Name *</span>
             <div className="suffix-wrapper">
               <Input
                 placeholder="Membership"
@@ -106,7 +106,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             </div>
           </div>
           <div className="input-item">
-            <span className="label">Contract address</span>
+            <span className="label">Contract address *</span>
             <div className="suffix-wrapper">
               <Input
                 placeholder="Token contract address"
@@ -137,7 +137,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             </span>
           </Box>
           <div className="input-item">
-            <span className="label">Token Photo</span>
+            <span className="label">Token Photo *</span>
             <Box display={'flex'} alignItems={'center'} gap="5px">
               <IUpload setResult={val => updateBasicCall('tokenPhoto', val)} onPreviewStr={str => setPreviewStr(str)}>
                 <Button className="btn-upload" style={{ padding: 5 }}>
@@ -152,7 +152,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             </Box>
           </div>
           <div className="input-item">
-            <span className="label">Website (optional)</span>
+            <span className="label">Website URL</span>
             <Input
               placeholder="http://"
               maxLength={80}
@@ -161,7 +161,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             />
           </div>
           <div className="input-item">
-            <span className="label">Twitter (optional)</span>
+            <span className="label">Twitter Handle</span>
             <Input
               placeholder="@stptDAO"
               maxLength={80}
@@ -170,7 +170,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             />
           </div>
           <div className="input-item">
-            <span className="label">Discord (optional)</span>
+            <span className="label">Discord server link</span>
             <Input
               placeholder="https://discord.gg/abc"
               maxLength={80}
