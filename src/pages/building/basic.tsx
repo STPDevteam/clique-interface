@@ -52,7 +52,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
       <section className="basic">
         <div>
           <div className="input-item">
-            <span className="label">DAO Name</span>
+            <span className="label">DAO Name *</span>
             <div className="suffix-wrapper">
               <Input
                 placeholder="Membership"
@@ -73,7 +73,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
           </div>
           <Box className="input-item" display="grid !important" gridTemplateColumns="2fr 1fr" gap="20px">
             <Box display="grid">
-              <span className="label">Token Name</span>
+              <span className="label">Token Name *</span>
               <Input
                 placeholder="MEMBERSHIP"
                 maxLength={20}
@@ -84,7 +84,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
               />
             </Box>
             <Box display="grid">
-              <span className="label">Token Symbol</span>
+              <span className="label">Token Symbol *</span>
               <Input
                 placeholder="MBR"
                 maxLength={10}
@@ -99,7 +99,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
           </Box>
           <Box className="input-item" display="grid !important" gridTemplateColumns="2fr 1fr" gap="20px">
             <Box display="grid">
-              <span className="label">Token Supply</span>
+              <span className="label">Token Supply *</span>
               <Tooltip placement="top" title={toFormatGroup(basicData.tokenSupply)}>
                 <Input
                   placeholder="10000000000"
@@ -118,7 +118,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
               </Typography>
             </Box>
             <Box display="grid">
-              <span className="label">Token Decimals</span>
+              <span className="label">Token Decimals *</span>
               <InputNumber
                 placeholder="18"
                 className="input-number-common"
@@ -134,7 +134,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             </Box>
           </Box>
           <div className="input-item">
-            <span className="label">Token Photo</span>
+            <span className="label">Token Photo *</span>
             <Box display={'flex'} alignItems={'center'} gap="5px">
               <IUpload setResult={val => updateBasicCall('tokenPhoto', val)} onPreviewStr={str => setPreviewStr(str)}>
                 <Button className="btn-upload" style={{ padding: 5 }}>
@@ -149,7 +149,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             </Box>
           </div>
           <div className="input-item">
-            <span className="label">Website (optional)</span>
+            <span className="label">Website URL</span>
             <Input
               placeholder="http://"
               maxLength={80}
@@ -158,7 +158,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             />
           </div>
           <div className="input-item">
-            <span className="label">Twitter (optional)</span>
+            <span className="label">Twitter Handle</span>
             <Input
               placeholder="@stptDAO"
               maxLength={80}
@@ -167,7 +167,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             />
           </div>
           <div className="input-item">
-            <span className="label">Discord (optional)</span>
+            <span className="label">Discord server link</span>
             <Input
               placeholder="https://discord.gg/abc"
               maxLength={80}

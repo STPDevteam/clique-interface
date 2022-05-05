@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 // import { styled } from '@mui/material'
 import Layouts from '../components/layouts/index'
@@ -34,6 +34,10 @@ import BigNumber from 'bignumber.js'
 BigNumber.config({ EXPONENTIAL_AT: [-7, 40] })
 
 export default function App() {
+  useEffect(() => {
+    isDaoframeSite() && (document.title = 'framework')
+  }, [])
+
   return (
     <Suspense fallback={null}>
       <ModalProvider>
