@@ -9,6 +9,12 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import CreateSelectModal from './CreateSelectModal'
 import useModal from 'hooks/useModal'
+import { Box } from '@mui/material'
+import { ReactComponent as CreateTokenWhiteIcon } from '../../assets/svg/create_token_white_icon.svg'
+import { ReactComponent as SelectTokenWhiteIcon } from '../../assets/svg/select_token_white_icon.svg'
+import { BASE_DAO_SUPPORT_NETWORK } from '../../constants'
+import { triggerSwitchChain } from 'utils/triggerSwitchChain'
+import { useHistory } from 'react-router-dom'
 
 export default function Index() {
   const cardItems = [
@@ -34,8 +40,9 @@ export default function Index() {
       // action: 'Build'
     }
   ]
-  const { account } = useActiveWeb3React()
+  const { account, chainId, library } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
+  const history = useHistory()
   const { showModal, hideModal } = useModal()
   return (
     <main className="home">
@@ -45,12 +52,28 @@ export default function Index() {
         Ethereum blockchain
       </p>
       {account ? (
-        <Button
-          className="btn-common btn-01 btn-build"
-          onClick={() => showModal(<CreateSelectModal hide={hideModal} />)}
-        >
-          Build
-        </Button>
+        <Box display={'flex'} gap="30px">
+          <Button
+            className="btn-common btn-01 btn-build"
+            onClick={() => {
+              if (!BASE_DAO_SUPPORT_NETWORK.includes(chainId || 0)) {
+                account && triggerSwitchChain(library, BASE_DAO_SUPPORT_NETWORK[0], account)
+              } else {
+                history.replace('/building')
+              }
+            }}
+          >
+            <CreateTokenWhiteIcon />
+            Create a DAO and issue a new token
+          </Button>
+          <Button
+            className="btn-common btn-01 btn-build"
+            onClick={() => showModal(<CreateSelectModal hide={hideModal} />)}
+          >
+            <SelectTokenWhiteIcon />
+            Create a DAO using an existing token
+          </Button>
+        </Box>
       ) : (
         <Button className="btn-common btn-01 btn-build" onClick={toggleWalletModal}>
           Connect Wallet
