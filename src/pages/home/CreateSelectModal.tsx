@@ -1,11 +1,11 @@
 import { Box, styled, Typography } from '@mui/material'
 import Modal from '../../components/Modal'
-import { ReactComponent as CreateTokenIcon } from 'assets/svg/create_token_icon.svg'
-// import { ReactComponent as ExternalTokenIcon } from 'assets/svg/external_token_icon.svg'
+// import { ReactComponent as CreateTokenIcon } from 'assets/svg/create_token_icon.svg'
+import { ReactComponent as ExternalTokenIcon } from 'assets/svg/external_token_icon.svg'
 import { ReactComponent as CrossTokenIcon } from 'assets/svg/cross_token_icon.svg'
 import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks'
-import { CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
+import { CROSS_SUPPORT_CREATE_NETWORK, EXTERNAL_SUPPORT_NETWORK } from '../../constants'
 import { triggerSwitchChain } from 'utils/triggerSwitchChain'
 
 const Item = styled(Box)({
@@ -36,7 +36,7 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
         Select creation method
       </Typography>
       <Box display={'flex'} justifyContent="center" gap={'20px'} padding="40px 10px 10px">
-        <Item
+        {/* <Item
           onClick={() => {
             hide()
             history.replace('/building')
@@ -48,8 +48,8 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
               Create new tokens
             </Typography>
           </Box>
-        </Item>
-        {/* <Item
+        </Item> */}
+        <Item
           onClick={() => {
             if (chainId && EXTERNAL_SUPPORT_NETWORK.includes(chainId)) {
               hide()
@@ -71,7 +71,7 @@ export default function CreateSelectModal({ hide }: { hide: () => void }) {
               External Contracts (Rinkeby)
             </Typography>
           </Box>
-        </Item> */}
+        </Item>
         <Item
           onClick={() => {
             if (chainId && CROSS_SUPPORT_CREATE_NETWORK.includes(chainId)) {
