@@ -243,7 +243,6 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
   ]
 }
 export const EXTERNAL_SUPPORT_NETWORK = [4]
-
 export const BASE_DAO_SUPPORT_NETWORK = [4, 72, 1001]
 export const CROSS_SUPPORT_IMPORT_NETWORK = [4]
 export const CROSS_SUPPORT_CREATE_NETWORK = [72, 80001]

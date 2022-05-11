@@ -337,7 +337,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                           const _val = e.target.value
                           if (reg.test(_val)) {
                             // check max value
-                            const input = getCurrentInputMaxAmount(remainderTokenAmount, item.tokenNumber || '0', _val)
+                            const input = getCurrentInputMaxAmount(remainderTokenAmount, item.tokenNumber || '', _val)
                             updateReservedHolder(index, 'tokenNumber', input)
                           } else {
                             updateReservedHolder(index, 'tokenNumber', item.tokenNumber || '')
@@ -680,7 +680,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                           if (reg.test(_val)) {
                             const input = getCurrentInputMaxAmount(
                               remainderTokenAmount,
-                              distribution.publicSale.offeringAmount || '0',
+                              distribution.publicSale.offeringAmount || '',
                               _val
                             )
                             updatePublicSaleCall('offeringAmount', input)
