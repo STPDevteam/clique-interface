@@ -42,7 +42,7 @@ export function getCurrentInputMaxAmount(
   exclude: string | number,
   currentInput: string | number
 ) {
-  if (!remainderTotal || !currentInput) return '0'
+  if (!remainderTotal || !currentInput) return ''
   const max = new BigNumber(remainderTotal).plus(exclude || 0)
   if (max.gt(currentInput || '0')) return currentInput
   return max.toString()
