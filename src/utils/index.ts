@@ -36,6 +36,10 @@ interface ChainObject {
 }
 
 const chains: ChainObject = {
+  [ChainId.ETH]: {
+    link: 'https://etherscan.io',
+    builder: explorers.etherscan
+  },
   [ChainId.RINKEBY]: {
     link: 'https://rinkeby.etherscan.io',
     builder: explorers.etherscan

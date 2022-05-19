@@ -7,6 +7,7 @@ import EthUrl from 'assets/svg/eth_logo.svg'
 // import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
 
 export enum ChainId {
+  ETH = 1,
   RINKEBY = 4,
   STP = 72,
   KLAYTN_BAOBAB = 1001
@@ -16,11 +17,19 @@ export const ChainList = [
   {
     icon: <ETH />,
     logo: EthUrl,
-    symbol: 'Rinkeby',
-    name: 'Rinkeby Testnet',
-    id: ChainId.RINKEBY,
-    hex: '0x4'
+    symbol: 'ETH',
+    name: 'Ethereum Mainnet',
+    id: ChainId.ETH,
+    hex: '0x1'
   }
+  // {
+  //   icon: <ETH />,
+  //   logo: EthUrl,
+  //   symbol: 'Rinkeby',
+  //   name: 'Rinkeby Testnet',
+  //   id: ChainId.RINKEBY,
+  //   hex: '0x4'
+  // }
   // {
   //   icon: <STPLogo />,
   //   logo: STPSvg,
@@ -60,6 +69,18 @@ export const SUPPORTED_NETWORKS: {
     blockExplorerUrls: string[]
   }
 } = {
+  [ChainId.ETH]: {
+    chainId: '0x1',
+    chainName: 'Ethereum',
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+      logo: EthUrl
+    },
+    rpcUrls: ['https://mainnet.infura.io/v3'],
+    blockExplorerUrls: ['https://etherscan.com']
+  },
   // [ChainId.STP]: {
   //   chainId: '0x48',
   //   chainName: 'Verse',
