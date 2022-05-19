@@ -35,15 +35,17 @@ BigNumber.config({ EXPONENTIAL_AT: [-7, 40] })
 
 export default function App() {
   useEffect(() => {
-    const interval = setInterval(() => {
-      for (const item of document.querySelectorAll('.hide')) {
-        item?.remove()
-      }
-    }, 5000)
+    // const interval = setInterval(() => {
+    //   for (const item of document.querySelectorAll('.hide')) {
+    //     item?.remove()
+    //   }
+    // }, 5000)
 
-    return () => {
-      window.clearInterval(interval)
-    }
+    isDaoframeSite() && (document.title = 'framework')
+
+    // return () => {
+    //   window.clearInterval(interval)
+    // }
   }, [])
 
   return (

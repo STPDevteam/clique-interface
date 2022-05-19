@@ -19,14 +19,14 @@ export enum ChainId {
 }
 
 export const ChainList = [
-  {
-    icon: <ETH />,
-    logo: EthUrl,
-    symbol: 'ETH',
-    name: 'Ethereum Mainnet',
-    id: ChainId.ETH,
-    hex: '0x1'
-  },
+  // {
+  //   icon: <ETH />,
+  //   logo: EthUrl,
+  //   symbol: 'ETH',
+  //   name: 'Ethereum Mainnet',
+  //   id: ChainId.ETH,
+  //   hex: '0x1'
+  // },
   {
     icon: <ETH />,
     logo: EthUrl,
@@ -59,6 +59,14 @@ export const ChainList = [
     id: ChainId.POLYGON_TESTNET,
     hex: '0x13881'
   }
+  // {
+  //   icon: <MaticLogo />,
+  //   logo: MaticSvg,
+  //   symbol: 'Polygon',
+  //   name: 'Polygon',
+  //   id: ChainId.MATIC,
+  //   hex: '0x89'
+  // }
   // {
   //   icon: <ETH />,
   //   logo: EthUrl,
@@ -165,6 +173,18 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://matic-mumbai.chainstacklabs.com'],
     blockExplorerUrls: ['https://mumbai.polygonscan.com/']
+  },
+  [ChainId.MATIC]: {
+    chainId: '0x89',
+    chainName: 'Polygon',
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+      logo: MaticSvg
+    },
+    rpcUrls: ['https://rpc-mainnet.maticvigil.com'],
+    blockExplorerUrls: ['https://polygonscan.com/']
   }
   // [ChainId.KLAYTN_BAOBAB]: {
   //   chainId: '0x3e9',

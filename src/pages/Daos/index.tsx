@@ -52,8 +52,8 @@ export default function Index() {
           {/* <Search placeholder="DAO Name" onSearch={handleSearch} /> */}
         </div>
       )}
-      <div>
-        <Box className="dao-group-btn hide" display={'grid'} gridTemplateColumns={'100px 2fr'} mt={10}>
+      <Box mb={30} className={'hide'}>
+        <Box className="dao-group-btn" display={'grid'} gridTemplateColumns={'100px 2fr'} mt={10}>
           <div
             className={`one ${TypeTabs.DAO === currentTab ? 'active' : ''}`}
             onClick={() => setCurrentTab(TypeTabs.DAO)}
@@ -72,7 +72,7 @@ export default function Index() {
           the funds from the DAO contracts. Clique is open to anyone and there is risk interacting with the projects on
           the Clique. You should do your own research and understand the risks before committing your funds.
         </Typography> */}
-      </div>
+      </Box>
       {currentTab === TypeTabs.DAO && (
         <>
           {daoListLoading && (

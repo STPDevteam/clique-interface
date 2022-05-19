@@ -132,10 +132,10 @@ export const BLOCKED_ADDRESSES: string[] = [
 
 export const DAO_FACTORY_ADDRESS = {
   [ChainId.ETH]: '0x2454E875775D7081B6B4107dA7E68475285f9557',
-  [ChainId.RINKEBY]: '0xC7d4b559106B6a485B399dDC22e9bC2af244b8B7',
+  [ChainId.RINKEBY]: '0xFF89B2F05faF85993fe5c4e4C8439d10fA064D9f',
   [ChainId.STP]: '0x07Fb4B5Ed4E0F2b2e243DD7A68428592E4107CEa',
   [ChainId.KLAYTN_BAOBAB]: '0x9c5c378539ed8a7e5946329ee83b66ac42086359',
-  [ChainId.POLYGON_TESTNET]: '',
+  [ChainId.POLYGON_TESTNET]: '0xAf64127961e233331aC24e77e6590d8b96c3Da76',
   [ChainId.MATIC]: ''
 }
 
@@ -148,7 +148,7 @@ export const FARM_STAKING_ADDRESS = {
   [ChainId.POLYGON_TESTNET]: ''
 }
 
-export const DefaultChainId = ChainId.ETH
+export const DefaultChainId = ChainId.RINKEBY
 
 export const PriceDecimals = 12
 
@@ -158,7 +158,7 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
     {
       name: 'ETH',
       value: 'ETH',
-      chainId: 4,
+      chainId: 1,
       logo: ETHTokenImg,
       address: ZERO_ADDRESS,
       decimals: 18
@@ -222,9 +222,9 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
     {
       name: 'TT',
       value: 'TT',
-      chainId: 1001,
+      chainId: 137,
       logo: IconTokenSvg,
-      address: '0xfd8E6fc58E077546a320491438E3b712ab5147c6',
+      address: '',
       decimals: 18
     },
     {
@@ -240,7 +240,7 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
     {
       name: 'TT',
       value: 'TT',
-      chainId: 1001,
+      chainId: 80001,
       logo: IconTokenSvg,
       address: '0xfd8E6fc58E077546a320491438E3b712ab5147c6',
       decimals: 18
