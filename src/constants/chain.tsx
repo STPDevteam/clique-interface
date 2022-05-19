@@ -1,13 +1,14 @@
 import { Chain } from 'models/chain'
 import { ReactComponent as ETH } from 'assets/svg/eth_logo.svg'
 import EthUrl from 'assets/svg/eth_logo.svg'
-// import STPSvg from '../assets/images/icon-token.svg'
-// import { ReactComponent as STPLogo } from '../assets/images/icon-token.svg'
-// import { ReactComponent as STPLogo } from '../assets/images/icon-token.svg'
+import STPSvg from '../assets/images/icon-token.svg'
+import { ReactComponent as STPLogo } from '../assets/images/icon-token.svg'
 import MaticSvg from '../assets/svg/matic.svg'
 import { ReactComponent as MaticLogo } from '../assets/svg/matic.svg'
 import KlaytnSvg from '../assets/svg/klaytn_logo.svg'
 import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
+
+export const SUPPORTED_CHAIN_IDS = [137, 80001]
 
 export enum ChainId {
   ETH = 1,
@@ -18,15 +19,15 @@ export enum ChainId {
   POLYGON_TESTNET = 80001
 }
 
-export const ChainList = [
-  // {
-  //   icon: <ETH />,
-  //   logo: EthUrl,
-  //   symbol: 'ETH',
-  //   name: 'Ethereum Mainnet',
-  //   id: ChainId.ETH,
-  //   hex: '0x1'
-  // },
+export const AllChainList = [
+  {
+    icon: <ETH />,
+    logo: EthUrl,
+    symbol: 'ETH',
+    name: 'Ethereum Mainnet',
+    id: ChainId.ETH,
+    hex: '0x1'
+  },
   {
     icon: <ETH />,
     logo: EthUrl,
@@ -35,14 +36,14 @@ export const ChainList = [
     id: ChainId.RINKEBY,
     hex: '0x4'
   },
-  // {
-  //   icon: <STPLogo />,
-  //   logo: STPSvg,
-  //   symbol: 'Verse',
-  //   name: 'Verse Network',
-  //   id: ChainId.STP,
-  //   hex: '0x48'
-  // },
+  {
+    icon: <STPLogo />,
+    logo: STPSvg,
+    symbol: 'Verse',
+    name: 'Verse Network',
+    id: ChainId.STP,
+    hex: '0x48'
+  },
   {
     icon: <KlaytnLogo />,
     logo: KlaytnSvg,
@@ -58,40 +59,26 @@ export const ChainList = [
     name: 'Polygon Testnet',
     id: ChainId.POLYGON_TESTNET,
     hex: '0x13881'
+  },
+  {
+    icon: <MaticLogo />,
+    logo: MaticSvg,
+    symbol: 'Polygon',
+    name: 'Polygon',
+    id: ChainId.MATIC,
+    hex: '0x89'
+  },
+  {
+    icon: <KlaytnLogo />,
+    logo: KlaytnSvg,
+    symbol: 'Klaytn Baobab',
+    name: 'Klaytn Baobab',
+    id: ChainId.KLAYTN_BAOBAB,
+    hex: '0x3e9'
   }
-  // {
-  //   icon: <MaticLogo />,
-  //   logo: MaticSvg,
-  //   symbol: 'Polygon',
-  //   name: 'Polygon',
-  //   id: ChainId.MATIC,
-  //   hex: '0x89'
-  // }
-  // {
-  //   icon: <ETH />,
-  //   logo: EthUrl,
-  //   symbol: 'Rinkeby',
-  //   name: 'Rinkeby Testnet',
-  //   id: ChainId.RINKEBY,
-  //   hex: '0x4'
-  // }
-  // {
-  //   icon: <STPLogo />,
-  //   logo: STPSvg,
-  //   symbol: 'Verse',
-  //   name: 'Verse Network',
-  //   id: ChainId.STP,
-  //   hex: '0x48'
-  // },
-  // {
-  //   icon: <KlaytnLogo />,
-  //   logo: KlaytnSvg,
-  //   symbol: 'Klaytn Baobab',
-  //   name: 'Klaytn Baobab',
-  //   id: ChainId.KLAYTN_BAOBAB,
-  //   hex: '0x3e9'
-  // }
 ]
+
+export const ChainList = AllChainList.filter(v => SUPPORTED_CHAIN_IDS.includes(v.id))
 
 export const ChainListMap: {
   [key: number]: { icon: JSX.Element; link?: string; selectedIcon?: JSX.Element } & Chain
@@ -185,17 +172,17 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://rpc-mainnet.maticvigil.com'],
     blockExplorerUrls: ['https://polygonscan.com/']
+  },
+  [ChainId.KLAYTN_BAOBAB]: {
+    chainId: '0x3e9',
+    chainName: 'Klaytn Baobab',
+    nativeCurrency: {
+      name: 'Klaytn Baobab',
+      symbol: 'KLAY',
+      decimals: 18,
+      logo: KlaytnSvg
+    },
+    rpcUrls: ['https://api.baobab.klaytn.net:8651/'],
+    blockExplorerUrls: ['https://baobab.scope.klaytn.com/']
   }
-  // [ChainId.KLAYTN_BAOBAB]: {
-  //   chainId: '0x3e9',
-  //   chainName: 'Klaytn Baobab',
-  //   nativeCurrency: {
-  //     name: 'Klaytn Baobab',
-  //     symbol: 'KLAY',
-  //     decimals: 18,
-  //     logo: KlaytnSvg
-  //   },
-  //   rpcUrls: ['https://api.baobab.klaytn.net:8651/'],
-  //   blockExplorerUrls: ['https://baobab.scope.klaytn.com/']
-  // }
 }
