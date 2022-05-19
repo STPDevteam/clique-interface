@@ -29,6 +29,7 @@ import ShowTokenHolders from '../Daos/ShowTokenHolders'
 import ActiveBox from './ActiveBox'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 import { ZERO_ADDRESS } from '../../constants'
+import { useTagCompletedTx } from 'state/transactions/hooks'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -111,9 +112,13 @@ export default function Offering() {
   const currentPublicMaxInput = useMemo(() => {
     if (!daoInfo?.pubSale || !remainingPubSaleAmount || !currentAccountPubSoldTokenAmount) return '0'
     if (daoInfo.pubSale.pledgeLimitMax.greaterThan('0')) {
-      return daoInfo.pubSale.pledgeLimitMax.subtract(currentAccountPubSoldTokenAmount).toSignificant()
+      const _selfAmount = daoInfo.pubSale.pledgeLimitMax.subtract(currentAccountPubSoldTokenAmount)
+      return _selfAmount.greaterThan(remainingPubSaleAmount)
+        ? remainingPubSaleAmount.toSignificant()
+        : _selfAmount.toSignificant()
+    } else {
+      return remainingPubSaleAmount.toSignificant()
     }
-    return remainingPubSaleAmount.toSignificant()
   }, [currentAccountPubSoldTokenAmount, daoInfo?.pubSale, remainingPubSaleAmount])
 
   const isPriSaleAccount = useMemo(() => {
@@ -177,14 +182,24 @@ export default function Offering() {
   const partPriSaleCallback = usePartPriSaleCallback(daoInfo?.daoAddress)
   const partPubSaleCallback = usePartPubSaleCallback(daoInfo?.daoAddress)
 
+  const isReserving = useTagCompletedTx('claimReserved', '', daoInfo?.daoAddress)
+
+  const publicCurrencyAmount = useMemo(() => tryParseAmount(publicAmount, daoInfo?.token), [
+    daoInfo?.token,
+    publicAmount
+  ])
+
   const onPartPubSaleCallback = useCallback(() => {
-    const ca = tryParseAmount(publicAmount, daoInfo?.token)
-    if (!ca || !ca.greaterThan('0')) {
+    if (!publicCurrencyAmount || !publicCurrencyAmount.greaterThan('0')) {
       return
     }
     if (!currentPubReceiveTokenAmount) return
     showModal(<TransactionPendingModal />)
-    partPubSaleCallback(receiveTokenIsEther, currentPubReceiveTokenAmount.raw.toString(), ca.raw.toString())
+    partPubSaleCallback(
+      receiveTokenIsEther,
+      currentPubReceiveTokenAmount.raw.toString(),
+      publicCurrencyAmount.raw.toString()
+    )
       .then(() => {
         hideModal()
         setPublicAmount('')
@@ -199,10 +214,9 @@ export default function Offering() {
       })
   }, [
     currentPubReceiveTokenAmount,
-    daoInfo?.token,
+    publicCurrencyAmount,
     hideModal,
     partPubSaleCallback,
-    publicAmount,
     receiveTokenIsEther,
     showModal
   ])
@@ -319,6 +333,14 @@ export default function Offering() {
     }
     if (!currentPubReceiveTokenAmount) return <OutlineButton disabled>Pay</OutlineButton>
 
+    if (!daoInfo?.pubSale || !publicCurrencyAmount) return null
+    if (
+      daoInfo.pubSale.pledgeLimitMin.greaterThan('0') &&
+      daoInfo.pubSale.pledgeLimitMin.greaterThan(publicCurrencyAmount)
+    ) {
+      return <OutlineButton disabled>Amount is too small</OutlineButton>
+    }
+
     if (receiveTokenIsEther) {
       if (!ethBalance || ethBalance.lessThan(currentPubReceiveTokenAmount)) {
         return <OutlineButton disabled>Balance Insufficient</OutlineButton>
@@ -351,6 +373,8 @@ export default function Offering() {
     account,
     pubPriSaleIsOpen,
     currentPubReceiveTokenAmount,
+    daoInfo?.pubSale,
+    publicCurrencyAmount,
     receiveTokenIsEther,
     currentPublicMaxInput,
     onPartPubSaleCallback,
@@ -380,12 +404,20 @@ export default function Offering() {
     if (isReservedClaimed) {
       return <OutlineButton disabled>Claimed</OutlineButton>
     }
+    if (isReserving) {
+      return (
+        <OutlineButton disabled>
+          Claiming
+          <Dots />
+        </OutlineButton>
+      )
+    }
     if (!isReservedAccount || isReservedAccount.isLocked) {
-      return <OutlineButton disabled>Lock tIme</OutlineButton>
+      return <OutlineButton disabled>Lock time</OutlineButton>
     }
 
     return <OutlineButton onClick={onReservedClaim}>Claim</OutlineButton>
-  }, [account, isReservedAccount, isReservedClaimed, onReservedClaim, toggleWalletModal])
+  }, [account, isReservedAccount, isReservedClaimed, isReserving, onReservedClaim, toggleWalletModal])
 
   return (
     <div>
@@ -395,7 +427,7 @@ export default function Offering() {
         </Typography>
         <Box display={'flex'} gap="15px" alignItems={'center'}>
           <Typography fontSize={16}>
-            <ShowTokenHolders address={daoInfo?.token?.address} /> Holders
+            <ShowTokenHolders address={daoInfo?.token?.address} /> Members
           </Typography>
           {daoInfo?.link.website && <ExternalLink href={daoInfo.link.website}>{daoInfo.link.website}</ExternalLink>}
           {daoInfo?.link.twitter && (
@@ -468,9 +500,9 @@ export default function Offering() {
                   <StyledBetween mt={10}>
                     <Box>
                       <Typography variant="inherit" color={'#767676'}>
-                        Holders
+                        Members
                       </Typography>
-                      <Typography variant="h6">-</Typography>
+                      <ShowTokenHolders address={daoInfo?.token?.address} />
                     </Box>
                     <Box textAlign={'right'}>
                       <Typography variant="inherit" color={'#767676'}>
@@ -488,7 +520,7 @@ export default function Offering() {
                   About
                 </div>
                 <div className={`item ${tabInfo === 'active' ? 'active' : ''}`} onClick={() => setTabInfo('active')}>
-                  Active
+                  Activity
                 </div>
               </StyledTabBox>
               {tabInfo === 'about' && <Typography>{daoInfo?.introduction}</Typography>}
@@ -566,7 +598,10 @@ export default function Offering() {
                     <StyledBetween>
                       <Typography variant="body1">Pay</Typography>
                       <Typography variant="body1">
-                        Balance: {payBalance ? payBalance?.toSignificant(6, { groupSeparator: ',' }) : '-'}{' '}
+                        Balance:{' '}
+                        {receiveTokenIsEther
+                          ? ethBalance?.toSignificant(6, { groupSeparator: ',' }) || '-'
+                          : payBalance?.toSignificant(6, { groupSeparator: ',' }) || '-'}{' '}
                         {daoInfo?.receiveToken?.symbol}
                       </Typography>
                     </StyledBetween>
@@ -589,7 +624,7 @@ export default function Offering() {
                     />
                   </Box>
                   <Typography variant="body1">
-                    Claimable balance: {toFormatGroup(currentPublicMaxInput)} {daoInfo?.token?.symbol}
+                    Claimable amount: {toFormatGroup(currentPublicMaxInput)} {daoInfo?.token?.symbol}
                   </Typography>
                   <Typography variant="body1" fontSize={10} mt={10}>
                     *You should do your own research and understand the risks before committing you funds.

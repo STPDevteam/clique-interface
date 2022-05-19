@@ -51,6 +51,14 @@ const chains: ChainObject = {
   [ChainId.KLAYTN_BAOBAB]: {
     link: 'https://baobab.scope.klaytn.com',
     builder: explorers.etherscan
+  },
+  [ChainId.MATIC]: {
+    link: 'https://polygonscan.com/',
+    builder: explorers.etherscan
+  },
+  [ChainId.POLYGON_TESTNET]: {
+    link: 'https://mumbai.polygonscan.com',
+    builder: explorers.etherscan
   }
 }
 

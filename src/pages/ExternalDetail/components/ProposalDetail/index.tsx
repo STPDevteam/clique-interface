@@ -24,6 +24,7 @@ import JSBI from 'jsbi'
 // import { useResolveVotingResultCallback } from 'hooks/useResolveVotingResultCallback'
 import { useExecuteProposalCallback } from 'hooks/useExecuteProposalCallback'
 import TimelineStatus from 'pages/DaoDetail/components/ProposalDetail/TimelineStatus'
+import { useTagCompletedTx } from 'state/transactions/hooks'
 
 export default function Index({
   detail,
@@ -34,7 +35,8 @@ export default function Index({
   onBack: () => void
   daoInfo: ExternalDaoInfoProps
 }) {
-  const voteCallback = useVoteCallback(daoInfo.votingAddress)
+  const voteCallback = useVoteCallback(daoInfo.votingAddress, 'external_' + detail.id)
+  const isVoting = useTagCompletedTx('proposalVote', 'external_' + detail.id, daoInfo.votingAddress)
   const balanceOfAt = useBalanceOfAt(daoInfo.token?.address, detail.blkHeight)
   const myDaoBalanceAt = useMemo(() => {
     if (!balanceOfAt || !daoInfo.token) return undefined
@@ -105,7 +107,8 @@ export default function Index({
   )
 
   // const resolveVotingResultCallback = useResolveVotingResultCallback(daoInfo.votingAddress)
-  const executeProposalCallback = useExecuteProposalCallback(daoInfo.votingAddress)
+  const executeProposalCallback = useExecuteProposalCallback(daoInfo.votingAddress, 'external_' + detail.id)
+  const isProposalExec = useTagCompletedTx('proposalExec', 'external_' + detail.id, daoInfo.votingAddress)
 
   const onExecuteProposalCallback = useCallback(() => {
     showModal(<TransactionPendingModal />)
@@ -150,6 +153,7 @@ export default function Index({
             detail={detail}
             voteResults={voteResults}
             onVote={onVoteCallback}
+            isVoting={isVoting}
             list={votingOptionsList}
             minimumVote={currentProVoteInfo?.minimumVote}
             balanceAt={myDaoBalanceAt}
@@ -157,9 +161,14 @@ export default function Index({
           <TimelineStatus
             votingAddress={daoInfo?.votingAddress}
             detail={detail}
+            isProposalExec={isProposalExec}
             onExecuteProposal={onExecuteProposalCallback}
           />
-          {isCreator ? <CancelProposalUndo detail={detail} daoInfo={daoInfo} /> : <OtherUserDetail detail={detail} />}
+          {isCreator ? (
+            <CancelProposalUndo tagKey="external_" detail={detail} daoInfo={daoInfo} />
+          ) : (
+            <OtherUserDetail detail={detail} />
+          )}
         </Grid>
       </Grid>
     </div>

@@ -24,12 +24,12 @@ export function getAmountForPer(tokenSupply: string | number, per: number | unde
   // return JSBI.divide(JSBI.multiply(_per, JSBI.BigInt(tokenSupply)), JSBI.BigInt(10000)).toString()
 }
 
-// min 1 up
+// min 6 up
 export function calcTotalAmountValue(amount: number | string | undefined, unitPrice: number | string | undefined) {
   if (!amount || !Number(amount) || !unitPrice) return ''
   const _amount = amount.toString().split('.')[0]
   if (!_amount) return ''
-  return new BigNumber(amount).multipliedBy(unitPrice).toFixed(1, 0)
+  return new BigNumber(amount).multipliedBy(unitPrice).toFixed(6, 0)
   // const ret = JSBI.divide(
   //   JSBI.multiply(JSBI.BigInt((Number(unitPrice) * 1000000).toFixed()), JSBI.BigInt(_amount)),
   //   JSBI.BigInt(1000000)
@@ -42,7 +42,7 @@ export function getCurrentInputMaxAmount(
   exclude: string | number,
   currentInput: string | number
 ) {
-  if (!remainderTotal || !currentInput) return '0'
+  if (!remainderTotal || !currentInput) return ''
   const max = new BigNumber(remainderTotal).plus(exclude || 0)
   if (max.gt(currentInput || '0')) return currentInput
   return max.toString()

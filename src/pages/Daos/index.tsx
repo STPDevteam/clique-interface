@@ -13,6 +13,7 @@ import { Empty, Spin } from 'antd'
 import { ExternalLink } from 'theme/components'
 import { DaoTypeProp, useGetDaoTypes, useIsVerifiedDao } from 'hooks/useDAOInfo'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
+import { ReactComponent as CloseSvg } from 'assets/svg/close.svg'
 
 enum TypeTabs {
   DAO,
@@ -25,6 +26,7 @@ export default function Index() {
   const { list: daoList, page: daoListPage, loading: daoListLoading } = useHomeDaoList()
   const daoListAddresss = useMemo(() => daoList.map(item => item.daoAddress).filter(i => i), [daoList])
   const daoTypes = useGetDaoTypes(daoListAddresss as string[])
+  const [closeMsg, setCloseMsg] = useState(false)
 
   const {
     daoAddresss: publicOfferingAddresss,
@@ -36,17 +38,20 @@ export default function Index() {
 
   return (
     <div className="daos-container">
-      <div className="daos-header">
-        <div className="header-info">
-          <p className="title">Clique</p>
-          <p className="text">
-            Build decentralized automated organization and issue governance token running on Verse and Ethereum
-            blockchain within a few clicks.
-          </p>
-          <ExternalLink href="https://stp-dao.gitbook.io/verse-network/">how it works</ExternalLink>
+      {!closeMsg && (
+        <div className="daos-header">
+          <CloseSvg className="close" onClick={() => setCloseMsg(true)}></CloseSvg>
+          <div className="header-info">
+            <p className="title">Clique</p>
+            <p className="text">
+              Discover DAOs and participate in governance activities through proposal voting, crowdfunding and more to
+              come!
+            </p>
+            <ExternalLink href="https://stp-dao.gitbook.io/verse-network/dapps/clique">how it works</ExternalLink>
+          </div>
+          {/* <Search placeholder="DAO Name" onSearch={handleSearch} /> */}
         </div>
-        {/* <Search placeholder="DAO Name" onSearch={handleSearch} /> */}
-      </div>
+      )}
       <div>
         <Box className="dao-group-btn hide" display={'grid'} gridTemplateColumns={'100px 2fr'} mt={10}>
           <div
@@ -91,6 +96,8 @@ export default function Index() {
                         history.push('/external_detail/' + item.daoAddress)
                       } else if (daoTypes.data[index] === DaoTypeProp.RawDao) {
                         history.push('/detail/' + item.daoAddress)
+                      } else {
+                        history.push(`/cross_detail/${item.daoAddress}`)
                       }
                     }}
                     padding={'25px 16px'}
@@ -132,7 +139,7 @@ export default function Index() {
                       </Box>
                     </Box>
                     <Box display={'flex'} justifyContent={'space-between'} mt={10}>
-                      <Typography variant="body1">Holders</Typography>
+                      <Typography variant="body1">Members</Typography>
                       <Typography fontSize={14} variant="h6">
                         <ShowTokenHolders address={item.token?.address} />
                       </Typography>
@@ -186,7 +193,12 @@ export default function Index() {
                   {publicOfferingDaoTypes.data[index] === DaoTypeProp.RawDao ? (
                     <PublicOfferingCard daoAddress={daoAddress} />
                   ) : (
-                    <NonePublicOfferingCard daoAddress={daoAddress} />
+                    <NonePublicOfferingCard
+                      daoAddress={daoAddress}
+                      typeName={
+                        publicOfferingDaoTypes.data[index] === DaoTypeProp.CrossGovDao ? 'Cross gov' : undefined
+                      }
+                    />
                   )}
                 </Grid>
               ))}

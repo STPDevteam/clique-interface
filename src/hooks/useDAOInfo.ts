@@ -1,12 +1,18 @@
 import { Token, TokenAmount } from 'constants/token'
 import { useMemo } from 'react'
-import { useSTPToken, useToken, useTokens } from 'state/wallet/hooks'
+import { useSTPToken, useToken, useTokenByChain, useTokens } from 'state/wallet/hooks'
 import {
   useMultipleContractSingleData,
   useSingleCallResult,
   useSingleContractMultipleData
 } from '../state/multicall/hooks'
-import { useDaoContract, useExternalDaoContract, useDaoFactoryContract, useSTPTokenContract } from './useContract'
+import {
+  useDaoContract,
+  useExternalDaoContract,
+  useDaoFactoryContract,
+  useSTPTokenContract,
+  useCrossDaoContract
+} from './useContract'
 import { DAO_INTERFACE } from '../constants/abis/erc20'
 import { useProposalNumber } from './useVoting'
 import { DefaultChainId, PriceDecimals } from '../constants'
@@ -18,6 +24,7 @@ import BigNumber from 'bignumber.js'
 import { useTotalSupply } from 'data/TotalSupply'
 import { useActiveWeb3React } from 'hooks'
 import { Verified_ADDRESS } from 'constants/verified'
+import { useCrossTokenInfo } from './useBackedCrossServer'
 
 export function useLastDaoId() {
   const daoFactoryContract = useDaoFactoryContract()
@@ -206,7 +213,8 @@ export function useDaoStatus(daoInfo: DaoInfoProps | undefined): DaoStatusProps 
       : Number(
           new BigNumber(daoInfo.pubSoldAmt.raw.toString() || 0)
             .dividedBy(daoInfo.pubSale.amount.raw.toString())
-            .toFixed(2)
+            .multipliedBy(100)
+            .toFixed(2, 1)
         )
 
   return {
@@ -224,7 +232,7 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
   const ruleRes = useSingleCallResult(daoContract, 'getDaoRule', [])
   const websiteRes = useSingleCallResult(daoContract, 'website', [])
   const twitterRes = useSingleCallResult(daoContract, 'twitter', [])
-  const discordRes = useSingleCallResult(daoContract, 'twitter', [])
+  const discordRes = useSingleCallResult(daoContract, 'discord', [])
   const reservedRes = useSingleCallResult(daoContract, 'getReserved', [])
   const priSaleRes = useSingleCallResult(daoContract, 'getPriSales', [])
   const pubSaleRes = useSingleCallResult(daoContract, 'pubSale', [])
@@ -238,7 +246,7 @@ export function useDaoInfoByAddress(daoAddress: string | undefined): DaoInfoProp
   const proposalNumber = useProposalNumber(votingAddress, daoAddress)
 
   const daoTokenRes = useSingleCallResult(daoContract ?? undefined, 'getDaoToken', [])
-  const tokenAddress: string | undefined = useMemo(() => daoTokenRes.result?.[0], [daoTokenRes])
+  const tokenAddress: string | undefined = useMemo(() => daoTokenRes.result?.[0] || undefined, [daoTokenRes])
   const token = useSTPToken(tokenAddress, DefaultChainId)
   const tokenContract = useSTPTokenContract(tokenAddress)
 
@@ -469,7 +477,7 @@ export function useExternalDaoInfoByAddress(daoAddress: string | undefined): Ext
   const proposalNumber = useProposalNumber(votingAddress, daoAddress)
 
   const daoTokenRes = useSingleCallResult(daoContract ?? undefined, 'getDaoToken', [])
-  const tokenAddress: string | undefined = useMemo(() => daoTokenRes.result?.[0], [daoTokenRes])
+  const tokenAddress: string | undefined = useMemo(() => daoTokenRes.result?.[0] || undefined, [daoTokenRes])
   const token = useToken(tokenAddress, DefaultChainId)
   const totalSupply = useTotalSupply(token)
 
@@ -523,4 +531,64 @@ export function useIsVerifiedDao(address: string | undefined) {
     if (!Verified_ADDRESS[chainId] || !Verified_ADDRESS[chainId].length) return false
     return Verified_ADDRESS[chainId].includes(address)
   }, [address, chainId])
+}
+
+export function useCrossDaoInfoByAddress(daoAddress: string | undefined): ExternalDaoInfoProps | undefined {
+  const daoContract = useCrossDaoContract(daoAddress)
+
+  const daoNameRes = useSingleCallResult(daoContract, 'name', [])
+  const descRes = useSingleCallResult(daoContract, 'desc', [])
+  const ruleRes = useSingleCallResult(daoContract, 'getDaoRule', [])
+  const websiteRes = useSingleCallResult(daoContract, 'website', [])
+  const twitterRes = useSingleCallResult(daoContract, 'twitter', [])
+  const discordRes = useSingleCallResult(daoContract, 'discord', [])
+
+  const votingAddressRes = useSingleCallResult(daoContract ?? undefined, 'voting', [])
+  const votingAddress: string | undefined = useMemo(() => votingAddressRes.result?.[0], [votingAddressRes])
+  const proposalNumber = useProposalNumber(votingAddress, daoAddress)
+
+  const _token = useCrossTokenInfo(daoAddress, votingAddress)
+  // const tokenInfo = useTokenByChain('0x86029a4deD57C14Bb8620ED177F3B2a4D300C040', 4)
+  const tokenInfo = useTokenByChain(_token.tokenAddress, _token.chainId)
+
+  const tokenLogoRes = useSingleCallResult(daoContract, 'tokenLogo')
+
+  const rule = useMemo(() => {
+    if (!ruleRes.result || !tokenInfo?.token) return undefined
+    const {
+      minimumVote,
+      minimumCreateProposal,
+      minimumValidVotes,
+      communityVotingDuration,
+      contractVotingDuration,
+      content
+    } = ruleRes.result[0]
+    return {
+      minimumVote: new TokenAmount(tokenInfo.token, minimumVote.toString()),
+      minimumCreateProposal: new TokenAmount(tokenInfo.token, minimumCreateProposal.toString()),
+      minimumValidVotes: new TokenAmount(tokenInfo.token, minimumValidVotes.toString()),
+      communityVotingDuration: communityVotingDuration.toString(),
+      contractVotingDuration: contractVotingDuration.toString(),
+      content: content.toString()
+    }
+  }, [ruleRes.result, tokenInfo?.token])
+
+  if (!daoAddress) return undefined
+
+  return {
+    daoAddress,
+    daoName: daoNameRes.result?.[0],
+    daoDesc: descRes.result?.[0],
+    totalSupply: tokenInfo?.totalSupply,
+    link: {
+      website: websiteRes.result?.[0] || '',
+      twitter: twitterRes.result?.[0] || '',
+      discord: discordRes.result?.[0] || ''
+    },
+    votingAddress,
+    proposalNumber,
+    token: tokenInfo?.token,
+    rule,
+    logo: tokenLogoRes.result?.[0] || ''
+  }
 }

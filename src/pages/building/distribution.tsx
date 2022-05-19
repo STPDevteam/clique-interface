@@ -337,7 +337,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                           const _val = e.target.value
                           if (reg.test(_val)) {
                             // check max value
-                            const input = getCurrentInputMaxAmount(remainderTokenAmount, item.tokenNumber || '0', _val)
+                            const input = getCurrentInputMaxAmount(remainderTokenAmount, item.tokenNumber || '', _val)
                             updateReservedHolder(index, 'tokenNumber', input)
                           } else {
                             updateReservedHolder(index, 'tokenNumber', item.tokenNumber || '')
@@ -610,7 +610,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Typography variant="h6">Total value</Typography>
                 <Typography variant="h6">
-                  {toFormatGroup(currentUsedTokenAmount.privateEquivalentEstimate, 1)}{' '}
+                  {toFormatGroup(currentUsedTokenAmount.privateEquivalentEstimate, 6)}{' '}
                   {distribution.privateReceivingToken}
                 </Typography>
               </Box>
@@ -682,7 +682,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                           if (reg.test(_val)) {
                             const input = getCurrentInputMaxAmount(
                               remainderTokenAmount,
-                              distribution.publicSale.offeringAmount || '0',
+                              distribution.publicSale.offeringAmount || '',
                               _val
                             )
                             updatePublicSaleCall('offeringAmount', input)
@@ -727,8 +727,15 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       onChange={e => {
                         const reg = new RegExp('^[0-9]*$')
                         const _val = e.target.value
-                        if (reg.test(_val)) updatePublicSaleCall('pledgeLimitMin', _val)
-                        else updatePublicSaleCall('pledgeLimitMin', distribution.publicSale.pledgeLimitMin || '')
+                        if (reg.test(_val)) {
+                          if (new BigNumber(_val).gt(distribution.publicSale.pledgeLimitMax || '')) {
+                            updatePublicSaleCall('pledgeLimitMin', distribution.publicSale.pledgeLimitMax || '')
+                          } else if (new BigNumber(_val).gt(distribution.publicSale.offeringAmount)) {
+                            updatePublicSaleCall('pledgeLimitMin', distribution.publicSale.offeringAmount)
+                          } else {
+                            updatePublicSaleCall('pledgeLimitMin', _val)
+                          }
+                        } else updatePublicSaleCall('pledgeLimitMin', distribution.publicSale.pledgeLimitMin || '')
                       }}
                     />
                     <Typography display={'flex'} alignItems={'center'}>
@@ -743,8 +750,15 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                       onChange={e => {
                         const reg = new RegExp('^[0-9]*$')
                         const _val = e.target.value
-                        if (reg.test(_val)) updatePublicSaleCall('pledgeLimitMax', _val)
-                        else updatePublicSaleCall('pledgeLimitMax', distribution.publicSale.pledgeLimitMax || '')
+                        if (reg.test(_val)) {
+                          if (new BigNumber(_val).gt(distribution.publicSale.offeringAmount)) {
+                            updatePublicSaleCall('pledgeLimitMax', distribution.publicSale.offeringAmount)
+                          } else if (new BigNumber(_val).lt(distribution.publicSale.pledgeLimitMin || '')) {
+                            updatePublicSaleCall('pledgeLimitMax', distribution.publicSale.pledgeLimitMin || '')
+                          } else {
+                            updatePublicSaleCall('pledgeLimitMax', _val)
+                          }
+                        } else updatePublicSaleCall('pledgeLimitMax', distribution.publicSale.pledgeLimitMax || '')
                       }}
                     />
                   </Box>
@@ -760,7 +774,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
               <Box display={'flex'} justifyContent={'space-between'}>
                 <Typography variant="h6">Total value</Typography>
                 <Typography variant="h6">
-                  {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate, 1)}{' '}
+                  {toFormatGroup(currentUsedTokenAmount.publicEquivalentEstimate, 6)}{' '}
                   {distribution.privateReceivingToken}
                 </Typography>
               </Box>

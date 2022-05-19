@@ -162,7 +162,7 @@ export default function Configuration({
       amountAddDecimals(minVoteNumber, totalSupply.token.decimals),
       amountAddDecimals(minCreateProposalNumber, totalSupply.token.decimals),
       amountAddDecimals(minValidNumber, totalSupply.token.decimals),
-      Number(contractDuration),
+      Number(communityDuration),
       Number(contractDuration),
       ruleContent
     )
@@ -179,6 +179,7 @@ export default function Configuration({
       })
   }, [
     contractDuration,
+    communityDuration,
     hideModal,
     minCreateProposalNumber,
     minValidNumber,
@@ -277,7 +278,7 @@ export default function Configuration({
             </div>
           </div>
           <div className="input-item votes">
-            <span className="label">Votes</span>
+            <span className="label">Tokens</span>
             <Tooltip placement="top" title={toFormatGroup(minCreateProposalNumber)}>
               <Input
                 className="input-common"

@@ -5,12 +5,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
 import { addTransaction } from './actions'
-import { TransactionDetails } from './reducer'
+import { TransactionDetails, TransactionTag } from './reducer'
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
 export function useTransactionAdder(): (
   response: TransactionResponse,
-  customData?: { summary?: string; approval?: { tokenAddress: string; spender: string }; claim?: { recipient: string } }
+  customData?: {
+    summary?: string
+    approval?: { tokenAddress: string; spender: string }
+    claim?: { recipient: string }
+    tag?: TransactionTag
+  }
 ) => void {
   const { chainId, account } = useActiveWeb3React()
   const dispatch = useDispatch<AppDispatch>()
@@ -21,8 +26,14 @@ export function useTransactionAdder(): (
       {
         summary,
         approval,
-        claim
-      }: { summary?: string; claim?: { recipient: string }; approval?: { tokenAddress: string; spender: string } } = {}
+        claim,
+        tag
+      }: {
+        summary?: string
+        claim?: { recipient: string }
+        approval?: { tokenAddress: string; spender: string }
+        tag?: TransactionTag
+      } = {}
     ) => {
       if (!account) return
       if (!chainId) return
@@ -31,7 +42,7 @@ export function useTransactionAdder(): (
       if (!hash) {
         throw Error('No transaction hash found.')
       }
-      dispatch(addTransaction({ hash, from: account, chainId, approval, summary, claim }))
+      dispatch(addTransaction({ hash, from: account, chainId, approval, summary, claim, tag }))
     },
     [dispatch, chainId, account]
   )
@@ -101,4 +112,48 @@ export function useUserHasSubmittedClaim(
   }, [account, allTransactions])
 
   return { claimSubmitted: Boolean(claimTxn), claimTxn }
+}
+
+export function useTagCompletedTx(
+  type: 'claimReserved' | 'proposalVote' | 'proposalCancel' | 'claimProposalToken' | 'proposalExec' | 'airdropPublish',
+  key: string | undefined,
+  id: number | string | undefined,
+  isRecent = false
+) {
+  const allTransactions = useAllTransactions()
+  const { account } = useActiveWeb3React()
+
+  return useMemo(() => {
+    if (key === undefined || id === undefined) return undefined
+    for (const hash in allTransactions) {
+      if (Object.prototype.hasOwnProperty.call(allTransactions, hash)) {
+        const tx = allTransactions[hash]
+        if (!tx) continue
+        if (tx.from.toUpperCase() !== account?.toUpperCase()) {
+          continue
+        } else {
+          const tagTx = tx.tag
+          if (!tagTx) continue
+          if (isRecent) {
+            if (
+              tagTx.type === type &&
+              tagTx.key === key &&
+              tagTx.id === id &&
+              new Date().getTime() - tx.addedTime < 10 * 60 * 1000
+            ) {
+              return isTransactionRecent(tx)
+            }
+            continue
+          } else {
+            if (tagTx.type === type && tagTx.key === key && tagTx.id === id) {
+              const rt = tx.receipt as any
+              return rt?.status !== 1 && isTransactionRecent(tx)
+            }
+            continue
+          }
+        }
+      }
+    }
+    return undefined
+  }, [key, id, allTransactions, account, isRecent, type])
 }

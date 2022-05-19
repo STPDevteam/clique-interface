@@ -25,6 +25,12 @@ export default function Index() {
     if (/^\/detail\/(.*)$/.test(location.pathname)) {
       return RegExp.$1
     }
+    if (/^\/external_detail\/(.*)$/.test(location.pathname)) {
+      return RegExp.$1
+    }
+    if (/^\/cross_detail\/(.*)$/.test(location.pathname)) {
+      return RegExp.$1
+    }
     return ''
   }, [location])
 
@@ -38,6 +44,13 @@ export default function Index() {
   const chooseExternalDetail = useCallback(
     address => {
       history.push(`/external_detail/${address}`)
+    },
+    [history]
+  )
+
+  const chooseCrossDao = useCallback(
+    address => {
+      history.push(`/cross_detail/${address}`)
     },
     [history]
   )
@@ -62,6 +75,8 @@ export default function Index() {
               chooseExternalDetail(item.daoAddress)
             } else if (daoTypes.data[index] === DaoTypeProp.RawDao) {
               chooseDao(item.daoAddress)
+            } else {
+              chooseCrossDao(item.daoAddress)
             }
           }}
         >

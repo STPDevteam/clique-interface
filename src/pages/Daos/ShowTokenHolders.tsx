@@ -4,5 +4,5 @@ import { useDaoMembers } from 'hooks/useBackedServer'
 export default function ShowTokenHolders({ address }: { address: string | undefined }) {
   // const info = useTokenInfoByExplorer(address)
   const { page } = useDaoMembers(address)
-  return <>{page ? page.total : '-'}</>
+  return <>{page.total}</>
 }

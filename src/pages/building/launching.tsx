@@ -45,7 +45,7 @@ export default function Launching() {
                 }
               }}
             >
-              Get Start
+              Get Started
             </Button>
           </div>
           <h3>All Done!</h3>

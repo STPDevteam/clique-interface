@@ -3,14 +3,19 @@ import { ReactComponent as ETH } from 'assets/svg/eth_logo.svg'
 import EthUrl from 'assets/svg/eth_logo.svg'
 // import STPSvg from '../assets/images/icon-token.svg'
 // import { ReactComponent as STPLogo } from '../assets/images/icon-token.svg'
-// import KlaytnSvg from '../assets/svg/klaytn_logo.svg'
-// import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
+// import { ReactComponent as STPLogo } from '../assets/images/icon-token.svg'
+import MaticSvg from '../assets/svg/matic.svg'
+import { ReactComponent as MaticLogo } from '../assets/svg/matic.svg'
+import KlaytnSvg from '../assets/svg/klaytn_logo.svg'
+import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
 
 export enum ChainId {
   ETH = 1,
   RINKEBY = 4,
   STP = 72,
-  KLAYTN_BAOBAB = 1001
+  KLAYTN_BAOBAB = 1001,
+  MATIC = 137,
+  POLYGON_TESTNET = 80001
 }
 
 export const ChainList = [
@@ -21,6 +26,38 @@ export const ChainList = [
     name: 'Ethereum Mainnet',
     id: ChainId.ETH,
     hex: '0x1'
+  },
+  {
+    icon: <ETH />,
+    logo: EthUrl,
+    symbol: 'Rinkeby',
+    name: 'Rinkeby Testnet',
+    id: ChainId.RINKEBY,
+    hex: '0x4'
+  },
+  // {
+  //   icon: <STPLogo />,
+  //   logo: STPSvg,
+  //   symbol: 'Verse',
+  //   name: 'Verse Network',
+  //   id: ChainId.STP,
+  //   hex: '0x48'
+  // },
+  {
+    icon: <KlaytnLogo />,
+    logo: KlaytnSvg,
+    symbol: 'Klaytn Baobab',
+    name: 'Klaytn Baobab',
+    id: ChainId.KLAYTN_BAOBAB,
+    hex: '0x3e9'
+  },
+  {
+    icon: <MaticLogo />,
+    logo: MaticSvg,
+    symbol: 'Polygon Testnet',
+    name: 'Polygon Testnet',
+    id: ChainId.POLYGON_TESTNET,
+    hex: '0x13881'
   }
   // {
   //   icon: <ETH />,
@@ -104,6 +141,30 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://rinkeby.infura.io/v3/'],
     blockExplorerUrls: ['https://rinkeby.etherscan.io/']
+  },
+  [ChainId.KLAYTN_BAOBAB]: {
+    chainId: '0x3e9',
+    chainName: 'Klaytn Baobab',
+    nativeCurrency: {
+      name: 'Klaytn Baobab',
+      symbol: 'KLAY',
+      decimals: 18,
+      logo: KlaytnSvg
+    },
+    rpcUrls: ['https://public-node-api.klaytnapi.com/v1/baobab'],
+    blockExplorerUrls: ['https://baobab.scope.klaytn.com/']
+  },
+  [ChainId.POLYGON_TESTNET]: {
+    chainId: '0x13881',
+    chainName: 'Polygon Testnet',
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+      logo: MaticSvg
+    },
+    rpcUrls: ['https://matic-mumbai.chainstacklabs.com'],
+    blockExplorerUrls: ['https://mumbai.polygonscan.com/']
   }
   // [ChainId.KLAYTN_BAOBAB]: {
   //   chainId: '0x3e9',

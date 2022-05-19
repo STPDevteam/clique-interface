@@ -12,7 +12,7 @@ import { shortenHashAddress, timeStampToFormat } from 'utils/dao'
 import { getEtherscanLink } from 'utils'
 import { useActiveWeb3React } from 'hooks'
 import { DefaultChainId } from '../../constants'
-import { Token, TokenAmount } from 'constants/token'
+import { Currency, CurrencyAmount, Token, TokenAmount } from 'constants/token'
 import { useReceiveToken } from 'hooks/useDaoTokenInfo'
 const { TabPane } = Tabs
 
@@ -46,7 +46,7 @@ const StyledItem = styled(Box)({
 
 export enum OfferingActiveProps {
   PAY = 'Pay',
-  REDEEM = 'Redeem'
+  REDEEM = 'Reserve'
 }
 export default function ActiveBox({ daoAddress, daoToken }: { daoAddress: string | undefined; daoToken: Token }) {
   const { loading: swapLoading, swap: swapList, page: swapPage } = useOfferingSwapRecord(daoAddress)
@@ -114,14 +114,17 @@ function SwapItem({
 }: {
   item: OfferingSwapProp
   daoToken: Token
-  receiveToken: Token | undefined
+  receiveToken: Currency | undefined
 }) {
   const { chainId } = useActiveWeb3React()
   const daoTokenAmount = useMemo(() => new TokenAmount(daoToken, item.daoAmt), [daoToken, item.daoAmt])
-  const receiveTokenAmount = useMemo(
-    () => (receiveToken ? new TokenAmount(receiveToken, item.receiveAmt) : undefined),
-    [item.receiveAmt, receiveToken]
-  )
+  const receiveTokenAmount = useMemo(() => {
+    if (!receiveToken) return undefined
+    if (receiveToken instanceof Token) {
+      return new TokenAmount(receiveToken, item.receiveAmt)
+    }
+    return CurrencyAmount.ether(item.receiveAmt)
+  }, [item.receiveAmt, receiveToken])
 
   return (
     <StyledItem>

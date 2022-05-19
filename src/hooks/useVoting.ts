@@ -2,7 +2,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useMemo, useState } from 'react'
 // import { getCurrentTimeStamp } from 'utils/dao'
 import { useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
-import { useSTPTokenContract, useVotingContract } from './useContract'
+import { useCrossVotingContract, useSTPTokenContract, useVotingContract } from './useContract'
 import { ProposalStatusProp, ProposalType } from './useCreateCommunityProposalCallback'
 
 export function useProposalNumber(votingAddress: string | undefined, daoAddress: string | undefined) {
@@ -19,7 +19,7 @@ export interface ProposalInfoProp {
   content: string
   startTime: number
   endTime: number
-  blkHeight: number
+  blkHeight?: number
   status: ProposalStatusProp
   minimumVote: string
   minimumValidVotes: string
@@ -150,4 +150,63 @@ export function useVotingClaimed(votingAddress: string | undefined, proposalId: 
   const votingContract = useVotingContract(votingAddress)
   const res = useSingleCallResult(proposalId ? votingContract : null, 'claimed', [proposalId])
   return res.result?.[0]
+}
+
+export function useCrossProposalList(votingAddress: string | undefined) {
+  const pageSize = 8
+  const votingContract = useCrossVotingContract(votingAddress)
+  const lastIdRes = useSingleCallResult(votingContract, 'curId', [])
+  const lastId = useMemo(() => (lastIdRes.result ? Number(lastIdRes.result.toString()) : 0), [lastIdRes.result])
+
+  const begin = 1
+  const [currentPage, setCurrentPage] = useState<number>(1)
+
+  const totalPages = useMemo(() => {
+    return lastId ? Math.ceil(lastId - begin + 1 / pageSize) : 0
+  }, [lastId, pageSize])
+
+  const ids = useMemo(() => {
+    const ret = []
+    let index = lastId - (currentPage - 1) * pageSize
+    while (index > lastId - currentPage * pageSize && index >= begin) {
+      ret.push([index])
+      index--
+    }
+    return ret
+  }, [lastId, currentPage, pageSize])
+
+  const proposalMap = useSingleContractMultipleData(votingContract, 'getProposalById', ids)
+  const list: (ProposalInfoProp | undefined)[] = proposalMap.map((pro, index) => {
+    if (!pro.result || !pro.result[0]) return undefined
+    const item = pro.result[0]
+    const ret = {
+      id: ids[index][0].toString(),
+      creator: item.creator,
+      proType: item.proType,
+      title: item.title,
+      content: item.content,
+      startTime: Number(item.startTime.toString()),
+      endTime: Number(item.endTime.toString()),
+      status: item.status,
+      minimumVote: item.minimumVote.toString(),
+      minimumValidVotes: item.minimumValidVotes.toString(),
+      minimumCreateProposal: item.minimumCreateProposal.toString()
+    }
+    if (item.status === ProposalStatusProp.Success && item.proType === ProposalType.CONTRACT) {
+      ret.status = ProposalStatusProp.Executable
+    }
+    return ret
+  })
+
+  return {
+    page: {
+      total: lastId,
+      totalPages,
+      currentPage,
+      pageSize,
+      setCurrentPage
+    },
+    list,
+    loading: lastIdRes.loading || proposalMap?.[0]?.loading || false
+  }
 }

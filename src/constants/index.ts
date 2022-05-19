@@ -6,6 +6,7 @@ import { ChainId } from './chain'
 import { PrivateReceivingTokenProps } from 'state/building/actions'
 import IconTokenSvg from '../assets/images/icon-token.svg'
 import KlaytnTokenSvg from '../assets/svg/klaytn_logo.svg'
+import MATICTokenSvg from '../assets/svg/matic.svg'
 import ETHTokenImg from '../assets/images/token-eth.png'
 import { isDaoframeSite } from 'utils/dao'
 
@@ -18,6 +19,14 @@ export const BAST_TOKEN: { [chainId in ChainId]: Token } = {
   [ChainId.STP]: new Token(ChainId.STP, '0x719a98d252b36bacf8354a02222a57276d663d72', 18, 'STPT', 'STPT'),
   [ChainId.KLAYTN_BAOBAB]: new Token(
     ChainId.KLAYTN_BAOBAB,
+    '0x719a98d252b36bacf8354a02222a57276d663d72',
+    18,
+    'STPT',
+    'STPT'
+  ),
+  [ChainId.MATIC]: new Token(ChainId.MATIC, '0x719a98d252b36bacf8354a02222a57276d663d72', 18, 'STPT', 'STPT'),
+  [ChainId.POLYGON_TESTNET]: new Token(
+    ChainId.POLYGON_TESTNET,
     '0x719a98d252b36bacf8354a02222a57276d663d72',
     18,
     'STPT',
@@ -125,14 +134,18 @@ export const DAO_FACTORY_ADDRESS = {
   [ChainId.ETH]: '0x2454E875775D7081B6B4107dA7E68475285f9557',
   [ChainId.RINKEBY]: '0xC7d4b559106B6a485B399dDC22e9bC2af244b8B7',
   [ChainId.STP]: '0x07Fb4B5Ed4E0F2b2e243DD7A68428592E4107CEa',
-  [ChainId.KLAYTN_BAOBAB]: '0x9c5c378539ed8a7e5946329ee83b66ac42086359'
+  [ChainId.KLAYTN_BAOBAB]: '0x9c5c378539ed8a7e5946329ee83b66ac42086359',
+  [ChainId.POLYGON_TESTNET]: '',
+  [ChainId.MATIC]: ''
 }
 
 export const FARM_STAKING_ADDRESS = {
   [ChainId.ETH]: '',
-  [ChainId.RINKEBY]: '0xC23C09cc65429ac1519f633dF07312da935C3C0D',
+  [ChainId.RINKEBY]: '0xd533AB014c8138fA99A24169Ed31a19c0b42CC26',
   [ChainId.STP]: '',
-  [ChainId.KLAYTN_BAOBAB]: ''
+  [ChainId.KLAYTN_BAOBAB]: '',
+  [ChainId.MATIC]: '',
+  [ChainId.POLYGON_TESTNET]: ''
 }
 
 export const DefaultChainId = ChainId.ETH
@@ -204,11 +217,50 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
       address: ZERO_ADDRESS,
       decimals: 18
     }
+  ],
+  [ChainId.MATIC]: [
+    {
+      name: 'TT',
+      value: 'TT',
+      chainId: 1001,
+      logo: IconTokenSvg,
+      address: '0xfd8E6fc58E077546a320491438E3b712ab5147c6',
+      decimals: 18
+    },
+    {
+      name: 'MATIC',
+      value: 'MATIC',
+      chainId: 137,
+      logo: MATICTokenSvg,
+      address: ZERO_ADDRESS,
+      decimals: 18
+    }
+  ],
+  [ChainId.POLYGON_TESTNET]: [
+    {
+      name: 'TT',
+      value: 'TT',
+      chainId: 1001,
+      logo: IconTokenSvg,
+      address: '0xfd8E6fc58E077546a320491438E3b712ab5147c6',
+      decimals: 18
+    },
+    {
+      name: 'MATIC',
+      value: 'MATIC',
+      chainId: 80001,
+      logo: MATICTokenSvg,
+      address: ZERO_ADDRESS,
+      decimals: 18
+    }
   ]
 }
-
+export const EXTERNAL_SUPPORT_NETWORK = [4]
+export const BASE_DAO_SUPPORT_NETWORK = [4, 72, 1001]
+export const CROSS_SUPPORT_IMPORT_NETWORK = [4]
+export const CROSS_SUPPORT_CREATE_NETWORK = [72, 80001]
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
-// export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
-export const serverBaseUrl = isDaoframeSite() ? 'https://testapi.daoframe.com/' : 'https://testapi.daoframe.com/'
+export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
+// export const serverBaseUrl = isDaoframeSite() ? 'https://testapi.daoframe.com/' : 'https://testapi.daoframe.com/'
 export const mycliqueUrl = 'https://myclique.io/'
 export const daoframeUrl = 'https://daoframe.com/'

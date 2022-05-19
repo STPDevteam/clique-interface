@@ -64,3 +64,54 @@ export function getAccountDaoHolds(chainId: number, account: string, pageNum: nu
     pageSize
   })
 }
+
+export function getCreateProposalSign(chainId: number, targetChainId: number, daoAddress: string, userAddress: string) {
+  return Axios.get(serverBaseUrl + `${chainId}/sign/createProposal/${targetChainId}`, {
+    daoAddress,
+    userAddress
+  })
+}
+
+export function getCrossVotingSign(
+  chainId: number,
+  targetChainId: number,
+  daoAddress: string,
+  userAddress: string,
+  proposalId: number
+) {
+  return Axios.get(serverBaseUrl + `${chainId}/sign/voting/${targetChainId}`, {
+    daoAddress,
+    userAddress,
+    proposalId
+  })
+}
+
+export function getCrossTokenInfo(daoAddress: string) {
+  return Axios.get(serverBaseUrl + `dao/${daoAddress}`)
+}
+
+export function getCrossBalance(
+  chainId: number,
+  targetChainId: number,
+  daoAddress: string,
+  userAddress: string,
+  proposalId: number | string
+) {
+  return Axios.get(serverBaseUrl + `${chainId}/balance/${targetChainId}`, {
+    daoAddress,
+    userAddress,
+    proposalId
+  })
+}
+
+export function getCrossProBlockNum(
+  chainId: number,
+  targetChainId: number,
+  daoAddress: string,
+  proposalId: number | string
+) {
+  return Axios.get(serverBaseUrl + `${chainId}/${targetChainId}/blocknum`, {
+    daoAddress,
+    proposalId
+  })
+}

@@ -53,6 +53,14 @@ function ShowStatus({ status }: { status: DaoOpenStatus }) {
   )
 }
 
+function ShowPer(per: number) {
+  if (per === 0) return '-'
+  if (per < 1) {
+    return `${'<1'}`
+  }
+  return `${Math.floor(per)}`
+}
+
 export default function PublicOfferingCard({ daoAddress }: { daoAddress: string | undefined }) {
   const daoInfo = useDaoInfoByAddress(daoAddress)
   const daoStatus = useDaoStatus(daoInfo)
@@ -129,8 +137,8 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
         percent={daoStatus?.pubSoldPer || 0}
         showInfo={false}
       />
-      <Box display={'flex'} justifyContent={'space-between'} mt={10}>
-        <Typography variant="body2">
+      <Box display={'flex'} justifyContent={'space-between'} gap="10px" mt={10}>
+        <Typography variant="body2" maxWidth={'100px'} noWrap>
           {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC && daoInfo?.pubSale?.amount
             ? toFormatGroup(daoInfo?.pubSale?.amount.toSignificant()) +
               ' ' +
@@ -139,7 +147,7 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
             : ''}
         </Typography>
         <Typography variant="body2" color={'#798488'}>
-          {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC ? daoStatus.pubSoldPer + '% funded' : ''}
+          {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC ? ShowPer(daoStatus.pubSoldPer) + '% funded' : ''}
         </Typography>
         <Typography variant="body2" color={'#798488'}>
           {daoStatus?.openStatus === DaoOpenStatus.COMING_SOON ? (
@@ -153,7 +161,13 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
   )
 }
 
-export function NonePublicOfferingCard({ daoAddress }: { daoAddress: string | undefined }) {
+export function NonePublicOfferingCard({
+  daoAddress,
+  typeName
+}: {
+  daoAddress: string | undefined
+  typeName?: string
+}) {
   const daoInfo = useExternalDaoInfoByAddress(daoAddress)
 
   return (
@@ -188,11 +202,11 @@ export function NonePublicOfferingCard({ daoAddress }: { daoAddress: string | un
         }}
       >
         <Typography variant="body2" color={'#798488'}>
-          External
+          {typeName || 'External'}
         </Typography>
       </Box>
       <Box display={'grid'} gap={14} gridTemplateColumns={'58px 80px 1fr'} mb={22}>
-        <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.token?.logo}>
+        <Avatar sx={{ width: 58, height: 58 }} src={daoInfo?.logo}>
           <IconDao />
         </Avatar>
         <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'} pt={4} height={52}>
