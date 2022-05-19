@@ -8,7 +8,7 @@ import IconTokenSvg from '../assets/images/icon-token.svg'
 import KlaytnTokenSvg from '../assets/svg/klaytn_logo.svg'
 import MATICTokenSvg from '../assets/svg/matic.svg'
 import ETHTokenImg from '../assets/images/token-eth.png'
-import { isDaoframeSite } from 'utils/dao'
+// import { isDaoframeSite } from 'utils/dao'
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
@@ -136,7 +136,7 @@ export const DAO_FACTORY_ADDRESS = {
   [ChainId.STP]: '0x07Fb4B5Ed4E0F2b2e243DD7A68428592E4107CEa',
   [ChainId.KLAYTN_BAOBAB]: '0x9c5c378539ed8a7e5946329ee83b66ac42086359',
   [ChainId.POLYGON_TESTNET]: '0xAf64127961e233331aC24e77e6590d8b96c3Da76',
-  [ChainId.MATIC]: ''
+  [ChainId.MATIC]: '0xBd8D5a0072c85d243c9017c9C26474cCd6d2893c'
 }
 
 export const FARM_STAKING_ADDRESS = {
@@ -148,7 +148,7 @@ export const FARM_STAKING_ADDRESS = {
   [ChainId.POLYGON_TESTNET]: ''
 }
 
-export const DefaultChainId = ChainId.RINKEBY
+export const DefaultChainId = ChainId.MATIC
 
 export const PriceDecimals = 12
 
@@ -257,10 +257,10 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
 }
 export const EXTERNAL_SUPPORT_NETWORK = [4]
 export const BASE_DAO_SUPPORT_NETWORK = [4, 72, 1001]
-export const CROSS_SUPPORT_IMPORT_NETWORK = [4]
-export const CROSS_SUPPORT_CREATE_NETWORK = [72, 80001]
+export const CROSS_SUPPORT_IMPORT_NETWORK = [1]
+export const CROSS_SUPPORT_CREATE_NETWORK = [137]
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
-export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
-// export const serverBaseUrl = isDaoframeSite() ? 'https://testapi.daoframe.com/' : 'https://testapi.daoframe.com/'
+// export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
+export const serverBaseUrl = 'https://api.klique.xyz:8082/'
 export const mycliqueUrl = 'https://myclique.io/'
 export const daoframeUrl = 'https://daoframe.com/'
