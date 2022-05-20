@@ -81,7 +81,7 @@ export function shortenAddress(address: string, chars = 4): string {
 }
 
 // add 10%
-export function calculateGasMargin(value: BigNumber, margin = 2): BigNumber {
+export function calculateGasMargin(value: BigNumber, margin = 3): BigNumber {
   return value.mul(BigNumber.from(10000).add(BigNumber.from(1000 * margin))).div(BigNumber.from(10000))
 }
 

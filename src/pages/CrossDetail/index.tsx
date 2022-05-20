@@ -38,7 +38,7 @@ export default function Index() {
     return <Box padding="20px">Cross-chain Governance unavailable on current chain</Box>
 
   return (
-    <Spin spinning={!daoInfo?.token} tip="Dao creating" delay={1000} size="large">
+    <Spin spinning={!daoInfo?.token} tip="Dao creating" delay={2000} size="large">
       <div className={styles['dao-detail']}>
         <div className={styles['detail-header']}>
           <p className={styles['title']}>{daoInfo?.daoName || '--'}</p>
