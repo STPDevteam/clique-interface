@@ -25,7 +25,7 @@ import Launching from './building/launching'
 // import Offering from './offering'
 import MyWallet from './myWallet'
 import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
-import TopAlert from './TopAlert'
+// import TopAlert from './TopAlert'
 // import Staking from './staking'
 // import StakingCreate from './staking/Create'
 
@@ -55,7 +55,7 @@ export default function App() {
         <Web3ReactManager>
           <div id="app">
             {/* <ContentWrapper> */}
-            <TopAlert />
+            {/* <TopAlert /> */}
             <Layouts>
               {/* <BodyWrapper id="body"> */}
               <Popups />
