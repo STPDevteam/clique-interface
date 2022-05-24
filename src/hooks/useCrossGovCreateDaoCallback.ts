@@ -4,10 +4,11 @@ import { amountAddDecimals } from '../utils/dao'
 import { calcVotingDuration } from 'pages/building/function'
 import { useDaoFactoryContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks'
-import { calculateGasMargin } from 'utils'
+import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useTokenByChain } from 'state/wallet/hooks'
+import { useWeb3Instance } from './useWeb3Instance'
 
 export function useCrossGovCreateDaoCallback() {
   const { basicData, ruleData } = useCrossCommitCreateDaoData()
@@ -16,6 +17,7 @@ export function useCrossGovCreateDaoCallback() {
   const addTransaction = useTransactionAdder()
   const tokenInfo = useTokenByChain(basicData.contractAddress, basicData.baseChainId)
   const token = tokenInfo?.token
+  const web3 = useWeb3Instance()
 
   const args = useMemo(() => {
     const _basicParams = {
@@ -48,7 +50,7 @@ export function useCrossGovCreateDaoCallback() {
   }, [basicData, ruleData, token?.decimals, tokenInfo?.token.name])
 
   return useCallback(() => {
-    if (!daoFactoryContract) {
+    if (!daoFactoryContract || !web3) {
       throw new Error('Unexpected error. Contract error')
     }
     if (!token) {
@@ -56,11 +58,12 @@ export function useCrossGovCreateDaoCallback() {
     }
 
     console.log('args->', JSON.stringify(args), ...args)
-    return daoFactoryContract.estimateGas.createCrossGovDAO(...args, { from: account }).then(estimatedGasLimit => {
+    return web3.eth.getGasPrice().then(gasPrice => {
       return daoFactoryContract
         .createCrossGovDAO(...args, {
-          gasLimit: calculateGasMargin(estimatedGasLimit),
+          // gasLimit: calculateGasMargin(estimatedGasLimit),
           // gasLimit: '3500000',
+          gasPrice: calculateGasPriceMargin(gasPrice),
           from: account
         })
         .then((response: TransactionResponse) => {
@@ -70,5 +73,5 @@ export function useCrossGovCreateDaoCallback() {
           return response.hash
         })
     })
-  }, [account, addTransaction, args, daoFactoryContract, token])
+  }, [account, addTransaction, args, daoFactoryContract, token, web3])
 }

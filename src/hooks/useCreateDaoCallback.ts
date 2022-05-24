@@ -6,10 +6,11 @@ import { tryParseAmount } from '../state/application/hooks'
 import { calcVotingDuration } from 'pages/building/function'
 import { useDaoFactoryContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks'
-import { calculateGasMargin } from 'utils'
+import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { PriceDecimals } from '../constants'
+import { useWeb3Instance } from './useWeb3Instance'
 
 export function useCreateDaoCallback() {
   const { basicData, distributionData, ruleData } = useTrueCommitCreateDaoData()
@@ -17,6 +18,7 @@ export function useCreateDaoCallback() {
   const daoFactoryContract = useDaoFactoryContract()
   const { account } = useActiveWeb3React()
   const addTransaction = useTransactionAdder()
+  const web3 = useWeb3Instance()
 
   // special price decimals
   const stptPriceToken = useMemo(
@@ -116,16 +118,18 @@ export function useCreateDaoCallback() {
   }, [basicData, distributionData, ruleData, stptPriceToken, currentReceivingToken])
 
   return useCallback(() => {
-    if (!daoFactoryContract) {
+    if (!daoFactoryContract || !web3) {
       throw new Error('Unexpected error. Contract error')
     }
 
     console.log('args->', JSON.stringify(args), ...args)
-    return daoFactoryContract.estimateGas.createDAO(...args, { from: account }).then(estimatedGasLimit => {
+    return web3.eth.getGasPrice().then(gasPrice => {
+      console.log('aaa', gasPrice, calculateGasPriceMargin(gasPrice))
       return daoFactoryContract
         .createDAO(...args, {
-          gasLimit: calculateGasMargin(estimatedGasLimit),
+          // gasLimit: calculateGasMargin(estimatedGasLimit),
           // gasLimit: '3500000',
+          gasPrice: calculateGasPriceMargin(gasPrice),
           from: account
         })
         .then((response: TransactionResponse) => {
@@ -135,5 +139,5 @@ export function useCreateDaoCallback() {
           return response.hash
         })
     })
-  }, [account, addTransaction, args, daoFactoryContract])
+  }, [account, addTransaction, args, daoFactoryContract, web3])
 }
