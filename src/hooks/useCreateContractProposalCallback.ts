@@ -1,12 +1,13 @@
 import { useCallback } from 'react'
 import { useCrossVotingContract, useVotingContract } from './useContract'
-import { calculateGasMargin } from 'utils'
+import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import Web3 from 'web3'
 import DAO_ABI from '../constants/abis/DAO.json'
 import { AbiItem } from 'web3-utils'
+import { useWeb3Instance } from './useWeb3Instance'
 
 const web3 = new Web3()
 const daoContract = new web3.eth.Contract((DAO_ABI as unknown) as AbiItem)
@@ -14,18 +15,19 @@ const daoContract = new web3.eth.Contract((DAO_ABI as unknown) as AbiItem)
 export function useCreateContractProposalCallback(votingAddress: string | undefined) {
   const votingContract = useVotingContract(votingAddress)
   const { account } = useActiveWeb3React()
+  const web3In = useWeb3Instance()
   const addTransaction = useTransactionAdder()
 
   const withdrawAssetCallback = useCallback(
     (title: string, content: string, tokenAddress: string, amount: string) => {
-      if (!votingContract) throw new Error('none contract')
+      if (!votingContract || !web3In) throw new Error('none contract')
 
       const args = [title, content, daoContract.methods.withdrawToken(tokenAddress, account, amount).encodeABI()]
 
-      return votingContract.estimateGas.createContractProposal(...args, { from: account }).then(estimatedGasLimit => {
+      return web3In.eth.getGasPrice().then(gasPrice => {
         return votingContract
           .createContractProposal(...args, {
-            gasLimit: calculateGasMargin(estimatedGasLimit),
+            gasPrice: calculateGasPriceMargin(gasPrice),
             // gasLimit: '3500000',
             from: account
           })
@@ -37,7 +39,7 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
           })
       })
     },
-    [account, addTransaction, votingContract]
+    [account, addTransaction, votingContract, web3In]
   )
 
   const updateConfigurationCallback = useCallback(
@@ -51,7 +53,7 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
       contractVotingDuration: number,
       descContent: string
     ) => {
-      if (!votingContract) throw new Error('none contract')
+      if (!votingContract || !web3In) throw new Error('none contract')
 
       const args = [
         title,
@@ -68,10 +70,10 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
           .encodeABI()
       ]
 
-      return votingContract.estimateGas.createContractProposal(...args, { from: account }).then(estimatedGasLimit => {
+      return web3In.eth.getGasPrice().then(gasPrice => {
         return votingContract
           .createContractProposal(...args, {
-            gasLimit: calculateGasMargin(estimatedGasLimit),
+            gasPrice: calculateGasPriceMargin(gasPrice),
             // gasLimit: '3500000',
             from: account
           })
@@ -83,7 +85,7 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
           })
       })
     },
-    [account, addTransaction, votingContract]
+    [account, addTransaction, votingContract, web3In]
   )
 
   return {
@@ -96,6 +98,7 @@ export function useCreateCrossContractProposalCallback(votingAddress: string | u
   const votingContract = useCrossVotingContract(votingAddress)
   const { account } = useActiveWeb3React()
   const addTransaction = useTransactionAdder()
+  const web3In = useWeb3Instance()
 
   return useCallback(
     (
@@ -116,7 +119,7 @@ export function useCreateCrossContractProposalCallback(votingAddress: string | u
       },
       signature: string
     ) => {
-      if (!votingContract) throw new Error('none contract')
+      if (!votingContract || !web3In) throw new Error('none contract')
 
       const args = [
         title,
@@ -140,10 +143,10 @@ export function useCreateCrossContractProposalCallback(votingAddress: string | u
         JSON.stringify(args)
       )
 
-      return votingContract.estimateGas.createContractProposal(...args, { from: account }).then(estimatedGasLimit => {
+      return web3In.eth.getGasPrice().then(gasPrice => {
         return votingContract
           .createContractProposal(...args, {
-            gasLimit: calculateGasMargin(estimatedGasLimit),
+            gasPrice: calculateGasPriceMargin(gasPrice),
             // gasLimit: '3500000',
             from: account
           })
@@ -155,6 +158,6 @@ export function useCreateCrossContractProposalCallback(votingAddress: string | u
           })
       })
     },
-    [account, addTransaction, votingContract]
+    [account, addTransaction, votingContract, web3In]
   )
 }

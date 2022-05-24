@@ -1,4 +1,4 @@
-import { calculateGasMargin } from 'utils'
+import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
@@ -17,28 +17,30 @@ export function useTokenTransferCallback(tokenAddress: string | undefined) {
       if (!account) throw new Error('none account')
       if (isETHER) {
         if (!web3) throw new Error('none web3')
-        return new Promise((resolve, reject) => {
-          web3.eth
-            .sendTransaction({
-              from: account,
-              to,
-              value,
-              gasPrice: '750000000000'
-            })
-            .on('transactionHash', function(hash) {
-              addTransaction({ hash, confirmations: 0, from: account, nonce: 0 } as TransactionResponse, {
-                summary: 'Transfer'
+        return web3.eth.getGasPrice().then(gasPrice => {
+          return new Promise((resolve, reject) => {
+            web3.eth
+              .sendTransaction({
+                from: account,
+                to,
+                value,
+                gasPrice: calculateGasPriceMargin(gasPrice)
               })
-              resolve(hash)
-            })
-            .catch(error => reject(error))
+              .on('transactionHash', function(hash) {
+                addTransaction({ hash, confirmations: 0, from: account, nonce: 0 } as TransactionResponse, {
+                  summary: 'Transfer'
+                })
+                resolve(hash)
+              })
+              .catch(error => reject(error))
+          })
         })
       } else {
-        if (!tokenContract) throw new Error('none tokenContract')
-        return tokenContract.estimateGas.transfer(to, value, { from: account }).then(estimatedGasLimit => {
+        if (!tokenContract || !web3) throw new Error('none tokenContract')
+        return web3.eth.getGasPrice().then(gasPrice => {
           return tokenContract
             .transfer(to, value, {
-              gasLimit: calculateGasMargin(estimatedGasLimit),
+              gasPrice: calculateGasPriceMargin(gasPrice),
               // gasLimit: '3500000',
               from: account
             })

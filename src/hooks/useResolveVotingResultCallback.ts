@@ -1,21 +1,23 @@
-import { calculateGasMargin } from 'utils'
+import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useVotingContract } from './useContract'
+import { useWeb3Instance } from './useWeb3Instance'
 
 export function useResolveVotingResultCallback(votingAddress: string | undefined) {
   const addTransaction = useTransactionAdder()
+  const web3 = useWeb3Instance()
   const votingContract = useVotingContract(votingAddress)
 
   return useCallback(
     (id: string) => {
-      if (!votingContract) throw new Error('none votingContract')
+      if (!votingContract || !web3) throw new Error('none votingContract')
 
-      return votingContract.estimateGas.resolveVotingResult(id).then(estimatedGasLimit => {
+      return web3.eth.getGasPrice().then(gasPrice => {
         return votingContract
           .resolveVotingResult(id, {
-            gasLimit: calculateGasMargin(estimatedGasLimit)
+            gasPrice: calculateGasPriceMargin(gasPrice)
           })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
@@ -25,6 +27,6 @@ export function useResolveVotingResultCallback(votingAddress: string | undefined
           })
       })
     },
-    [addTransaction, votingContract]
+    [addTransaction, votingContract, web3]
   )
 }

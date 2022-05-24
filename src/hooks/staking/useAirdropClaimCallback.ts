@@ -1,24 +1,26 @@
-import { calculateGasMargin } from 'utils'
+import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '../'
 import { useFarmStakingContract } from '../useContract'
+import { useWeb3Instance } from 'hooks/useWeb3Instance'
 
 export function useAirdropClaimCallback() {
   const addTransaction = useTransactionAdder()
   const contract = useFarmStakingContract()
+  const web3 = useWeb3Instance()
   const { account } = useActiveWeb3React()
 
   return useCallback(
     (airdropId: number) => {
       if (!account) throw new Error('none account')
-      if (!contract) throw new Error('none contract')
+      if (!contract || !web3) throw new Error('none contract')
 
-      return contract.estimateGas.claim(airdropId, { from: account }).then(estimatedGasLimit => {
+      return web3.eth.getGasPrice().then(gasPrice => {
         return contract
           .claim(airdropId, {
-            gasLimit: calculateGasMargin(estimatedGasLimit),
+            gasPrice: calculateGasPriceMargin(gasPrice),
             // gasLimit: '3500000',
             from: account
           })
@@ -30,6 +32,6 @@ export function useAirdropClaimCallback() {
           })
       })
     },
-    [account, addTransaction, contract]
+    [account, addTransaction, contract, web3]
   )
 }
