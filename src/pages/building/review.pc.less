@@ -105,16 +105,18 @@
 
             .panel-rule {
                 padding: 26px 89px;
-                display: flex;
-                flex-wrap: wrap;
                 width: 100%;
+                .box {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                }
 
                 .input-item {
                     flex-basis: 50%;
 
-                    &.rules-agreement {
-                        flex-basis: 100%;
-                    }
+                    // &.rules-agreement {
+                    //     flex-basis: 100%;
+                    // }
 
                     .label {
                         font-style: normal;

@@ -38,8 +38,8 @@ export default function Confirm({
   const btn = useMemo(() => {
     if (!balance || balance.lessThan(minimumCreateProposal))
       return (
-        <Button width="240px" style={{ maxWidth: '65%' }} disabled>
-          Balance Insufficient
+        <Button width="100%" style={{ maxWidth: '65%' }} disabled>
+          Balance is not sufficient to update configuration
         </Button>
       )
     if (approvalState !== ApprovalState.APPROVED) {

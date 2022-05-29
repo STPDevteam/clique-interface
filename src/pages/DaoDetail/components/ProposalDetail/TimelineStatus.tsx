@@ -50,7 +50,7 @@ export default function TimelineStatus({
         marginBottom: 24
       }}
     >
-      <Typography variant="h6" mb={20}>
+      <Typography variant="h6" mb={20} fontWeight={600}>
         Proposal history
       </Typography>
 

@@ -39,9 +39,9 @@ export default function Index(props: IProps) {
       <Box className={styles['header']} justifyContent={'space-between'} display={'flex'} flexWrap={'wrap'} gap={10}>
         <div className={styles['header-info']}>
           <p className={styles['title']}>Proposal</p>
-          <p className={styles['text']}>
+          {/* <p className={styles['text']}>
             Community proposals are a great way to see how the community feels about your ideas
-          </p>
+          </p> */}
         </div>
         <Tooltip
           placement="top"

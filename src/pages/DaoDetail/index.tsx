@@ -10,16 +10,18 @@ import Members from './components/Members'
 import Configuration from './components/Configuration'
 import Copy from 'components/essential/Copy'
 import { useDaoInfoByAddress } from 'hooks/useDAOInfo'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { shortenAddress } from 'utils'
 import { ProposalInfoProp } from 'hooks/useVoting'
 import ShowTokenHolders from '../Daos/ShowTokenHolders'
 import { VerifiedTag } from 'pages/Daos'
 import { Box } from '@mui/material'
+import OutlineButton from 'components/Button/OutlineButton'
 
 export default function Index() {
   const links = ['Proposal', 'Assets', 'Members', 'Configuration']
   const { address: daoAddress } = useParams<{ address: string }>()
+  const history = useHistory()
 
   const [currentLink, setCurrentLink] = useState(links[0])
   const [currentProposal, setCurrentProposal] = useState<ProposalInfoProp>()
@@ -38,15 +40,20 @@ export default function Index() {
   return (
     <div className={styles['dao-detail']}>
       <div className={styles['detail-header']}>
-        <Box className={styles['title']} display="flex" alignItems={'center'} gap="5px">
-          {daoInfo?.daoName || '--'}
-          <VerifiedTag address={daoInfo?.daoAddress} />
+        <OutlineButton width={'120px'} onClick={() => history.replace('/')}>
+          Back
+        </OutlineButton>
+        <Box ml={'50px'}>
+          <Box className={styles['title']} display="flex" alignItems={'center'} gap="5px">
+            {daoInfo?.daoName || '--'}
+            <VerifiedTag address={daoInfo?.daoAddress} />
+          </Box>
+          <p className={styles['text']}>
+            {' '}
+            <ShowTokenHolders address={daoInfo?.token?.address} /> Members
+          </p>
+          <p>{daoInfo?.daoDesc}</p>
         </Box>
-        <p className={styles['text']}>
-          {' '}
-          <ShowTokenHolders address={daoInfo?.token?.address} /> Members
-        </p>
-        <p>{daoInfo?.daoDesc}</p>
         {/* <Button className={'btn-common btn-01'}>Join</Button> */}
       </div>
       {currentProposal && daoInfo && (

@@ -18,11 +18,8 @@ export default function Index() {
   const history = useHistory()
   return (
     <main className="home">
-      <h1>Create a DAO within a few clicks</h1>
-      <p>
-        Build your decentralized autonomous organization and create its governance token running on Polygon through the
-        Ethereum blockchain
-      </p>
+      <h1>Add a DAO with a few clicks</h1>
+      <p>Add your DAO and set its governance framework running on Polygon through the Ethereum blockchain</p>
       {account ? (
         <>
           {/* <Button
@@ -44,7 +41,7 @@ export default function Index() {
               }}
             >
               <SelectTokenWhiteIcon />
-              Create a DAO using an existing token
+              Add a DAO using exist token
             </Button>
           </Box>
         </>

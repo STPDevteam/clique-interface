@@ -67,14 +67,6 @@ export const AllChainList = [
     name: 'Polygon',
     id: ChainId.MATIC,
     hex: '0x89'
-  },
-  {
-    icon: <KlaytnLogo />,
-    logo: KlaytnSvg,
-    symbol: 'Klaytn Baobab',
-    name: 'Klaytn Baobab',
-    id: ChainId.KLAYTN_BAOBAB,
-    hex: '0x3e9'
   }
 ]
 
@@ -113,18 +105,18 @@ export const SUPPORTED_NETWORKS: {
     rpcUrls: ['https://mainnet.infura.io/v3'],
     blockExplorerUrls: ['https://etherscan.com']
   },
-  // [ChainId.STP]: {
-  //   chainId: '0x48',
-  //   chainName: 'Verse',
-  //   nativeCurrency: {
-  //     name: 'STPT',
-  //     symbol: 'STPT',
-  //     decimals: 18,
-  //     logo: STPSvg
-  //   },
-  //   rpcUrls: ['https://test-gearrpc.stp.network'],
-  //   blockExplorerUrls: ['https://testnet-explorer.stp.network/']
-  // },
+  [ChainId.STP]: {
+    chainId: '0x48',
+    chainName: 'Verse',
+    nativeCurrency: {
+      name: 'STPT',
+      symbol: 'STPT',
+      decimals: 18,
+      logo: STPSvg
+    },
+    rpcUrls: ['https://test-gearrpc.stp.network'],
+    blockExplorerUrls: ['https://testnet-explorer.stp.network/']
+  },
   [ChainId.RINKEBY]: {
     chainId: '0x4',
     chainName: 'Rinkeby',

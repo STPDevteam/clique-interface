@@ -95,7 +95,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             </Box>
           </div>
           <div className="input-item">
-            <span className="label">Dao Name *</span>
+            <span className="label">DAO Name *</span>
             <div className="suffix-wrapper">
               <Input
                 placeholder="Membership"

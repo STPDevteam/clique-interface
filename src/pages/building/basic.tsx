@@ -30,7 +30,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
 
   const verifyMsg = useMemo(() => {
     if (!basicData.daoName.trim()) {
-      return 'Dao name required'
+      return 'DAO name required'
     }
     if (!basicData.tokenName.trim()) {
       return 'Token name required'
