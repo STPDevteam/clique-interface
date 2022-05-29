@@ -68,7 +68,7 @@ export function useCrossGovCreateDaoCallback() {
         })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
-            summary: 'Create cross gov Dao'
+            summary: 'Cross chain DAO created'
           })
           return response.hash
         })

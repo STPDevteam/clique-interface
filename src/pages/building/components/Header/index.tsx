@@ -20,8 +20,8 @@ export default function Index(props: IHeaderProps) {
 
   return (
     <section className="building-header">
-      <OutlineButton className="back" onClick={() => history.replace('create')}>
-        Back
+      <OutlineButton className="back" onClick={() => history.replace('/')}>
+        Home
       </OutlineButton>
       <h1>{title}</h1>
       <div className="step-list">
