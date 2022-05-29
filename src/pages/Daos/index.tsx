@@ -26,7 +26,7 @@ export default function Index() {
   const { list: daoList, page: daoListPage, loading: daoListLoading } = useHomeDaoList()
   const daoListAddresss = useMemo(() => daoList.map(item => item.daoAddress).filter(i => i), [daoList])
   const daoTypes = useGetDaoTypes(daoListAddresss as string[])
-  const [closeMsg, setCloseMsg] = useState(false)
+  const [closeMsg, setCloseMsg] = useState(Boolean(sessionStorage.getItem('stp_home_alert')) || false)
 
   const {
     daoAddresss: publicOfferingAddresss,
@@ -40,14 +40,25 @@ export default function Index() {
     <div className="daos-container">
       {!closeMsg && (
         <div className="daos-header">
-          <CloseSvg className="close" onClick={() => setCloseMsg(true)}></CloseSvg>
+          <CloseSvg
+            className="close"
+            onClick={() => {
+              sessionStorage.setItem('stp_home_alert', 'true')
+              setCloseMsg(true)
+            }}
+          ></CloseSvg>
           <div className="header-info">
             <p className="title">Clique</p>
             <p className="text">
               Discover DAOs and participate in governance activities through proposal voting, crowdfunding and more to
               come!
+              <ExternalLink
+                style={{ fontSize: 12, fontWeight: 600, color: 'inherit' }}
+                href="https://stp-dao.gitbook.io/verse-network/dapps/clique"
+              >
+                {` How it works >`}
+              </ExternalLink>
             </p>
-            <ExternalLink href="https://stp-dao.gitbook.io/verse-network/dapps/clique">how it works</ExternalLink>
           </div>
           {/* <Search placeholder="DAO Name" onSearch={handleSearch} /> */}
         </div>
@@ -138,12 +149,14 @@ export default function Index() {
                         </Typography>
                       </Box>
                     </Box>
-                    <Box display={'flex'} justifyContent={'space-between'} mt={10}>
-                      <Typography variant="body1">Members</Typography>
-                      <Typography fontSize={14} variant="h6">
-                        <ShowTokenHolders address={item.token?.address} />
-                      </Typography>
-                    </Box>
+                    {item.token?.address && (
+                      <Box display={'flex'} justifyContent={'space-between'} mt={10}>
+                        <Typography variant="body1">Members</Typography>
+                        <Typography fontSize={14} variant="h6">
+                          <ShowTokenHolders address={item.token?.address} />
+                        </Typography>
+                      </Box>
+                    )}
                     <Box display={'flex'} justifyContent={'space-between'} mt={10}>
                       <Typography variant="body1">Proposals</Typography>
                       <ShowProposalNumber votingAddress={item.votingAddress} daoAddress={item.daoAddress} />

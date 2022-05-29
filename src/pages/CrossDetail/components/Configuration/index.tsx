@@ -252,7 +252,9 @@ export default function Configuration({
       <Box display="grid" gap="10px">
         <Box display={'flex'} justifyContent={'space-between'} mb={20} mt={10}>
           <Typography variant="h6">Total Supply</Typography>
-          <Typography variant="h6">{totalSupply.toSignificant(6, { groupSeparator: ',' })}</Typography>
+          <Typography variant="h6">
+            {totalSupply.toSignificant(6, { groupSeparator: ',' })} {totalSupply.token.symbol}
+          </Typography>
         </Box>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <div className="input-item progress">
@@ -272,24 +274,27 @@ export default function Configuration({
           </div>
           <div className="input-item votes">
             {/* <span className="label">Votes</span> */}
-            <Tooltip placement="top" title={toFormatGroup(minVoteNumber, 0)}>
-              <Input
-                className="input-common"
-                value={minVoteNumber}
-                onChange={e => {
-                  const reg = new RegExp('^[0-9]*$')
-                  const _val = e.target.value
-                  if (reg.test(_val)) {
-                    // check max value
-                    const input = new BigNumber(_val).gt(totalSupply.toSignificant())
-                      ? totalSupply.toSignificant()
-                      : _val
-                    setMinVoteNumber(input)
-                    // setMinVotePer(getPerForAmount(totalSupply.toSignificant(), input))
-                  }
-                }}
-              />
-            </Tooltip>
+            <Box>
+              <Tooltip placement="top" title={toFormatGroup(minVoteNumber, 0)}>
+                <Input
+                  className="input-common"
+                  value={minVoteNumber}
+                  onChange={e => {
+                    const reg = new RegExp('^[0-9]*$')
+                    const _val = e.target.value
+                    if (reg.test(_val)) {
+                      // check max value
+                      const input = new BigNumber(_val).gt(totalSupply.toSignificant())
+                        ? totalSupply.toSignificant()
+                        : _val
+                      setMinVoteNumber(input)
+                      // setMinVotePer(getPerForAmount(totalSupply.toSignificant(), input))
+                    }
+                  }}
+                />
+              </Tooltip>
+              <span className="label"> {totalSupply.token.symbol}</span>
+            </Box>
           </div>
         </Box>
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
@@ -310,24 +315,27 @@ export default function Configuration({
           </div>
           <div className="input-item votes">
             <span className="label">Tokens</span>
-            <Tooltip placement="top" title={toFormatGroup(minCreateProposalNumber)}>
-              <Input
-                className="input-common"
-                value={minCreateProposalNumber}
-                onChange={e => {
-                  const reg = new RegExp('^[0-9]*$')
-                  const _val = e.target.value
-                  if (reg.test(_val)) {
-                    // check max value
-                    const input = new BigNumber(_val).gt(totalSupply.toSignificant())
-                      ? totalSupply.toSignificant()
-                      : _val
-                    setMinCreateProposalNumber(input)
-                    setMinCreateProposalPer(getPerForAmount(totalSupply.toSignificant(), input))
-                  }
-                }}
-              />
-            </Tooltip>
+            <Box>
+              <Tooltip placement="top" title={toFormatGroup(minCreateProposalNumber)}>
+                <Input
+                  className="input-common"
+                  value={minCreateProposalNumber}
+                  onChange={e => {
+                    const reg = new RegExp('^[0-9]*$')
+                    const _val = e.target.value
+                    if (reg.test(_val)) {
+                      // check max value
+                      const input = new BigNumber(_val).gt(totalSupply.toSignificant())
+                        ? totalSupply.toSignificant()
+                        : _val
+                      setMinCreateProposalNumber(input)
+                      setMinCreateProposalPer(getPerForAmount(totalSupply.toSignificant(), input))
+                    }
+                  }}
+                />
+              </Tooltip>
+              <span className="label"> {totalSupply.token.symbol}</span>
+            </Box>
           </div>
         </Box>
 
@@ -351,7 +359,7 @@ export default function Configuration({
             <span className="label">Votes</span>
             <Tooltip placement="top" title={toFormatGroup(minValidNumber)}>
               <Input
-                className="input-common"
+                className="input-common w100"
                 value={minValidNumber}
                 onChange={e => {
                   const reg = new RegExp('^[0-9]*$')
@@ -372,7 +380,7 @@ export default function Configuration({
 
         <Box display={'grid'} gap="15px">
           <div className="input-item">
-            <span className="label">Community Voting Duration</span>
+            <span className="label">Voting Duration for Proposals with Manual Execution</span>
             <Box display={'flex'} justifyContent={'space-between'} gap={20} width={'100%'}>
               <Box
                 sx={{
@@ -450,12 +458,12 @@ export default function Configuration({
                     setVotersCustom(val)
                   }}
                 />
-                <Typography variant="h6">Voters Custom</Typography>
+                <Typography variant="h6">Custom Duration</Typography>
               </Box>
             </Box>
           </div>
           <div className="input-item">
-            <span className="label">Contract Voting Duration</span>
+            <span className="label">Voting Duration for Proposals with Automatic Execution</span>
             <Box
               sx={{
                 display: 'flex',

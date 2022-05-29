@@ -43,7 +43,7 @@ export default function Index({
         </Typography>
         <Typography>
           ({minimumValidVotes?.toSignificant(6, { groupSeparator: ',' })} {minimumValidVotes?.token.symbol} votes
-          required)
+          required to vote)
         </Typography>
       </Box>
       <div className={styles['vote-list']}>

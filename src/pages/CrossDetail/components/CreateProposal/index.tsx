@@ -14,7 +14,6 @@ import TransactionPendingModal from 'components/Modal/TransactionModals/Transact
 import useModal from 'hooks/useModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
-import { toFormatGroup } from 'utils/dao'
 import Confirm from './Confirm'
 import { useCreateCrossProposalCallback } from 'hooks/useCreateCommunityProposalCallback'
 import { useCreateProposalSignData } from 'hooks/useBackedCrossServer'
@@ -201,11 +200,11 @@ export default function Index(props: Props) {
             <Input placeholder="" value={title} maxLength={60} onChange={e => setTitle(e.target.value)} />
           </Box>
           <Box className="input-item">
-            <span className="label">Content</span>
+            <span className="label">Description</span>
             <TextArea rows={4} value={desc} maxLength={500} onChange={e => setDesc(e.target.value)} />
           </Box>
           <Box className="input-item">
-            <span className="label">Vote options</span>
+            <span className="label">Voting Options</span>
             <Box display={'grid'} width={'100%'} gap="10px">
               {option.map((item, index) =>
                 index <= 1 ? (
@@ -287,9 +286,8 @@ export default function Index(props: Props) {
                 padding: '13px 44px'
               }}
             >
-              Valid votes greater than{' '}
-              {daoInfo?.rule?.minimumValidVotes ? toFormatGroup(daoInfo?.rule?.minimumValidVotes.toSignificant()) : '-'}{' '}
-              will be considered valid proposals
+              {daoInfo?.rule?.minimumCreateProposal.toSignificant(18, { groupSeparator: ',' })} {daoInfo?.token?.symbol}{' '}
+              required to create proposal
             </Box>
             {getActions}
           </Box>

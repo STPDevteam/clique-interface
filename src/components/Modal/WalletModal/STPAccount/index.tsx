@@ -27,7 +27,7 @@ export function fallbackCopyTextToClipboard(text: string) {
     console.log('Fallback: Copying text command was ' + msg)
 
     notification.success({
-      message: 'Copy successfully',
+      message: 'Copied successfully',
       top: 80
     })
   } catch (err) {

@@ -11,22 +11,29 @@ import TransactionPendingModal from 'components/Modal/TransactionModals/Transact
 import useModal from 'hooks/useModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
-import { shortenAddress } from 'utils'
+import { getEtherscanLink, shortenAddress } from 'utils'
 import { TokenAmount } from 'constants/token'
 import { useTagCompletedTx } from 'state/transactions/hooks'
 import { Dots } from 'theme/components'
+import { ReactComponent as OpenLink } from 'assets/svg/open-gary-link.svg'
+import { Link } from '@mui/material'
+import { useActiveWeb3React } from 'hooks'
+import { CROSS_SUPPORT_IMPORT_NETWORK } from '../../../constants'
 
 export default function Index({
   detail,
   daoInfo,
   stakedToken,
-  tagKey
+  tagKey,
+  snapshot
 }: {
   detail: ProposalInfoProp
   daoInfo: DaoInfoProps
   stakedToken: TokenAmount | undefined
   tagKey: string
+  snapshot?: string
 }) {
+  const { chainId } = useActiveWeb3React()
   const isClaimed = useVotingClaimed(daoInfo.votingAddress, detail.id)
   const { showModal, hideModal } = useModal()
   const cancelProposalCallback = useCancelProposalCallback(daoInfo.votingAddress, tagKey + detail.id)
@@ -114,7 +121,21 @@ export default function Index({
       </div>
       <div className={styles['list-item']}>
         <span className={styles['label']}>Snapshot</span>
-        <span className={styles['value']}>{detail.blkHeight}</span>
+        <span className={styles['value']}>
+          {detail.blkHeight || snapshot || '-'}
+          <Link
+            target={'_blank'}
+            href={
+              chainId && detail.blkHeight
+                ? getEtherscanLink(chainId, detail.blkHeight.toString(), 'block')
+                : snapshot
+                ? getEtherscanLink(CROSS_SUPPORT_IMPORT_NETWORK[0], snapshot.toString(), 'block')
+                : undefined
+            }
+          >
+            <OpenLink height={18} />
+          </Link>
+        </span>
       </div>
       <div className={styles['list-item']}>
         <span className={styles['label']}>Start time</span>

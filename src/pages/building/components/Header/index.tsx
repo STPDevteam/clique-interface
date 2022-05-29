@@ -1,6 +1,8 @@
 import './index.pc.less'
 
 import 'react'
+import OutlineButton from 'components/Button/OutlineButton'
+import { useHistory } from 'react-router-dom'
 
 interface IHeaderProps {
   title?: string
@@ -9,6 +11,7 @@ interface IHeaderProps {
 }
 
 export default function Index(props: IHeaderProps) {
+  const history = useHistory()
   const {
     title = 'Create a DAO with Framework',
     stepItems = ['Basic', 'Config', 'Rule', 'Review'],
@@ -17,6 +20,9 @@ export default function Index(props: IHeaderProps) {
 
   return (
     <section className="building-header">
+      <OutlineButton className="back" onClick={() => history.replace('create')}>
+        Back
+      </OutlineButton>
       <h1>{title}</h1>
       <div className="step-list">
         {stepItems.map((item, index) => (

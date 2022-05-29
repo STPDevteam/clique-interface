@@ -75,7 +75,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
               Total Supply
             </Typography>
             <Typography fontSize={20} variant="h6" fontWeight={600}>
-              {crossTokenInfo?.totalSupply?.toSignificant(6, { groupSeparator: ',' })}
+              {crossTokenInfo?.totalSupply?.toSignificant(6, { groupSeparator: ',' })} {crossTokenInfo?.token.symbol}
             </Typography>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
@@ -84,7 +84,8 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                 Minimum holding to vote
                 <Tooltip
                   placement="top"
-                  title="the minimum number of token you need to hold to vote on a proposal. You are not able to vote if your token holding is less than the required amount. (The default value is 1)"
+                  title="The minimum number of tokens you need to hold to vote on a proposal. You are not able to vote if your
+                token holding is less than the required amount. (The default value is 1)"
                 >
                   <HelpOutlineIcon sx={{ marginLeft: 5, cursor: 'pointer' }} />
                 </Tooltip>
@@ -103,30 +104,33 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
               </div> */}
             </div>
             <div className="input-item votes">
-              <Tooltip placement="top" title={toFormatGroup(rule.minVoteNumber, 0)}>
-                <Input
-                  className="input-common"
-                  value={rule.minVoteNumber}
-                  onChange={e => {
-                    const reg = new RegExp('^[0-9]*$')
-                    const _val = e.target.value
-                    if (reg.test(_val)) {
-                      if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) return
-                      // check max value
-                      const input = new BigNumber(_val).gt(tokenSupply) ? tokenSupply : _val
-                      updateRuleCall('minVoteNumber', input)
-                      // setMinVotePer(getPerForAmount(tokenSupply, input))
-                    }
-                  }}
-                />
-              </Tooltip>
+              <Box>
+                <Tooltip placement="top" title={toFormatGroup(rule.minVoteNumber, 0)}>
+                  <Input
+                    className="input-common"
+                    value={rule.minVoteNumber}
+                    onChange={e => {
+                      const reg = new RegExp('^[0-9]*$')
+                      const _val = e.target.value
+                      if (reg.test(_val)) {
+                        if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) return
+                        // check max value
+                        const input = new BigNumber(_val).gt(tokenSupply) ? tokenSupply : _val
+                        updateRuleCall('minVoteNumber', input)
+                        // setMinVotePer(getPerForAmount(tokenSupply, input))
+                      }
+                    }}
+                  />
+                </Tooltip>
+                <span className="label"> {crossTokenInfo?.token.symbol}</span>
+              </Box>
             </div>
           </Box>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
               <Box className="label" display={'flex'} alignItems={'center'}>
                 Minimum holding to create proposal
-                <Tooltip placement="top" title="the amount of token you need to stake when creating a proposal">
+                <Tooltip placement="top" title="The amount of tokens you need to stake when creating a proposal.">
                   <HelpOutlineIcon sx={{ marginLeft: 5, cursor: 'pointer' }} />
                 </Tooltip>
               </Box>
@@ -146,23 +150,26 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
             </div>
             <div className="input-item votes">
               <span className="label">Tokens</span>
-              <Tooltip placement="top" title={toFormatGroup(rule.minCreateProposalNumber, 0)}>
-                <Input
-                  className="input-common"
-                  value={rule.minCreateProposalNumber}
-                  onChange={e => {
-                    const reg = new RegExp('^[0-9]*$')
-                    const _val = e.target.value
-                    if (reg.test(_val)) {
-                      if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) return
-                      // check max value
-                      const input = new BigNumber(_val).gt(tokenSupply) ? tokenSupply : _val
-                      updateRuleCall('minCreateProposalNumber', input)
-                      setMinCreateProposalPer(getPerForAmount(tokenSupply, input))
-                    }
-                  }}
-                />
-              </Tooltip>
+              <Box>
+                <Tooltip placement="top" title={toFormatGroup(rule.minCreateProposalNumber, 0)}>
+                  <Input
+                    className="input-common"
+                    value={rule.minCreateProposalNumber}
+                    onChange={e => {
+                      const reg = new RegExp('^[0-9]*$')
+                      const _val = e.target.value
+                      if (reg.test(_val)) {
+                        if (!tokenSupply || new BigNumber(tokenSupply).lt(1)) return
+                        // check max value
+                        const input = new BigNumber(_val).gt(tokenSupply) ? tokenSupply : _val
+                        updateRuleCall('minCreateProposalNumber', input)
+                        setMinCreateProposalPer(getPerForAmount(tokenSupply, input))
+                      }
+                    }}
+                  />
+                </Tooltip>
+                <span className="label"> {crossTokenInfo?.token.symbol}</span>
+              </Box>
             </div>
           </Box>
 
@@ -172,7 +179,8 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                 Minimum total votes
                 <Tooltip
                   placement="top"
-                  title="the minimum number of votes needed to make the result valid. By end of the countdown, if the sum of votes of all options is less than the required value, the proposal will be failed"
+                  title="The minimum number of votes needed to make the result valid. By the end of the proposal, if the sum of
+                votes of all options is less than the required value, the proposal will fail."
                 >
                   <HelpOutlineIcon sx={{ marginLeft: 5, cursor: 'pointer' }} />
                 </Tooltip>
@@ -195,7 +203,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
               <span className="label">Votes</span>
               <Tooltip placement="top" title={toFormatGroup(rule.minApprovalNumber, 0)}>
                 <Input
-                  className="input-common"
+                  className="input-common w100"
                   value={rule.minApprovalNumber}
                   onChange={e => {
                     const reg = new RegExp('^[0-9]*$')
@@ -215,7 +223,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
 
           <Box display={'grid'} gap="15px">
             <div className="input-item">
-              <span className="label">Community Voting Duration</span>
+              <span className="label">Voting Duration for Proposals with Manual Execution</span>
               <Box display={'flex'} justifyContent={'space-between'} gap={20} width={'100%'}>
                 <Box
                   sx={{
@@ -273,13 +281,13 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                     }}
                   />
                   <Typography fontSize={14} variant="h6">
-                    Voters Custom
+                    Custom Duration
                   </Typography>
                 </Box>
               </Box>
             </div>
             <div className="input-item">
-              <span className="label">Contract Voting Duration</span>
+              <span className="label">Voting Duration for Proposals with Automatic Execution</span>
               <Box
                 sx={{
                   display: 'flex',

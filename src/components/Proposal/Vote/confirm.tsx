@@ -26,7 +26,7 @@ export default function Confirm({
         </Typography>
 
         <Box display={'flex'} justifyContent={'space-between'}>
-          <Typography variant="body1">Your votes</Typography>
+          <Typography variant="body1">Your holdings</Typography>
           <Typography variant="h6">{balanceAt}</Typography>
         </Box>
 

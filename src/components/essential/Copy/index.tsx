@@ -21,7 +21,7 @@ export default function Copy(props: Props) {
   useEffect(() => {
     isCopied &&
       notification.success({
-        message: 'Copy successfully',
+        message: 'Copied successfully',
         top: 80
       })
   }, [isCopied])
