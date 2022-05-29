@@ -25,6 +25,7 @@ import MessageBox from 'components/Modal/TransactionModals/MessageBox'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import Image from 'components/Image'
+import OutlineButton from 'components/Button/OutlineButton'
 
 const Wrapper = styled('section')({
   '& p': {
@@ -40,8 +41,10 @@ const { Panel } = Collapse
 const { Column } = Table
 
 export default function ReviewInformation({
-  goToStep
+  goToStep,
+  goBack
 }: {
+  goBack: () => void
   goToStep: (e: 'Basic' | 'Distribution' | 'Governance' | 'Review') => void
 }) {
   const { removeBuildingDaoData } = useBuildingDataCallback()
@@ -374,10 +377,14 @@ export default function ReviewInformation({
           </Box>
         )}
       </Wrapper>
-      <Box className="btn-group" display={'flex'} justifyContent={'center'}>
+      <Box className="btn-group" display={'flex'} justifyContent="space-between">
+        <OutlineButton width={'120px'} onClick={goBack}>
+          Back
+        </OutlineButton>
         <Button style={{ width: 'auto' }} className="btn-common btn-01" disabled={!!createCheck} onClick={onCreate}>
           Confirm and create DAO
         </Button>
+        <Box width="120px" />
       </Box>
     </>
   )

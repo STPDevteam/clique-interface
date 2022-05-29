@@ -18,6 +18,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { useCrossBuildingDataCallback, useCrossCommitCreateDaoData } from 'state/crossBuilding/hooks'
 import { useTokenByChain } from 'state/wallet/hooks'
+import OutlineButton from 'components/Button/OutlineButton'
 
 const Wrapper = styled('section')({
   '& p': {
@@ -31,7 +32,13 @@ const Wrapper = styled('section')({
 
 const { Panel } = Collapse
 
-export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' | 'Governance' | 'Review') => void }) {
+export default function ReviewInformation({
+  goToStep,
+  goBack
+}: {
+  goBack: () => void
+  goToStep: (e: 'Basic' | 'Governance' | 'Review') => void
+}) {
   const { removeBuildingDaoData } = useCrossBuildingDataCallback()
   const { showModal, hideModal } = useModal()
   const history = useHistory()
@@ -91,7 +98,7 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
           defaultActiveKey={['1', '2', '3']}
         >
           <Panel
-            header="DAO Basic"
+            header="DAO Basic Information"
             key="1"
             extra={
               <StyledExtraBg onClick={() => goToStep('Basic')}>
@@ -125,7 +132,7 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
           </Panel>
 
           <Panel
-            header="Rule"
+            header="Governance"
             key="3"
             extra={
               <StyledExtraBg onClick={() => goToStep('Governance')}>
@@ -159,7 +166,7 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
                   <div className="input-item mt-12" rules-agreement>
                     <span className="label">Contract Voting Duration</span>
                     <Typography variant="h6">
-                      {ruleData.contractDays} Day {ruleData.contractHours} Hour {ruleData.contractMinutes} Minute
+                      {ruleData.contractDays} Days {ruleData.contractHours} Hours {ruleData.contractMinutes} Minutes
                     </Typography>
                   </div>
                 </Box>
@@ -180,7 +187,7 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
                     <Typography variant="h6">
                       {ruleData.votersCustom
                         ? 'Voters custom'
-                        : `${ruleData.days} Day ${ruleData.hours} Hour ${ruleData.minutes} Minute`}
+                        : `${ruleData.days} Days ${ruleData.hours} Hours ${ruleData.minutes} Minutes`}
                     </Typography>
                   </div>
                 </Box>
@@ -198,10 +205,14 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
           </Box>
         )}
       </Wrapper>
-      <Box className="btn-group" display={'flex'} justifyContent={'center'}>
+      <Box className="btn-group" display={'flex'} justifyContent={'space-between'}>
+        <OutlineButton width={'120px'} onClick={goBack}>
+          Back
+        </OutlineButton>
         <Button style={{ width: 'auto' }} className="btn-common btn-01" disabled={!!createCheck} onClick={onCreate}>
           Confirm and create DAO
         </Button>
+        <Box width={120} />
       </Box>
     </>
   )

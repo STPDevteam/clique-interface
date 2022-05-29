@@ -49,7 +49,7 @@ export default function Index() {
       case 'Governance':
         return <Rule goBack={goBack} goNext={goNext} />
       case 'Review':
-        return <Review goToStep={goToStep} />
+        return <Review goBack={goBack} goToStep={goToStep} />
       default:
         return null
     }
