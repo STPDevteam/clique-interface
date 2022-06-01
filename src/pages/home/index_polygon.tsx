@@ -41,7 +41,7 @@ export default function Index() {
               }}
             >
               <SelectTokenWhiteIcon />
-              Add a DAO using exist token
+              Add a DAO using an existing token
             </Button>
           </Box>
         </>
