@@ -41,7 +41,7 @@ export default function Index() {
     <div className={styles['dao-detail']}>
       <div className={styles['detail-header']}>
         <OutlineButton width={'120px'} onClick={() => history.replace('/')}>
-          Back
+          Home
         </OutlineButton>
         <Box ml={'50px'}>
           <Box className={styles['title']} display="flex" alignItems={'center'} gap="5px">
