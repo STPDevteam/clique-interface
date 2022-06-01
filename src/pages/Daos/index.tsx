@@ -13,7 +13,7 @@ import { Empty, Spin } from 'antd'
 import { ExternalLink } from 'theme/components'
 import { DaoTypeProp, useGetDaoTypes, useIsVerifiedDao } from 'hooks/useDAOInfo'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
-import { ReactComponent as CloseSvg } from 'assets/svg/close.svg'
+// import { ReactComponent as CloseSvg } from 'assets/svg/close.svg'
 
 enum TypeTabs {
   DAO,
@@ -26,7 +26,8 @@ export default function Index() {
   const { list: daoList, page: daoListPage, loading: daoListLoading } = useHomeDaoList()
   const daoListAddresss = useMemo(() => daoList.map(item => item.daoAddress).filter(i => i), [daoList])
   const daoTypes = useGetDaoTypes(daoListAddresss as string[])
-  const [closeMsg, setCloseMsg] = useState(Boolean(sessionStorage.getItem('stp_home_alert')) || false)
+  // const [closeMsg, setCloseMsg] = useState(Boolean(sessionStorage.getItem('stp_home_alert')) || false)
+  const [closeMsg] = useState(false)
 
   const {
     daoAddresss: publicOfferingAddresss,
@@ -40,15 +41,15 @@ export default function Index() {
     <div className="daos-container">
       {!closeMsg && (
         <div className="daos-header">
-          <CloseSvg
+          {/* <CloseSvg
             className="close"
             onClick={() => {
               sessionStorage.setItem('stp_home_alert', 'true')
               setCloseMsg(true)
             }}
-          ></CloseSvg>
+          ></CloseSvg> */}
           <div className="header-info">
-            <p className="title">Clique</p>
+            <p className="title">Main Dashboard</p>
             <p className="text">
               Discover DAOs and participate in governance activities through proposal voting, crowdfunding and more to
               come!

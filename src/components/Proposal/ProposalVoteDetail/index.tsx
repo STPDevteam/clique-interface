@@ -42,8 +42,8 @@ export default function Index({
           Results
         </Typography>
         <Typography>
-          ({minimumValidVotes?.toSignificant(6, { groupSeparator: ',' })} {minimumValidVotes?.token.symbol} votes
-          required to vote)
+          ({minimumValidVotes?.toSignificant(6, { groupSeparator: ',' })} {minimumValidVotes?.token.symbol} required to
+          vote)
         </Typography>
       </Box>
       <div className={styles['vote-list']}>
@@ -71,7 +71,7 @@ export default function Index({
             showModal(<VoteList token={minimumValidVotes.token} id={id} list={list} votingAddress={votingAddress} />)
           }
         >
-          View all vote ({totalVotes} Votes)
+          View all votes ({totalVotes} Votes)
         </Button>
       </div>
     </div>
