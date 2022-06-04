@@ -245,8 +245,10 @@ export default function Index(props: Props) {
                 {daoInfo?.token?.symbol}
               </Typography>
             </Box>
-            <Box display={'flex'} justifyContent={'space-between'} mb={10}>
-              <Typography>Create a proposal need hold</Typography>
+            <Box display={'flex'} justifyContent={'space-between'} alignItems="center" mb={10}>
+              <Typography marginRight={'10px'} maxWidth="80%">
+                Minimum holding required to create proposal
+              </Typography>
               <Typography>
                 {daoInfo?.rule?.minimumCreateProposal
                   ? daoInfo?.rule?.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' })
@@ -254,7 +256,7 @@ export default function Index(props: Props) {
                 {daoInfo?.token?.symbol}
               </Typography>
             </Box>
-            <Box
+            {/* <Box
               mb={10}
               sx={{
                 background: '#FAFAFA',
@@ -264,7 +266,7 @@ export default function Index(props: Props) {
             >
               {daoInfo?.rule?.minimumCreateProposal.toSignificant(18, { groupSeparator: ',' })} {daoInfo?.token?.symbol}{' '}
               required to create proposal
-            </Box>
+            </Box> */}
             {getActions}
           </Box>
         </div>
