@@ -249,5 +249,5 @@ export const CROSS_SUPPORT_CREATE_NETWORK = [72, 80001]
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
 export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
 // export const serverBaseUrl = isDaoframeSite() ? 'https://testapi.daoframe.com/' : 'https://testapi.daoframe.com/'
-export const mycliqueUrl = 'https://myclique.io/'
+export const mycliqueUrl = 'https://test.myclique.io/'
 export const daoframeUrl = 'https://daoframe.com/'
