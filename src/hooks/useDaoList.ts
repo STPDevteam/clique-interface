@@ -18,7 +18,7 @@ export function useDaoAddressLists(pageSize = 16) {
     const verifiedIds = chainId ? Verified_ADDRESS[chainId].map(({ id }) => id).reverse() : []
     const _ret = Object.keys(new Array(lastId).fill(''))
       .map(i => Number(i) + 1)
-      .filter((_, i) => !verifiedIds.includes(i))
+      .filter(v => !verifiedIds.includes(v))
     return [..._ret, ...verifiedIds]
   }, [chainId, lastId])
 
