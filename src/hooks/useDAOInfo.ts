@@ -529,7 +529,7 @@ export function useIsVerifiedDao(address: string | undefined) {
   return useMemo(() => {
     if (!chainId || !address) return false
     if (!Verified_ADDRESS[chainId] || !Verified_ADDRESS[chainId].length) return false
-    return Verified_ADDRESS[chainId].includes(address)
+    return Verified_ADDRESS[chainId].map(({ address }) => address).includes(address)
   }, [address, chainId])
 }
 
