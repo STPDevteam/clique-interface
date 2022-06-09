@@ -32,6 +32,7 @@ import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
 import CrossBuilding from './CrossBuilding'
 
 import BigNumber from 'bignumber.js'
+import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
 BigNumber.config({ EXPONENTIAL_AT: [-7, 40] })
 
 export default function App() {
@@ -54,6 +55,7 @@ export default function App() {
       <ModalProvider>
         <Web3ReactManager>
           <div id="app">
+            <Route component={GoogleAnalyticsReporter} />
             {/* <ContentWrapper> */}
             {/* <TopAlert /> */}
             <Layouts>

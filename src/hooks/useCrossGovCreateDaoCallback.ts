@@ -9,6 +9,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useTokenByChain } from 'state/wallet/hooks'
 import { useWeb3Instance } from './useWeb3Instance'
+import ReactGA from 'react-ga'
 
 export function useCrossGovCreateDaoCallback() {
   const { basicData, ruleData } = useCrossCommitCreateDaoData()
@@ -71,6 +72,15 @@ export function useCrossGovCreateDaoCallback() {
             summary: 'Cross chain DAO created'
           })
           return response.hash
+        })
+        .catch((err: any) => {
+          ReactGA.event({
+            category: 'catch',
+            action: 'CrossGovCreateDao',
+            dimension1: JSON.stringify(args),
+            dimension2: JSON.stringify(err)
+          })
+          throw err
         })
     })
   }, [account, addTransaction, args, daoFactoryContract, token, web3])
