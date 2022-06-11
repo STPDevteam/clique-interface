@@ -5,6 +5,15 @@ export function queryDaoByTokenAddress(chainId: number, address: string) {
   return Axios.get(serverBaseUrl + `${chainId}/dao/${address}`)
 }
 
+export function commitErrorMsg(title: string, content: string, func: string, params: string) {
+  return Axios.post(serverBaseUrl + 'error', {
+    title,
+    content,
+    func,
+    params
+  })
+}
+
 export function uploadPictureAddress() {
   return serverBaseUrl + 'upload'
 }

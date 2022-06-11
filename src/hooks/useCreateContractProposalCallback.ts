@@ -8,6 +8,7 @@ import Web3 from 'web3'
 import DAO_ABI from '../constants/abis/DAO.json'
 import { AbiItem } from 'web3-utils'
 import { useWeb3Instance } from './useWeb3Instance'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 const web3 = new Web3()
 const daoContract = new web3.eth.Contract((DAO_ABI as unknown) as AbiItem)
@@ -155,6 +156,17 @@ export function useCreateCrossContractProposalCallback(votingAddress: string | u
               summary: 'Create contract proposal'
             })
             return response.hash
+          })
+          .catch((err: any) => {
+            if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+              commitErrorMsg(
+                'createCrossContractProposal',
+                JSON.stringify(err),
+                'useCreateCrossContractProposalCallback',
+                JSON.stringify(args)
+              )
+            }
+            throw err
           })
       })
     },

@@ -6,6 +6,7 @@ import { useActiveWeb3React } from '.'
 import { useVotingContract, useCrossVotingContract } from './useContract'
 import { CrossSigType } from './useCreateCommunityProposalCallback'
 import { useWeb3Instance } from './useWeb3Instance'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useVoteCallback(votingAddress: string | undefined, tagKey: string) {
   const addTransaction = useTransactionAdder()
@@ -80,6 +81,12 @@ export function useCrossVoteCallback(votingAddress: string | undefined, tagKey: 
               }
             })
             return response.hash
+          })
+          .catch((err: any) => {
+            if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+              commitErrorMsg('gov vote', JSON.stringify(err), 'useCrossVoteCallback', JSON.stringify(args))
+            }
+            throw err
           })
       })
     },

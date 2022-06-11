@@ -5,6 +5,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import { useWeb3Instance } from './useWeb3Instance'
+import { commitErrorMsg } from 'utils/fetch/server'
 // const Web3EthAbi = require('web3-eth-abi')
 // Web3EthAbi.encodeFunctionSignature({
 //   name: '',
@@ -119,6 +120,17 @@ export function useCreateCrossProposalCallback(votingAddress: string | undefined
               summary: 'Create community proposal'
             })
             return response.hash
+          })
+          .catch((err: any) => {
+            if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+              commitErrorMsg(
+                'create gov community proposal',
+                JSON.stringify(err),
+                'useCreateCrossProposalCallback',
+                JSON.stringify(args)
+              )
+            }
+            throw err
           })
       })
     },

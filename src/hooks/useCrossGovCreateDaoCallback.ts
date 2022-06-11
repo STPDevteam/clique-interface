@@ -10,6 +10,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useTokenByChain } from 'state/wallet/hooks'
 import { useWeb3Instance } from './useWeb3Instance'
 import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useCrossGovCreateDaoCallback() {
   const { basicData, ruleData } = useCrossCommitCreateDaoData()
@@ -74,6 +75,14 @@ export function useCrossGovCreateDaoCallback() {
           return response.hash
         })
         .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'CrossGovCreateDao',
+              JSON.stringify(err),
+              'useCrossGovCreateDaoCallback',
+              JSON.stringify(args)
+            )
+          }
           ReactGA.event(
             {
               category: 'catch',
