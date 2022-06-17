@@ -8,6 +8,7 @@ import Web3 from 'web3'
 import DAO_ABI from '../constants/abis/DAO.json'
 import { AbiItem } from 'web3-utils'
 import { useWeb3Instance } from './useWeb3Instance'
+import ReactGA from 'react-ga4'
 import { commitErrorMsg } from 'utils/fetch/server'
 
 const web3 = new Web3()
@@ -165,6 +166,11 @@ export function useCreateCrossContractProposalCallback(votingAddress: string | u
                 'useCreateCrossContractProposalCallback',
                 JSON.stringify(args)
               )
+              ReactGA.event({
+                category: 'catch-useCreateCrossContractProposalCallback',
+                action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+                label: JSON.stringify(args)
+              })
             }
             throw err
           })

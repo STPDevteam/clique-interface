@@ -6,6 +6,7 @@ import { useActiveWeb3React } from '.'
 import { useVotingContract, useCrossVotingContract } from './useContract'
 import { CrossSigType } from './useCreateCommunityProposalCallback'
 import { useWeb3Instance } from './useWeb3Instance'
+import ReactGA from 'react-ga4'
 import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useVoteCallback(votingAddress: string | undefined, tagKey: string) {
@@ -84,7 +85,12 @@ export function useCrossVoteCallback(votingAddress: string | undefined, tagKey: 
           })
           .catch((err: any) => {
             if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
-              commitErrorMsg('gov vote', JSON.stringify(err), 'useCrossVoteCallback', JSON.stringify(args))
+              commitErrorMsg('CrossVote', JSON.stringify(err), 'useCrossVoteCallback', JSON.stringify(args))
+              ReactGA.event({
+                category: 'catch-useCrossVoteCallback',
+                action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+                label: JSON.stringify(args)
+              })
             }
             throw err
           })

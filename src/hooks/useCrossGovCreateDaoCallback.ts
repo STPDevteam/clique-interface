@@ -75,22 +75,14 @@ export function useCrossGovCreateDaoCallback() {
           return response.hash
         })
         .catch((err: any) => {
+          commitErrorMsg('CrossGovCreateDao', JSON.stringify(err), 'useCrossGovCreateDaoCallback', JSON.stringify(args))
           if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
-            commitErrorMsg(
-              'CrossGovCreateDao',
-              JSON.stringify(err),
-              'useCrossGovCreateDaoCallback',
-              JSON.stringify(args)
-            )
-          }
-          ReactGA.event(
-            {
-              category: 'catch',
-              action: 'CrossGovCreateDao',
+            ReactGA.event({
+              category: 'catch-useCrossGovCreateDaoCallback',
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
               label: JSON.stringify(args)
-            },
-            JSON.stringify(err)
-          )
+            })
+          }
           throw err
         })
     })

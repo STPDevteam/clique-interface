@@ -6,6 +6,7 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import { useWeb3Instance } from './useWeb3Instance'
 import { commitErrorMsg } from 'utils/fetch/server'
+import ReactGA from 'react-ga4'
 // const Web3EthAbi = require('web3-eth-abi')
 // Web3EthAbi.encodeFunctionSignature({
 //   name: '',
@@ -124,11 +125,16 @@ export function useCreateCrossProposalCallback(votingAddress: string | undefined
           .catch((err: any) => {
             if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
               commitErrorMsg(
-                'create gov community proposal',
+                'CreateCrossProposal',
                 JSON.stringify(err),
                 'useCreateCrossProposalCallback',
                 JSON.stringify(args)
               )
+              ReactGA.event({
+                category: 'catch-useCreateCrossProposalCallback',
+                action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+                label: JSON.stringify(args)
+              })
             }
             throw err
           })
