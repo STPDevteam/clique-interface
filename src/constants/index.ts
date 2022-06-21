@@ -131,7 +131,7 @@ export const BLOCKED_ADDRESSES: string[] = [
 
 export const DAO_FACTORY_ADDRESS = {
   [ChainId.RINKEBY]: '0x9C15CD1F9069A11E8D1b64F57633bBE4Aa671239',
-  [ChainId.STP]: '0x706d4f4E574Fd1A919c4Dad4cDCf6349a5bB1759',
+  [ChainId.STP]: '0xDce6c971D06A8b7406Fb5D874469c42814e3374F',
   [ChainId.KLAYTN_BAOBAB]: '0x4cAdc16713DbFDbFe9F505A5Cf8140a3C52c9571',
   [ChainId.MATIC]: '',
   [ChainId.POLYGON_TESTNET]: '0xAf64127961e233331aC24e77e6590d8b96c3Da76'
@@ -183,7 +183,7 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
       value: 'TT',
       chainId: 72,
       logo: IconTokenSvg,
-      address: '0x1030222B08320C659078537F80D03FD82B858Eb3',
+      address: '0x2d044F19cf0403ece33c27383f04e54C311eE7Fe',
       decimals: 18
     }
   ],
@@ -209,7 +209,7 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
     {
       name: 'TT',
       value: 'TT',
-      chainId: 1001,
+      chainId: 137,
       logo: IconTokenSvg,
       address: '0xfd8E6fc58E077546a320491438E3b712ab5147c6',
       decimals: 18
@@ -227,7 +227,7 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
     {
       name: 'TT',
       value: 'TT',
-      chainId: 1001,
+      chainId: 80001,
       logo: IconTokenSvg,
       address: '0xfd8E6fc58E077546a320491438E3b712ab5147c6',
       decimals: 18
