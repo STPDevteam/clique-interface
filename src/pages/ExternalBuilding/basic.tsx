@@ -35,7 +35,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
 
   const verifyMsg = useMemo(() => {
     if (!basicData.daoName.trim()) {
-      return 'Dao name required'
+      return 'DAO name required'
     }
     if (!basicData.tokenPhoto) {
       return 'Token photo required'
@@ -54,7 +54,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
       <section className="basic">
         <div>
           <div className="input-item">
-            <span className="label">Dao Name *</span>
+            <span className="label">DAO Name *</span>
             <div className="suffix-wrapper">
               <Input
                 placeholder="Membership"

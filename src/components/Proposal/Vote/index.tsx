@@ -106,8 +106,8 @@ export default function Index({
           <Box display={'grid'} gap={5}>
             <Typography variant="body1">Voting for</Typography>
             <Typography variant="h6">{voteResults ? list[voteResults.optionIndex].name : ''}</Typography>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography variant="body1">Your Votes</Typography>
+            <Box display={'flex'} mt={10} justifyContent={'space-between'}>
+              <Typography variant="body1">Your holdings</Typography>
               <Typography variant="h6" fontSize={14}>
                 {balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'} {minimumVote?.token.symbol}
               </Typography>
@@ -139,8 +139,8 @@ export default function Index({
                 ))}
               </Space>
             </Radio.Group>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Typography variant="body1">Your Votes</Typography>
+            <Box display={'flex'} mt={10} justifyContent={'space-between'}>
+              <Typography variant="body1">Your holdings</Typography>
               <Typography variant="h6" fontSize={14}>
                 {balanceAt?.toSignificant(6, { groupSeparator: ',' }) || '-'} {minimumVote?.token.symbol}
               </Typography>

@@ -10,6 +10,7 @@ import Image from 'components/Image'
 import { useActiveWeb3React } from 'hooks'
 import { isMycliqueSite } from 'utils/dao'
 import { daoframeUrl } from '../../../constants'
+import { Box, Typography } from '@mui/material'
 
 export default function Index() {
   const location = useLocation()
@@ -83,9 +84,14 @@ export default function Index() {
           <Image src={item.logo || IconDao} width={48} height={48} style={{ borderRadius: '50%' }} />
         </Button>
       ))}
-      <Button className="btn-add" onClick={createDao}>
-        <img src={IconAdd} />
-      </Button>
+      <Box mb={'50px'}>
+        <Button className="btn-add" onClick={createDao}>
+          <img src={IconAdd} />
+        </Button>
+        <Typography fontSize={12} fontWeight={500} textAlign={'center'} mt="-10px">
+          Add DAO
+        </Typography>
+      </Box>
     </nav>
   )
 }

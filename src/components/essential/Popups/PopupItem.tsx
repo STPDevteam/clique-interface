@@ -4,7 +4,7 @@ import { styled } from '@mui/material'
 import { animated } from 'react-spring'
 import { useRemovePopup } from 'state/application/hooks'
 import TransactionPopup from './TransactionPopup'
-import { CloseIcon } from 'theme/components'
+// import { CloseIcon } from 'theme/components'
 
 export const Popup = styled('div')(({ theme }) => ({
   display: 'inlineBlock',
@@ -74,7 +74,7 @@ export default function PopupItem({
 
   return (
     <Popup>
-      <CloseIcon onClick={removeThisPopup} />
+      {/* <CloseIcon onClick={removeThisPopup} /> */}
       {popupContent}
       {removeAfterMs !== null ? <AnimatedFader style={faderStyle} /> : null}
     </Popup>

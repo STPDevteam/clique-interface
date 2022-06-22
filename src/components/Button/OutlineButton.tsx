@@ -11,17 +11,19 @@ interface Props {
   disabled?: boolean
   color?: string
   borderRadius?: string
+  className?: string
   style?: React.CSSProperties
 }
 
 export default function OutlineButton(props: Props) {
-  const { onClick, disabled, style, width, fontSize, color, primary, height, borderRadius, children } = props
+  const { onClick, disabled, style, width, className, fontSize, color, primary, height, borderRadius, children } = props
   const theme = useTheme()
 
   return (
     <ButtonBase
       onClick={onClick ?? undefined}
       disabled={disabled}
+      className={className}
       sx={{
         width: width || '100%',
         border: theme =>

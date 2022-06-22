@@ -8,13 +8,14 @@ import CreateProposal from './components/CreateProposal'
 import Configuration from './components/Configuration'
 import Copy from 'components/essential/Copy'
 import { useCrossDaoInfoByAddress } from 'hooks/useDAOInfo'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { shortenAddress } from 'utils'
 import { ProposalInfoProp } from 'hooks/useVoting'
 import { Spin } from 'antd'
 import { useActiveWeb3React } from 'hooks'
 import { Box } from '@mui/material'
 import { CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
+import OutlineButton from 'components/Button/OutlineButton'
 
 export default function Index() {
   const links = ['Proposal', 'Configuration']
@@ -25,6 +26,7 @@ export default function Index() {
   const [currentProposal, setCurrentProposal] = useState<ProposalInfoProp>()
   const [showCreate, setShowCreate] = useState(false)
   const daoInfo = useCrossDaoInfoByAddress(daoAddress)
+  const history = useHistory()
 
   useEffect(() => {
     if (daoAddress) {
@@ -41,9 +43,14 @@ export default function Index() {
     <Spin spinning={!daoInfo?.token} tip="Dao creating" delay={1000} size="large">
       <div className={styles['dao-detail']}>
         <div className={styles['detail-header']}>
-          <p className={styles['title']}>{daoInfo?.daoName || '--'}</p>
-          <p>{daoInfo?.daoDesc}</p>
-          {/* <Button className={'btn-common btn-01'}>Join</Button> */}
+          <OutlineButton width={'120px'} onClick={() => history.replace('/')}>
+            Home
+          </OutlineButton>
+          <Box ml={'50px'}>
+            <p className={styles['title']}>{daoInfo?.daoName || '--'}</p>
+            <p>{daoInfo?.daoDesc}</p>
+            {/* <Button className={'btn-common btn-01'}>Join</Button> */}
+          </Box>
         </div>
         {currentProposal && daoInfo && (
           <ProposalDetail

@@ -11,9 +11,9 @@ import Pagination from 'antd/lib/pagination'
 import ShowTokenHolders from './ShowTokenHolders'
 import { Empty, Spin } from 'antd'
 import { ExternalLink } from 'theme/components'
-import { DaoTypeProp, useGetDaoTypes } from 'hooks/useDAOInfo'
+import { DaoTypeProp, useGetDaoTypes, useIsVerifiedDao } from 'hooks/useDAOInfo'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
-import { ReactComponent as CloseSvg } from 'assets/svg/close.svg'
+// import { ReactComponent as CloseSvg } from 'assets/svg/close.svg'
 
 enum TypeTabs {
   DAO,
@@ -26,7 +26,8 @@ export default function Index() {
   const { list: daoList, page: daoListPage, loading: daoListLoading } = useHomeDaoList()
   const daoListAddresss = useMemo(() => daoList.map(item => item.daoAddress).filter(i => i), [daoList])
   const daoTypes = useGetDaoTypes(daoListAddresss as string[])
-  const [closeMsg, setCloseMsg] = useState(false)
+  // const [closeMsg, setCloseMsg] = useState(Boolean(sessionStorage.getItem('stp_home_alert')) || false)
+  const [closeMsg] = useState(false)
 
   const {
     daoAddresss: publicOfferingAddresss,
@@ -40,19 +41,30 @@ export default function Index() {
     <div className="daos-container">
       {!closeMsg && (
         <div className="daos-header">
-          <CloseSvg className="close" onClick={() => setCloseMsg(true)}></CloseSvg>
+          {/* <CloseSvg
+            className="close"
+            onClick={() => {
+              sessionStorage.setItem('stp_home_alert', 'true')
+              setCloseMsg(true)
+            }}
+          ></CloseSvg> */}
           <div className="header-info">
-            <p className="title">Clique</p>
+            <p className="title">Main Dashboard</p>
             <p className="text">
               Discover DAOs and participate in governance activities through proposal voting, crowdfunding and more to
               come!
+              <ExternalLink
+                style={{ fontSize: 12, fontWeight: 600, color: 'inherit' }}
+                href="https://stp-dao.gitbook.io/verse-network/dapps/clique"
+              >
+                {` How it works >`}
+              </ExternalLink>
             </p>
-            <ExternalLink href="https://stp-dao.gitbook.io/verse-network/dapps/clique">how it works</ExternalLink>
           </div>
           {/* <Search placeholder="DAO Name" onSearch={handleSearch} /> */}
         </div>
       )}
-      <div>
+      <Box mb={30} className={'hide'}>
         <Box className="dao-group-btn" display={'grid'} gridTemplateColumns={'100px 2fr'} mt={10}>
           <div
             className={`one ${TypeTabs.DAO === currentTab ? 'active' : ''}`}
@@ -67,12 +79,12 @@ export default function Index() {
             Public Offering
           </div>
         </Box>
-        <Typography fontSize={12} padding={'20px 10px'}>
+        {/* <Typography fontSize={12} padding={'20px 10px'}>
           The funds raised will be locked in the corresponding DAO contract. Community votes will be needed to withdraw
           the funds from the DAO contracts. Clique is open to anyone and there is risk interacting with the projects on
           the Clique. You should do your own research and understand the risks before committing your funds.
-        </Typography>
-      </div>
+        </Typography> */}
+      </Box>
       {currentTab === TypeTabs.DAO && (
         <>
           {daoListLoading && (
@@ -126,20 +138,26 @@ export default function Index() {
                           width: 'calc(100% - 74px)'
                         }}
                       >
-                        <Typography variant="h6" noWrap>
-                          {item.daoName}
-                        </Typography>
+                        <Box display={'flex'} alignItems="center" gap="5px">
+                          <Typography variant="h6" noWrap>
+                            {item.daoName}
+                          </Typography>
+                          <VerifiedTag address={item.daoAddress} />
+                        </Box>
+
                         <Typography fontWeight={500} fontSize={14} color="#798488">
                           {item.token?.symbol}
                         </Typography>
                       </Box>
                     </Box>
-                    <Box display={'flex'} justifyContent={'space-between'} mt={10}>
-                      <Typography variant="body1">Members</Typography>
-                      <Typography fontSize={14} variant="h6">
-                        <ShowTokenHolders address={item.token?.address} />
-                      </Typography>
-                    </Box>
+                    {item.token?.address && (
+                      <Box display={'flex'} justifyContent={'space-between'} mt={10}>
+                        <Typography variant="body1">Members</Typography>
+                        <Typography fontSize={14} variant="h6">
+                          <ShowTokenHolders address={item.token?.address} />
+                        </Typography>
+                      </Box>
+                    )}
                     <Box display={'flex'} justifyContent={'space-between'} mt={10}>
                       <Typography variant="body1">Proposals</Typography>
                       <ShowProposalNumber votingAddress={item.votingAddress} daoAddress={item.daoAddress} />
@@ -223,4 +241,17 @@ function ShowProposalNumber({
 }) {
   const proposalNumber = useProposalNumber(votingAddress, daoAddress)
   return <Typography variant="h6">{proposalNumber === undefined ? '--' : proposalNumber}</Typography>
+}
+
+export function VerifiedTag({ address }: { address?: string }) {
+  const isVerified = useIsVerifiedDao(address)
+  if (!isVerified) return null
+  return (
+    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M8.90445 15.64H8.15008L6.3757 13.8125H3.75133L3.1882 13.2812V10.71L1.39258 8.88248V8.12811L3.1882 6.30061V3.71873L3.75133 3.18748H6.3757L8.15008 1.37061H8.90445L10.732 3.18748H13.3138L13.8451 3.70811V6.30061L15.662 8.12811V8.88248L13.8132 10.71V13.2812L13.282 13.8125H10.732L8.90445 15.64V15.64ZM7.15133 11.135H7.9057L11.9113 7.12936L11.157 6.37498L7.53383 10.0087L6.06758 8.54248L5.3132 9.29686L7.15133 11.135Z"
+        fill="#3898FC"
+      />
+    </svg>
+  )
 }

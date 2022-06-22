@@ -10,7 +10,7 @@ import { useActiveWeb3React } from 'hooks'
 import { CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
 import { ChainListMap } from 'constants/chain'
 
-const stepItems = ['Basic', 'Rule', 'Review'] as const
+const stepItems = ['Basic', 'Governance', 'Review'] as const
 
 type Step = typeof stepItems[number]
 
@@ -41,10 +41,10 @@ export default function Index() {
     switch (step) {
       case 'Basic':
         return <Basic goNext={goNext} />
-      case 'Rule':
+      case 'Governance':
         return <Rule goBack={goBack} goNext={goNext} />
       case 'Review':
-        return <Review goToStep={goToStep} />
+        return <Review goBack={goBack} goToStep={goToStep} />
       default:
         return null
     }

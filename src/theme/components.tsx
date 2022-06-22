@@ -19,7 +19,7 @@ export function CloseIcon({ onClick }: { onClick?: () => void }) {
         justifyContent: 'center',
         padding: 0,
         position: 'absolute',
-        top: '30px',
+        top: '20px',
         right: '50px',
         '&:hover $closeIcon': {
           color: theme => theme.palette.text.primary

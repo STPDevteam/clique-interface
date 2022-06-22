@@ -18,6 +18,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import { useExternalBuildingDataCallback, useExternalCommitCreateDaoData } from 'state/externalBuilding/hooks'
 import { useExternalTokenInfo } from 'hooks/external/useExternalTokenInfo'
+import OutlineButton from 'components/Button/OutlineButton'
 
 const Wrapper = styled('section')({
   '& p': {
@@ -31,7 +32,13 @@ const Wrapper = styled('section')({
 
 const { Panel } = Collapse
 
-export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' | 'Rule' | 'Review') => void }) {
+export default function ReviewInformation({
+  goToStep,
+  goBack
+}: {
+  goToStep: (e: 'Basic' | 'Governance' | 'Review') => void
+  goBack: () => void
+}) {
   const { removeBuildingDaoData } = useExternalBuildingDataCallback()
   const { showModal, hideModal } = useModal()
   const history = useHistory()
@@ -91,7 +98,7 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
           defaultActiveKey={['1', '2', '3']}
         >
           <Panel
-            header="DAO Basic"
+            header="DAO Basic Information"
             key="1"
             extra={
               <StyledExtraBg onClick={() => goToStep('Basic')}>
@@ -125,58 +132,68 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
           </Panel>
 
           <Panel
-            header="Rule"
+            header="Governance"
             key="3"
             extra={
-              <StyledExtraBg onClick={() => goToStep('Rule')}>
+              <StyledExtraBg onClick={() => goToStep('Governance')}>
                 <EditIcon />
               </StyledExtraBg>
             }
           >
             <section className="panel-rule">
-              <div className="input-item">
-                <span className="label">Minimum holding to vote</span>
-                <span className="value">{toFormatGroup(ruleData.minVoteNumber, 0)}</span>
-                {/* <span className="label">
+              <Box className="box">
+                <Box>
+                  <div className="input-item">
+                    <span className="label">Minimum holding to vote</span>
+                    <span className="value">{toFormatGroup(ruleData.minVoteNumber, 0)}</span>
+                    {/* <span className="label">
                   ({getPerForAmount(basicData.tokenSupply, ruleData.minVoteNumber)}% per total supply)
                 </span> */}
-              </div>
-              <div className="input-item">
-                <span className="label">Minimum holding to create proposal</span>
-                <span className="value">{toFormatGroup(ruleData.minCreateProposalNumber, 0)}</span>
-                <span className="label">
-                  (
-                  {externalTokenInfo.totalSupply
-                    ? getPerForAmount(externalTokenInfo.totalSupply.toSignificant(), ruleData.minCreateProposalNumber)
-                    : '- '}
-                  % per total votes)
-                </span>
-              </div>
-              <div className="input-item mt-12">
-                <span className="label">Minimum total votes</span>
-                <span className="value">{toFormatGroup(ruleData.minApprovalNumber, 0)}</span>
-                <span className="label">
-                  (
-                  {externalTokenInfo.totalSupply
-                    ? getPerForAmount(externalTokenInfo.totalSupply.toSignificant(), ruleData.minApprovalNumber)
-                    : '- '}
-                  % per total votes)
-                </span>
-              </div>
-              <div className="input-item mt-12">
-                <span className="label">Community Voting Duration</span>
-                <Typography variant="h6">
-                  {ruleData.votersCustom
-                    ? 'Voters custom'
-                    : `${ruleData.days} Day ${ruleData.hours} Hour ${ruleData.minutes} Minute`}
-                </Typography>
-              </div>
-              <div className="input-item mt-12" rules-agreement>
-                <span className="label">Contract Voting Duration</span>
-                <Typography variant="h6">
-                  {ruleData.contractDays} Day {ruleData.contractHours} Hour {ruleData.contractMinutes} Minute
-                </Typography>
-              </div>
+                  </div>
+
+                  <div className="input-item mt-12">
+                    <span className="label">Minimum total votes</span>
+                    <span className="value">
+                      {toFormatGroup(ruleData.minApprovalNumber, 0)} (
+                      {externalTokenInfo.totalSupply
+                        ? getPerForAmount(externalTokenInfo.totalSupply.toSignificant(), ruleData.minApprovalNumber)
+                        : '- '}
+                      % per total votes)
+                    </span>
+                  </div>
+
+                  <div className="input-item mt-12" rules-agreement>
+                    <span className="label">Contract Voting Duration</span>
+                    <Typography variant="h6">
+                      {ruleData.contractDays} Days {ruleData.contractHours} Hours {ruleData.contractMinutes} Minutes
+                    </Typography>
+                  </div>
+                </Box>
+                <Box>
+                  <div className="input-item">
+                    <span className="label">Minimum holding to create proposal</span>
+                    <span className="value">{toFormatGroup(ruleData.minCreateProposalNumber, 0)}</span>
+                    <span className="label">
+                      (
+                      {externalTokenInfo.totalSupply
+                        ? getPerForAmount(
+                            externalTokenInfo.totalSupply.toSignificant(),
+                            ruleData.minCreateProposalNumber
+                          )
+                        : '- '}
+                      % per total votes)
+                    </span>
+                  </div>
+                  <div className="input-item mt-12">
+                    <span className="label">Community Voting Duration</span>
+                    <Typography variant="h6">
+                      {ruleData.votersCustom
+                        ? 'Voters custom'
+                        : `${ruleData.days} Days ${ruleData.hours} Hours ${ruleData.minutes} Minutes`}
+                    </Typography>
+                  </div>
+                </Box>
+              </Box>
               <div className="input-item mt-12 rules-agreement">
                 <span className="label">Rules/Agreement</span>
                 <Typography fontSize={12}>{ruleData.rules}</Typography>
@@ -190,10 +207,14 @@ export default function ReviewInformation({ goToStep }: { goToStep: (e: 'Basic' 
           </Box>
         )}
       </Wrapper>
-      <Box className="btn-group" display={'flex'} justifyContent={'center'}>
+      <Box className="btn-group" display={'flex'} justifyContent={'space-between'}>
+        <OutlineButton width={'120px'} onClick={goBack}>
+          Back
+        </OutlineButton>
         <Button style={{ width: 'auto' }} className="btn-common btn-01" disabled={!!createCheck} onClick={onCreate}>
-          Confirm and create the DAO
+          Confirm and create DAO
         </Button>
+        <Box width={120} />
       </Box>
     </>
   )

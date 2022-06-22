@@ -8,7 +8,10 @@ import { ReactComponent as MaticLogo } from '../assets/svg/matic.svg'
 import KlaytnSvg from '../assets/svg/klaytn_logo.svg'
 import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
 
+export const SUPPORTED_CHAIN_IDS = [4, 72, 1001, 80001]
+
 export enum ChainId {
+  ETH = 1,
   RINKEBY = 4,
   STP = 72,
   KLAYTN_BAOBAB = 1001,
@@ -16,7 +19,15 @@ export enum ChainId {
   POLYGON_TESTNET = 80001
 }
 
-export const ChainList = [
+export const AllChainList = [
+  {
+    icon: <ETH />,
+    logo: EthUrl,
+    symbol: 'ETH',
+    name: 'Ethereum Mainnet',
+    id: ChainId.ETH,
+    hex: '0x1'
+  },
   {
     icon: <ETH />,
     logo: EthUrl,
@@ -48,8 +59,18 @@ export const ChainList = [
     name: 'Polygon Testnet',
     id: ChainId.POLYGON_TESTNET,
     hex: '0x13881'
+  },
+  {
+    icon: <MaticLogo />,
+    logo: MaticSvg,
+    symbol: 'Polygon',
+    name: 'Polygon',
+    id: ChainId.MATIC,
+    hex: '0x89'
   }
 ]
+
+export const ChainList = AllChainList.filter(v => SUPPORTED_CHAIN_IDS.includes(v.id))
 
 export const ChainListMap: {
   [key: number]: { icon: JSX.Element; link?: string; selectedIcon?: JSX.Element } & Chain
@@ -72,6 +93,18 @@ export const SUPPORTED_NETWORKS: {
     blockExplorerUrls: string[]
   }
 } = {
+  [ChainId.ETH]: {
+    chainId: '0x1',
+    chainName: 'Ethereum',
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+      logo: EthUrl
+    },
+    rpcUrls: ['https://mainnet.infura.io/v3'],
+    blockExplorerUrls: ['https://etherscan.com']
+  },
   [ChainId.STP]: {
     chainId: '0x48',
     chainName: 'Verse',
@@ -119,5 +152,29 @@ export const SUPPORTED_NETWORKS: {
     },
     rpcUrls: ['https://matic-mumbai.chainstacklabs.com'],
     blockExplorerUrls: ['https://mumbai.polygonscan.com/']
+  },
+  [ChainId.MATIC]: {
+    chainId: '0x89',
+    chainName: 'Polygon',
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+      logo: MaticSvg
+    },
+    rpcUrls: ['https://rpc-mainnet.maticvigil.com'],
+    blockExplorerUrls: ['https://polygonscan.com/']
+  },
+  [ChainId.KLAYTN_BAOBAB]: {
+    chainId: '0x3e9',
+    chainName: 'Klaytn Baobab',
+    nativeCurrency: {
+      name: 'Klaytn Baobab',
+      symbol: 'KLAY',
+      decimals: 18,
+      logo: KlaytnSvg
+    },
+    rpcUrls: ['https://api.baobab.klaytn.net:8651/'],
+    blockExplorerUrls: ['https://baobab.scope.klaytn.com/']
   }
 }

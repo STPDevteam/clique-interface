@@ -44,7 +44,7 @@ export default function VoteList({
         pagination={false}
       >
         <Column align="center" title="Users" dataIndex="address" key="address" />
-        <Column align="center" title="Choose" dataIndex="choose" key="choose" />
+        <Column align="center" title="Voting Option" dataIndex="choose" key="choose" />
         <Column title="Votes" dataIndex="votes" key="votes" align="center" />
       </Table>
       <Box display={'flex'} justifyContent={'center'}>

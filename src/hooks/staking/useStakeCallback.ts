@@ -1,24 +1,26 @@
-import { calculateGasMargin } from 'utils'
+import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '../'
 import { useFarmStakingContract } from '../useContract'
+import { useWeb3Instance } from 'hooks/useWeb3Instance'
 
 export function useStakeCallback() {
   const addTransaction = useTransactionAdder()
   const contract = useFarmStakingContract()
   const { account } = useActiveWeb3React()
+  const web3 = useWeb3Instance()
 
   return useCallback(
     (amountRaw: string) => {
       if (!account) throw new Error('none account')
-      if (!contract) throw new Error('none contract')
+      if (!contract || !web3) throw new Error('none contract')
 
-      return contract.estimateGas.stake(amountRaw, { from: account }).then(estimatedGasLimit => {
+      return web3.eth.getGasPrice().then(gasPrice => {
         return contract
           .stake(amountRaw, {
-            gasLimit: calculateGasMargin(estimatedGasLimit),
+            gasPrice: calculateGasPriceMargin(gasPrice),
             // gasLimit: '3500000',
             from: account
           })
@@ -30,24 +32,25 @@ export function useStakeCallback() {
           })
       })
     },
-    [account, addTransaction, contract]
+    [account, addTransaction, contract, web3]
   )
 }
 
 export function useCancelStakeCallback() {
   const addTransaction = useTransactionAdder()
   const contract = useFarmStakingContract()
+  const web3 = useWeb3Instance()
   const { account } = useActiveWeb3React()
 
   return useCallback(
     (amountRaw: string) => {
       if (!account) throw new Error('none account')
-      if (!contract) throw new Error('none contract')
+      if (!contract || !web3) throw new Error('none contract')
 
-      return contract.estimateGas.cancelStake(amountRaw, { from: account }).then(estimatedGasLimit => {
+      return web3.eth.getGasPrice().then(gasPrice => {
         return contract
           .cancelStake(amountRaw, {
-            gasLimit: calculateGasMargin(estimatedGasLimit),
+            gasPrice: calculateGasPriceMargin(gasPrice),
             // gasLimit: '3500000',
             from: account
           })
@@ -59,6 +62,6 @@ export function useCancelStakeCallback() {
           })
       })
     },
-    [account, addTransaction, contract]
+    [account, addTransaction, contract, web3]
   )
 }

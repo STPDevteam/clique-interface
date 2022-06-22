@@ -10,7 +10,7 @@ import { useHistory } from 'react-router-dom'
 import { useActiveWeb3React } from 'hooks'
 import { BASE_DAO_SUPPORT_NETWORK } from '../../constants'
 
-const stepItems = ['Basic', 'Distribution', 'Rule', 'Review'] as const
+const stepItems = ['Basic', 'Distribution', 'Governance', 'Review'] as const
 
 type Step = typeof stepItems[number]
 
@@ -46,10 +46,10 @@ export default function Index() {
         return <Basic goNext={goNext} />
       case 'Distribution':
         return <Distribution goBack={goBack} goNext={goNext} />
-      case 'Rule':
+      case 'Governance':
         return <Rule goBack={goBack} goNext={goNext} />
       case 'Review':
-        return <Review goToStep={goToStep} />
+        return <Review goBack={goBack} goToStep={goToStep} />
       default:
         return null
     }

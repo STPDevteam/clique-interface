@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js'
 import { useDaoMembers } from 'hooks/useBackedServer'
 import { Box } from '@mui/material'
 import { toFormatGroup } from 'utils/dao'
+import ReservedClaim from './ReservedClaim'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { Token, TokenAmount } from 'constants/token'
 
@@ -67,8 +68,9 @@ export default function Members({ daoInfo }: { daoInfo: DaoInfoProps | ExternalD
 
   return (
     <section className="members">
-      <h1>Members</h1>
-      <p>Total Members {toFormatGroup(page.total || 0)}</p>
+      <h1>Holders</h1>
+      <p>Total holders {toFormatGroup(page.total)}</p>
+      <ReservedClaim daoAddress={daoInfo.daoAddress} />
       <Table className="panel-config stp-table" loading={loading} dataSource={list} rowKey={'id'} pagination={false}>
         <Column title="Rank" dataIndex="rank" key="id" align="center" />
         <Column align="center" title="Address" dataIndex="account" key="address" />

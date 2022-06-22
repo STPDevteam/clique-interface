@@ -7,7 +7,7 @@ import { Typography, Box } from '@mui/material'
 import MetamaskIcon from 'assets/walletIcon/metamask.png'
 import { fortmatic, injected, portis } from 'connectors'
 import { OVERLAY_READY } from 'connectors/Fortmatic'
-import { SUPPORTED_WALLETS } from 'constants/index'
+import { DefaultChainId, SUPPORTED_WALLETS } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
 import { ApplicationModal } from 'state/application/actions'
 import { useModalOpen, useWalletModalToggle } from 'state/application/hooks'
@@ -18,6 +18,8 @@ import Option from './Option'
 import PendingView from './PendingView'
 import OutlineButton from 'components/Button/OutlineButton'
 import useBreakpoint from 'hooks/useBreakpoint'
+import Button from 'components/Button/Button'
+import { ChainId, SUPPORTED_NETWORKS } from 'constants/chain'
 
 const WALLET_VIEWS = {
   OPTIONS: 'options',
@@ -198,6 +200,25 @@ export default function WalletModal({
               ? 'Please connect to a supported network in the dropdown menu or in your wallet.'
               : 'Error connecting. Try refreshing the page.'}
           </Box>
+          {window.ethereum && window.ethereum.isMetaMask && (
+            <Button
+              onClick={() => {
+                const id = Object.values(ChainId).find(val => val === DefaultChainId)
+                if (!id) {
+                  return
+                }
+                const params = SUPPORTED_NETWORKS[id as ChainId]
+                params?.nativeCurrency.symbol === 'ETH'
+                  ? window.ethereum?.request?.({
+                      method: 'wallet_switchEthereumChain',
+                      params: [{ chainId: params.chainId }, account]
+                    })
+                  : window.ethereum?.request?.({ method: 'wallet_addEthereumChain', params: [params, account] })
+              }}
+            >
+              Connect to {SUPPORTED_NETWORKS[DefaultChainId] ? SUPPORTED_NETWORKS[DefaultChainId]?.chainName : ''}
+            </Button>
+          )}
         </>
       )
     }
