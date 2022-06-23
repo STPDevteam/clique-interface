@@ -18,6 +18,7 @@ import Confirm from './Confirm'
 import { useCreateCrossProposalCallback } from 'hooks/useCreateCommunityProposalCallback'
 import { useCreateProposalSignData } from 'hooks/useBackedCrossServer'
 import { TokenAmount } from 'constants/token'
+import { commitErrorMsg } from 'utils/fetch/server'
 interface Props {
   onBack: () => void
   daoInfo: ExternalDaoInfoProps | undefined
@@ -75,6 +76,20 @@ export default function Index(props: Props) {
       })
       .catch((err: any) => {
         hideModal()
+        commitErrorMsg(
+          'CreateCommunityProposal',
+          `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+          'onCreateCommunityProposalCallback',
+          JSON.stringify([
+            { title, content: desc, startTime, endTime, options: curOption },
+            createProposalSignData.userAddress,
+            createProposalSignData.balance,
+            createProposalSignData.chainId,
+            createProposalSignData.votingAddress,
+            createProposalSignData.nonce,
+            createProposalSignData.sign
+          ])
+        )
         showModal(
           <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
         )
