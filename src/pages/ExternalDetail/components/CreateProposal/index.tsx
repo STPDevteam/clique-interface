@@ -176,7 +176,7 @@ export default function Index(props: Props) {
           </Box>
           <Box className="input-item">
             <span className="label">Description</span>
-            <TextArea rows={4} value={desc} maxLength={500} onChange={e => setDesc(e.target.value)} />
+            <TextArea rows={4} value={desc} maxLength={3000} onChange={e => setDesc(e.target.value)} />
           </Box>
           <Box className="input-item">
             <span className="label">Voting Options</span>
