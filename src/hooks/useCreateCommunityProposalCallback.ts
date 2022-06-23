@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useCrossVotingContract, useVotingContract } from './useContract'
-import { calculateGasPriceMargin } from 'utils'
+import { calculateGasMargin, calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
@@ -87,7 +87,7 @@ export function useCreateCrossProposalCallback(votingAddress: string | undefined
   const addTransaction = useTransactionAdder()
 
   return useCallback(
-    (
+    async (
       voteInfo: CreateCommunityProposalContent,
       user: string,
       weight: string,
@@ -109,11 +109,14 @@ export function useCreateCrossProposalCallback(votingAddress: string | undefined
         JSON.stringify(args)
       )
 
+      const estimatedGas = await votingContract.estimateGas.createCommunityProposal(...args, {
+        from: account
+      })
       return web3.eth.getGasPrice().then(gasPrice => {
         return votingContract
           .createCommunityProposal(...args, {
             gasPrice: calculateGasPriceMargin(gasPrice),
-            // gasLimit: '3500000',
+            gasLimit: calculateGasMargin(estimatedGas),
             from: account
           })
           .then((response: TransactionResponse) => {
