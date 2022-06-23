@@ -14,7 +14,15 @@ export default function Index({ detail }: { detail: ProposalInfoProp }) {
         </div>
         <ProposalStatus status={detail.status} />
       </div>
-      <p className={styles['text']} dangerouslySetInnerHTML={{ __html: detail.content }}></p>
+      <p
+        className={styles['text']}
+        dangerouslySetInnerHTML={{
+          __html: detail.content.replace(
+            /((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?)/g,
+            '<a href="$1" target="_blank">$1</a>'
+          )
+        }}
+      ></p>
     </div>
   )
 }
