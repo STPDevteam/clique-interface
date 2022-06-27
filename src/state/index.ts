@@ -9,8 +9,16 @@ import multicall from './multicall/reducer'
 import buildingDao from './building/reducer'
 import externalBuildingDao from './externalBuilding/reducer'
 import crossBuildingDao from './crossBuilding/reducer'
+import createTokenData from './createToken/reducer'
 
-const PERSISTED_KEYS: string[] = ['user', 'transactions', 'buildingDao', 'externalBuildingDao', 'crossBuildingDao']
+const PERSISTED_KEYS: string[] = [
+  'user',
+  'transactions',
+  'buildingDao',
+  'externalBuildingDao',
+  'crossBuildingDao',
+  'createTokenData'
+]
 
 const store = configureStore({
   reducer: {
@@ -20,7 +28,8 @@ const store = configureStore({
     multicall,
     buildingDao,
     externalBuildingDao,
-    crossBuildingDao
+    crossBuildingDao,
+    createTokenData
   },
   middleware: [...getDefaultMiddleware({ thunk: false }), save({ states: PERSISTED_KEYS })],
   preloadedState: load({ states: PERSISTED_KEYS })

@@ -29,6 +29,8 @@ import TopAlert from './TopAlert'
 // import StakingCreate from './staking/Create'
 
 import CrossBuilding from './CrossBuilding'
+import CreateToken from './CreateToken'
+import TokenLaunching from './CreateToken/launching'
 
 import BigNumber from 'bignumber.js'
 BigNumber.config({ EXPONENTIAL_AT: [-7, 40] })
@@ -82,6 +84,8 @@ export default function App() {
                     <Route exact strict path="/building/launching/:hash" component={Launching} />
                     <Route exact strict path="/external_building" component={ExternalBuilding} />
                     <Route exact strict path="/cross_building" component={CrossBuilding} />
+                    <Route exact strict path="/create_token" component={CreateToken} />
+                    <Route exact strict path="/create_token/launching/:hash" component={TokenLaunching} />
                     {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}
                   </>
@@ -100,6 +104,8 @@ export default function App() {
                     <Route exact strict path="/external_building" component={ExternalBuilding} />
 
                     <Route exact strict path="/cross_building" component={CrossBuilding} />
+                    <Route exact strict path="/create_token" component={CreateToken} />
+                    <Route exact strict path="/create_token/launching/:hash" component={TokenLaunching} />
 
                     {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}

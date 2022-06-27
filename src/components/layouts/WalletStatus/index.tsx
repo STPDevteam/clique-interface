@@ -14,6 +14,8 @@ import { Box, Typography } from '@mui/material'
 import { useHistory } from 'react-router-dom'
 import NetworkSelect from '../../Header/NetworkSelect'
 import { isDaoframeSite } from 'utils/dao'
+import CreatorModal from './CreatorModal'
+import useModal from 'hooks/useModal'
 
 // we want the latest one to come first, so return negative if a is after b
 function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
@@ -26,6 +28,7 @@ export default function Index() {
   const allTransactions = useAllTransactions()
   const toggleWalletModal = useWalletModalToggle()
   const history = useHistory()
+  const { showModal, hideModal } = useModal()
 
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)
@@ -55,11 +58,18 @@ export default function Index() {
           </OutlineButton> */}
           {/* <NetworkSelect /> */}
           {!isDaoframeSite() && (
-            <OutlineButton width={140}>
-              <Typography variant="h6" onClick={() => history.push('/my_wallet')}>
-                My Wallet
-              </Typography>
-            </OutlineButton>
+            <>
+              <OutlineButton width={140}>
+                <Typography variant="h6" onClick={() => showModal(<CreatorModal hide={hideModal} />)}>
+                  Creator
+                </Typography>
+              </OutlineButton>
+              <OutlineButton width={140}>
+                <Typography variant="h6" onClick={() => history.push('/my_wallet')}>
+                  My Wallet
+                </Typography>
+              </OutlineButton>
+            </>
           )}
           <NetworkSelect />
           <OutlineButton

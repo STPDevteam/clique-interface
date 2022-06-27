@@ -1,18 +1,27 @@
-import { Box, styled, Typography } from '@mui/material'
+import { Box, Link, styled, Typography } from '@mui/material'
 import { useActiveWeb3React } from 'hooks'
 import { ReactComponent as MyWalletIcon } from 'assets/svg/my_wallet.svg'
 import { Empty, Pagination, Spin, Table, Tabs } from 'antd'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 // import { useAccountERC20Tokens } from 'hooks/useStpExplorerData'
 import { useHistory } from 'react-router-dom'
 import { MyWalletHistoryProp, useAccountDaoAssets, useMyWalletHistory } from 'hooks/useBackedServer'
-import { ExternalLink } from 'theme/components'
+import { Dots, ExternalLink } from 'theme/components'
 import { shortenHashAddress, timeStampToFormat } from 'utils/dao'
 import { getEtherscanLink, shortenAddress } from 'utils'
 import { DefaultChainId, ZERO_ADDRESS } from '../../constants'
 import { useCurrencyBalance, useSTPToken, useToken, useTokenBalance } from 'state/wallet/hooks'
 import { Currency, CurrencyAmount, ETHER, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
+import { Alert } from 'antd'
+import { useCreateTokenReserved } from 'hooks/useCreateTokenInfo'
+import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
+import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
+import MessageBox from 'components/Modal/TransactionModals/MessageBox'
+import useModal from 'hooks/useModal'
+import { useCreateERC20ClaimCallback } from 'hooks/useCreateERC20ClaimCallback'
+import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
+import Button from 'components/Button/Button'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -121,6 +130,7 @@ export default function Index() {
       {account && (
         <StyledBox padding={'20px'}>
           <Container>
+            <CreateTokenReservedList />
             <Tabs
               defaultActiveKey={currentTab}
               onChange={key => {
@@ -269,4 +279,93 @@ function ShowTokenAmtInfo({
       {bal?.toSignificant(6, { groupSeparator: ',' })} {symbol}
     </Typography>
   )
+}
+
+function CreateTokenReservedList() {
+  const createTokenReserved = useCreateTokenReserved()
+
+  return (
+    <Box display={'grid'} gap="10px">
+      {createTokenReserved?.map((item, index) => (
+        <Alert
+          key={index}
+          message={
+            <Box display={'flex'} justifyContent="space-between" alignItems={'center'}>
+              <Typography style={{ marginTop: 0 }}>
+                You have{' '}
+                <Link
+                  target={'_blank'}
+                  underline="none"
+                  href={getEtherscanLink(item.tokenAmount.token.chainId, item.tokenAmount.token.address, 'address')}
+                >
+                  <b>
+                    {item.tokenAmount.toSignificant(6, { groupSeparator: ',' })} {item.tokenAmount.token.symbol}
+                  </b>
+                </Link>{' '}
+                available for claim on {timeStampToFormat(item.lockDate)}
+              </Typography>
+              <CreateTokenReservedClaim item={item} />
+            </Box>
+          }
+        ></Alert>
+      ))}
+    </Box>
+  )
+}
+
+function CreateTokenReservedClaim({ item }: { item: { tokenAmount: TokenAmount; lockDate: number } }) {
+  const { showModal, hideModal } = useModal()
+  const { account } = useActiveWeb3React()
+  const createERC20Claim = useCreateERC20ClaimCallback()
+  const { claimSubmitted } = useUserHasSubmittedClaim(`${account}_${item.tokenAmount.token.address}`)
+
+  const isLocked = useMemo(() => {
+    const now = new Date().getTime()
+    return now / 1000 - item.lockDate < 0
+  }, [item.lockDate])
+
+  const onReservedClaim = useCallback(() => {
+    showModal(<TransactionPendingModal />)
+    createERC20Claim(item.tokenAmount.token.address)
+      .then(() => {
+        hideModal()
+        showModal(<TransactionSubmittedModal />)
+      })
+      .catch(err => {
+        hideModal()
+        showModal(
+          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+        )
+        console.error(err, JSON.stringify(err))
+      })
+  }, [createERC20Claim, hideModal, item.tokenAmount.token.address, showModal])
+
+  const getReservedActions = useMemo(() => {
+    if (!account) {
+      return null
+    }
+    if (claimSubmitted) {
+      return (
+        <Button width="100px" height="40px" disabled>
+          Claiming
+          <Dots />
+        </Button>
+      )
+    }
+    if (isLocked) {
+      return (
+        <Button width="100px" height="40px" disabled>
+          Claim
+        </Button>
+      )
+    }
+
+    return (
+      <Button width="100px" height="40px" onClick={onReservedClaim}>
+        Claim
+      </Button>
+    )
+  }, [account, claimSubmitted, isLocked, onReservedClaim])
+
+  return getReservedActions
 }

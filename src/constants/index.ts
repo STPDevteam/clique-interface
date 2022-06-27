@@ -2,7 +2,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Token } from './token'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 import JSBI from 'jsbi'
-import { ChainId } from './chain'
+import { ChainId, SUPPORTED_CHAIN_IDS } from './chain'
 import { PrivateReceivingTokenProps } from 'state/building/actions'
 import IconTokenSvg from '../assets/images/icon-token.svg'
 import KlaytnTokenSvg from '../assets/svg/klaytn_logo.svg'
@@ -148,7 +148,16 @@ export const FARM_STAKING_ADDRESS = {
   [ChainId.POLYGON_TESTNET]: ''
 }
 
-export const DefaultChainId = ChainId.RINKEBY
+export const CREATE_TOKEN_ADDRESS = {
+  [ChainId.ETH]: '',
+  [ChainId.RINKEBY]: '0xe04E4951f2f4a0eE9Ff01c8C3b688bC7036CbE33',
+  [ChainId.STP]: '',
+  [ChainId.KLAYTN_BAOBAB]: '',
+  [ChainId.MATIC]: '',
+  [ChainId.POLYGON_TESTNET]: ''
+}
+
+export const DefaultChainId = SUPPORTED_CHAIN_IDS[0] as ChainId
 
 export const PriceDecimals = 12
 
@@ -259,7 +268,7 @@ export const EXTERNAL_SUPPORT_NETWORK = [4]
 export const BASE_DAO_SUPPORT_NETWORK = [4, 72, 1001]
 export const CROSS_SUPPORT_IMPORT_NETWORK = [4]
 export const CROSS_SUPPORT_CREATE_NETWORK = [72, 80001]
-export const SUPPORT_CREATE_NETWORK = [4]
+export const SUPPORT_CREATE_TOKEN_NETWORK = [4]
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
 // export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
 export const serverBaseUrl = isDaoframeSite() ? 'https://testapi.daoframe.com/' : 'https://testapi.daoframe.com/'
