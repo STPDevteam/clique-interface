@@ -172,7 +172,7 @@ export default function Index(props: Props) {
         <Box padding={'0 41px'} display={'grid'} gap={10} sx={{ borderRight: '1px dashed #3898FC' }}>
           <Box className="input-item">
             <span className="label">Title</span>
-            <Input placeholder="" value={title} maxLength={60} onChange={e => setTitle(e.target.value)} />
+            <Input placeholder="" value={title} maxLength={120} onChange={e => setTitle(e.target.value)} />
           </Box>
           <Box className="input-item">
             <span className="label">Description</span>
