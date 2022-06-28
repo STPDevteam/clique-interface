@@ -150,7 +150,7 @@ export const FARM_STAKING_ADDRESS = {
 
 export const CREATE_TOKEN_ADDRESS = {
   [ChainId.ETH]: '',
-  [ChainId.RINKEBY]: '0xe04E4951f2f4a0eE9Ff01c8C3b688bC7036CbE33',
+  [ChainId.RINKEBY]: '0xa0f37Cff8bb04273a7d18173190C460cBa3A08A4',
   [ChainId.STP]: '',
   [ChainId.KLAYTN_BAOBAB]: '',
   [ChainId.MATIC]: '',

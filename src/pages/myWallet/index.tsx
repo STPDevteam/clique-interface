@@ -14,7 +14,7 @@ import { useCurrencyBalance, useSTPToken, useToken, useTokenBalance } from 'stat
 import { Currency, CurrencyAmount, ETHER, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
 import { Alert } from 'antd'
-import { useCreateTokenReserved } from 'hooks/useCreateTokenInfo'
+import { useCreateTokenList, useCreateTokenReserved } from 'hooks/useCreateTokenInfo'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import TransactionSubmittedModal from 'components/Modal/TransactionModals/TransactiontionSubmittedModal'
 import MessageBox from 'components/Modal/TransactionModals/MessageBox'
@@ -22,6 +22,8 @@ import useModal from 'hooks/useModal'
 import { useCreateERC20ClaimCallback } from 'hooks/useCreateERC20ClaimCallback'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import Button from 'components/Button/Button'
+import Copy from 'components/essential/Copy'
+import { ShowTokenBalance } from 'pages/DaoDetail/components/Assets'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -78,7 +80,7 @@ export default function Index() {
   useEffect(() => {
     if (!account) history.replace('/')
   }, [account, history])
-  const TABS = ['Wallet', 'History']
+  const TABS = ['Wallet', 'History', 'My Creator']
   const [currentTab, setCurrentTab] = useState(TABS[0])
 
   const currentEthToken = useMemo(() => {
@@ -199,6 +201,8 @@ export default function Index() {
                 </Box>
               </>
             )}
+
+            {currentTab === 'My Creator' && <MyCreateTokenList />}
           </Container>
         </StyledBox>
       )}
@@ -368,4 +372,58 @@ function CreateTokenReservedClaim({ item }: { item: { tokenAmount: TokenAmount; 
   }, [account, claimSubmitted, isLocked, onReservedClaim])
 
   return getReservedActions
+}
+
+function MyCreateTokenList() {
+  const { account } = useActiveWeb3React()
+  const { list, loading, page } = useCreateTokenList()
+  console.log('🚀 ~ file: index.tsx ~ line 380 ~ MyCreateTokenList ~ page', page)
+  const showList = useMemo(
+    () =>
+      list.map(token => ({
+        tokenInfo: (
+          <Box display={'flex'} justifyContent={'center'} alignItems={'center'} gap={5}>
+            <Image src={token?.logo || ''} width={20} height={20} style={{ borderRadius: '50%' }}></Image>
+            <Typography>{token?.symbol || '-'}</Typography>
+          </Box>
+        ),
+        address: (
+          <Link
+            key={0}
+            target="_blank"
+            href={getEtherscanLink(token.chainId, token.address, 'address')}
+            display="flex"
+            alignItems={'center'}
+            justifyContent="center"
+          >
+            {shortenAddress(token.address)}
+            <Copy toCopy={token.address} />
+          </Link>
+        ),
+        balance: <ShowTokenBalance key={1} token={token} account={account || undefined} />
+      })),
+    [account, list]
+  )
+
+  return (
+    <>
+      <Table className="stp-table" loading={loading} dataSource={showList} rowKey={'id'} pagination={false}>
+        <Column title="tokenInfo" dataIndex="tokenInfo" key="id" align="center" />
+        <Column title="Address" dataIndex="address" key="proposals" align="center" />
+        <Column align="center" title="Balance" dataIndex="balance" key="quantity" />
+      </Table>
+      <Box display={'flex'} justifyContent={'center'}>
+        <Pagination
+          simple
+          size="default"
+          hideOnSinglePage
+          pageSize={page.pageSize}
+          style={{ marginTop: 20 }}
+          current={page.currentPage}
+          total={page.total}
+          onChange={e => page.setCurrentPage(e)}
+        />
+      </Box>
+    </>
+  )
 }

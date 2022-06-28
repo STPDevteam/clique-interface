@@ -49,7 +49,7 @@ export default function CreatorModal({ hide }: { hide: () => void }) {
             }
           }}
         >
-          Create a token
+          Create a Token
         </Item>
       </Box>
     </Modal>

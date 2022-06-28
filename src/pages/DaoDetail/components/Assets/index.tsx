@@ -135,7 +135,7 @@ export default function Assets({ daoInfo }: { daoInfo: DaoInfoProps }) {
   )
 }
 
-function ShowTokenBalance({ token, account }: { token: Token; account: string }) {
+export function ShowTokenBalance({ token, account }: { token: Token; account: string | undefined }) {
   const balance = useCurrencyBalance(account, token.address === ZERO_ADDRESS ? ETHER : token)
 
   return <>{balance?.toSignificant(6, { groupSeparator: ',' }) || '-'}</>
