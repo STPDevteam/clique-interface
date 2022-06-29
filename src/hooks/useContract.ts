@@ -1,7 +1,12 @@
 import { Contract } from '@ethersproject/contracts'
 import ANTIMATTER_ABI from '../constants/abis/antimatter.json'
 import { useMemo } from 'react'
-import { DAO_FACTORY_ADDRESS, FARM_STAKING_ADDRESS } from '../constants'
+import {
+  CREATE_TOKEN_ADDRESS,
+  DAO_FACTORY_ADDRESS,
+  FARM_STAKING_ADDRESS,
+  SUPPORT_CREATE_TOKEN_NETWORK
+} from '../constants'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import ENS_ABI from '../constants/abis/ens-registrar.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
@@ -22,6 +27,7 @@ import ExternalVoting_ABI from '../constants/abis/ExternalVoting.json'
 import CrossDAO_ABI from '../constants/abis/CrossDAO.json'
 import CrossVoting_ABI from '../constants/abis/CrossVoting.json'
 import FARM_STAKING_ABI from '../constants/abis/farm_staking.json'
+import CREATE_TOKEN_ABI from '../constants/abis/create_token.json'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -128,4 +134,14 @@ export function useFarmStakingContract(): Contract | null {
 
 export function useCrossVotingContract(votingAddress: string | undefined): Contract | null {
   return useContract(votingAddress, CrossVoting_ABI, true)
+}
+
+export function useCreateERC20Contract(): Contract | null {
+  const { chainId } = useActiveWeb3React()
+
+  return useContract(
+    chainId && SUPPORT_CREATE_TOKEN_NETWORK.includes(chainId) ? CREATE_TOKEN_ADDRESS[chainId] : undefined,
+    CREATE_TOKEN_ABI,
+    true
+  )
 }
