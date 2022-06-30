@@ -59,7 +59,7 @@ export default function Index() {
           {/* <NetworkSelect /> */}
           {!isDaoframeSite() && (
             <>
-              <OutlineButton width={140}>
+              <OutlineButton width={140} className="hide">
                 <Typography variant="h6" onClick={() => showModal(<CreatorModal hide={hideModal} />)}>
                   Creator
                 </Typography>

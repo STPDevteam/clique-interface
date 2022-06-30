@@ -80,7 +80,8 @@ export default function Index() {
   useEffect(() => {
     if (!account) history.replace('/')
   }, [account, history])
-  const TABS = ['Wallet', 'History', 'My Creator']
+  // const TABS = ['Wallet', 'History', 'My Creator']
+  const TABS = ['Wallet', 'History']
   const [currentTab, setCurrentTab] = useState(TABS[0])
 
   const currentEthToken = useMemo(() => {
