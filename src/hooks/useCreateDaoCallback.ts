@@ -10,6 +10,8 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { PriceDecimals } from '../constants'
 import { useGasPriceInfo } from './useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useCreateDaoCallback() {
   const { basicData, distributionData, ruleData } = useTrueCommitCreateDaoData()
@@ -129,11 +131,28 @@ export function useCreateDaoCallback() {
       gasLimit,
       gasPrice,
       from: account
-    }).then((response: TransactionResponse) => {
-      addTransaction(response, {
-        summary: 'Create Dao'
-      })
-      return response.hash
     })
+      .then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Create Dao'
+        })
+        return response.hash
+      })
+      .catch((err: any) => {
+        if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+          commitErrorMsg(
+            'useCreateDaoCallback',
+            JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+            method,
+            JSON.stringify(args)
+          )
+          ReactGA.event({
+            category: `catch-${method}`,
+            action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+            label: JSON.stringify(args)
+          })
+        }
+        throw err
+      })
   }, [account, addTransaction, args, daoFactoryContract, gasPriceInfoCallback])
 }

@@ -4,6 +4,8 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import { useGasPriceInfo } from './useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 // const Web3EthAbi = require('web3-eth-abi')
 // Web3EthAbi.encodeFunctionSignature({
 //   name: '',
@@ -60,12 +62,29 @@ export function useCreateCommunityProposalCallback(votingAddress: string | undef
         gasPrice,
         gasLimit,
         from: account
-      }).then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Create community proposal'
-        })
-        return response.hash
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Create community proposal'
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useCreateCommunityProposalCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
     [account, addTransaction, gasPriceInfoCallback, votingContract]
   )
@@ -110,12 +129,29 @@ export function useCreateCrossProposalCallback(votingAddress: string | undefined
         gasPrice,
         gasLimit,
         from: account
-      }).then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Create community proposal'
-        })
-        return response.hash
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Create community proposal'
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useCreateCrossProposalCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
     [account, addTransaction, gasPriceInfoCallback, votingContract]
   )

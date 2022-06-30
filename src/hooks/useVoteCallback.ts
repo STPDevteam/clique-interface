@@ -5,6 +5,8 @@ import { useActiveWeb3React } from '.'
 import { useVotingContract, useCrossVotingContract } from './useContract'
 import { CrossSigType } from './useCreateCommunityProposalCallback'
 import { useGasPriceInfo } from './useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useVoteCallback(votingAddress: string | undefined, tagKey: string) {
   const addTransaction = useTransactionAdder()
@@ -25,17 +27,34 @@ export function useVoteCallback(votingAddress: string | undefined, tagKey: strin
         gasPrice,
         gasLimit,
         from: account
-      }).then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Vote',
-          tag: {
-            type: 'proposalVote',
-            key: tagKey,
-            id: votingAddress
-          }
-        })
-        return response.hash
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Vote',
+            tag: {
+              type: 'proposalVote',
+              key: tagKey,
+              id: votingAddress
+            }
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useVoteCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
     [account, addTransaction, gasPriceInfoCallback, tagKey, votingAddress, votingContract]
   )
@@ -68,17 +87,34 @@ export function useCrossVoteCallback(votingAddress: string | undefined, tagKey: 
         gasPrice,
         gasLimit,
         from: account
-      }).then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Vote',
-          tag: {
-            type: 'proposalVote',
-            key: tagKey,
-            id: votingAddress
-          }
-        })
-        return response.hash
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Vote',
+            tag: {
+              type: 'proposalVote',
+              key: tagKey,
+              id: votingAddress
+            }
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useCrossVoteCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
     [account, addTransaction, gasPriceInfoCallback, tagKey, votingAddress, votingContract]
   )

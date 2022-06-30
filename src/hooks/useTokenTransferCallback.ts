@@ -6,6 +6,8 @@ import { useActiveWeb3React } from '.'
 import { useTokenContract } from './useContract'
 import { useWeb3Instance } from './useWeb3Instance'
 import { useGasPriceInfo } from './useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useTokenTransferCallback(tokenAddress: string | undefined) {
   const addTransaction = useTransactionAdder()
@@ -47,12 +49,29 @@ export function useTokenTransferCallback(tokenAddress: string | undefined) {
           gasPrice,
           gasLimit,
           from: account
-        }).then((response: TransactionResponse) => {
-          addTransaction(response, {
-            summary: 'Transfer'
-          })
-          return response.hash
         })
+          .then((response: TransactionResponse) => {
+            addTransaction(response, {
+              summary: 'Transfer'
+            })
+            return response.hash
+          })
+          .catch((err: any) => {
+            if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+              commitErrorMsg(
+                'useTokenTransferCallback',
+                JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+                method,
+                JSON.stringify(args)
+              )
+              ReactGA.event({
+                category: `catch-${method}`,
+                action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+                label: JSON.stringify(args)
+              })
+            }
+            throw err
+          })
       }
     },
     [account, addTransaction, gasPriceInfoCallback, tokenContract, web3]

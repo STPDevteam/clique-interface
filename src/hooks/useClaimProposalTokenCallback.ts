@@ -4,6 +4,8 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import { useVotingContract } from './useContract'
 import { useGasPriceInfo } from './useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useClaimProposalTokenCallback(votingAddress: string | undefined, tagKey: string) {
   const addTransaction = useTransactionAdder()
@@ -24,17 +26,34 @@ export function useClaimProposalTokenCallback(votingAddress: string | undefined,
         gasPrice,
         gasLimit,
         from: account
-      }).then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Claim proposal token',
-          tag: {
-            type: 'claimProposalToken',
-            key: tagKey,
-            id: votingAddress
-          }
-        })
-        return response.hash
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Claim proposal token',
+            tag: {
+              type: 'claimProposalToken',
+              key: tagKey,
+              id: votingAddress
+            }
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useClaimProposalTokenCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
     [account, addTransaction, gasPriceInfoCallback, tagKey, votingAddress, votingContract]
   )

@@ -7,6 +7,8 @@ import Web3 from 'web3'
 import DAO_ABI from '../constants/abis/DAO.json'
 import { AbiItem } from 'web3-utils'
 import { useGasPriceInfo } from './useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 const web3 = new Web3()
 const daoContract = new web3.eth.Contract((DAO_ABI as unknown) as AbiItem)
@@ -28,12 +30,29 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
         gasPrice,
         gasLimit,
         from: account
-      }).then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Create contract proposal'
-        })
-        return response.hash
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Create contract proposal'
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useCreateContractProposalCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
     [votingContract, account, gasPriceInfoCallback, addTransaction]
   )
@@ -72,12 +91,29 @@ export function useCreateContractProposalCallback(votingAddress: string | undefi
         gasPrice,
         gasLimit,
         from: account
-      }).then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Create contract proposal'
-        })
-        return response.hash
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Create contract proposal'
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useCreateContractProposalCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
     [account, addTransaction, gasPriceInfoCallback, votingContract]
   )
@@ -138,12 +174,29 @@ export function useCreateCrossContractProposalCallback(votingAddress: string | u
         gasPrice,
         gasLimit,
         from: account
-      }).then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Create contract proposal'
-        })
-        return response.hash
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Create contract proposal'
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useCreateCrossContractProposalCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
     [account, addTransaction, gasPriceInfoCallback, votingContract]
   )

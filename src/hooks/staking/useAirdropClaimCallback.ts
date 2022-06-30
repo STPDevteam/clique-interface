@@ -4,6 +4,8 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '../'
 import { useFarmStakingContract } from '../useContract'
 import { useGasPriceInfo } from 'hooks/useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useAirdropClaimCallback() {
   const addTransaction = useTransactionAdder()
@@ -24,12 +26,29 @@ export function useAirdropClaimCallback() {
         gasPrice,
         gasLimit,
         from: account
-      }).then((response: TransactionResponse) => {
-        addTransaction(response, {
-          summary: 'Claim airdrop'
-        })
-        return response.hash
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Claim airdrop'
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useAirdropClaimCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
     [account, addTransaction, contract, gasPriceInfoCallback]
   )

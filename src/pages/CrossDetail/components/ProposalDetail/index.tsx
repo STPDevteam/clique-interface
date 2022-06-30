@@ -127,7 +127,9 @@ export default function Index({
           .catch(err => {
             hideModal()
             showModal(
-              <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+              <MessageBox type="error">
+                {err?.data?.message || err?.error?.message || err?.message || 'unknown error'}
+              </MessageBox>
             )
             console.error(err)
           })
@@ -152,7 +154,9 @@ export default function Index({
       .catch(err => {
         hideModal()
         showModal(
-          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+          <MessageBox type="error">
+            {err?.data?.message || err?.error?.message || err?.message || 'unknown error'}
+          </MessageBox>
         )
         console.error(err)
       })
