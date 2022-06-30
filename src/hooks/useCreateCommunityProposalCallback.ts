@@ -1,10 +1,9 @@
 import { useCallback } from 'react'
 import { useCrossVotingContract, useVotingContract } from './useContract'
-import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
-import { useWeb3Instance } from './useWeb3Instance'
+import { useGasPriceInfo } from './useGasPrice'
 // const Web3EthAbi = require('web3-eth-abi')
 // Web3EthAbi.encodeFunctionSignature({
 //   name: '',
@@ -46,31 +45,29 @@ interface CreateCommunityProposalContent {
 export function useCreateCommunityProposalCallback(votingAddress: string | undefined) {
   const votingContract = useVotingContract(votingAddress)
   const { account } = useActiveWeb3React()
-  const web3 = useWeb3Instance()
   const addTransaction = useTransactionAdder()
+  const gasPriceInfoCallback = useGasPriceInfo()
 
   return useCallback(
-    (title: string, content: string, startTime: number, endTime: number, options: string[]) => {
-      if (!votingContract || !web3) throw new Error('none contract')
+    async (title: string, content: string, startTime: number, endTime: number, options: string[]) => {
+      if (!votingContract) throw new Error('none contract')
 
       const args = [title, content, startTime, endTime, options]
+      const method = 'createCommunityProposal'
+      const { gasLimit, gasPrice } = await gasPriceInfoCallback(votingContract, method, args)
 
-      return web3.eth.getGasPrice().then(gasPrice => {
-        return votingContract
-          .createCommunityProposal(...args, {
-            gasPrice: calculateGasPriceMargin(gasPrice),
-            // gasLimit: '3500000',
-            from: account
-          })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              summary: 'Create community proposal'
-            })
-            return response.hash
-          })
+      return votingContract[method](...args, {
+        gasPrice,
+        gasLimit,
+        from: account
+      }).then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Create community proposal'
+        })
+        return response.hash
       })
     },
-    [account, addTransaction, votingContract, web3]
+    [account, addTransaction, gasPriceInfoCallback, votingContract]
   )
 }
 
@@ -81,11 +78,11 @@ export enum CrossSigType {
 export function useCreateCrossProposalCallback(votingAddress: string | undefined) {
   const votingContract = useCrossVotingContract(votingAddress)
   const { account } = useActiveWeb3React()
-  const web3 = useWeb3Instance()
   const addTransaction = useTransactionAdder()
+  const gasPriceInfoCallback = useGasPriceInfo()
 
   return useCallback(
-    (
+    async (
       voteInfo: CreateCommunityProposalContent,
       user: string,
       weight: string,
@@ -94,7 +91,7 @@ export function useCreateCrossProposalCallback(votingAddress: string | undefined
       nonce: number,
       signature: string
     ) => {
-      if (!votingContract || !web3) throw new Error('none contract')
+      if (!votingContract) throw new Error('none contract')
 
       const args = [
         ...Object.values(voteInfo),
@@ -106,22 +103,20 @@ export function useCreateCrossProposalCallback(votingAddress: string | undefined
         args,
         JSON.stringify(args)
       )
+      const method = 'createCommunityProposal'
+      const { gasLimit, gasPrice } = await gasPriceInfoCallback(votingContract, method, args)
 
-      return web3.eth.getGasPrice().then(gasPrice => {
-        return votingContract
-          .createCommunityProposal(...args, {
-            gasPrice: calculateGasPriceMargin(gasPrice),
-            // gasLimit: '3500000',
-            from: account
-          })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              summary: 'Create community proposal'
-            })
-            return response.hash
-          })
+      return votingContract[method](...args, {
+        gasPrice,
+        gasLimit,
+        from: account
+      }).then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Create community proposal'
+        })
+        return response.hash
       })
     },
-    [account, addTransaction, votingContract, web3]
+    [account, addTransaction, gasPriceInfoCallback, votingContract]
   )
 }

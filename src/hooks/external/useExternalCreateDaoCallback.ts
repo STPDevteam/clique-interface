@@ -4,17 +4,15 @@ import { amountAddDecimals } from '../../utils/dao'
 import { calcVotingDuration } from 'pages/building/function'
 import { useDaoFactoryContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks'
-import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useToken } from 'state/wallet/hooks'
-import { useWeb3Instance } from 'hooks/useWeb3Instance'
+import { useGasPriceInfo } from 'hooks/useGasPrice'
 
 export function useExternalCreateDaoCallback() {
   const { basicData, ruleData } = useExternalCommitCreateDaoData()
   const daoFactoryContract = useDaoFactoryContract()
   const { account } = useActiveWeb3React()
-  const web3 = useWeb3Instance()
   const addTransaction = useTransactionAdder()
   const token = useToken(basicData.contractAddress)
 
@@ -46,8 +44,10 @@ export function useExternalCreateDaoCallback() {
     return [Object.values(_basicParams), _rule, basicData.contractAddress]
   }, [basicData, ruleData, token])
 
-  return useCallback(() => {
-    if (!daoFactoryContract || !web3) {
+  const gasPriceInfoCallback = useGasPriceInfo()
+
+  return useCallback(async () => {
+    if (!daoFactoryContract) {
       throw new Error('Unexpected error. Contract error')
     }
     if (!token) {
@@ -55,19 +55,17 @@ export function useExternalCreateDaoCallback() {
     }
 
     console.log('args->', JSON.stringify(args), ...args)
-    return web3.eth.getGasPrice().then(gasPrice => {
-      return daoFactoryContract
-        .createDAOWithExternalToken(...args, {
-          gasPrice: calculateGasPriceMargin(gasPrice),
-          // gasLimit: '3500000',
-          from: account
-        })
-        .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            summary: 'Create external Dao'
-          })
-          return response.hash
-        })
+    const method = 'createDAOWithExternalToken'
+    const { gasLimit, gasPrice } = await gasPriceInfoCallback(daoFactoryContract, method, args)
+    return daoFactoryContract[method](...args, {
+      gasPrice,
+      gasLimit,
+      from: account
+    }).then((response: TransactionResponse) => {
+      addTransaction(response, {
+        summary: 'Create external Dao'
+      })
+      return response.hash
     })
-  }, [account, addTransaction, args, daoFactoryContract, token, web3])
+  }, [account, addTransaction, args, daoFactoryContract, gasPriceInfoCallback, token])
 }

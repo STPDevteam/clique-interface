@@ -19,7 +19,7 @@ export function useGasPriceInfo() {
         }
       } catch (error) {
         console.log(error)
-        throw new Error('get gas error')
+        throw new Error('Get gas error, please try again')
       }
     },
     [web3]

@@ -1,43 +1,41 @@
-import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
+import { useGasPriceInfo } from 'hooks/useGasPrice'
 import { useCallback } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '../'
 import { useFarmStakingContract } from '../useContract'
-import { useWeb3Instance } from 'hooks/useWeb3Instance'
 
 export function useCreateAirdropCallback() {
   const addTransaction = useTransactionAdder()
   const contract = useFarmStakingContract()
-  const web3 = useWeb3Instance()
   const { account } = useActiveWeb3React()
+  const gasPriceInfoCallback = useGasPriceInfo()
 
   return useCallback(
-    (tokenAddress: string, amountRaw: string, startTime: number, tag: number) => {
+    async (tokenAddress: string, amountRaw: string, startTime: number, tag: number) => {
       if (!account) throw new Error('none account')
-      if (!contract || !web3) throw new Error('none contract')
+      if (!contract) throw new Error('none contract')
       const args = [tokenAddress, amountRaw, startTime, tag]
 
-      return web3.eth.getGasPrice().then(gasPrice => {
-        return contract
-          .airdrop(...args, {
-            gasPrice: calculateGasPriceMargin(gasPrice),
-            // gasLimit: '3500000',
-            from: account
-          })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              summary: 'Airdrop publish',
-              tag: {
-                type: 'airdropPublish',
-                key: '',
-                id: tag
-              }
-            })
-            return response.hash
-          })
+      const method = 'airdrop'
+      const { gasLimit, gasPrice } = await gasPriceInfoCallback(contract, method, args)
+
+      return contract[method](...args, {
+        gasPrice,
+        gasLimit,
+        from: account
+      }).then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Airdrop publish',
+          tag: {
+            type: 'airdropPublish',
+            key: '',
+            id: tag
+          }
+        })
+        return response.hash
       })
     },
-    [account, addTransaction, contract, web3]
+    [account, addTransaction, contract, gasPriceInfoCallback]
   )
 }

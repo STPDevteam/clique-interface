@@ -50,7 +50,6 @@
     "react": "^17.0.2",
     "react-device-detect": "^2.0.1",
     "react-dom": "^17.0.2",
-    "react-ga": "^3.3.0",
     "react-popper": "^2.2.3",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.3.0",
@@ -166,6 +165,7 @@
     "prompts": "2.4.0",
     "react-app-polyfill": "^2.0.0",
     "react-dev-utils": "^11.0.3",
+    "react-ga4": "^1.4.1",
     "react-refresh": "^0.8.3",
     "resolve": "1.18.1",
     "resolve-url-loader": "^3.1.2",
@@ -199,7 +199,7 @@
       "<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
     ],
     "testEnvironment": "jsdom",
-    "testRunner": "/Volumes/work/base-dapp/node_modules/jest-circus/runner.js",
+    "testRunner": "<rootDir>/node_modules/jest-circus/runner.js",
     "transform": {
       "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "<rootDir>/config/jest/babelTransform.js",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
@@ -210,7 +210,7 @@
       "^.+\\.module\\.(css|sass|scss)$"
     ],
     "modulePaths": [
-      "/Volumes/work/base-dapp/src"
+      "<rootDir>/src"
     ],
     "moduleNameMapper": {
       "^react-native$": "react-native-web",

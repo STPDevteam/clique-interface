@@ -1,39 +1,36 @@
-import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import { useDaoContract } from './useContract'
-import { useWeb3Instance } from './useWeb3Instance'
+import { useGasPriceInfo } from './useGasPrice'
 
 export function useReservedClaimCallback(daoAddress: string | undefined) {
   const addTransaction = useTransactionAdder()
   const daoContract = useDaoContract(daoAddress)
   const { account } = useActiveWeb3React()
-  const web3 = useWeb3Instance()
+  const gasPriceInfoCallback = useGasPriceInfo()
 
-  return useCallback((): Promise<string> => {
+  return useCallback(async (): Promise<string> => {
     if (!account) throw new Error('none account')
-    if (!daoContract || !daoAddress || !web3) throw new Error('none daoContract')
+    if (!daoContract || !daoAddress) throw new Error('none daoContract')
 
-    return web3.eth.getGasPrice().then(gasPrice => {
-      return daoContract
-        .withdrawReserved({
-          gasPrice: calculateGasPriceMargin(gasPrice),
-          // gasLimit: '3500000',
-          from: account
-        })
-        .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            summary: 'Claim private token',
-            tag: {
-              type: 'claimReserved',
-              key: '',
-              id: daoAddress
-            }
-          })
-          return response.hash
-        })
+    const method = 'withdrawReserved'
+    const { gasLimit, gasPrice } = await gasPriceInfoCallback(daoContract, method, [])
+    return daoContract[method]({
+      gasPrice,
+      gasLimit,
+      from: account
+    }).then((response: TransactionResponse) => {
+      addTransaction(response, {
+        summary: 'Claim private token',
+        tag: {
+          type: 'claimReserved',
+          key: '',
+          id: daoAddress
+        }
+      })
+      return response.hash
     })
-  }, [account, addTransaction, daoAddress, daoContract, web3])
+  }, [account, addTransaction, daoAddress, daoContract, gasPriceInfoCallback])
 }

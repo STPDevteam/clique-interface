@@ -5,15 +5,17 @@ import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import { useTokenContract } from './useContract'
 import { useWeb3Instance } from './useWeb3Instance'
+import { useGasPriceInfo } from './useGasPrice'
 
 export function useTokenTransferCallback(tokenAddress: string | undefined) {
   const addTransaction = useTransactionAdder()
   const tokenContract = useTokenContract(tokenAddress)
   const { account } = useActiveWeb3React()
   const web3 = useWeb3Instance()
+  const gasPriceInfoCallback = useGasPriceInfo()
 
   return useCallback(
-    (to: string, value: string, isETHER = false) => {
+    async (to: string, value: string, isETHER = false) => {
       if (!account) throw new Error('none account')
       if (isETHER) {
         if (!web3) throw new Error('none web3')
@@ -37,22 +39,22 @@ export function useTokenTransferCallback(tokenAddress: string | undefined) {
         })
       } else {
         if (!tokenContract || !web3) throw new Error('none tokenContract')
-        return web3.eth.getGasPrice().then(gasPrice => {
-          return tokenContract
-            .transfer(to, value, {
-              gasPrice: calculateGasPriceMargin(gasPrice),
-              // gasLimit: '3500000',
-              from: account
-            })
-            .then((response: TransactionResponse) => {
-              addTransaction(response, {
-                summary: 'Transfer'
-              })
-              return response.hash
-            })
+        const args = [to, value]
+        const method = 'transfer'
+        const { gasLimit, gasPrice } = await gasPriceInfoCallback(tokenContract, method, args)
+
+        return tokenContract[method](...args, {
+          gasPrice,
+          gasLimit,
+          from: account
+        }).then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Transfer'
+          })
+          return response.hash
         })
       }
     },
-    [account, addTransaction, tokenContract, web3]
+    [account, addTransaction, gasPriceInfoCallback, tokenContract, web3]
   )
 }
