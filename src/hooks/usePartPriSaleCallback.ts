@@ -1,38 +1,56 @@
-import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import { useDaoContract } from './useContract'
-import { useWeb3Instance } from './useWeb3Instance'
+import { useGasPriceInfo } from './useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function usePartPriSaleCallback(daoAddress: string | undefined) {
   const addTransaction = useTransactionAdder()
   const daoContract = useDaoContract(daoAddress)
   const { account } = useActiveWeb3React()
-  const web3 = useWeb3Instance()
+  const gasPriceInfoCallback = useGasPriceInfo()
 
   return useCallback(
-    (isETHER: boolean, payAmountInt: string) => {
+    async (isETHER: boolean, payAmountInt: string) => {
       if (!account) throw new Error('none account')
-      if (!daoContract || !web3) throw new Error('none daoContract')
+      if (!daoContract) throw new Error('none daoContract')
 
-      return web3.eth.getGasPrice().then(gasPrice => {
-        return daoContract
-          .partPriSale({
-            gasPrice: calculateGasPriceMargin(gasPrice),
-            // gasLimit: '3500000',
-            from: account,
-            value: isETHER ? payAmountInt : undefined
-          })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              summary: 'Buy token'
-            })
-            return response.hash
-          })
+      const args: any[] = []
+      const method = 'partPriSale'
+      const { gasLimit, gasPrice } = await gasPriceInfoCallback(daoContract, method, args)
+
+      return daoContract[method]({
+        gasPrice,
+        gasLimit,
+        from: account,
+        value: isETHER ? payAmountInt : undefined
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Buy token'
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'usePartPriSaleCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
-    [account, addTransaction, daoContract, web3]
+    [account, addTransaction, daoContract, gasPriceInfoCallback]
   )
 }

@@ -4,11 +4,10 @@ import { amountAddDecimals } from '../utils/dao'
 import { calcVotingDuration } from 'pages/building/function'
 import { useDaoFactoryContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks'
-import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useTokenByChain } from 'state/wallet/hooks'
-import { useWeb3Instance } from './useWeb3Instance'
+import { useGasPriceInfo } from './useGasPrice'
 import ReactGA from 'react-ga4'
 import { commitErrorMsg } from 'utils/fetch/server'
 
@@ -19,7 +18,7 @@ export function useCrossGovCreateDaoCallback() {
   const addTransaction = useTransactionAdder()
   const tokenInfo = useTokenByChain(basicData.contractAddress, basicData.baseChainId)
   const token = tokenInfo?.token
-  const web3 = useWeb3Instance()
+  const gasPriceInfoCallback = useGasPriceInfo()
 
   const args = useMemo(() => {
     const _basicParams = {
@@ -51,8 +50,8 @@ export function useCrossGovCreateDaoCallback() {
     return [Object.values(_basicParams), _rule]
   }, [basicData, ruleData, token?.decimals, tokenInfo?.token.name])
 
-  return useCallback(() => {
-    if (!daoFactoryContract || !web3) {
+  return useCallback(async () => {
+    if (!daoFactoryContract) {
       throw new Error('Unexpected error. Contract error')
     }
     if (!token) {
@@ -60,36 +59,35 @@ export function useCrossGovCreateDaoCallback() {
     }
 
     console.log('args->', JSON.stringify(args), ...args)
-    return web3.eth.getGasPrice().then(gasPrice => {
-      return daoFactoryContract
-        .createCrossGovDAO(...args, {
-          // gasLimit: calculateGasMargin(estimatedGasLimit),
-          // gasLimit: '3500000',
-          gasPrice: calculateGasPriceMargin(gasPrice),
-          from: account
-        })
-        .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            summary: 'Cross chain DAO created'
-          })
-          return response.hash
-        })
-        .catch((err: any) => {
-          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
-            commitErrorMsg(
-              'CrossGovCreateDao',
-              JSON.stringify(err),
-              'useCrossGovCreateDaoCallback',
-              JSON.stringify(args)
-            )
-            ReactGA.event({
-              category: 'catch-useCrossGovCreateDaoCallback',
-              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
-              label: JSON.stringify(args)
-            })
-          }
-          throw err
-        })
+    const method = 'createCrossGovDAO'
+    const { gasLimit, gasPrice } = await gasPriceInfoCallback(daoFactoryContract, method, args)
+    return daoFactoryContract[method](...args, {
+      // gasLimit: calculateGasMargin(estimatedGasLimit),
+      gasLimit,
+      gasPrice,
+      from: account
     })
-  }, [account, addTransaction, args, daoFactoryContract, token, web3])
+      .then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Cross chain DAO created'
+        })
+        return response.hash
+      })
+      .catch((err: any) => {
+        if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+          commitErrorMsg(
+            'useCrossGovCreateDaoCallback',
+            JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+            method,
+            JSON.stringify(args)
+          )
+          ReactGA.event({
+            category: `catch-${method}`,
+            action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+            label: JSON.stringify(args)
+          })
+        }
+        throw err
+      })
+  }, [account, addTransaction, args, daoFactoryContract, gasPriceInfoCallback, token])
 }

@@ -1,12 +1,11 @@
 import { useCallback } from 'react'
 import { useCrossVotingContract, useVotingContract } from './useContract'
-import { calculateGasMargin, calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
-import { useWeb3Instance } from './useWeb3Instance'
-import { commitErrorMsg } from 'utils/fetch/server'
+import { useGasPriceInfo } from './useGasPrice'
 import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 // const Web3EthAbi = require('web3-eth-abi')
 // Web3EthAbi.encodeFunctionSignature({
 //   name: '',
@@ -48,31 +47,46 @@ interface CreateCommunityProposalContent {
 export function useCreateCommunityProposalCallback(votingAddress: string | undefined) {
   const votingContract = useVotingContract(votingAddress)
   const { account } = useActiveWeb3React()
-  const web3 = useWeb3Instance()
   const addTransaction = useTransactionAdder()
+  const gasPriceInfoCallback = useGasPriceInfo()
 
   return useCallback(
-    (title: string, content: string, startTime: number, endTime: number, options: string[]) => {
-      if (!votingContract || !web3) throw new Error('none contract')
+    async (title: string, content: string, startTime: number, endTime: number, options: string[]) => {
+      if (!votingContract) throw new Error('none contract')
 
       const args = [title, content, startTime, endTime, options]
+      const method = 'createCommunityProposal'
+      const { gasLimit, gasPrice } = await gasPriceInfoCallback(votingContract, method, args)
 
-      return web3.eth.getGasPrice().then(gasPrice => {
-        return votingContract
-          .createCommunityProposal(...args, {
-            gasPrice: calculateGasPriceMargin(gasPrice),
-            // gasLimit: '3500000',
-            from: account
-          })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              summary: 'Create community proposal'
-            })
-            return response.hash
-          })
+      return votingContract[method](...args, {
+        gasPrice,
+        gasLimit,
+        from: account
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Create community proposal'
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useCreateCommunityProposalCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
-    [account, addTransaction, votingContract, web3]
+    [account, addTransaction, gasPriceInfoCallback, votingContract]
   )
 }
 
@@ -83,8 +97,8 @@ export enum CrossSigType {
 export function useCreateCrossProposalCallback(votingAddress: string | undefined) {
   const votingContract = useCrossVotingContract(votingAddress)
   const { account } = useActiveWeb3React()
-  const web3 = useWeb3Instance()
   const addTransaction = useTransactionAdder()
+  const gasPriceInfoCallback = useGasPriceInfo()
 
   return useCallback(
     async (
@@ -96,7 +110,7 @@ export function useCreateCrossProposalCallback(votingAddress: string | undefined
       nonce: number,
       signature: string
     ) => {
-      if (!votingContract || !web3) throw new Error('none contract')
+      if (!votingContract) throw new Error('none contract')
 
       const args = [
         ...Object.values(voteInfo),
@@ -108,41 +122,37 @@ export function useCreateCrossProposalCallback(votingAddress: string | undefined
         args,
         JSON.stringify(args)
       )
+      const method = 'createCommunityProposal'
+      const { gasLimit, gasPrice } = await gasPriceInfoCallback(votingContract, method, args)
 
-      const estimatedGas = await votingContract.estimateGas.createCommunityProposal(...args, {
+      return votingContract[method](...args, {
+        gasPrice,
+        gasLimit,
         from: account
       })
-      return web3.eth.getGasPrice().then(gasPrice => {
-        return votingContract
-          .createCommunityProposal(...args, {
-            gasPrice: calculateGasPriceMargin(gasPrice),
-            gasLimit: calculateGasMargin(estimatedGas),
-            from: account
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Create community proposal'
           })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              summary: 'Create community proposal'
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useCreateCrossProposalCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
             })
-            return response.hash
-          })
-          .catch((err: any) => {
-            if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
-              commitErrorMsg(
-                'CreateCrossProposal',
-                JSON.stringify(err),
-                'useCreateCrossProposalCallback',
-                JSON.stringify(args)
-              )
-              ReactGA.event({
-                category: 'catch-useCreateCrossProposalCallback',
-                action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
-                label: JSON.stringify(args)
-              })
-            }
-            throw err
-          })
-      })
+          }
+          throw err
+        })
     },
-    [account, addTransaction, votingContract, web3]
+    [account, addTransaction, gasPriceInfoCallback, votingContract]
   )
 }

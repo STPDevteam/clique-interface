@@ -6,11 +6,12 @@ import { tryParseAmount } from '../state/application/hooks'
 import { calcVotingDuration } from 'pages/building/function'
 import { useDaoFactoryContract } from 'hooks/useContract'
 import { useActiveWeb3React } from 'hooks'
-import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { PriceDecimals } from '../constants'
-import { useWeb3Instance } from './useWeb3Instance'
+import { useGasPriceInfo } from './useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useCreateDaoCallback() {
   const { basicData, distributionData, ruleData } = useTrueCommitCreateDaoData()
@@ -18,7 +19,6 @@ export function useCreateDaoCallback() {
   const daoFactoryContract = useDaoFactoryContract()
   const { account } = useActiveWeb3React()
   const addTransaction = useTransactionAdder()
-  const web3 = useWeb3Instance()
 
   // special price decimals
   const stptPriceToken = useMemo(
@@ -117,27 +117,42 @@ export function useCreateDaoCallback() {
     ]
   }, [basicData, distributionData, ruleData, stptPriceToken, currentReceivingToken])
 
-  return useCallback(() => {
-    if (!daoFactoryContract || !web3) {
+  const gasPriceInfoCallback = useGasPriceInfo()
+
+  return useCallback(async () => {
+    if (!daoFactoryContract) {
       throw new Error('Unexpected error. Contract error')
     }
 
     console.log('args->', JSON.stringify(args), ...args)
-    return web3.eth.getGasPrice().then(gasPrice => {
-      console.log('aaa', gasPrice, calculateGasPriceMargin(gasPrice))
-      return daoFactoryContract
-        .createDAO(...args, {
-          // gasLimit: calculateGasMargin(estimatedGasLimit),
-          // gasLimit: '3500000',
-          gasPrice: calculateGasPriceMargin(gasPrice),
-          from: account
-        })
-        .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            summary: 'Create Dao'
-          })
-          return response.hash
-        })
+    const method = 'createDAO'
+    const { gasLimit, gasPrice } = await gasPriceInfoCallback(daoFactoryContract, method, args)
+    return daoFactoryContract[method](...args, {
+      gasLimit,
+      gasPrice,
+      from: account
     })
-  }, [account, addTransaction, args, daoFactoryContract, web3])
+      .then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Create Dao'
+        })
+        return response.hash
+      })
+      .catch((err: any) => {
+        if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+          commitErrorMsg(
+            'useCreateDaoCallback',
+            JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+            method,
+            JSON.stringify(args)
+          )
+          ReactGA.event({
+            category: `catch-${method}`,
+            action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+            label: JSON.stringify(args)
+          })
+        }
+        throw err
+      })
+  }, [account, addTransaction, args, daoFactoryContract, gasPriceInfoCallback])
 }

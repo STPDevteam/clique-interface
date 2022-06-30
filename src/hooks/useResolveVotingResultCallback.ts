@@ -1,32 +1,51 @@
-import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useVotingContract } from './useContract'
-import { useWeb3Instance } from './useWeb3Instance'
+import { useGasPriceInfo } from './useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useResolveVotingResultCallback(votingAddress: string | undefined) {
   const addTransaction = useTransactionAdder()
-  const web3 = useWeb3Instance()
   const votingContract = useVotingContract(votingAddress)
+  const gasPriceInfoCallback = useGasPriceInfo()
 
   return useCallback(
-    (id: string) => {
-      if (!votingContract || !web3) throw new Error('none votingContract')
+    async (id: string) => {
+      if (!votingContract) throw new Error('none votingContract')
 
-      return web3.eth.getGasPrice().then(gasPrice => {
-        return votingContract
-          .resolveVotingResult(id, {
-            gasPrice: calculateGasPriceMargin(gasPrice)
-          })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              summary: 'Resolve voting result'
-            })
-            return response.hash
-          })
+      const args = [id]
+      const method = 'resolveVotingResult'
+      const { gasLimit, gasPrice } = await gasPriceInfoCallback(votingContract, method, args)
+
+      return votingContract[method](...args, {
+        gasPrice,
+        gasLimit
       })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            summary: 'Resolve voting result'
+          })
+          return response.hash
+        })
+        .catch((err: any) => {
+          if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+            commitErrorMsg(
+              'useResolveVotingResultCallback',
+              JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+              method,
+              JSON.stringify(args)
+            )
+            ReactGA.event({
+              category: `catch-${method}`,
+              action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+              label: JSON.stringify(args)
+            })
+          }
+          throw err
+        })
     },
-    [addTransaction, votingContract, web3]
+    [addTransaction, gasPriceInfoCallback, votingContract]
   )
 }

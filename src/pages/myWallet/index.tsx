@@ -338,7 +338,9 @@ function CreateTokenReservedClaim({ item }: { item: { tokenAmount: TokenAmount; 
       .catch(err => {
         hideModal()
         showModal(
-          <MessageBox type="error">{err.error && err.error.message ? err.error.message : err?.message}</MessageBox>
+          <MessageBox type="error">
+            {err?.data?.message || err?.error?.message || err?.message || 'unknown error'}
+          </MessageBox>
         )
         console.error(err, JSON.stringify(err))
       })

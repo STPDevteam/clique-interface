@@ -1,39 +1,56 @@
-import { calculateGasPriceMargin } from 'utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { useCallback } from 'react'
 import { useTransactionAdder } from 'state/transactions/hooks'
 import { useActiveWeb3React } from '.'
 import { useDaoContract } from './useContract'
-import { useWeb3Instance } from './useWeb3Instance'
+import { useGasPriceInfo } from './useGasPrice'
+import ReactGA from 'react-ga4'
+import { commitErrorMsg } from 'utils/fetch/server'
 
 export function useReservedClaimCallback(daoAddress: string | undefined) {
   const addTransaction = useTransactionAdder()
   const daoContract = useDaoContract(daoAddress)
   const { account } = useActiveWeb3React()
-  const web3 = useWeb3Instance()
+  const gasPriceInfoCallback = useGasPriceInfo()
 
-  return useCallback((): Promise<string> => {
+  return useCallback(async (): Promise<string> => {
     if (!account) throw new Error('none account')
-    if (!daoContract || !daoAddress || !web3) throw new Error('none daoContract')
+    if (!daoContract || !daoAddress) throw new Error('none daoContract')
 
-    return web3.eth.getGasPrice().then(gasPrice => {
-      return daoContract
-        .withdrawReserved({
-          gasPrice: calculateGasPriceMargin(gasPrice),
-          // gasLimit: '3500000',
-          from: account
-        })
-        .then((response: TransactionResponse) => {
-          addTransaction(response, {
-            summary: 'Claim private token',
-            tag: {
-              type: 'claimReserved',
-              key: '',
-              id: daoAddress
-            }
-          })
-          return response.hash
-        })
+    const args: any = []
+    const method = 'withdrawReserved'
+    const { gasLimit, gasPrice } = await gasPriceInfoCallback(daoContract, method, args)
+    return daoContract[method]({
+      gasPrice,
+      gasLimit,
+      from: account
     })
-  }, [account, addTransaction, daoAddress, daoContract, web3])
+      .then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Claim private token',
+          tag: {
+            type: 'claimReserved',
+            key: '',
+            id: daoAddress
+          }
+        })
+        return response.hash
+      })
+      .catch((err: any) => {
+        if (err.message !== 'MetaMask Tx Signature: User denied transaction signature.') {
+          commitErrorMsg(
+            'useReservedClaimCallback',
+            JSON.stringify(err?.data?.message || err?.error?.message || err?.message || 'unknown error'),
+            method,
+            JSON.stringify(args)
+          )
+          ReactGA.event({
+            category: `catch-${method}`,
+            action: `${err?.error?.message || ''} ${err?.message || ''} ${err?.data?.message || ''}`,
+            label: JSON.stringify(args)
+          })
+        }
+        throw err
+      })
+  }, [account, addTransaction, daoAddress, daoContract, gasPriceInfoCallback])
 }
