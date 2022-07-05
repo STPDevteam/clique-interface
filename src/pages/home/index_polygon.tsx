@@ -1,55 +1,77 @@
 import './pc.less'
 
-import { Button } from 'antd'
-
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 // import CreateSelectModal from './CreateSelectModal'
 // import useModal from 'hooks/useModal'
-import { Box } from '@mui/material'
-import { ReactComponent as SelectTokenWhiteIcon } from '../../assets/svg/select_token_white_icon.svg'
+import { Box, Tooltip, Typography, useTheme } from '@mui/material'
 import { triggerSwitchChain } from 'utils/triggerSwitchChain'
 import { useHistory } from 'react-router-dom'
 import { CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
+import addDaoIcon from 'assets/images/add-dao-icon.png'
+import createTokenIcon from 'assets/images/create-token-ball.png'
+import Image from 'components/Image'
 
 export default function Index() {
   const { account, chainId, library } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
+  const theme = useTheme()
   const history = useHistory()
   return (
     <main className="home">
-      <h1>Add a DAO with a few clicks</h1>
-      <p>Add your DAO and set its governance framework running on Polygon through the Ethereum blockchain</p>
-      {account ? (
-        <>
-          {/* <Button
-            className="btn-common btn-01 btn-build"
-            // onClick={() => showModal(<CreateSelectModal hide={hideModal} />)}
-            onClick={() => history.push('/building')}
+      <Box maxWidth={'100%'} pt={100} width="808px" margin={'auto'} display="flex" justifyContent={'space-between'}>
+        <Box>
+          <Box
+            className="item-create"
+            onClick={() => {
+              if (!account) {
+                toggleWalletModal()
+                return
+              }
+              if (chainId && CROSS_SUPPORT_CREATE_NETWORK.includes(chainId)) {
+                history.replace('/cross_building')
+              } else {
+                account && triggerSwitchChain(library, CROSS_SUPPORT_CREATE_NETWORK[0], account)
+              }
+            }}
           >
-            Build
-          </Button> */}
-          <Box display={'flex'} gap="30px" justifyContent={'center'}>
-            <Button
-              className="btn-common btn-01 btn-build"
-              onClick={() => {
-                if (chainId && CROSS_SUPPORT_CREATE_NETWORK.includes(chainId)) {
-                  history.replace('/cross_building')
-                } else {
-                  account && triggerSwitchChain(library, CROSS_SUPPORT_CREATE_NETWORK[0], account)
-                }
-              }}
-            >
-              <SelectTokenWhiteIcon />
-              Add a DAO using an existing token
-            </Button>
+            <Image src={addDaoIcon} width={182}></Image>
           </Box>
-        </>
-      ) : (
-        <Button className="btn-common btn-01 btn-build" onClick={toggleWalletModal}>
-          Connect Wallet
-        </Button>
-      )}
+          <Typography fontWeight={600} color={theme.palette.text.primary}>
+            Add a DAO
+          </Typography>
+        </Box>
+        <Box>
+          <Tooltip title="Coming Soon" placement="top">
+            <Box
+              className="item-create"
+              // onClick={() => {
+              //   if (!account) {
+              //     toggleWalletModal()
+              //     return
+              //   }
+              //   if (chainId && SUPPORT_CREATE_TOKEN_NETWORK.includes(chainId)) {
+              //     history.replace('/create_token')
+              //   } else {
+              //     account && triggerSwitchChain(library, SUPPORT_CREATE_TOKEN_NETWORK[0], account)
+              //   }
+              // }}
+            >
+              <Image src={createTokenIcon} width={182}></Image>
+            </Box>
+          </Tooltip>
+          <Typography fontWeight={600} color={theme.palette.text.primary}>
+            Create a Token
+          </Typography>
+        </Box>
+      </Box>
+
+      <Box className="faq">
+        <Typography>Add a DAO with a few clicks</Typography>
+        <Typography>
+          Add your DAO and set its governance framework running on Polygon through the Ethereum blockchain
+        </Typography>
+      </Box>
     </main>
   )
 }

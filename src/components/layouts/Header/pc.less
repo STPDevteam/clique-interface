@@ -1,16 +1,15 @@
 @import url('../../../assets/styles/util.less');
 
-@headerHeight: 78px;
+@headerHeight: 112px;
 
 .pc( {
         header {
             display: flex !important;
+            background-color: #fbfbfb;
             justify-content: space-between;
-            background: #FFFFFF;
-            box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
-            -3px -3px 8px rgba(255, 255, 255, 0.8);
+            border: 1px solid @borderColor1;
             height: @headerHeight;
-            padding: 0 72px;
+            padding: 0 40px;
             top: 0px;
             left: 0;
             right: 0;
@@ -22,7 +21,7 @@
                 align-items: center;
 
                 img {
-                    height: 40px;
+                    height: 30px;
                     object-fit: contain;
                 }
 
@@ -40,6 +39,7 @@
             .actions {
                 display: flex;
                 align-items: center;
+                margin-right: 40px;
 
                 .btn-common.btn-create {
                     height: 48px;

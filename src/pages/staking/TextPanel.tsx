@@ -35,7 +35,7 @@ const StyledCollapseBox = styled(Box)({
 })
 
 const Text = styled(Typography)({
-  color: '#798488',
+  color: '#808191',
   fontSize: '14px'
 })
 

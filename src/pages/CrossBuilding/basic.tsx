@@ -1,6 +1,6 @@
 import '../building/basic.pc.less'
 
-import { Input, Button, Select } from 'antd'
+import { Input, Select } from 'antd'
 import IconUpload from '../../assets/images/icon-upload.svg'
 import IUpload from '../../components/IUpload'
 import TextArea from 'antd/lib/input/TextArea'
@@ -14,6 +14,7 @@ import IconDownArrow from 'components/ModalSTP/assets/icon-down-arrow.svg'
 import { useTokenByChain } from 'state/wallet/hooks'
 import { AllChainList } from 'constants/chain'
 import { CROSS_SUPPORT_IMPORT_NETWORK } from '../../constants'
+import { BlackButton } from 'components/Button/Button'
 
 const { Option } = Select
 type CrossCreateDaoDataBasicKey = keyof CrossCreateDaoDataBasic
@@ -140,13 +141,13 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             <span className="label">Token Photo *</span>
             <Box display={'flex'} alignItems={'center'} gap="5px">
               <IUpload setResult={val => updateBasicCall('tokenPhoto', val)} onPreviewStr={str => setPreviewStr(str)}>
-                <Button className="btn-upload" style={{ padding: 5 }}>
+                <div className="btn-upload" style={{ padding: 5, cursor: 'pointer' }}>
                   <img
                     src={previewStr || basicData.tokenPhoto || IconUpload}
                     width={previewStr || basicData.tokenPhoto ? '100%' : 'auto'}
                     height={previewStr || basicData.tokenPhoto ? '100%' : 'auto'}
                   />
-                </Button>
+                </div>
               </IUpload>
               <Typography>File types supported: JPG, PNG. Max size: 500KB</Typography>
             </Box>
@@ -186,9 +187,9 @@ export default function Basic({ goNext }: { goNext: () => void }) {
         </div>
       </section>
       <Box className="btn-group" display={'flex'} justifyContent={'center'}>
-        <Button className="btn-common btn-01" onClick={goNext} disabled={!!verifyMsg}>
+        <BlackButton width="252px" height="56px" onClick={goNext} disabled={!!verifyMsg}>
           Next
-        </Button>
+        </BlackButton>
       </Box>
     </>
   )

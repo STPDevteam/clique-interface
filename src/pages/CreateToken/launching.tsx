@@ -1,15 +1,14 @@
 import '../building/launching.pc.less'
 
 import { useMemo } from 'react'
-import IconToken from '../../assets/images/icon-token.svg'
 import IconLaunching from '../../assets/images/icon-launching.svg'
 import IconDone from '../../assets/images/icon-launched.svg'
-import { Button } from 'antd'
 import { useParams } from 'react-router-dom'
 import { useIsTransactionPending } from 'state/transactions/hooks'
 import { useTransactionReceipt } from 'hooks/useTransactionReceipt'
 import { Box } from '@mui/system'
 import useCopyClipboard from 'hooks/useCopyClipboard'
+import Button from 'components/Button/Button'
 
 export default function Launching() {
   const { hash } = useParams<{ hash: string }>()
@@ -31,9 +30,8 @@ export default function Launching() {
         <div className="state-launching">
           <div className="wrapper">
             <img className="outer" src={IconLaunching} />
-            <img className="inner" src={IconToken} />
+            <p style={{ position: 'absolute' }}>Launching Your Token...</p>
           </div>
-          <p>Create Token...</p>
         </div>
       )}
       {isDone && (
@@ -42,7 +40,7 @@ export default function Launching() {
           <div className="wrapper">
             <img src={IconDone} />
             <Button
-              className="btn-common btn-03"
+              width="120px"
               onClick={() => {
                 setCopied(address)
               }}

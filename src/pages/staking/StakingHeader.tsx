@@ -38,7 +38,7 @@ export default function index() {
             </OutlineButton>
             {/* <Box className="input-assets-selector" width={220}>
               <Select value={'Buy STPT'} suffixIcon={<img src={IconDownArrow} />} onChange={() => {}}>
-                <Option value={''} style={{ color: '#798488' }}>
+                <Option value={''} style={{ color: '#808191' }}>
                   Buy STPT
                 </Option>
                 {[].map(item => (

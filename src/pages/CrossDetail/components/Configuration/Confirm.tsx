@@ -63,7 +63,6 @@ export default function Confirm({
         <Box
           sx={{
             background: '#FAFAFA',
-            boxShadow: 'inset 2px 2px 5px rgba(105, 141, 173, 0.4)',
             borderRadius: '8px',
             padding: '17px 24px'
           }}

@@ -1,12 +1,11 @@
 import './pc.less'
-import { notification, Button, Input } from 'antd'
+import { notification } from 'antd'
 import { useActiveWeb3React } from 'hooks'
 import { useWeb3React } from '@web3-react/core'
-import { ExternalLink } from 'theme/components'
 import { getEtherscanLink } from 'utils'
 import Copy from 'components/essential/Copy'
-
-const { TextArea } = Input
+import { Typography, useTheme } from '@mui/material'
+import OutlineButton from 'components/Button/OutlineButton'
 
 export function fallbackCopyTextToClipboard(text: string) {
   const textArea = document.createElement('textarea')
@@ -37,31 +36,32 @@ export function fallbackCopyTextToClipboard(text: string) {
   document.body.removeChild(textArea)
 }
 
-const Accounts = () => {
+export default function Accounts() {
   const { account, chainId } = useActiveWeb3React()
   const { deactivate } = useWeb3React()
+  const theme = useTheme()
 
   return (
     <div className="modal-common">
-      <h1>{account ? 'Wallet' : 'Connect Wallet'}</h1>
+      <Typography variant="h4" fontWeight={500} fontSize={24}>
+        {account ? 'Wallet' : 'Connect Wallet'}
+      </Typography>
       {account && chainId && (
         <section className="loggedin">
           <div className="address">
-            <TextArea placeholder="account" rows={5} disabled value={account} />
+            <Typography variant="h6">{account}</Typography>
             <Copy toCopy={account || ''} size={48} svgSize={20} />
           </div>
           <div className="btn-group">
-            <ExternalLink href={getEtherscanLink(chainId, account, 'address')}>
-              <Button className="btn-common btn-01">View on blockchain</Button>
-            </ExternalLink>
-            <Button className="btn-common btn-04" onClick={() => deactivate()}>
+            <OutlineButton onClick={() => window.open(getEtherscanLink(chainId, account, 'address'))}>
+              View on blockchain
+            </OutlineButton>
+            <OutlineButton color={theme.palette.text.disabled} onClick={() => deactivate()}>
               Disconnect
-            </Button>
+            </OutlineButton>
           </div>
         </section>
       )}
     </div>
   )
 }
-
-export default Accounts

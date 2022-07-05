@@ -14,6 +14,7 @@ import { SUPPORT_CREATE_TOKEN_NETWORK } from '../../constants'
 import { toFormatGroup } from 'utils/dao'
 import BigNumber from 'bignumber.js'
 import { removeEmoji } from 'utils'
+import { BlackButton } from 'components/Button/Button'
 
 const { Option } = Select
 type CreateTokenDataBasicKey = keyof CreateTokenDataBasic
@@ -181,9 +182,9 @@ export default function Basic({ goNext }: { goNext: () => void }) {
         </div>
       </section>
       <Box className="btn-group" display={'flex'} justifyContent={'center'}>
-        <Button className="btn-common btn-01" onClick={goNext} disabled={!!verifyMsg}>
+        <BlackButton width="252px" height="56px" onClick={goNext} disabled={!!verifyMsg}>
           Next
-        </Button>
+        </BlackButton>
       </Box>
     </>
   )

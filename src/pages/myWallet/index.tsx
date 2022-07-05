@@ -25,27 +25,37 @@ import Button from 'components/Button/Button'
 import Copy from 'components/essential/Copy'
 import { ShowTokenBalance } from 'pages/DaoDetail/components/Assets'
 
-const StyledHeader = styled(Box)({
-  width: '100%',
+const StyledHeader = styled(Box)(({ theme }) => ({
+  width: 'calc(100% - 80px)',
+  margin: '30px auto 0',
   minHeight: 138,
-  boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)',
+  borderRadius: '24px',
+  backgroundColor: theme.palette.common.white,
   padding: '0 43px'
-})
+}))
 const Container = styled(Box)({
   maxWidth: 852,
   width: '100%',
   margin: '0 auto'
 })
-const StyledBox = styled(Box)({
+const StyledBox = styled(Box)(({ theme }) => ({
   '.my-tabs': {
     '.ant-tabs-tab-active': {
-      color: '#22304A'
+      color: theme.palette.text.primary
     },
     '.ant-tabs-tab': {
-      marginRight: 120
+      marginRight: 120,
+      fontWeight: 600,
+      '&:hover': {
+        color: theme.palette.text.primary
+      }
     }
+  },
+  '.ant-tabs-ink-bar': {
+    backgroundColor: theme.palette.text.primary,
+    height: 3
   }
-})
+}))
 const { TabPane } = Tabs
 const { Column } = Table
 

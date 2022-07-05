@@ -1,4 +1,4 @@
-import { Box, useTheme } from '@mui/material'
+import { Box } from '@mui/material'
 import { HideOnMobile } from 'theme/index'
 import { ReactComponent as Medium } from 'assets/socialLinksIcon/medium.svg'
 import { ReactComponent as Twitter } from 'assets/socialLinksIcon/twitter.svg'
@@ -7,14 +7,14 @@ import { ExternalLink } from 'theme/components'
 import TextButton from 'components/Button/TextButton'
 
 export default function Footer() {
-  const theme = useTheme()
+  // const theme = useTheme()
 
   return (
     <HideOnMobile>
       <footer
-        style={{
-          height: theme.height.footer
-        }}
+      // style={{
+      //   height: theme.height.footer
+      // }}
       >
         <Box
           display="flex"

@@ -4,7 +4,7 @@ import StaEarn from 'assets/svg/sta_earn.svg'
 import StaLimit from 'assets/svg/sta_limit.svg'
 
 const Text = styled(Typography)({
-  color: '#798488',
+  color: '#808191',
   fontSize: '14px'
 })
 

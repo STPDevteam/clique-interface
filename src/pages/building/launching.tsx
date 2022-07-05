@@ -1,14 +1,13 @@
 import './launching.pc.less'
 
 import { useMemo } from 'react'
-import IconToken from '../../assets/images/icon-token.svg'
 import IconLaunching from '../../assets/images/icon-launching.svg'
 import IconDone from '../../assets/images/icon-launched.svg'
-import { Button } from 'antd'
 import { useHistory, useParams } from 'react-router-dom'
 import { useIsTransactionPending } from 'state/transactions/hooks'
 import { isDaoframeSite } from 'utils/dao'
 import { mycliqueUrl } from '../../constants'
+import Button from 'components/Button/Button'
 
 export default function Launching() {
   const history = useHistory()
@@ -26,9 +25,8 @@ export default function Launching() {
         <div className="state-launching">
           <div className="wrapper">
             <img className="outer" src={IconLaunching} />
-            <img className="inner" src={IconToken} />
+            <p style={{ position: 'absolute' }}>Launching Your DAO...</p>
           </div>
-          <p>Launching Your DAO...</p>
         </div>
       )}
       {isDone && (
@@ -36,7 +34,7 @@ export default function Launching() {
           <div className="wrapper">
             <img src={IconDone} />
             <Button
-              className="btn-common btn-03"
+              width="120px"
               onClick={() => {
                 if (isDaoframeSite()) {
                   window.open(mycliqueUrl)

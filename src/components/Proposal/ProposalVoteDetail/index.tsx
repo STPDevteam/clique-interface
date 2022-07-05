@@ -1,6 +1,5 @@
 import styles from './index.module.less'
-import { Button, Progress } from 'antd'
-import classNames from 'classnames'
+import { Progress } from 'antd'
 import { Box, Typography } from '@mui/material'
 import useModal from 'hooks/useModal'
 import VoteList from './VoteList'
@@ -37,13 +36,29 @@ export default function Index({
 
   return (
     <div className={styles['vote-details']}>
-      <Box display={'flex'} gap={20} alignItems={'center'} mb={10}>
-        <Typography variant="h6" fontSize={20}>
-          Results
-        </Typography>
-        <Typography>
-          ({minimumValidVotes?.toSignificant(6, { groupSeparator: ',' })} {minimumValidVotes?.token.symbol} required to
-          vote)
+      <Box display={'flex'} justifyContent="space-between">
+        <Box display={'flex'} gap={10} alignItems={'center'} mb={10}>
+          <Typography variant="h6" fontSize={16}>
+            Current Results
+          </Typography>
+          <Typography fontWeight={500} fontSize={12}>
+            ({minimumValidVotes?.toSignificant(6, { groupSeparator: ',' })} {minimumValidVotes?.token.symbol} required
+            to vote)
+          </Typography>
+        </Box>
+        <Typography
+          color={'#0049C6'}
+          fontWeight={500}
+          sx={{ cursor: 'pointer' }}
+          fontSize={13}
+          onClick={() =>
+            votingAddress &&
+            minimumValidVotes?.token &&
+            list.length &&
+            showModal(<VoteList token={minimumValidVotes.token} id={id} list={list} votingAddress={votingAddress} />)
+          }
+        >
+          View all votes ({totalVotes})
         </Typography>
       </Box>
       <div className={styles['vote-list']}>
@@ -55,24 +70,12 @@ export default function Index({
                 <p>
                   <ShowPer per={item.per} />
                 </p>
-                <p>{item.votes?.toSignificant(6, { groupSeparator: ',' })} Votes</p>
+                <p> - {item.votes?.toSignificant(6, { groupSeparator: ',' })} Votes</p>
               </div>
             </Box>
             <Progress percent={item.per * 100} showInfo={false} />
           </div>
         ))}
-        <Button
-          style={{ width: 'auto' }}
-          className={classNames('btn-common btn-02', styles['btn-view-all'])}
-          onClick={() =>
-            votingAddress &&
-            minimumValidVotes?.token &&
-            list.length &&
-            showModal(<VoteList token={minimumValidVotes.token} id={id} list={list} votingAddress={votingAddress} />)
-          }
-        >
-          View all votes ({totalVotes} Votes)
-        </Button>
       </div>
     </div>
   )

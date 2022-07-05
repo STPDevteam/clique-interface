@@ -1,6 +1,6 @@
 import '../building/review.pc.less'
 
-import { Button, Collapse, Table } from 'antd'
+import { Collapse, Table } from 'antd'
 import IconArrow from '../../assets/images/icon-arrow.svg'
 import { ReactComponent as EditIcon } from 'assets/svg/edit_icon.svg'
 import { Box, styled, Typography } from '@mui/material'
@@ -22,6 +22,7 @@ import OutlineButton from 'components/Button/OutlineButton'
 import { ChainListMap } from 'constants/chain'
 import { triggerSwitchChain } from 'utils/triggerSwitchChain'
 import { SUPPORT_CREATE_TOKEN_NETWORK } from '../../constants'
+import { BlackButton } from 'components/Button/Button'
 
 const Wrapper = styled('section')({
   '& p': {
@@ -175,7 +176,7 @@ export default function ReviewInformation({
             }
           >
             {distributionData && (
-              <Box padding={'20px 35px'} borderBottom={'0.5px solid #D8D8D8'} width={'100%'}>
+              <Box padding={'20px 35px'} width={'100%'}>
                 <Box padding={'0 30px'} borderBottom={'0.5px solid #D8D8D8'} paddingBottom={8}>
                   <Typography variant="h6">Reserved Tokens</Typography>
                 </Box>
@@ -205,9 +206,9 @@ export default function ReviewInformation({
         <OutlineButton width={'120px'} onClick={goBack}>
           Back
         </OutlineButton>
-        <Button style={{ width: 'auto' }} className="btn-common btn-01" disabled={!!createCheck} onClick={onCreate}>
-          Create token
-        </Button>
+        <BlackButton width="220px" height="56px" disabled={!!createCheck} onClick={onCreate}>
+          Create Token
+        </BlackButton>
         <Box width="120px" />
       </Box>
     </>

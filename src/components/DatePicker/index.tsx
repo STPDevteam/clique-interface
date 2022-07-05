@@ -26,8 +26,7 @@ export default function Index({ disabledPassTime, onChange, valueStamp, onBlur, 
         width: '100%',
         '&>div': {
           width: '100%',
-          background: '#FAFAFA',
-          boxShadow: 'inset 2px 2px 5px rgb(105 141 173 / 40%)',
+          background: '#F0F3F6',
           borderRadius: '8px',
           minHeight: 48,
           fontWeight: 500

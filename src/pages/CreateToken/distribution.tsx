@@ -1,6 +1,6 @@
 import '../building/config.pc.less'
 
-import { Input, Button, InputNumber, Tooltip } from 'antd'
+import { Input, InputNumber, Tooltip } from 'antd'
 import { ReactComponent as IconAdd } from '../../assets/images/icon-upload.svg'
 import { ReactComponent as IconDelete } from '../../assets/svg/icon-delete.svg'
 import { useCreateTokenDataCallback, useRemainderTokenAmount } from 'state/createToken/hooks'
@@ -21,6 +21,8 @@ import {
 } from '../building/function'
 import BigNumber from 'bignumber.js'
 import AlertError from 'components/Alert/index'
+import OutlineButton from 'components/Button/OutlineButton'
+import { BlackButton } from 'components/Button/Button'
 
 const MaxTag = styled('span')({
   display: 'inline-block',
@@ -101,7 +103,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
   return (
     <>
       <section className="config">
-        <Box mt={20} pb={15}>
+        <Box pb={15}>
           <Box mt={16} display={'grid'} gap={15}>
             <Box
               display={'grid'}
@@ -118,7 +120,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                 gap={10}
                 sx={{
                   '& p': {
-                    color: '#798488'
+                    color: '#808191'
                   }
                 }}
               >
@@ -238,10 +240,10 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                 </Box>
               ))}
             </Box>
-            <Button className="btn-common btn-add-more" disabled={distribution.length >= 100} onClick={addReservedMore}>
+            <OutlineButton width={'250px'} disabled={distribution.length >= 100} onClick={addReservedMore}>
               <IconAdd />
               Add More
-            </Button>
+            </OutlineButton>
           </Box>
         </Box>
         {!!verifyMsg && (
@@ -250,13 +252,13 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
           </Box>
         )}
       </section>
-      <Box className="btn-group" display={'flex'} justifyContent={'space-between'}>
-        <Button className="btn-common btn-04" onClick={goBack}>
+      <Box className="btn-group" display={'flex'} justifyContent={'center'} gap="40px">
+        <OutlineButton onClick={goBack} width="166px" height="56px">
           Back
-        </Button>
-        <Button className="btn-common btn-01" onClick={goNext} disabled={!!verifyMsg}>
+        </OutlineButton>
+        <BlackButton width="166px" height="56px" onClick={goNext} disabled={!!verifyMsg}>
           Next
-        </Button>
+        </BlackButton>
       </Box>
     </>
   )

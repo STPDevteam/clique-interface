@@ -1,7 +1,7 @@
 import '../building/rule.pc.less'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { InputNumber, Slider, Input, Button, Switch, Tooltip } from 'antd'
+import { InputNumber, Slider, Input, Switch, Tooltip } from 'antd'
 import { Box, Typography } from '@mui/material'
 import { CreateDaoDataRule } from 'state/building/actions'
 import { toFormatGroup } from 'utils/dao'
@@ -12,6 +12,8 @@ import BigNumber from 'bignumber.js'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import { useCrossBuildingDataCallback } from 'state/crossBuilding/hooks'
 import { useTokenByChain } from 'state/wallet/hooks'
+import { BlackButton } from 'components/Button/Button'
+import OutlineButton from 'components/Button/OutlineButton'
 
 type CreateDaoDataRuleKey = keyof CreateDaoDataRule
 
@@ -343,7 +345,12 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
         </div> */}
             <div className="input-item">
               <span className="label">Rules / Agreement</span>
-              <TextArea rows={5} value={rule.rules} onChange={e => updateRuleCall('rules', e.target.value)} />
+              <TextArea
+                rows={5}
+                placeholder="Rules / Agreement"
+                value={rule.rules}
+                onChange={e => updateRuleCall('rules', e.target.value)}
+              />
             </div>
           </Box>
         </Box>
@@ -354,13 +361,13 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
           </Box>
         )}
       </section>
-      <Box className="btn-group" display={'flex'} justifyContent={'space-between'}>
-        <Button className="btn-common btn-04" onClick={goBack}>
+      <Box className="btn-group" display={'flex'} justifyContent={'center'} gap="40px">
+        <OutlineButton onClick={goBack} width="166px" height="56px">
           Back
-        </Button>
-        <Button className="btn-common btn-01" onClick={goNext} disabled={!!verifyMsg}>
+        </OutlineButton>
+        <BlackButton width="166px" height="56px" onClick={goNext} disabled={!!verifyMsg}>
           Next
-        </Button>
+        </BlackButton>
       </Box>
     </>
   )

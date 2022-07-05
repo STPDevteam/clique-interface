@@ -12,11 +12,25 @@ interface Props {
   color?: string
   borderRadius?: string
   className?: string
+  fontWeight?: string
   style?: React.CSSProperties
 }
 
 export default function OutlineButton(props: Props) {
-  const { onClick, disabled, style, width, className, fontSize, color, primary, height, borderRadius, children } = props
+  const {
+    onClick,
+    disabled,
+    style,
+    width,
+    fontWeight,
+    className,
+    fontSize,
+    color,
+    primary,
+    height,
+    borderRadius,
+    children
+  } = props
   const theme = useTheme()
 
   return (
@@ -27,17 +41,16 @@ export default function OutlineButton(props: Props) {
       sx={{
         width: width || '100%',
         border: theme =>
-          `1px solid ${color ? color : primary ? theme.palette.primary.main : theme.palette.text.secondary}`,
-        fontSize,
-        fontWeight: primary ? '500' : '400',
-        height: height || 48,
+          `2px solid ${color ? color : primary ? theme.palette.primary.main : theme.palette.text.primary}`,
+        fontSize: fontSize || 16,
+        fontWeight: fontWeight || '500',
+        height: height || 50,
         color: primary ? theme.palette.primary.main : theme.palette.text.primary,
-        borderRadius: borderRadius ?? 1,
+        borderRadius: borderRadius ?? '16px',
         '&:hover': {
           color: primary ? theme.palette.primary.main : theme.palette.text.secondary,
           borderColor: primary ? theme.palette.primary.main : theme.palette.text.secondary,
-          transition: 'all 0.5s',
-          boxShadow: '5px 7px 13px rgb(174 174 174 / 60%), -3px -3px 8px rgb(255 255 255 / 80%)'
+          transition: 'all 0.5s'
         },
         '&:disabled': {
           opacity: theme.palette.action.disabledOpacity

@@ -3,7 +3,7 @@ import { ButtonBase, Theme, useTheme } from '@mui/material'
 import { SxProps } from '@mui/system'
 
 interface Props {
-  onClick?: () => void
+  onClick?: ((e: React.MouseEvent<HTMLButtonElement>) => void) | (() => void)
   width?: string
   height?: string
   backgroundColor?: string
@@ -13,35 +13,56 @@ interface Props {
   fontSize?: string | number
   classname?: string
   style?: React.CSSProperties & SxProps<Theme>
+  active?: boolean
+  disableRipple?: boolean
 }
 
 export default function Button(props: Props) {
-  const { onClick, disabled, style, width, height, fontSize, backgroundColor, color, children } = props
+  const { onClick, disabled, style, width, height, fontSize, backgroundColor, color, disableRipple } = props
   const theme = useTheme()
   return (
     <ButtonBase
+      disableRipple={disableRipple}
       onClick={onClick}
       disabled={disabled}
       sx={{
         width: width || '100%',
-        height: height || 48,
-        fontSize: fontSize || 16,
-        fontWeight: 500,
+        height: height || 50,
+        fontSize: fontSize || 14,
+        fontWeight: 700,
         transition: '.3s',
-        borderRadius: 1,
+        borderRadius: `${theme.shape.borderRadius}px`,
         backgroundColor: backgroundColor || theme.palette.primary.main,
         color: color || theme.palette.primary.contrastText,
         '&:hover': {
-          background: theme.palette.primary.main
+          backgroundColor: theme.palette.primary.dark
         },
         '&:disabled': {
-          opacity: 0.6,
-          backgroundColor: theme.palette.primary.main
+          backgroundColor: theme.palette.primary.light
         },
         ...style
       }}
     >
-      {children}
+      {props.children}
     </ButtonBase>
+  )
+}
+
+export function BlackButton({ style, ...props }: Props) {
+  const theme = useTheme()
+  return (
+    <Button
+      {...props}
+      style={{
+        backgroundColor: theme.palette.text.primary,
+        '&:hover': {
+          background: '#515151'
+        },
+        '&:disabled': {
+          backgroundColor: '#B9B9B9'
+        },
+        ...style
+      }}
+    />
   )
 }

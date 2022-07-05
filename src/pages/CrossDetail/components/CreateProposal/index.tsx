@@ -1,9 +1,9 @@
 import styles from '../../../DaoDetail/components/CreateProposal/index.module.less'
-import { Button, Input } from 'antd'
+import { Input } from 'antd'
 import { Box, Typography } from '@mui/material'
 import TextArea from 'antd/lib/input/TextArea'
 import OutlineButton from 'components/Button/OutlineButton'
-import MButton from 'components/Button/Button'
+import { BlackButton } from 'components/Button/Button'
 import DatePicker from 'components/DatePicker'
 import InputOptions from 'components/Input/InputOptions'
 import { ExternalDaoInfoProps } from 'hooks/useDAOInfo'
@@ -19,6 +19,7 @@ import { useCreateCrossProposalCallback } from 'hooks/useCreateCommunityProposal
 import { useCreateProposalSignData } from 'hooks/useBackedCrossServer'
 import { TokenAmount } from 'constants/token'
 import { commitErrorMsg } from 'utils/fetch/server'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 interface Props {
   onBack: () => void
   daoInfo: ExternalDaoInfoProps | undefined
@@ -118,44 +119,44 @@ export default function Index(props: Props) {
   const getActions = useMemo(() => {
     if (!account) {
       return (
-        <MButton width="233px" height="48px" style={{ margin: 'auto' }} onClick={toggleWalletModal}>
+        <BlackButton width="233px" height="48px" style={{ margin: 'auto' }} onClick={toggleWalletModal}>
           Connect Wallet
-        </MButton>
+        </BlackButton>
       )
     }
     if (!title.trim()) {
       return (
-        <MButton width="233px" height="48px" style={{ margin: 'auto' }} disabled>
+        <BlackButton width="233px" height="48px" style={{ margin: 'auto' }} disabled>
           Title required
-        </MButton>
+        </BlackButton>
       )
     }
     if (!startTime) {
       return (
-        <MButton width="233px" height="48px" style={{ margin: 'auto' }} disabled>
+        <BlackButton width="233px" height="48px" style={{ margin: 'auto' }} disabled>
           Start time required
-        </MButton>
+        </BlackButton>
       )
     }
     if (!endTime) {
       return (
-        <MButton width="233px" height="48px" style={{ margin: 'auto' }} disabled>
+        <BlackButton width="233px" height="48px" style={{ margin: 'auto' }} disabled>
           End time required
-        </MButton>
+        </BlackButton>
       )
     }
     if (endTime <= startTime) {
       return (
-        <MButton width="100%" height="48px" style={{ margin: 'auto' }} disabled>
+        <BlackButton width="100%" height="48px" style={{ margin: 'auto' }} disabled>
           Start time must be less than end time
-        </MButton>
+        </BlackButton>
       )
     }
     if (option.filter(i => i.trim()).length < 2) {
       return (
-        <MButton width="100%" height="48px" style={{ margin: 'auto' }} disabled>
+        <BlackButton width="100%" height="48px" style={{ margin: 'auto' }} disabled>
           Minimum two options
-        </MButton>
+        </BlackButton>
       )
     }
 
@@ -165,14 +166,14 @@ export default function Index(props: Props) {
       usrBalance?.lessThan(daoInfo?.rule?.minimumCreateProposal)
     ) {
       return (
-        <MButton width="233px" height="48px" style={{ margin: 'auto' }} disabled>
+        <BlackButton width="233px" height="48px" style={{ margin: 'auto' }} disabled>
           Balance Insufficient
-        </MButton>
+        </BlackButton>
       )
     }
 
     return (
-      <MButton
+      <BlackButton
         width="233px"
         height="48px"
         style={{ margin: 'auto' }}
@@ -189,7 +190,7 @@ export default function Index(props: Props) {
         }
       >
         Create a Proposal
-      </MButton>
+      </BlackButton>
     )
   }, [
     account,
@@ -206,12 +207,21 @@ export default function Index(props: Props) {
 
   return (
     <div className={styles.container}>
-      <Button className={styles['btn-back']} onClick={onBack}>
-        Back
-      </Button>
+      <Box>
+        <Typography
+          sx={{ cursor: 'pointer' }}
+          fontWeight={500}
+          mb={20}
+          display={'inline-flex'}
+          onClick={onBack}
+          alignItems="center"
+        >
+          <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>All Proposals
+        </Typography>
+      </Box>
       <p className={styles.title}>Create Proposal</p>
       <Box display={'grid'} gridTemplateColumns={'1fr 1fr'} className={styles.form}>
-        <Box padding={'0 41px'} display={'grid'} gap={10} sx={{ borderRight: '1px dashed #3898FC' }}>
+        <Box display={'grid'} gap={10}>
           <Box className="input-item">
             <span className="label">Title</span>
             <Input placeholder="" value={title} maxLength={120} onChange={e => setTitle(e.target.value)} />
@@ -281,16 +291,16 @@ export default function Index(props: Props) {
               />
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} mb={10}>
-              <Typography>Your balance</Typography>
-              <Typography>
+              <Typography fontWeight={500}>Your balance</Typography>
+              <Typography fontWeight={500}>
                 {usrBalance ? usrBalance?.toSignificant(6, { groupSeparator: ',' }) : '-'} {daoInfo?.token?.symbol}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} alignItems="center" mb={10}>
-              <Typography marginRight={'10px'} maxWidth="80%">
+              <Typography marginRight={'10px'} fontWeight={500} maxWidth="80%">
                 Minimum holding required to create proposal
               </Typography>
-              <Typography>
+              <Typography fontWeight={500} textAlign="right">
                 {daoInfo?.rule?.minimumCreateProposal
                   ? daoInfo?.rule?.minimumCreateProposal.toSignificant(6, { groupSeparator: ',' })
                   : '-'}{' '}

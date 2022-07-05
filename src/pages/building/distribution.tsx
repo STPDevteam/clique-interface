@@ -246,7 +246,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
           <Box display={'flex'} justifyContent={'space-between'} gap={15}>
             <Box>
               <Typography variant="h6">Reserved Tokens</Typography>
-              <Typography color={'#798488'} fontSize={12}>
+              <Typography color={'#808191'} fontSize={12}>
                 Set reserved token portion and distribution schedule
               </Typography>
             </Box>
@@ -272,7 +272,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                   gap={10}
                   sx={{
                     '& p': {
-                      color: '#798488'
+                      color: '#808191'
                     }
                   }}
                 >
@@ -423,7 +423,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
           <Box display={'flex'} justifyContent={'space-between'} gap={15}>
             <Box>
               <Typography variant="h6">Whitelist sale</Typography>
-              <Typography color={'#798488'} fontSize={12}>
+              <Typography color={'#808191'} fontSize={12}>
                 Setup a whitelist sale with allocation and unique price. Participants are able to redeem their funds if
                 the tokens are not sold out by the end of the event.
               </Typography>
@@ -455,7 +455,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                   gap={10}
                   sx={{
                     '& p': {
-                      color: '#798488'
+                      color: '#808191'
                     }
                   }}
                 >
@@ -642,7 +642,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
               <Box display={'flex'} justifyContent={'space-between'} gap={15} mt={5}>
                 <Box display={'flex'} gap={25}>
                   <Box display={'grid'} gap={5}>
-                    <Typography color={'#798488'}>Offering Amount</Typography>
+                    <Typography color={'#808191'}>Offering Amount</Typography>
                     <Tooltip
                       placement="top"
                       title={
@@ -694,7 +694,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                     </Tooltip>
                   </Box>
                   <Box display={'grid'} gap={5}>
-                    <Typography color={'#798488'}>Price</Typography>
+                    <Typography color={'#808191'}>Price</Typography>
                     <Input
                       style={{ width: 130 }}
                       className="input-common"
@@ -716,7 +716,7 @@ export default function Distribution({ goNext, goBack }: { goNext: () => void; g
                   </Box>
                 </Box>
                 <Box display={'grid'} gap={5}>
-                  <Typography color={'#798488'}>Purchase limit</Typography>
+                  <Typography color={'#808191'}>Purchase limit</Typography>
                   <Box display={'flex'} gap={8}>
                     <Input
                       style={{ width: 80 }}

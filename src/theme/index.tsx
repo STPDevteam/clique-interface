@@ -1,4 +1,4 @@
-import { createTheme, styled, ThemeProvider as MuiThemeProvider, StyledEngineProvider } from '@mui/material/styles'
+import { createTheme, styled, ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 
 interface Gradient {
   gradient1: string
@@ -7,7 +7,10 @@ interface Gradient {
 interface Height {
   header: string
   mobileHeader: string
-  footer: string
+}
+interface Width {
+  sidebar: string
+  maxContent: string
 }
 
 interface TextColor {
@@ -16,6 +19,7 @@ interface TextColor {
   text3: string
   text4: string
   text5: string
+  primary: string
 }
 
 interface BgColor {
@@ -24,7 +28,6 @@ interface BgColor {
   bg3: string
   bg4: string
   bg5: string
-  bg6: string
 }
 
 declare module '@mui/material/styles' {
@@ -33,70 +36,62 @@ declare module '@mui/material/styles' {
     bgColor: BgColor
     gradient: Gradient
     height: Height
-  }
-  interface DeprecatedThemeOptions {
-    textColor: TextColor
-    bgColor: BgColor
-    gradient: Gradient
-    height: Height
+    width: Width
   }
 }
 
 declare module '@mui/material/styles/createTheme' {
-  interface DeprecatedThemeOptions {
-    textColor: TextColor
-    bgColor: BgColor
-    gradient: Gradient
-    height: Height
-  }
   interface ThemeOptions {
     textColor: TextColor
     bgColor: BgColor
     gradient: Gradient
     height: Height
+    width: Width
   }
   interface Theme {
     textColor: TextColor
     bgColor: BgColor
     gradient: Gradient
     height: Height
+    width: Width
   }
 }
 
 export const theme = {
   palette: {
     primary: {
-      light: '#16161650',
-      main: '#3898fc',
-      dark: '#000000',
-      contrastText: '#FFFFFF'
+      light: '#3F8CFF',
+      main: '#0049C6',
+      dark: '#002685',
+      contrastText: '#ffffff'
     },
     secondary: {
-      light: '#DEDEDF70',
-      main: ' #DEDEDF',
-      dark: '#16161650',
-      contrastText: '#00000080'
+      light: '#FFEBF6',
+      main: '#FFA2C0',
+      dark: '#FFB7F5',
+      contrastText: '#ffffff'
     },
     error: {
-      main: '#EB1312'
+      main: '#C60C00',
+      light: '#FA0E0E10'
     },
     warning: {
-      main: '#9867FF'
+      main: '#FFCE73'
     },
     info: {
-      main: '#9867FF'
+      main: '#F0B90B'
     },
     success: {
-      main: '#3AC261'
+      main: '#31B047'
     },
     background: {
-      default: '#FFFFFF',
-      paper: '#F3F3F3'
+      default: '#F5F5F5',
+      paper: '#FFFFFF'
     },
     text: {
-      primary: '#161616',
-      secondary: '#3898fc',
-      disabled: '#999999'
+      primary: '#1B1D21',
+      secondary: '#808191',
+      disabled: '#E4E4E4'
     },
     action: {
       disabledOpacity: 0.8
@@ -109,57 +104,80 @@ export const theme = {
     }
   },
   textColor: {
-    text1: '#FFFFFF',
-    text2: '#CCCCCC',
-    text3: '#999999',
-    text4: '#727272',
-    text5: '#333333'
+    text1: '#252525',
+    text2: '#333333',
+    text3: '#727272',
+    text4: '#999999',
+    text5: '#CCCCCC',
+    primary: '#31B047'
   },
   bgColor: {
-    bg1: '#000000',
-    bg2: '#191919',
+    bg1: '#F7F7F7',
+    bg2: '#E4E4E4',
     bg3: '#252525',
     bg4: '#303030',
-    bg5: '#A1A1A1',
-    bg6: '#f3f3f3'
+    bg5: '#A1A1A1'
   },
   gradient: {
-    gradient1: '#000000 linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%)'
+    gradient1: '#ffffff linear-gradient(154.62deg, #77C803 9.44%, #28A03E 59.25%);'
   },
   height: {
-    header: '100px',
-    mobileHeader: '77px',
-    footer: '60px'
+    header: '112px',
+    mobileHeader: '51px'
+  },
+  width: {
+    sidebar: '250px',
+    maxContent: '1110px'
   },
   shape: {
     border: '1px solid',
-    borderRadius: 10
+    borderRadius: 16
   },
   spacing: (factor: number) => `${1 * factor}px`
+  // gray: {
+  //   main: '#333333',
+  //   dark: '#262626',
+  // },
 }
 
 export const override: any = {
   MuiCssBaseline: {
     styleOverrides: {
-      body: { backgroundColor: theme.palette.background.default, fontSize: 16 },
-      'html, input, textarea, button': {
-        fontFamily: 'Poppins, sans-serif',
+      body: {
+        backgroundColor: theme.palette.background.default,
+        fontSize: 16,
+        overflow: 'auto!important',
+        paddingRight: '0px!important'
+      },
+      'html, input, textarea, button, body': {
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
         fontDisplay: 'fallback'
       },
       '@supports (font-variation-settings: normal)': {
-        'html, input, textarea, button ': {
-          fontFamily: 'Poppins, sans-serif',
+        'html, input, textarea, button, body': {
+          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
           fontDisplay: 'fallback'
         }
+      }
+    }
+  },
+  MuiButtonBase: {
+    styleOverrides: {
+      root: {
+        fontSize: 12,
+        lineHeight: '20px',
+        fontWeight: 500,
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif!important'
       }
     }
   },
   MuiButton: {
     styleOverrides: {
       root: {
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif!important',
         color: theme.palette.primary.contrastText,
         fontWeight: 500,
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: `${theme.shape.borderRadius}px`,
         transition: '.3s',
         textTransform: 'none' as const
       },
@@ -237,28 +255,55 @@ export const override: any = {
   MuiTypography: {
     styleOverrides: {
       root: {
-        fontFamily: 'Poppins, sans-serif'
+        lineHeight: 1.2,
+        fontFamily: 'Poppins, -apple-system, BlinkMacSystemFont, sans-serif!important'
+      },
+      h1: {
+        fontSize: 56,
+        lineHeight: '64px',
+        fontWeight: 600
+      },
+      h2: {
+        fontSize: 48,
+        lineHeight: '72px',
+        fontWeight: 600
+      },
+      h3: {
+        fontSize: 40,
+        lineHeight: '60px',
+        fontWeight: 600
+      },
+      h4: {
+        fontSize: 32,
+        lineHeight: '48px',
+        fontWeight: 500
+      },
+      h5: {
+        fontSize: 24,
+        lineHeight: '32px',
+        fontWeight: 500
+      },
+      h6: {
+        fontSize: 14,
+        lineHeight: '24px',
+        fontWeight: 500
       },
       body1: {
         fontSize: 14,
-        color: '#767676'
+        lineHeight: '24px',
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif!important'
       },
       body2: {
-        fontSize: 12
-      },
-      h5: {
-        fontSize: 20,
-        color: '#22304A'
-      },
-      h6: {
-        fontSize: 16
+        fontSize: 13,
+        lineHeight: '24px',
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif!important'
       },
       caption: {
-        fontSize: 12,
-        color: theme.textColor.text3
-      },
-      subtitle1: {},
-      subtitle2: {}
+        fontSize: 13,
+        lineHeight: '18px',
+        fontWeight: 500,
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif!important'
+      }
     }
   }
 }
@@ -281,6 +326,21 @@ export const ShowOnMobile = styled('div', {
 }))
 
 export default createTheme({
+  typography: {
+    fontFamily: [
+      'Inter, sans-serif',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"'
+    ].join(',')
+  },
   ...theme,
   components: {
     ...override
@@ -288,9 +348,5 @@ export default createTheme({
 })
 
 export function ThemeProvider({ children, theme }: any) {
-  return (
-    <StyledEngineProvider injectFirst>
-      <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
-    </StyledEngineProvider>
-  )
+  return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
 }

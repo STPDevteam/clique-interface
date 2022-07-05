@@ -39,9 +39,7 @@ const MaxBtn = styled(Box)({
   height: 24,
   fontSize: 12,
   padding: '2px 16px',
-  cursor: 'pointer',
-  boxShadow: 'inset -3px -3px 4px rgba(255, 255, 255, 0.88), inset 2px 2px 7px rgba(73, 103, 134, 0.36)',
-  filter: 'drop-shadow(-1px -1px 4px #FFFFFF) drop-shadow(0.5px 0.5px 0.5px rgba(0, 0, 0, 0.16))'
+  cursor: 'pointer'
 })
 const StyledTabBox = styled(Box)({
   margin: '10px auto 15px',
@@ -49,7 +47,6 @@ const StyledTabBox = styled(Box)({
   justifyContent: 'center',
   alignItems: 'center',
   borderRadius: '8px',
-  boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)',
   '& .item': {
     width: 115,
     display: 'flex',

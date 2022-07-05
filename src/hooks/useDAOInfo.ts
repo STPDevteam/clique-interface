@@ -394,6 +394,7 @@ export function useMultiDaoBaseInfo(
   data: {
     daoAddress: string | undefined
     daoName: string | undefined
+    daoDesc: string | undefined
     votingAddress: string | undefined
     token: Token | undefined
     logo: string | undefined
@@ -401,6 +402,9 @@ export function useMultiDaoBaseInfo(
 } {
   const daoNameRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'name')
   const daoNames = useMemo(() => daoNameRes.map(item => item.result?.[0]), [daoNameRes])
+
+  const daoDescsRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'name')
+  const daoDescs = useMemo(() => daoDescsRes.map(item => item.result?.[0]), [daoDescsRes])
 
   const votingAddressRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'voting')
   const votingAddresss: (string | undefined)[] = useMemo(() => votingAddressRes.map(item => item.result?.[0]), [
@@ -419,12 +423,13 @@ export function useMultiDaoBaseInfo(
       return {
         daoAddress: addresss[index],
         daoName: item,
+        daoDesc: daoDescs[index],
         votingAddress: votingAddresss[index],
         token: tokens ? tokens[index] : undefined,
         logo: tokenLogos ? tokenLogos[index] : ''
       }
     })
-  }, [addresss, daoNames, tokens, votingAddresss, tokenLogos])
+  }, [addresss, daoNames, tokens, votingAddresss, tokenLogos, daoDescs])
 
   return {
     loading: daoNameRes?.[0]?.loading || false,

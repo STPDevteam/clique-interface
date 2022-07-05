@@ -10,7 +10,7 @@ import Image from 'components/Image'
 import { useActiveWeb3React } from 'hooks'
 import { isMycliqueSite } from 'utils/dao'
 import { daoframeUrl } from '../../../constants'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 
 export default function Index() {
   const location = useLocation()
@@ -19,6 +19,7 @@ export default function Index() {
   const createdAddressList = useCreatedDao(account || undefined)
   const { data: daoBaseInfoList } = useMultiDaoBaseInfo(createdAddressList || [])
   const daoTypes = useGetDaoTypes(createdAddressList)
+  const theme = useTheme()
 
   // useParams does not take effect on this component
   // this is an alternative plan
@@ -67,28 +68,43 @@ export default function Index() {
   return (
     <nav>
       {daoBaseInfoList.map((item, index) => (
-        <Button
-          key={index}
-          className={`btn-dao ${item.daoAddress === activeAddress ? 'active' : ''}`}
-          onClick={() => {
-            if (daoTypes.loading) return
-            if (daoTypes.data[index] === DaoTypeProp.ExternalDao) {
-              chooseExternalDetail(item.daoAddress)
-            } else if (daoTypes.data[index] === DaoTypeProp.RawDao) {
-              chooseDao(item.daoAddress)
-            } else {
-              chooseCrossDao(item.daoAddress)
-            }
-          }}
-        >
-          <Image src={item.logo || IconDao} width={48} height={48} style={{ borderRadius: '50%' }} />
-        </Button>
+        <Box key={index}>
+          <Button
+            className={`btn-dao ${item.daoAddress === activeAddress ? 'active' : ''}`}
+            onClick={() => {
+              if (daoTypes.loading) return
+              if (daoTypes.data[index] === DaoTypeProp.ExternalDao) {
+                chooseExternalDetail(item.daoAddress)
+              } else if (daoTypes.data[index] === DaoTypeProp.RawDao) {
+                chooseDao(item.daoAddress)
+              } else {
+                chooseCrossDao(item.daoAddress)
+              }
+            }}
+          >
+            <Image src={item.logo || IconDao} width={40} height={40} style={{ borderRadius: '50%' }} />
+          </Button>
+          <Typography
+            color={theme.palette.text.secondary}
+            fontSize={12}
+            fontWeight={500}
+            textAlign={'center'}
+            textOverflow="ellipsis"
+            noWrap
+            mt="-20px"
+          >
+            {item.daoName}
+          </Typography>
+        </Box>
       ))}
+      {!!daoBaseInfoList.length && (
+        <Box height={'1px'} mt="10px" sx={{ backgroundColor: theme.palette.text.disabled }}></Box>
+      )}
       <Box mb={'50px'}>
         <Button className="btn-add" onClick={createDao}>
           <img src={IconAdd} />
         </Button>
-        <Typography fontSize={12} fontWeight={500} textAlign={'center'} mt="-10px">
+        <Typography color={theme.palette.text.secondary} fontSize={12} fontWeight={500} textAlign={'center'} mt="-20px">
           Add DAO
         </Typography>
       </Box>

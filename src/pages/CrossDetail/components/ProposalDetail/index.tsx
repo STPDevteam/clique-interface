@@ -1,5 +1,4 @@
 import styles from '../../../DaoDetail/components/ProposalDetail/index.module.less'
-import { Button } from 'antd'
 import ProposalContent from '../../../../components/Proposal/ProposalContent'
 import ProposalVoteDetail from '../../../../components/Proposal/ProposalVoteDetail'
 // import CastVote from '../../../../components/Proposal/CastVote'
@@ -8,7 +7,7 @@ import OtherUserDetail from '../../../../components/Proposal/OtherUserDetail'
 // import ExecutableContent from '../../../../components/Proposal/ExecutableContent'
 // import ExecutableVoteResult from '../../../../components/Proposal/ExecutableVoteResult'
 import Vote from '../../../../components/Proposal/Vote'
-import { Grid } from '@mui/material'
+import { Box, Grid, Typography } from '@mui/material'
 import { ProposalInfoProp, useVoteResults, useVotingOptionsById } from 'hooks/useVoting'
 // import { ProposalType } from 'hooks/useCreateCommunityProposalCallback'
 import { useCrossVoteCallback } from 'hooks/useVoteCallback'
@@ -27,6 +26,7 @@ import TimelineStatus from 'pages/DaoDetail/components/ProposalDetail/TimelineSt
 import { getCrossVotingSign } from 'utils/fetch/server'
 import { useCrossBalanceOfAt, useCrossProposalBlockNumber } from 'hooks/useBackedCrossServer'
 import { useTagCompletedTx } from 'state/transactions/hooks'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 // import { useVotingSignData } from 'hooks/useBackedCrossServer'
 
 export default function Index({
@@ -166,9 +166,18 @@ export default function Index({
 
   return (
     <div className={styles['proposal-detail-container']}>
-      <Button className={styles['btn-back']} onClick={onBack}>
-        Back
-      </Button>
+      <Box>
+        <Typography
+          sx={{ cursor: 'pointer' }}
+          fontWeight={500}
+          mb={40}
+          display={'inline-flex'}
+          onClick={onBack}
+          alignItems="center"
+        >
+          <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>All Proposals
+        </Typography>
+      </Box>
 
       <Grid container spacing={24}>
         <Grid item lg={8} xs={12} className={styles['left-part']}>

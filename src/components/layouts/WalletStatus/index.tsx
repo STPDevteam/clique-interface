@@ -10,12 +10,14 @@ import { TransactionDetails } from 'state/transactions/reducer'
 import { useWalletModalToggle } from 'state/application/hooks'
 import Button from 'components/Button/Button'
 import OutlineButton from 'components/Button/OutlineButton'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 import { useHistory } from 'react-router-dom'
 import NetworkSelect from '../../Header/NetworkSelect'
 import { isDaoframeSite } from 'utils/dao'
-import CreatorModal from './CreatorModal'
-import useModal from 'hooks/useModal'
+// import CreatorModal from './CreatorModal'
+// import useModal from 'hooks/useModal'
+import Image from 'components/Image'
+import { ChainListMap } from 'constants/chain'
 
 // we want the latest one to come first, so return negative if a is after b
 function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
@@ -23,12 +25,13 @@ function newTransactionsFirst(a: TransactionDetails, b: TransactionDetails) {
 }
 
 export default function Index() {
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
   const { ENSName } = useENSName(account ?? undefined)
   const allTransactions = useAllTransactions()
   const toggleWalletModal = useWalletModalToggle()
   const history = useHistory()
-  const { showModal, hideModal } = useModal()
+  // const { showModal, hideModal } = useModal()
+  const theme = useTheme()
 
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)
@@ -56,33 +59,32 @@ export default function Index() {
               Staking
             </Typography>
           </OutlineButton> */}
-          {/* <NetworkSelect /> */}
+          <NetworkSelect />
           {!isDaoframeSite() && (
             <>
-              <OutlineButton width={140} className="hide">
-                <Typography variant="h6" onClick={() => showModal(<CreatorModal hide={hideModal} />)}>
+              <OutlineButton primary width={140}>
+                {/* <Typography variant="h6" onClick={() => showModal(<CreatorModal hide={hideModal} />)}> */}
+                <Typography variant="h6" onClick={() => history.push('/create')}>
                   Creator
                 </Typography>
               </OutlineButton>
-              <OutlineButton width={140}>
+              <OutlineButton primary width={140}>
                 <Typography variant="h6" onClick={() => history.push('/my_wallet')}>
                   My Wallet
                 </Typography>
               </OutlineButton>
             </>
           )}
-          <NetworkSelect />
-          <OutlineButton
-            onClick={toggleWalletModal}
-            width={160}
-            style={{
-              background: '#FAFAFA',
-              boxShadow: 'inset 2px 2px 5px rgba(105, 141, 173, 0.5)',
-              border: 'none'
-            }}
-          >
-            <Typography fontWeight={500} color={'#3898FC'}>
-              {shortenAddress(account)}
+          <OutlineButton primary onClick={toggleWalletModal} width={160}>
+            <Image src={ChainListMap[chainId || 1].logo} style={{ height: 20 }} />
+            <Typography
+              fontWeight={700}
+              sx={{
+                fontSize: { xs: 9, sm: 14 },
+                color: theme.palette.text.primary
+              }}
+            >
+              {ENSName || shortenAddress(account)}
             </Typography>
           </OutlineButton>
         </Box>

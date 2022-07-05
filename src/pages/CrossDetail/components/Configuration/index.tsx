@@ -238,16 +238,20 @@ export default function Configuration({
 
   return (
     <section className="configuration">
-      <h1>Configuration</h1>
+      <h1 style={{ fontSize: 16 }}>Configuration</h1>
       <Box mb={20} mt={20}>
-        <Typography>Governance contract address</Typography>
-        <Typography variant="h6" fontSize={14}>
+        <Typography fontWeight={500} color="#808191">
+          Governance contract address
+        </Typography>
+        <Typography variant="h6" fontSize={14} fontWeight={500}>
           {votingAddress}
         </Typography>
       </Box>
       <Box mb={20} mt={20}>
-        <Typography>Token Contract Address</Typography>
-        <Typography variant="h6" fontSize={14}>
+        <Typography fontWeight={500} color="#808191">
+          Token Contract Address
+        </Typography>
+        <Typography variant="h6" fontSize={14} fontWeight={500}>
           {totalSupply.token.address}
         </Typography>
       </Box>

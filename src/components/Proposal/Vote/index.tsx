@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import styles from './index.module.less'
-import { Radio, Space, Button } from 'antd'
-import classNames from 'classnames'
+import { Radio, Space } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio'
 import { ProposalInfoProp } from 'hooks/useVoting'
 import { ProposalStatusProp } from 'hooks/useCreateCommunityProposalCallback'
@@ -11,6 +10,7 @@ import { TokenAmount } from 'constants/token'
 import Confirm from './confirm'
 import useModal from 'hooks/useModal'
 import { Dots } from 'theme/components'
+import { BlackButton } from 'components/Button/Button'
 
 export default function Index({
   detail,
@@ -51,37 +51,24 @@ export default function Index({
       return null
     }
     if (isVoted) {
-      return (
-        <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
-          You voted
-        </Button>
-      )
+      return <BlackButton disabled>You voted</BlackButton>
     }
     if (isVoting) {
       return (
-        <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
+        <BlackButton disabled>
           Voting
           <Dots />
-        </Button>
+        </BlackButton>
       )
     }
     if (!balanceAt || !minimumVote || minimumVote.greaterThan(balanceAt)) {
-      return (
-        <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
-          You votes insufficient
-        </Button>
-      )
+      return <BlackButton disabled>You votes insufficient</BlackButton>
     }
     if (voteIndex === undefined) {
-      return (
-        <Button className={classNames(styles['btn-vote'], 'btn-common btn-01')} disabled>
-          Vote Now
-        </Button>
-      )
+      return <BlackButton disabled>Vote Now</BlackButton>
     }
     return (
-      <Button
-        className={classNames(styles['btn-vote'], 'btn-common btn-01')}
+      <BlackButton
         onClick={() => {
           showModal(
             <Confirm
@@ -94,7 +81,7 @@ export default function Index({
         }}
       >
         Vote Now
-      </Button>
+      </BlackButton>
     )
   }, [balanceAt, detail.status, hideModal, isVoted, isVoting, list, minimumVote, onVote, showModal, voteIndex])
 

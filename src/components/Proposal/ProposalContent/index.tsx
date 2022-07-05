@@ -1,3 +1,4 @@
+import { Box } from '@mui/material'
 import { ProposalInfoProp } from 'hooks/useVoting'
 import { timeStampToFormat } from 'utils/dao'
 import ProposalStatus from '../ProposalStatus'
@@ -8,11 +9,15 @@ export default function Index({ detail }: { detail: ProposalInfoProp }) {
     <div className={styles['details']}>
       <div className={styles['details-header']}>
         <div className={styles['details-header-name']}>
-          <p className={styles['start-time']}>Started at {timeStampToFormat(detail.startTime)}</p>
           <p className={styles['title']}>{detail.title}</p>
-          <p className={styles['end-time']}>Ended at {timeStampToFormat(detail.endTime)}</p>
         </div>
-        <ProposalStatus status={detail.status} />
+        <Box display={'flex'} justifyContent="space-between" alignItems="center">
+          <Box display={'flex'} alignItems="center">
+            <p className={styles['start-time']}>Started at {timeStampToFormat(detail.startTime)}</p>
+            <ProposalStatus status={detail.status} />
+          </Box>
+          <p className={styles['end-time']}>Ended at {timeStampToFormat(detail.endTime)}</p>
+        </Box>
       </div>
       <p
         className={styles['text']}

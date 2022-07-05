@@ -17,18 +17,15 @@ export default function NetworkSelect() {
   return (
     <Box>
       <Select
-        defaultValue={chainId ?? ''}
-        value={chainId ?? ''}
-        height={isDownSm ? '24px' : '36px'}
+        defaultValue={chainId}
+        value={chainId}
+        width={isDownSm ? 'max-content' : '180px'}
+        height={isDownSm ? '36px' : '50px'}
         style={{
-          background: 'transparent',
-          border: '1px solid #3898FC',
-          height: 48,
-          boxShadow: '5px 7px 13px rgba(174, 174, 174, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.8)',
-          '& .Mui-disabled.MuiInputBase-input': {
+          '& .Mui-disabled.MuiSelect-select.MuiInputBase-input': {
             paddingRight: isDownSm ? 0 : 10,
-            color: 'rgba(174, 174, 174, 0.3)',
-            WebkitTextFillColor: 'rgba(174, 174, 174, 0.3)'
+            color: theme => theme.palette.text.primary,
+            WebkitTextFillColor: theme => theme.palette.text.primary
           }
         }}
       >

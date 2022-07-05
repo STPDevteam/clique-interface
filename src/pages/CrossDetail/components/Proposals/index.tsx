@@ -1,7 +1,5 @@
-import { useState } from 'react'
-import { Tabs, Tooltip, Pagination, Spin, Empty } from 'antd'
+import { Tooltip, Pagination, Spin, Empty } from 'antd'
 import styles from '../../../DaoDetail/components/Proposals/index.module.less'
-const { TabPane } = Tabs
 import ProposalStatus from '../../../../components/Proposal/ProposalStatus'
 import { Box, Grid } from '@mui/material'
 import { ExternalDaoInfoProps } from 'hooks/useDAOInfo'
@@ -10,7 +8,7 @@ import { ExternalDaoInfoProps } from 'hooks/useDAOInfo'
 import { timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { ProposalInfoProp, useCrossProposalList } from 'hooks/useVoting'
 import { ProposalStatusProp } from 'hooks/useCreateCommunityProposalCallback'
-import Button from 'components/Button/Button'
+import { BlackButton } from 'components/Button/Button'
 
 interface IProps {
   onSelect: (proposal: ProposalInfoProp) => void
@@ -20,9 +18,7 @@ interface IProps {
 export default function Index(props: IProps) {
   const { onSelect, onCreate, daoInfo } = props
   // const { account } = useActiveWeb3React()
-  const TABS = ['ALL']
   // const TABS = ['ALL', 'Executable', 'Open', 'Closed']
-  const [currentTab, setCurrentTab] = useState(TABS[0])
   const { list: proposalList, page: proposalListPage, loading: proposalListLoading } = useCrossProposalList(
     daoInfo?.votingAddress
   )
@@ -37,12 +33,6 @@ export default function Index(props: IProps) {
   return (
     <div className={styles['proposals-container']}>
       <Box className={styles['header']} justifyContent={'space-between'} display={'flex'} flexWrap={'wrap'} gap={10}>
-        <div className={styles['header-info']}>
-          <p className={styles['title']}>Proposal</p>
-          {/* <p className={styles['text']}>
-            Community proposals are a great way to see how the community feels about your ideas
-          </p> */}
-        </div>
         <Tooltip
           placement="top"
           title={`Minimum create proposal: ${
@@ -51,23 +41,11 @@ export default function Index(props: IProps) {
               : '-'
           } ${daoInfo?.token?.symbol}`}
         >
-          <Button style={{ width: 190, height: 48 }} onClick={onCreate}>
-            Create A Proposal
-          </Button>
+          <BlackButton style={{ width: 190, height: 48 }} onClick={onCreate}>
+            + Create A Proposal
+          </BlackButton>
         </Tooltip>
       </Box>
-
-      <Tabs
-        defaultActiveKey={currentTab}
-        onChange={key => {
-          setCurrentTab(key)
-        }}
-        className={styles['custom-tabs']}
-      >
-        {TABS.map(tab => (
-          <TabPane tab={tab} key={tab}></TabPane>
-        ))}
-      </Tabs>
 
       {proposalListLoading && (
         <Box display={'flex'} justifyContent={'center'} width={'100%'} mt={30}>
@@ -84,7 +62,7 @@ export default function Index(props: IProps) {
           proposalList.map(
             (item, index) =>
               item && (
-                <Grid item md={12} lg={6} key={index}>
+                <Grid item md={6} lg={6} xs={12} key={index}>
                   <Box
                     display={'flex'}
                     flexDirection={'column'}

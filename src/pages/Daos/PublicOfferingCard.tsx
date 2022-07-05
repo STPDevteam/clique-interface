@@ -24,7 +24,7 @@ const StyledText = styled(Typography)({
 
 function ShowStatus({ status }: { status: DaoOpenStatus }) {
   const color =
-    status === DaoOpenStatus.COMING_SOON ? '#798488' : status === DaoOpenStatus.ACTIVE ? '#30D62C' : '#FF5F5B'
+    status === DaoOpenStatus.COMING_SOON ? '#808191' : status === DaoOpenStatus.ACTIVE ? '#30D62C' : '#FF5F5B'
   return (
     <Box
       sx={{
@@ -103,7 +103,7 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
             {daoStatus?.typeStatus}
           </Typography>
         ) : (
-          <Typography variant="body2" color={'#798488'}>
+          <Typography variant="body2" color={'#808191'}>
             {daoStatus?.typeStatus}
           </Typography>
         )}
@@ -124,7 +124,7 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
           >
             {daoInfo?.daoName || '--'}
           </Typography>
-          <Typography fontWeight={500} fontSize={14} color="#798488" sx={{ whiteSpace: 'nowrap' }}>
+          <Typography fontWeight={500} fontSize={14} color="#808191" sx={{ whiteSpace: 'nowrap' }}>
             {daoInfo?.token?.symbol || '--'}
           </Typography>
         </Box>
@@ -146,10 +146,10 @@ export default function PublicOfferingCard({ daoAddress }: { daoAddress: string 
               ' pledged'
             : ''}
         </Typography>
-        <Typography variant="body2" color={'#798488'}>
+        <Typography variant="body2" color={'#808191'}>
           {daoStatus?.typeStatus === DaoTypeStatus.PUBLIC ? ShowPer(daoStatus.pubSoldPer) + '% funded' : ''}
         </Typography>
-        <Typography variant="body2" color={'#798488'}>
+        <Typography variant="body2" color={'#808191'}>
           {daoStatus?.openStatus === DaoOpenStatus.COMING_SOON ? (
             <>Start at {daoInfo?.pubSale?.startTime ? timeStampToFormat(daoInfo.pubSale.startTime, 'Y-MM-DD') : '-'}</>
           ) : (
@@ -201,7 +201,7 @@ export function NonePublicOfferingCard({
           alignItems: 'center'
         }}
       >
-        <Typography variant="body2" color={'#798488'}>
+        <Typography variant="body2" color={'#808191'}>
           {typeName || 'External'}
         </Typography>
       </Box>
@@ -220,7 +220,7 @@ export function NonePublicOfferingCard({
           >
             {daoInfo?.daoName || '--'}
           </Typography>
-          <Typography fontWeight={500} fontSize={14} color="#798488" sx={{ whiteSpace: 'nowrap' }}>
+          <Typography fontWeight={500} fontSize={14} color="#808191" sx={{ whiteSpace: 'nowrap' }}>
             {daoInfo?.token?.symbol || '--'}
           </Typography>
         </Box>

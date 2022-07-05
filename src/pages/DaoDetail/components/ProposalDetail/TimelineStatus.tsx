@@ -44,9 +44,9 @@ export default function TimelineStatus({
   return (
     <Box
       sx={{
-        boxShadow: 'inset 2px 2px 5px rgb(105 141 173 / 50%)',
-        borderRadius: '8px',
-        padding: '20px 41px 0',
+        borderRadius: '24px',
+        backgroundColor: '#fff',
+        padding: '32px 32px 10px 32px',
         marginBottom: 24
       }}
     >

@@ -20,7 +20,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   [`&.${inputBaseClasses.root}`]: {
     fontSize: 16,
     color: '#FFFFFF',
-    fontFamily: 'Roboto',
     fontWeight: 400,
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
     height: 48,

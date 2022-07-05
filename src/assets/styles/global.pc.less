@@ -2,8 +2,7 @@
 
 body {
     color: #22304A;
-    font-family: 'Poppins',
-    sans-serif;
+    font-family: 'Inter'
 }
 .ant-notification {
     z-index: 1301;
@@ -44,10 +43,6 @@ body {
                 font-size: 16px;
                 line-height: 24px;
                 border: none;
-
-                background: #3898fc;
-                box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
-                -3px -3px 8px rgba(255, 255, 255, 0.8);
                 border-radius: 8px;
                 width: 182px;
                 height: 32px;
@@ -71,10 +66,6 @@ body {
                         font-size: 12px;
                         line-height: 18px;
                         color: @mainColor;
-                        box-shadow: inset -3px -3px 4px rgba(255, 255, 255, 0.88),
-                        inset 2px 2px 7px rgba(73, 103, 134, 0.36);
-                        filter: drop-shadow(-1px -1px 4px #FFFFFF) drop-shadow(0.5px 0.5px 0.5px rgba(0, 0, 0, 0.16));
-
                         position: relative;
 
                         &:before {
@@ -178,12 +169,10 @@ body {
 
             .ant-progress {
                 .ant-progress-inner {
-                    background: #DEE8F2;
-                    border: 0.5px solid #FFFFFF;
-                    box-shadow: -1px -1px 4px #FFFFFF,
-                    0.5px 0.5px 0.5px rgba(0, 0, 0, 0.16),
-                    inset -3px -3px 4px rgba(255, 255, 255, 0.88),
-                    inset 2px 2px 7px rgba(73, 103, 134, 0.36);
+                    background: #E4E4E4;
+                }
+                .ant-progress-bg {
+                    background-color: #1890ff !important;
                 }
             }
 
@@ -203,10 +192,8 @@ body {
                 }
 
                 .ant-collapse-header {
-                    background: #E7F5FF;
-                    box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
-                    -3px -3px 8px rgba(255, 255, 255, 0.8);
-                    border-radius: 8px;
+                    background: @borderColor1;
+                    // border-radius: 8px 8px 0 0;
                     height: 65px;
                     display: flex;
                     align-items: center;
@@ -220,9 +207,10 @@ body {
                 }
 
                 .ant-collapse-content {
-                    background: #E7F5FF;
-                    box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+                    background: #FAFAFA;
                     border-radius: 0 0 8px 8px;
+                    // border: 1px solid @borderColor1;
+                    border-top: none;
                 }
 
                 .ant-collapse-content-box {
@@ -249,8 +237,7 @@ body {
         }
 
         .ant-input.input-common {
-            background: #FAFAFA;
-            box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+            background: #F0F3F6;
             border-radius: 8px;
             min-height: 48px;
             font-style: normal;
@@ -285,8 +272,7 @@ body {
         .ant-input-number.input-number-common {
             height: 48px;
             width: 80px;
-            background: #FAFAFA;
-            box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+            background: #F0F3F6;
             border-radius: 8px;
             font-style: normal;
             font-weight: 500;
@@ -332,8 +318,7 @@ body {
             }
 
             .ant-input {
-                background: #FAFAFA;
-                box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+                background: #F0F3F6;
                 border-radius: 8px;
                 min-height: 48px;
                 font-style: normal;
@@ -341,6 +326,7 @@ body {
                 font-size: 16px;
                 line-height: 24px;
                 color: #22304a;
+                border: none;
             }
 
             .token {
@@ -414,7 +400,7 @@ body {
                     width: 100%;
 
                     .ant-slider-track {
-                        background: #3898fc;
+                        background: #0049C6;
                     }
 
                     .ant-slider-rail {
@@ -431,8 +417,7 @@ body {
                 .ant-input-number {
                     height: 48px;
                     width: 80px;
-                    background: #FAFAFA;
-                    box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+                    background: #F0F3F6;
                     border-radius: 8px;
                     font-style: normal;
                     font-weight: 500;
@@ -460,8 +445,7 @@ body {
                     flex-shrink: 0;
                     height: 48px;
                     width: 60px;
-                    background: #FAFAFA;
-                    box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+                    background: #F0F3F6;
                     border-radius: 8px;
                     font-style: normal;
                     font-weight: 500;
@@ -545,7 +529,7 @@ body {
                     font-weight: 600;
                     font-size: 14px;
                     line-height: 21px;
-                    color: #798488;
+                    color: #808191;
                 }
             }
         }
@@ -562,7 +546,7 @@ body {
             font-size: 16px;
             line-height: 24px;
             border: none;
-            font-family: Poppins;
+            
             font-style: normal;
             font-weight: 500;
             font-size: 16px;
@@ -585,10 +569,6 @@ body {
                     font-size: 12px;
                     line-height: 18px;
                     color: @mainColor;
-                    box-shadow: inset -3px -3px 4px rgba(255, 255, 255, 0.88),
-                    inset 2px 2px 7px rgba(73, 103, 134, 0.36);
-                    filter: drop-shadow(-1px -1px 4px #FFFFFF) drop-shadow(0.5px 0.5px 0.5px rgba(0, 0, 0, 0.16));
-
                     position: relative;
 
                     &:before {
@@ -696,8 +676,7 @@ body {
 
         .ant-select-selector {
             height: 48px;
-            background: #FAFAFA;
-            box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+            background: #F0F3F6;
             border-radius: 8px;
         }
 
@@ -731,19 +710,33 @@ body {
 
 .stp-table {
     .ant-table {
+        background-color: transparent;
         .ant-table-thead > tr > th {
-            color: #767676;
-            font-weight: normal;
+            color: #1B1D21;
+            font-weight: 700;
         }
-        color: #22304A;
+        color: #1B1D21;
+        * {
+            font-weight: 500;
+        }
     }
     .ant-table-thead {
         .ant-table-cell {
-            background: transparent;
+            background: #F7F7F7;
+            &:first-child {
+                border-radius: 8px 0 0 8px;
+            }
+            &:last-child {
+                border-radius: 0 8px 8px 0;
+            }
 
             &:before {
                 display: none;
             }
+        }
+        & > tr > th {
+            font-weight: 600 !important;
+            padding: 12px 0;
         }
     }
     table {
@@ -751,27 +744,16 @@ body {
         .ant-table-tbody {
             tr {
                 border-radius: 8px;
-                box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
-                    -3px -3px 8px rgba(255, 255, 255, 0.8);
             }
         }
     }
     .ant-table-tbody {
         .ant-table-cell {
-            padding: 12px;
+            padding: 15px 0;
         }
         tr {
             td {
-                border-top: 0.5px solid #D8D8D8;
-                border-bottom: 0.5px solid #D8D8D8;
-                &:first-child {
-                    border-left: 0.5px solid #D8D8D8;
-                    border-radius: 8px 0 0 8px;
-                }
-                &:last-child {
-                    border-right: 0.5px solid #D8D8D8;
-                    border-radius: 0 8px 8px 0;
-                }
+                border-bottom: 1px solid #E4E4E4;
             }
         }
     }
@@ -820,11 +802,11 @@ body {
 }
 
 .ant-pagination.ant-pagination-simple {
+    font-weight: 500;
     .ant-pagination-simple-pager {
         margin: 0 25px;
         input {
-            background: #FAFAFA;
-            box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.4);
+            background: #F7F7F7;
             border-radius: 8px;
             height: 32px;
             width: 32px;
@@ -840,12 +822,10 @@ body {
         align-items: center;
         justify-content: center;
         background: #FFFFFF;
-        box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.3),
-        -3px -3px 8px rgba(255, 255, 255, 0.8);
-        border-radius: 20px;
+        border-radius: 10px;
+        font-weight: 500;
         &:hover {
-            box-shadow: 5px 7px 13px rgba(174, 174, 174, 0.5),
-            -3px -3px 8px rgba(255, 255, 255, 1);
+            background-color: #0049C6;
         }
     }
 }
@@ -862,4 +842,55 @@ body {
     background: #DEE8F2;
     border: 0.5px solid #FFFFFF;
     box-shadow: -1px -1px 4px #FFFFFF, 0.5px 0.5px 0.5px rgba(0, 0, 0, 0.16), inset -3px -3px 4px rgba(255, 255, 255, 0.88), inset 2px 2px 7px rgba(73, 103, 134, 0.36);
+}
+
+.two-nowrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    word-break: break-all;
+}
+
+.ant-input {
+    border: none;
+}
+.ant-input-number {
+    border: none;
+}
+.ant-picker {
+    border: none;
+}
+.ant-empty-description {
+    font-weight: 500;
+}
+.ant-spin-dot-item {
+    background-color: @bgColor1;
+}
+.ant-spin-text {
+    color: @bgColor1;
+}
+.input-item {
+    .label {
+        color: #808191;
+    }
+}
+.ant-switch-checked {
+    background-color:#0049C6;
+}
+.ant-slider {
+    width: 100%;
+
+    .ant-slider-track {
+        background: #0049C6;
+    }
+
+    .ant-slider-handle {
+        border-color: #0049C6;
+    }
+}
+.ant-radio-inner::after {
+    background-color: #0049C6;
 }

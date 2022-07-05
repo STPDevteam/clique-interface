@@ -25,7 +25,6 @@ const Item = styled(Box)({
     alignItems: 'center',
     justifyContent: 'center',
     background: '#FAFAFA',
-    boxShadow: 'inset 2px 2px 5px rgba(105, 141, 173, 0.4)',
     borderRadius: '8px',
     width: '80px',
     height: '80px',
@@ -33,7 +32,6 @@ const Item = styled(Box)({
   },
   '.ant-input': {
     background: '#FAFAFA',
-    boxShadow: 'inset 2px 2px 5px rgb(105 141 173 / 40%)',
     borderRadius: '8px'
   }
 })

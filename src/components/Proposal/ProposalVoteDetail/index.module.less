@@ -1,10 +1,9 @@
 .vote-details {
     background: #ffffff;
-    box-shadow: inset 2px 2px 5px rgba(105, 141, 173, 0.5);
-    border-radius: 8px;
-    padding: 40px 47px;
+    border-radius: 24px;
+    padding: 32px;
     .title {
-        font-family: Poppins;
+        
         font-style: normal;
         font-weight: 600;
         font-size: 20px;
@@ -16,15 +15,21 @@
 .vote-list {
     .vote-item {
         margin-bottom: 24px;
+        border: 1px solid #E4E4E4;
+        border-radius: 12px;
+        padding: 10px 32px;
+        &:last-child {
+            margin-bottom: 0;
+        }
         .vote-data-container {
             width: 100%;
             justify-content: space-between;
             align-items: flex-end;
             .vote-desc {
-                font-family: Poppins;
+                
                 font-style: normal;
-                font-weight: 500;
-                font-size: 12px;
+                font-weight: 600;
+                font-size: 14px;
                 line-height: 18px;
 
                 color: #22304a;
@@ -32,13 +37,12 @@
                 margin-bottom: 12px;
             }
             .vote-data {
-                font-family: Poppins;
-                font-style: normal;
-                font-weight: 500;
-                font-size: 14px;
+                font-weight: 600;
+                font-size: 13px;
                 line-height: 21px;
                 min-width: 80px;
-                color: #22304a;
+                color: #808191;
+                display: flex;
                 p {
                     text-align: right;
                 }

@@ -2,13 +2,13 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Token } from './token'
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
 import JSBI from 'jsbi'
-import { ChainId, SUPPORTED_CHAIN_IDS } from './chain'
+import { ChainId, IS_TEST_ENV, SUPPORTED_CHAIN_IDS } from './chain'
 import { PrivateReceivingTokenProps } from 'state/building/actions'
 import IconTokenSvg from '../assets/images/icon-token.svg'
 import KlaytnTokenSvg from '../assets/svg/klaytn_logo.svg'
 import MATICTokenSvg from '../assets/svg/matic.svg'
 import ETHTokenImg from '../assets/images/token-eth.png'
-// import { isDaoframeSite } from 'utils/dao'
+import { isDaoframeSite } from 'utils/dao'
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
@@ -267,10 +267,14 @@ export const privateReceivingTokens: { [chainid in ChainId]: PrivateReceivingTok
 export const EXTERNAL_SUPPORT_NETWORK = [4]
 export const BASE_DAO_SUPPORT_NETWORK = [4, 72, 1001]
 export const CROSS_SUPPORT_IMPORT_NETWORK = [1]
-export const CROSS_SUPPORT_CREATE_NETWORK = [137]
+export const CROSS_SUPPORT_CREATE_NETWORK = IS_TEST_ENV ? [80001] : [137]
 export const SUPPORT_CREATE_TOKEN_NETWORK = [4]
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
-// export const serverBaseUrl = isDaoframeSite() ? 'https://api.daoframe.com/' : 'https://api.myclique.io/'
-export const serverBaseUrl = 'https://api.myclique.io/'
+export const serverBaseUrl = IS_TEST_ENV
+  ? 'https://testapi.myclique.io/'
+  : isDaoframeSite()
+  ? 'https://api.daoframe.com/'
+  : 'https://api.myclique.io/'
+// export const serverBaseUrl = 'https://api.myclique.io/'
 export const mycliqueUrl = 'https://myclique.io/'
 export const daoframeUrl = 'https://daoframe.com/'

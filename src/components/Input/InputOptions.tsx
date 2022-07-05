@@ -19,7 +19,6 @@ export default function InputOptions({
         '&>input': {
           width: '100%',
           background: '#FAFAFA',
-          boxShadow: 'inset 2px 2px 5px rgb(105 141 173 / 40%)',
           borderRadius: '8px',
           height: 48,
           fontWeight: 500,

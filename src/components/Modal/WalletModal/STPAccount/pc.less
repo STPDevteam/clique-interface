@@ -3,11 +3,9 @@
 .pc( {
         .loggedin {
             .address {
-                display: grid;
+                display: flex;
                 align-items: center;
-                margin-top: 30px;
-                grid-template-columns: 1fr 48px;
-                grid-gap: 20px;
+                margin-top: 10px;
 
                 .ant-input {
                     background: #FAFAFA;
@@ -45,25 +43,11 @@
             .btn-group {
                 display: flex;
                 justify-content: space-between;
+                font-weight: 500;
 
-                .ant-btn {
-                    margin-top: 16px;
-
-                    &.btn-01 {
-                        height: 40px;
-                        width: 200px;
-                    }
-
-                    &.btn-04 {
-                        height: 38.095237731933594px;
-                        width: 168.01170349121094px;
-                        font-style: normal;
-                        font-weight: 500;
-                        font-size: 14px;
-                        line-height: 21px;
-                        color: #FF5F5B;
-                        border-color: #FF5F5B;
-                    }
+                &>* {
+                    width: 200px;
+                    height: 40px;
                 }
             }
         }

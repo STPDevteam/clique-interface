@@ -1,6 +1,6 @@
 import '../building/review.pc.less'
 
-import { Button, Collapse } from 'antd'
+import { Collapse } from 'antd'
 import IconArrow from '../../assets/images/icon-arrow.svg'
 import { ReactComponent as EditIcon } from 'assets/svg/edit_icon.svg'
 import { Box, styled, Typography } from '@mui/material'
@@ -19,6 +19,7 @@ import { useWalletModalToggle } from 'state/application/hooks'
 import { useCrossBuildingDataCallback, useCrossCommitCreateDaoData } from 'state/crossBuilding/hooks'
 import { useTokenByChain } from 'state/wallet/hooks'
 import OutlineButton from 'components/Button/OutlineButton'
+import { BlackButton } from 'components/Button/Button'
 
 const Wrapper = styled('section')({
   '& p': {
@@ -208,12 +209,12 @@ export default function ReviewInformation({
         )}
       </Wrapper>
       <Box className="btn-group" display={'flex'} justifyContent={'space-between'}>
-        <OutlineButton width={'120px'} onClick={goBack}>
+        <OutlineButton width={'120px'} height="56px" onClick={goBack}>
           Back
         </OutlineButton>
-        <Button style={{ width: 'auto' }} className="btn-common btn-01" disabled={!!createCheck} onClick={onCreate}>
+        <BlackButton width="220px" height="56px" disabled={!!createCheck} onClick={onCreate}>
           Confirm and create DAO
-        </Button>
+        </BlackButton>
         <Box width={120} />
       </Box>
     </>
