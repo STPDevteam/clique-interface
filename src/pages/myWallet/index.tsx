@@ -392,7 +392,6 @@ function CreateTokenReservedClaim({ item }: { item: { tokenAmount: TokenAmount; 
 function MyCreateTokenList() {
   const { account } = useActiveWeb3React()
   const { list, loading, page } = useCreateTokenList()
-  console.log('🚀 ~ file: index.tsx ~ line 380 ~ MyCreateTokenList ~ page', page)
   const showList = useMemo(
     () =>
       list.map(token => ({
@@ -403,17 +402,19 @@ function MyCreateTokenList() {
           </Box>
         ),
         address: (
-          <Link
-            key={0}
-            target="_blank"
-            href={getEtherscanLink(token.chainId, token.address, 'address')}
-            display="flex"
-            alignItems={'center'}
-            justifyContent="center"
-          >
-            {shortenAddress(token.address)}
+          <Box display={'flex'} justifyContent="center">
+            <Link
+              key={0}
+              target="_blank"
+              href={getEtherscanLink(token.chainId, token.address, 'address')}
+              display="flex"
+              alignItems={'center'}
+              justifyContent="center"
+            >
+              {shortenAddress(token.address)}
+            </Link>
             <Copy toCopy={token.address} />
-          </Link>
+          </Box>
         ),
         balance: <ShowTokenBalance key={1} token={token} account={account || undefined} />
       })),

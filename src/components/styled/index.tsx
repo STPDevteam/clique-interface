@@ -5,7 +5,7 @@ export const StyledExtraBg = styled('div')(
     borderRadius: '50%',
     width: width || 40,
     height: height || 40,
-    padding: '8px',
+    padding: '4px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
