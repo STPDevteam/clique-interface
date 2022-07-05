@@ -21,7 +21,16 @@ export default function Confirm({
       </Typography>
       <Box display={'grid'} gap={5} mt={30}>
         <Typography variant="body1">Voting for</Typography>
-        <Typography variant="body1" color={'#22304A'}>
+        <Typography
+          variant="body1"
+          color={'#1B1D21'}
+          padding="10px 15px"
+          sx={{
+            background: '#FBFCFC',
+            borderRadius: '8px',
+            fontWeight: 600
+          }}
+        >
           {optionName}
         </Typography>
 

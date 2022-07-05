@@ -403,7 +403,7 @@ export function useMultiDaoBaseInfo(
   const daoNameRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'name')
   const daoNames = useMemo(() => daoNameRes.map(item => item.result?.[0]), [daoNameRes])
 
-  const daoDescsRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'name')
+  const daoDescsRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'desc')
   const daoDescs = useMemo(() => daoDescsRes.map(item => item.result?.[0]), [daoDescsRes])
 
   const votingAddressRes = useMultipleContractSingleData(addresss, DAO_INTERFACE, 'voting')

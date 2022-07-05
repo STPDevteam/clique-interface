@@ -91,8 +91,19 @@ export default function Index({
         <div>
           <p className={styles.title}>Your choice</p>
           <Box display={'grid'} gap={5}>
-            <Typography variant="body1">Voting for</Typography>
-            <Typography variant="h6">{voteResults ? list[voteResults.optionIndex].name : ''}</Typography>
+            {/* <Typography variant="body1">Voting for</Typography> */}
+            <Typography
+              variant="h6"
+              color={'#1B1D21'}
+              padding="10px 15px"
+              sx={{
+                background: '#FBFCFC',
+                borderRadius: '8px',
+                fontWeight: 600
+              }}
+            >
+              {voteResults ? list[voteResults.optionIndex].name : ''}
+            </Typography>
             <Box display={'flex'} mt={10} justifyContent={'space-between'}>
               <Typography variant="body1">Your holdings</Typography>
               <Typography variant="h6" fontSize={14}>
