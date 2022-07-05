@@ -30,8 +30,8 @@ import { isDaoframeSite, isMycliqueSite } from 'utils/dao'
 // import StakingCreate from './staking/Create'
 
 import CrossBuilding from './CrossBuilding'
-// import CreateToken from './CreateToken'
-// import TokenLaunching from './CreateToken/launching'
+import CreateToken from './CreateToken'
+import TokenLaunching from './CreateToken/launching'
 
 import BigNumber from 'bignumber.js'
 import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
@@ -107,9 +107,8 @@ export default function App() {
                     {/* <Route exact strict path="/external_building" component={ExternalBuilding} /> */}
 
                     <Route exact strict path="/cross_building" component={CrossBuilding} />
-                    {/* <Route exact strict path="/create_token" component={CreateToken} />
-                    <Route exact strict path="/create_token/launching/:hash" component={TokenLaunching} /> */}
-
+                    <Route exact strict path="/create_token" component={CreateToken} />
+                    <Route exact strict path="/create_token/launching/:hash" component={TokenLaunching} />
                     {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}
                   </>

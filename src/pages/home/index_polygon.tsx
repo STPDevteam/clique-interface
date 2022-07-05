@@ -4,10 +4,10 @@ import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 // import CreateSelectModal from './CreateSelectModal'
 // import useModal from 'hooks/useModal'
-import { Box, Tooltip, Typography, useTheme } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 import { triggerSwitchChain } from 'utils/triggerSwitchChain'
 import { useHistory } from 'react-router-dom'
-import { CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
+import { CROSS_SUPPORT_CREATE_NETWORK, SUPPORT_CREATE_TOKEN_NETWORK } from '../../constants'
 import addDaoIcon from 'assets/images/add-dao-icon.png'
 import createTokenIcon from 'assets/images/create-token-ball.png'
 import Image from 'components/Image'
@@ -42,24 +42,22 @@ export default function Index() {
           </Typography>
         </Box>
         <Box>
-          <Tooltip title="Coming Soon" placement="top">
-            <Box
-              className="item-create"
-              // onClick={() => {
-              //   if (!account) {
-              //     toggleWalletModal()
-              //     return
-              //   }
-              //   if (chainId && SUPPORT_CREATE_TOKEN_NETWORK.includes(chainId)) {
-              //     history.replace('/create_token')
-              //   } else {
-              //     account && triggerSwitchChain(library, SUPPORT_CREATE_TOKEN_NETWORK[0], account)
-              //   }
-              // }}
-            >
-              <Image src={createTokenIcon} width={182}></Image>
-            </Box>
-          </Tooltip>
+          <Box
+            className="item-create"
+            onClick={() => {
+              if (!account) {
+                toggleWalletModal()
+                return
+              }
+              if (chainId && SUPPORT_CREATE_TOKEN_NETWORK.includes(chainId)) {
+                history.replace('/create_token')
+              } else {
+                account && triggerSwitchChain(library, SUPPORT_CREATE_TOKEN_NETWORK[0], account)
+              }
+            }}
+          >
+            <Image src={createTokenIcon} width={182}></Image>
+          </Box>
           <Typography fontWeight={600} color={theme.palette.text.primary}>
             Create a Token
           </Typography>

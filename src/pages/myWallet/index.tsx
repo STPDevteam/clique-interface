@@ -9,7 +9,7 @@ import { MyWalletHistoryProp, useAccountDaoAssets, useMyWalletHistory } from 'ho
 import { Dots, ExternalLink } from 'theme/components'
 import { shortenHashAddress, timeStampToFormat } from 'utils/dao'
 import { getEtherscanLink, shortenAddress } from 'utils'
-import { DefaultChainId, ZERO_ADDRESS } from '../../constants'
+import { DefaultChainId, SUPPORT_CREATE_TOKEN_NETWORK, ZERO_ADDRESS } from '../../constants'
 import { useCurrencyBalance, useSTPToken, useToken, useTokenBalance } from 'state/wallet/hooks'
 import { Currency, CurrencyAmount, ETHER, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
@@ -90,8 +90,10 @@ export default function Index() {
   useEffect(() => {
     if (!account) history.replace('/')
   }, [account, history])
-  // const TABS = ['Wallet', 'History', 'My Creator']
-  const TABS = ['Wallet', 'History']
+  const TABS =
+    chainId && SUPPORT_CREATE_TOKEN_NETWORK.includes(chainId)
+      ? ['Wallet', 'History', 'My Creator']
+      : ['Wallet', 'History']
   const [currentTab, setCurrentTab] = useState(TABS[0])
 
   const currentEthToken = useMemo(() => {

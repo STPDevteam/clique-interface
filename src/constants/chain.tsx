@@ -9,7 +9,7 @@ import KlaytnSvg from '../assets/svg/klaytn_logo.svg'
 import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
 
 export const IS_TEST_ENV = true
-export const SUPPORTED_CHAIN_IDS = IS_TEST_ENV ? [80001] : [137]
+export const SUPPORTED_CHAIN_IDS = IS_TEST_ENV ? [80001, 4] : [137, 1]
 
 export enum ChainId {
   ETH = 1,

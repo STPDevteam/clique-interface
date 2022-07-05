@@ -19,6 +19,7 @@ import { VerifiedTag } from 'pages/Daos'
 import { getEtherscanLink } from 'utils'
 import { ReactComponent as Twitter } from 'assets/svg/twitter.svg'
 import { ReactComponent as Discord } from 'assets/svg/discord.svg'
+import CheckSwitchChainMask from 'components/Modal/CheckSwitchChainMask'
 
 export default function Index() {
   const links = ['Proposal', 'Configuration']
@@ -38,13 +39,14 @@ export default function Index() {
     }
   }, [daoAddress])
 
-  if (!daoInfo?.votingAddress) return null
+  if (!daoInfo?.votingAddress) return <CheckSwitchChainMask />
   if (!chainId || !CROSS_SUPPORT_CREATE_NETWORK.includes(chainId))
     return <Box padding="20px">Cross-chain Governance unavailable on current chain</Box>
 
   return (
     <Spin spinning={!daoInfo?.token} tip="Loading..." delay={2000} size="large">
       <div className={styles['dao-detail']}>
+        <CheckSwitchChainMask />
         <div className={styles['detail-header']}>
           <div className={styles['top1']}>
             <Avatar sx={{ width: 100, height: 100 }} src={daoInfo?.logo || IconLogo}></Avatar>

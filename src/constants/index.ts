@@ -268,7 +268,7 @@ export const EXTERNAL_SUPPORT_NETWORK = [4]
 export const BASE_DAO_SUPPORT_NETWORK = [4, 72, 1001]
 export const CROSS_SUPPORT_IMPORT_NETWORK = IS_TEST_ENV ? [4] : [1]
 export const CROSS_SUPPORT_CREATE_NETWORK = IS_TEST_ENV ? [80001] : [137]
-export const SUPPORT_CREATE_TOKEN_NETWORK = [4]
+export const SUPPORT_CREATE_TOKEN_NETWORK = IS_TEST_ENV ? [4] : [1]
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
 export const serverBaseUrl = IS_TEST_ENV
   ? 'https://testapi.myclique.io/'

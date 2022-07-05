@@ -14,6 +14,7 @@ import { ExternalLink } from 'theme/components'
 import { DaoTypeProp, useGetDaoTypes, useIsVerifiedDao } from 'hooks/useDAOInfo'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 // import { ReactComponent as CloseSvg } from 'assets/svg/close.svg'
+import CheckSwitchChainMask from 'components/Modal/CheckSwitchChainMask'
 
 enum TypeTabs {
   DAO,
@@ -40,6 +41,7 @@ export default function Index() {
 
   return (
     <div className="daos-container">
+      <CheckSwitchChainMask />
       {!closeMsg && (
         <div className="daos-header">
           {/* <CloseSvg
