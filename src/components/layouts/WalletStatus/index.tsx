@@ -63,12 +63,6 @@ export default function Index() {
           {!isDaoframeSite() && (
             <>
               <OutlineButton primary width={140}>
-                {/* <Typography variant="h6" onClick={() => showModal(<CreatorModal hide={hideModal} />)}> */}
-                <Typography variant="h6" onClick={() => history.push('/create')}>
-                  Creator
-                </Typography>
-              </OutlineButton>
-              <OutlineButton primary width={140}>
                 <Typography variant="h6" onClick={() => history.push('/my_wallet')}>
                   My Wallet
                 </Typography>

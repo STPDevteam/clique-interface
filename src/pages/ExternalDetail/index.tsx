@@ -38,7 +38,7 @@ export default function Index() {
   return (
     <div className={styles['dao-detail']}>
       <div className={styles['detail-header']}>
-        <OutlineButton width={'120px'} onClick={() => history.replace('/')}>
+        <OutlineButton width={'120px'} onClick={() => history.push('/governance')}>
           Home
         </OutlineButton>
         <Box ml={'50px'}>

@@ -26,7 +26,7 @@ export default function Index(props: IHeaderProps) {
           sx={{ cursor: 'pointer' }}
           fontWeight={500}
           display={'inline-flex'}
-          onClick={() => history.replace('/')}
+          onClick={() => history.push('/governance')}
           alignItems="center"
         >
           <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>Home

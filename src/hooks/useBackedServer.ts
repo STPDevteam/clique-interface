@@ -387,7 +387,7 @@ export function useProposalStatusDateline(
         const currentTimeStamp = getCurrentTimeStamp()
         const ret: ProposalStatusDatelineProp[] = []
         ret.push({
-          name: 'Create',
+          name: 'Created',
           hash: baseInfo.hash,
           timeStamp: baseInfo.timeStamp
         })

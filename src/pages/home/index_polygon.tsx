@@ -11,6 +11,7 @@ import { CROSS_SUPPORT_CREATE_NETWORK, SUPPORT_CREATE_TOKEN_NETWORK } from '../.
 import addDaoIcon from 'assets/images/add-dao-icon.png'
 import createTokenIcon from 'assets/images/create-token-ball.png'
 import Image from 'components/Image'
+import Collapse from 'components/Collapse'
 
 export default function Index() {
   const { account, chainId, library } = useActiveWeb3React()
@@ -37,7 +38,7 @@ export default function Index() {
           >
             <Image src={addDaoIcon} width={182}></Image>
           </Box>
-          <Typography fontWeight={600} color={theme.palette.text.primary}>
+          <Typography mt={10} fontWeight={600} color={theme.palette.text.primary}>
             Add a DAO
           </Typography>
         </Box>
@@ -58,17 +59,32 @@ export default function Index() {
           >
             <Image src={createTokenIcon} width={182}></Image>
           </Box>
-          <Typography fontWeight={600} color={theme.palette.text.primary}>
+          <Typography mt={10} fontWeight={600} color={theme.palette.text.primary}>
             Create a Token
           </Typography>
         </Box>
       </Box>
 
-      <Box className="faq">
-        <Typography>Add a DAO with a few clicks</Typography>
-        <Typography>
-          Add your DAO and set its governance framework running on Polygon through the Ethereum blockchain
+      <Box maxWidth={'100%'} pt={50} width="808px" margin={'auto'}>
+        <Typography fontWeight={600} fontSize={20} style={{ textAlign: 'left' }}>
+          Faq
         </Typography>
+        <Box mt={5}>
+          <Collapse title={'What does adding a DAO mean?'}>
+            It means you are setting up the governance framework for your project here on Clique using a token that
+            already exists.
+          </Collapse>
+          <Collapse title={'What does creating a token mean?'}>
+            It means you are creating a new governance token for your DAO right here on Clique. You will be able to
+            launch a public sale or airdrop event to distribute the token to your community, which will then facilitate
+            governance of your DAO.
+          </Collapse>
+          <Collapse title={'What tokens can be used as governance tokens?'}>
+            Currently we allow any publicly listed token on Ethereum or Polygon to be used as a governance token. For
+            tokens that are created here on Clique, you will have the option to choose which chain you would like to
+            have your token be on.{' '}
+          </Collapse>
+        </Box>
       </Box>
     </main>
   )

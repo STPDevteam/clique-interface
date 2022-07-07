@@ -62,7 +62,7 @@ export default function Index({
       )
     }
     if (!balanceAt || !minimumVote || minimumVote.greaterThan(balanceAt)) {
-      return <BlackButton disabled>You votes insufficient</BlackButton>
+      return <BlackButton disabled>Insufficient holdings to vote</BlackButton>
     }
     if (voteIndex === undefined) {
       return <BlackButton disabled>Vote Now</BlackButton>

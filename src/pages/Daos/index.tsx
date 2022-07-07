@@ -58,7 +58,7 @@ export default function Index() {
               come!
               <ExternalLink
                 style={{ fontSize: 12, fontWeight: 600, color: 'inherit' }}
-                href="https://stp-dao.gitbook.io/verse-network/dapps/clique"
+                href="https://stp-dao.gitbook.io/verse-network/clique/overview-of-clique"
               >
                 {` How it works >`}
               </ExternalLink>

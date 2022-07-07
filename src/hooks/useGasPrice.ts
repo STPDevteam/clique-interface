@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useWeb3Instance } from './useWeb3Instance'
 import { Contract } from '@ethersproject/contracts'
 import { calculateGasPriceMargin, calculateGasMargin } from 'utils'
+import { BigNumber } from 'ethers'
 
 export function useGasPriceInfo() {
   const web3 = useWeb3Instance()
@@ -10,16 +11,30 @@ export function useGasPriceInfo() {
     async (contract: Contract, method: string, args: any[]) => {
       if (!web3) throw new Error('web3 is null')
 
+      let gasPrice: string | undefined = undefined
+      let estimatedGas: BigNumber | undefined = undefined
+
       try {
-        const gasPrice = await web3.eth.getGasPrice()
-        const estimatedGas = await contract.estimateGas[method](...args)
-        return {
-          gasPrice: calculateGasPriceMargin(gasPrice),
-          gasLimit: calculateGasMargin(estimatedGas)
-        }
+        gasPrice = await web3.eth.getGasPrice()
       } catch (error) {
         console.log(error)
-        throw new Error('Get gas error, please try again')
+        throw new Error('Get gas error, please try again. Or you can try to replace the rpc.')
+      }
+      try {
+        estimatedGas = await contract.estimateGas[method](...args)
+      } catch (error) {
+        console.log(error)
+        const err = error as any
+        throw new Error(
+          `${err?.data?.message ||
+            err?.error?.message ||
+            err?.message ||
+            'unknown error'}. Or you can try to replace the rpc.`
+        )
+      }
+      return {
+        gasPrice: calculateGasPriceMargin(gasPrice),
+        gasLimit: calculateGasMargin(estimatedGas)
       }
     },
     [web3]

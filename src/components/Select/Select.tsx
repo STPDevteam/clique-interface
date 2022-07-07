@@ -65,7 +65,7 @@ export default function Select(props: Props) {
       <StyledSelect
         sx={{
           backgroundColor: primary ? theme.palette.primary.main : theme.bgColor.bg1,
-          width: width || '100%',
+          minWidth: width || '100%',
           height: height || '50px',
           padding: '0 20px',
           '& span': {

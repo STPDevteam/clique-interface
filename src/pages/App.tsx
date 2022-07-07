@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 // import { styled } from '@mui/material'
 import Layouts from '../components/layouts/index'
 import Polling from '../components/essential/Polling'
@@ -70,7 +70,7 @@ export default function App() {
                 {/* <Route exact strict path="/test1" component={ComingSoon} /> */}
                 {isMycliqueSite() ? (
                   <>
-                    <Route exact strict path="/" component={Daos} />
+                    <Route exact strict path="/governance" component={Daos} />
                     {/* <Route exact strict path="/detail/:address" component={DaoDetail} /> */}
                     {/* <Route exact strict path="/external_detail/:address" component={ExternalDetail} /> */}
                     <Route exact strict path="/cross_detail/:address" component={CrossDetail} />
@@ -78,6 +78,9 @@ export default function App() {
                     <Route exact strict path="/my_wallet" component={MyWallet} />
                     {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}
+                    <Route path="/">
+                      <Redirect to={'/governance'} />
+                    </Route>
                   </>
                 ) : isDaoframeSite() ? (
                   <>
@@ -94,7 +97,7 @@ export default function App() {
                   </>
                 ) : (
                   <>
-                    <Route exact strict path="/" component={Daos} />
+                    <Route exact strict path="/governance" component={Daos} />
                     {/* <Route exact strict path="/detail/:address" component={DaoDetail} /> */}
                     {/* <Route exact strict path="/external_detail/:address" component={ExternalDetail} /> */}
                     <Route exact strict path="/cross_detail/:address" component={CrossDetail} />
@@ -111,6 +114,9 @@ export default function App() {
                     <Route exact strict path="/create_token/launching/:hash" component={TokenLaunching} />
                     {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}
+                    <Route path="/">
+                      <Redirect to={'/governance'} />
+                    </Route>
                   </>
                 )}
               </Switch>

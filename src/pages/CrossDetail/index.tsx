@@ -8,7 +8,7 @@ import CreateProposal from './components/CreateProposal'
 import Configuration from './components/Configuration'
 // import Copy from 'components/essential/Copy'
 import { useCrossDaoInfoByAddress } from 'hooks/useDAOInfo'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 // import { shortenAddress } from 'utils'
 import { ProposalInfoProp } from 'hooks/useVoting'
 import { Spin } from 'antd'
@@ -20,12 +20,14 @@ import { getEtherscanLink } from 'utils'
 import { ReactComponent as Twitter } from 'assets/svg/twitter.svg'
 import { ReactComponent as Discord } from 'assets/svg/discord.svg'
 import CheckSwitchChainMask from 'components/Modal/CheckSwitchChainMask'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 export default function Index() {
   const links = ['Proposal', 'Configuration']
   const { chainId } = useActiveWeb3React()
   const { address: daoAddress } = useParams<{ address: string }>()
   const theme = useTheme()
+  const history = useHistory()
 
   const [currentLink, setCurrentLink] = useState(links[0])
   const [currentProposal, setCurrentProposal] = useState<ProposalInfoProp>()
@@ -46,6 +48,17 @@ export default function Index() {
   return (
     <Spin spinning={!daoInfo?.token} tip="Loading..." delay={2000} size="large">
       <div className={styles['dao-detail']}>
+        <Box mt={40} ml={40}>
+          <Typography
+            sx={{ cursor: 'pointer' }}
+            fontWeight={500}
+            display={'inline-flex'}
+            onClick={() => history.push('/governance')}
+            alignItems="center"
+          >
+            <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>Back
+          </Typography>
+        </Box>
         <CheckSwitchChainMask />
         <div className={styles['detail-header']}>
           <div className={styles['top1']}>
