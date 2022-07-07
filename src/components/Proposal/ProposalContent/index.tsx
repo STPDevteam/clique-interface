@@ -13,10 +13,10 @@ export default function Index({ detail }: { detail: ProposalInfoProp }) {
         </div>
         <Box display={'flex'} justifyContent="space-between" alignItems="center">
           <Box display={'flex'} alignItems="center">
-            <p className={styles['start-time']}>Start {timeStampToFormat(detail.startTime)}</p>
+            <p className={styles['start-time']}>Start: {timeStampToFormat(detail.startTime)}</p>
             <ProposalStatus status={detail.status} />
           </Box>
-          <p className={styles['end-time']}>End {timeStampToFormat(detail.endTime)}</p>
+          <p className={styles['end-time']}>End: {timeStampToFormat(detail.endTime)}</p>
         </Box>
       </div>
       <p

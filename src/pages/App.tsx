@@ -78,9 +78,7 @@ export default function App() {
                     <Route exact strict path="/my_wallet" component={MyWallet} />
                     {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}
-                    <Route path="/">
-                      <Redirect to={'/governance'} />
-                    </Route>
+                    <Route exact path="/" render={() => <Redirect to="/governance" />} />
                   </>
                 ) : isDaoframeSite() ? (
                   <>
@@ -114,9 +112,7 @@ export default function App() {
                     <Route exact strict path="/create_token/launching/:hash" component={TokenLaunching} />
                     {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}
-                    <Route path="/">
-                      <Redirect to={'/governance'} />
-                    </Route>
+                    <Route exact path="/" render={() => <Redirect to="/governance" />} />
                   </>
                 )}
               </Switch>
