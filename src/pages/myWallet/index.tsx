@@ -1,5 +1,6 @@
 import { Box, Link, styled, Typography } from '@mui/material'
 import { useActiveWeb3React } from 'hooks'
+import { ReactComponent as MyWalletIcon } from 'assets/svg/my_wallet.svg'
 import { Empty, Pagination, Spin, Table, Tabs } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 // import { useAccountERC20Tokens } from 'hooks/useStpExplorerData'
@@ -23,11 +24,10 @@ import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import Button from 'components/Button/Button'
 import Copy from 'components/essential/Copy'
 import { ShowTokenBalance } from 'pages/DaoDetail/components/Assets'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const StyledHeader = styled(Box)(({ theme }) => ({
   width: 'calc(100% - 80px)',
-  margin: '10px auto 0',
+  margin: '30px auto 0',
   minHeight: 138,
   borderRadius: '24px',
   backgroundColor: theme.palette.common.white,
@@ -88,7 +88,7 @@ export default function Index() {
   const { account, chainId } = useActiveWeb3React()
   const history = useHistory()
   useEffect(() => {
-    if (!account) history.push('/governance')
+    if (!account) history.replace('/')
   }, [account, history])
   const TABS =
     chainId && SUPPORT_CREATE_TOKEN_NETWORK.includes(chainId)
@@ -134,24 +134,14 @@ export default function Index() {
 
   return (
     <>
-      <Box mt={40} ml={40}>
-        <Typography
-          sx={{ cursor: 'pointer' }}
-          fontWeight={500}
-          display={'inline-flex'}
-          onClick={() => history.push('/governance')}
-          alignItems="center"
-        >
-          <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>Back
-        </Typography>
-      </Box>
       <StyledHeader>
         <Container display={'flex'} justifyContent={'space-between'} alignItems={'center'} minHeight={138}>
-          <Box display={'flex'}>
-            <Copy toCopy={account || ''} size={24} />
-            <Typography variant="h5" fontSize={16}>
+          <Box display={'flex'} gap={10}>
+            <MyWalletIcon />
+            <Typography variant="h5" fontSize={18} marginRight={-6}>
               {account}
             </Typography>
+            <Copy toCopy={account || ''} size={24} />
           </Box>
         </Container>
       </StyledHeader>

@@ -67,22 +67,21 @@ export default function Index() {
 
       <Box maxWidth={'100%'} pt={50} width="808px" margin={'auto'}>
         <Typography fontWeight={600} fontSize={20} style={{ textAlign: 'left' }}>
-          Faq
+          FAQ
         </Typography>
         <Box mt={5}>
-          <Collapse title={'What does adding a DAO mean?'}>
+          <Collapse title={`What does 'Add a DAO' mean?`}>
             It means you are setting up the governance framework for your project here on Clique using a token that
             already exists.
           </Collapse>
-          <Collapse title={'What does creating a token mean?'}>
+          <Collapse title={`What does 'Create a token' mean?`}>
             It means you are creating a new governance token for your DAO right here on Clique. You will be able to
-            launch a public sale or airdrop event to distribute the token to your community, which will then facilitate
-            governance of your DAO.
+            reserve and distribute the token for your DAO members and community, which will facilitate governance of
+            your DAO.
           </Collapse>
-          <Collapse title={'What tokens can be used as governance tokens?'}>
-            Currently we allow any publicly listed token on Ethereum or Polygon to be used as a governance token. For
-            tokens that are created here on Clique, you will have the option to choose which chain you would like to
-            have your token be on.{' '}
+          <Collapse title={'What token can be used as governance token?'}>
+            Currently we allow any publicly listed token on Ethereum to be used as governance token. We will continue to
+            explore more token on most mainstream EVM compatible chains.
           </Collapse>
         </Box>
       </Box>
