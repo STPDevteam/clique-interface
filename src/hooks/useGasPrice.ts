@@ -29,7 +29,7 @@ export function useGasPriceInfo() {
           `${err?.data?.message ||
             err?.error?.message ||
             err?.message ||
-            'unknown error'}. Or you can try to replace the rpc.`
+            'unknown error'}. Please try the substitute RPC if you are experiencing frequent contract execution error,learn more: https://stp-dao.gitbook.io/verse-network/clique/connect-your-wallet`
         )
       }
       return {
