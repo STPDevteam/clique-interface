@@ -9,7 +9,12 @@ import { MyWalletHistoryProp, useAccountDaoAssets, useMyWalletHistory } from 'ho
 import { Dots, ExternalLink } from 'theme/components'
 import { shortenHashAddress, timeStampToFormat } from 'utils/dao'
 import { getEtherscanLink, shortenAddress } from 'utils'
-import { DefaultChainId, SUPPORT_CREATE_TOKEN_NETWORK, ZERO_ADDRESS } from '../../constants'
+import {
+  CROSS_SUPPORT_CREATE_NETWORK,
+  DefaultChainId,
+  SUPPORT_CREATE_TOKEN_NETWORK,
+  ZERO_ADDRESS
+} from '../../constants'
 import { useCurrencyBalance, useSTPToken, useToken, useTokenBalance } from 'state/wallet/hooks'
 import { Currency, CurrencyAmount, ETHER, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
@@ -28,7 +33,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const StyledHeader = styled(Box)(({ theme }) => ({
   width: 'calc(100% - 80px)',
-  margin: '10px auto 0',
+  margin: '30px auto 0',
   minHeight: 138,
   borderRadius: '24px',
   backgroundColor: theme.palette.common.white,
@@ -135,17 +140,19 @@ export default function Index() {
 
   return (
     <>
-      <Box mt={40} ml={40}>
-        <Typography
-          sx={{ cursor: 'pointer' }}
-          fontWeight={500}
-          display={'inline-flex'}
-          onClick={() => history.push('/governance')}
-          alignItems="center"
-        >
-          <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>Back
-        </Typography>
-      </Box>
+      {chainId && CROSS_SUPPORT_CREATE_NETWORK.includes(chainId) && (
+        <Box mt={40} mb={-20} ml={40}>
+          <Typography
+            sx={{ cursor: 'pointer' }}
+            fontWeight={500}
+            display={'inline-flex'}
+            onClick={() => history.push('/governance')}
+            alignItems="center"
+          >
+            <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>Back
+          </Typography>
+        </Box>
+      )}
       <StyledHeader>
         <Container display={'flex'} justifyContent={'space-between'} alignItems={'center'} minHeight={138}>
           <Box display={'flex'} gap={10}>
@@ -230,7 +237,7 @@ export default function Index() {
               </>
             )}
 
-            {currentTab === 'My Creator' && <MyCreateTokenList />}
+            {currentTab === 'My Created Token' && <MyCreateTokenList />}
           </Container>
         </StyledBox>
       )}
