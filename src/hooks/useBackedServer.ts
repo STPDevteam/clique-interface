@@ -210,6 +210,7 @@ export interface ProposalVoteProp {
   address: string
   optionIndex: number
   votes: string
+  hash: string
 }
 export function useProposalVoteList(votingAddress: string | undefined, proposalId: string) {
   const { chainId } = useActiveWeb3React()
@@ -244,7 +245,8 @@ export function useProposalVoteList(votingAddress: string | undefined, proposalI
         const list = data.data.map((item: any) => ({
           address: item.address,
           optionIndex: item.optionIndex,
-          votes: item.votes
+          votes: item.votes,
+          hash: item.hash
         }))
         setResult(list)
       } catch (error) {
