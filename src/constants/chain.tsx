@@ -151,7 +151,7 @@ export const SUPPORTED_NETWORKS: {
       decimals: 18,
       logo: MaticSvg
     },
-    rpcUrls: ['https://matic-mumbai.chainstacklabs.com'],
+    rpcUrls: ['https://rpc.ankr.com/polygon_mumbai'],
     blockExplorerUrls: ['https://mumbai.polygonscan.com/']
   },
   [ChainId.MATIC]: {
@@ -163,7 +163,7 @@ export const SUPPORTED_NETWORKS: {
       decimals: 18,
       logo: MaticSvg
     },
-    rpcUrls: ['https://rpc-mainnet.maticvigil.com'],
+    rpcUrls: ['https://rpc.ankr.com/polygon'],
     blockExplorerUrls: ['https://polygonscan.com/']
   },
   [ChainId.KLAYTN_BAOBAB]: {

@@ -5,7 +5,8 @@ import DaoframeLogo from 'assets/svg/create_logo.svg'
 import WalletStatus from '../WalletStatus'
 import { NavLink, useHistory } from 'react-router-dom'
 import { isDaoframeSite } from 'utils/dao'
-import { Box, styled } from '@mui/material'
+import { Box, Link, styled, Tooltip } from '@mui/material'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 const StyledTab = styled(Box)(({ theme }) => ({
   '& .link': {
@@ -61,6 +62,19 @@ export default function Header() {
       </Box>
       <div className="actions">
         <WalletStatus />
+        <Tooltip
+          sx={{ borderRadius: '8px' }}
+          title={
+            <Box padding="10px">
+              Please try the substitute RPC if you are experiencing frequent contract execution error,{' '}
+              <Link target={'_blank'} href="https://stp-dao.gitbook.io/verse-network/clique/connect-your-wallet">
+                learn more.
+              </Link>
+            </Box>
+          }
+        >
+          <HelpOutlineIcon sx={{ ml: 16 }} />
+        </Tooltip>
       </div>
     </header>
   )
