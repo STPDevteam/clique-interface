@@ -24,10 +24,11 @@ import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import Button from 'components/Button/Button'
 import Copy from 'components/essential/Copy'
 import { ShowTokenBalance } from 'pages/DaoDetail/components/Assets'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const StyledHeader = styled(Box)(({ theme }) => ({
   width: 'calc(100% - 80px)',
-  margin: '30px auto 0',
+  margin: '10px auto 0',
   minHeight: 138,
   borderRadius: '24px',
   backgroundColor: theme.palette.common.white,
@@ -92,7 +93,7 @@ export default function Index() {
   }, [account, history])
   const TABS =
     chainId && SUPPORT_CREATE_TOKEN_NETWORK.includes(chainId)
-      ? ['Wallet', 'History', 'My Creator']
+      ? ['Wallet', 'History', 'My Created Token']
       : ['Wallet', 'History']
   const [currentTab, setCurrentTab] = useState(TABS[0])
 
@@ -134,6 +135,17 @@ export default function Index() {
 
   return (
     <>
+      <Box mt={40} ml={40}>
+        <Typography
+          sx={{ cursor: 'pointer' }}
+          fontWeight={500}
+          display={'inline-flex'}
+          onClick={() => history.push('/governance')}
+          alignItems="center"
+        >
+          <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>Back
+        </Typography>
+      </Box>
       <StyledHeader>
         <Container display={'flex'} justifyContent={'space-between'} alignItems={'center'} minHeight={138}>
           <Box display={'flex'} gap={10}>
@@ -427,7 +439,7 @@ function MyCreateTokenList() {
   return (
     <>
       <Table className="stp-table" loading={loading} dataSource={showList} rowKey={'id'} pagination={false}>
-        <Column title="tokenInfo" dataIndex="tokenInfo" key="id" align="center" />
+        <Column title="TokenInfo" dataIndex="tokenInfo" key="id" align="center" />
         <Column title="Address" dataIndex="address" key="proposals" align="center" />
         <Column align="center" title="Balance" dataIndex="balance" key="quantity" />
       </Table>
