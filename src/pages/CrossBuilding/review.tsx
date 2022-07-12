@@ -208,14 +208,13 @@ export default function ReviewInformation({
           </Box>
         )}
       </Wrapper>
-      <Box className="btn-group" display={'flex'} justifyContent={'space-between'}>
+      <Box className="btn-group" display={'flex'} justifyContent={'center'} gap="40px">
         <OutlineButton width={'120px'} height="56px" onClick={goBack}>
           Back
         </OutlineButton>
         <BlackButton width="220px" height="56px" disabled={!!createCheck} onClick={onCreate}>
           Confirm and create DAO
         </BlackButton>
-        <Box width={120} />
       </Box>
     </>
   )

@@ -96,7 +96,7 @@ export default function Index(props: Props) {
     // }
 
     createCommunityProposalCallback(
-      { title, content: `/^[markdown]/${desc}`, startTime, endTime, options: curOption },
+      { title, content: `[markdown]${desc}`, startTime, endTime, options: curOption },
       createProposalSignData.userAddress,
       createProposalSignData.balance,
       createProposalSignData.chainId,
