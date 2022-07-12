@@ -28,12 +28,12 @@ export enum ProposalStatusProp {
 }
 export const ProposalStatusText: { [key in ProposalStatusProp]: string } = {
   [ProposalStatusProp.Review]: 'Soon',
-  [ProposalStatusProp.Active]: 'Open',
+  [ProposalStatusProp.Active]: 'Active',
   [ProposalStatusProp.Failed]: 'Declined',
-  [ProposalStatusProp.Success]: 'Success',
+  [ProposalStatusProp.Success]: 'Approved',
   [ProposalStatusProp.Cancel]: 'Closed',
-  [ProposalStatusProp.Executed]: 'Executed',
-  [ProposalStatusProp.Executable]: 'Success'
+  [ProposalStatusProp.Executed]: 'Approved&Executed',
+  [ProposalStatusProp.Executable]: 'Approved'
 }
 
 interface CreateCommunityProposalContent {

@@ -57,7 +57,7 @@ export default function Index(props: IProps) {
           <Empty description="No proposals currently" />
         </Box>
       )}
-      <Grid container className={styles['proposals-list']} spacing={30}>
+      <Grid container className={styles['proposals-list']} spacing={30} rowSpacing={16}>
         {!proposalListLoading &&
           proposalList.map(
             (item, index) =>

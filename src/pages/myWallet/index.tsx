@@ -15,7 +15,7 @@ import {
   SUPPORT_CREATE_TOKEN_NETWORK,
   ZERO_ADDRESS
 } from '../../constants'
-import { useCurrencyBalance, useSTPToken, useToken, useTokenBalance } from 'state/wallet/hooks'
+import { useCreateTokenLogo, useCurrencyBalance, useSTPToken, useToken, useTokenBalance } from 'state/wallet/hooks'
 import { Currency, CurrencyAmount, ETHER, TokenAmount } from 'constants/token'
 import Image from 'components/Image'
 import { Alert } from 'antd'
@@ -66,10 +66,12 @@ const { TabPane } = Tabs
 const { Column } = Table
 
 function GoDaoLink({ address }: { address: string }) {
-  return (
+  return address ? (
     <ExternalLink target="self" href={'/#/detail/' + address}>
       DAO
     </ExternalLink>
+  ) : (
+    <>-</>
   )
 }
 
@@ -78,6 +80,17 @@ function ShowToken({ address }: { address: string }) {
   return (
     <Box display={'flex'} justifyContent={'center'} alignItems={'center'} gap={5}>
       <Image src={token?.logo || ''} width={20} height={20} style={{ borderRadius: '50%' }}></Image>
+      <Typography>{token?.symbol || '-'}</Typography>
+    </Box>
+  )
+}
+
+function ShowCreateToken({ address }: { address: string }) {
+  const token = useToken(address)
+  const logoUrl = useCreateTokenLogo(address)
+  return (
+    <Box display={'flex'} justifyContent={'center'} alignItems={'center'} gap={5}>
+      <Image src={logoUrl || ''} width={20} height={20} style={{ borderRadius: '50%' }}></Image>
       <Typography>{token?.symbol || '-'}</Typography>
     </Box>
   )
@@ -112,7 +125,11 @@ export default function Index() {
   const { loading: myTokensLoading, list: myTokens, page: walletPage } = useAccountDaoAssets()
   const myTokenData = useMemo(() => {
     const ret = myTokens.map(item => ({
-      asset: <ShowToken address={item.tokenAddress} />,
+      asset: item.daoAddress ? (
+        <ShowToken address={item.tokenAddress} />
+      ) : (
+        <ShowCreateToken address={item.tokenAddress} />
+      ),
       price: '-',
       // balance: item.toSignificant(6, { groupSeparator: ',' }),
       balance: <ShowTokenBal address={item.tokenAddress} />,

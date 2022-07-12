@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import ERC20_INTERFACE, { DAO_ERC20_INTERFACE } from '../../constants/abis/erc20'
 import { useActiveWeb3React } from '../../hooks'
-import { useMulticallContract, useSTPTokenContract, useTokenContract } from '../../hooks/useContract'
+import {
+  useCreateERC20Contract,
+  useMulticallContract,
+  useSTPTokenContract,
+  useTokenContract
+} from '../../hooks/useContract'
 import { getContract, isAddress } from '../../utils'
 import { useSingleContractMultipleData, useMultipleContractSingleData, useSingleCallResult } from '../multicall/hooks'
 import { CurrencyAmount, TokenAmount } from '../../constants/token/fractions'
@@ -302,4 +307,10 @@ export function useTokenBalanceByChain(
   }, [account, contract])
 
   return balance
+}
+
+export function useCreateTokenLogo(tokenAddress: string) {
+  const contract = useCreateERC20Contract()
+  const logoURLs = useSingleCallResult(tokenAddress ? contract : null, 'logoURLs', [tokenAddress])
+  return logoURLs.result?.[0]
 }

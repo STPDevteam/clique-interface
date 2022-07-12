@@ -404,7 +404,7 @@ export function useProposalStatusDateline(
 
           if (status === ProposalStatusProp.Success) {
             ret.push({
-              name: 'Succeded',
+              name: 'Succeeded',
               timeStamp: baseInfo.endTime
             })
           }
@@ -436,7 +436,7 @@ export function useProposalStatusDateline(
             timeStamp: activeTimeStamp
           })
           ret.push({
-            name: 'Succeded',
+            name: 'Succeeded',
             timeStamp: baseInfo.endTime
           })
           ret.push({

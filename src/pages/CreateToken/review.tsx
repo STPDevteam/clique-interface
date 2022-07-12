@@ -202,14 +202,13 @@ export default function ReviewInformation({
           </Box>
         )}
       </Wrapper>
-      <Box className="btn-group" display={'flex'} justifyContent="space-between">
-        <OutlineButton width={'120px'} onClick={goBack}>
+      <Box className="btn-group" display={'flex'} justifyContent={'center'} gap="40px">
+        <OutlineButton width={'166px'} height="56px" onClick={goBack}>
           Back
         </OutlineButton>
-        <BlackButton width="220px" height="56px" disabled={!!createCheck} onClick={onCreate}>
+        <BlackButton width="166px" height="56px" disabled={!!createCheck} onClick={onCreate}>
           Create Token
         </BlackButton>
-        <Box width="120px" />
       </Box>
     </>
   )
