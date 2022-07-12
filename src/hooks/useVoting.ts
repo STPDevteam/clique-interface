@@ -24,6 +24,7 @@ export interface ProposalInfoProp {
   minimumVote: string
   minimumValidVotes: string
   minimumCreateProposal: string
+  isMarkdown: boolean
 }
 
 export function useProposalList(votingAddress: string | undefined) {
@@ -58,14 +59,15 @@ export function useProposalList(votingAddress: string | undefined) {
       creator: item.creator,
       proType: item.proType,
       title: item.title,
-      content: item.content,
+      content: item.content.replace(/^\[markdown\]/, ''),
       startTime: Number(item.startTime.toString()),
       endTime: Number(item.endTime.toString()),
       blkHeight: item.blkHeight.toString(),
       status: item.status,
       minimumVote: item.minimumVote.toString(),
       minimumValidVotes: item.minimumValidVotes.toString(),
-      minimumCreateProposal: item.minimumCreateProposal.toString()
+      minimumCreateProposal: item.minimumCreateProposal.toString(),
+      isMarkdown: new RegExp(/^\[markdown\]/).test(item.content)
     }
     // const curTime = getCurrentTimeStamp()
     // if (item.status === 0 && ret.startTime < curTime && ret.endTime > curTime) {
@@ -184,13 +186,14 @@ export function useCrossProposalList(votingAddress: string | undefined) {
       creator: item.creator,
       proType: item.proType,
       title: item.title,
-      content: item.content,
+      content: item.content.replace(/^\[markdown\]/, ''),
       startTime: Number(item.startTime.toString()),
       endTime: Number(item.endTime.toString()),
       status: item.status,
       minimumVote: item.minimumVote.toString(),
       minimumValidVotes: item.minimumValidVotes.toString(),
-      minimumCreateProposal: item.minimumCreateProposal.toString()
+      minimumCreateProposal: item.minimumCreateProposal.toString(),
+      isMarkdown: new RegExp(/^\[markdown\]/).test(item.content)
     }
     if (item.status === ProposalStatusProp.Success && item.proType === ProposalType.CONTRACT) {
       ret.status = ProposalStatusProp.Executable

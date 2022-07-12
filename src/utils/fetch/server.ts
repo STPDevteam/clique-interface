@@ -124,3 +124,13 @@ export function getCrossProBlockNum(
     proposalId
   })
 }
+
+export function commitProposalText(input: string) {
+  return Axios.post(serverBaseUrl + 'text', {
+    input
+  })
+}
+
+export function getProposalText(url: string) {
+  return Axios.get(url)
+}

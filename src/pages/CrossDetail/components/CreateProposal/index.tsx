@@ -1,7 +1,7 @@
 import styles from '../../../DaoDetail/components/CreateProposal/index.module.less'
 import { Input } from 'antd'
 import { Box, Typography } from '@mui/material'
-import TextArea from 'antd/lib/input/TextArea'
+// import TextArea from 'antd/lib/input/TextArea'
 import OutlineButton from 'components/Button/OutlineButton'
 import { BlackButton } from 'components/Button/Button'
 import DatePicker from 'components/DatePicker'
@@ -18,11 +18,38 @@ import Confirm from './Confirm'
 import { useCreateCrossProposalCallback } from 'hooks/useCreateCommunityProposalCallback'
 import { useCreateProposalSignData } from 'hooks/useBackedCrossServer'
 import { TokenAmount } from 'constants/token'
-import { commitErrorMsg } from 'utils/fetch/server'
+import { commitErrorMsg, uploadPictureAddress } from 'utils/fetch/server'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import ReactMde from 'react-mde'
+import 'react-mde/lib/styles/css/react-mde-all.css'
+import ReactMarkdown from 'react-markdown'
+import axios from 'axios'
+
 interface Props {
   onBack: () => void
   daoInfo: ExternalDaoInfoProps | undefined
+}
+
+const save = async function*(_: ArrayBuffer, file: Blob) {
+  const upload = () => {
+    const params = new FormData()
+    params.append('file', file)
+    return axios.post(uploadPictureAddress(), params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+  }
+  // Upload "data" to your server
+  // Use XMLHttpRequest.send to send a FormData object containing
+  // "data"
+  // Check this question: https://stackoverflow.com/questions/18055422/how-to-receive-php-image-data-over-copy-n-paste-javascript-with-xmlhttprequest
+  const data = (await (await upload()).data.data) as string
+  // yields the URL that should be inserted in the markdown
+  yield data
+
+  // returns true meaning that the save was successful
+  return true
 }
 
 export default function Index(props: Props) {
@@ -30,6 +57,7 @@ export default function Index(props: Props) {
   const { account } = useActiveWeb3React()
   const [title, setTitle] = useState('')
   const [desc, setDesc] = useState('')
+  const [selectedTab, setSelectedTab] = useState<'write' | 'preview' | undefined>('write')
   const [option, setOption] = useState<string[]>(['Approve', 'Disapprove'])
   const [startTime, setStartTime] = useState<number>()
   const [endTime, setEndTime] = useState<number>()
@@ -54,12 +82,21 @@ export default function Index(props: Props) {
     return false
   }, [daoInfo?.rule])
 
-  const onCreateCommunityProposalCallback = useCallback(() => {
+  const onCreateCommunityProposalCallback = useCallback(async () => {
     if (!title.trim() || !startTime || !endTime || !createProposalSignData) return
     const curOption = option.filter(i => i.trim())
     showModal(<TransactionPendingModal />)
+
+    // let commitLink = ''
+    // try {
+    //   commitLink = await (await commitProposalText(desc || '')).data.data
+    // } catch (err) {
+    //   const error = err as any
+    //   showModal(<MessageBox type="error">{error?.data?.msg || 'commit content error, please try again'}</MessageBox>)
+    // }
+
     createCommunityProposalCallback(
-      { title, content: desc, startTime, endTime, options: curOption },
+      { title, content: `/^[markdown]/${desc}`, startTime, endTime, options: curOption },
       createProposalSignData.userAddress,
       createProposalSignData.balance,
       createProposalSignData.chainId,
@@ -228,7 +265,22 @@ export default function Index(props: Props) {
           </Box>
           <Box className="input-item">
             <span className="label">Description</span>
-            <TextArea rows={5} value={desc} maxLength={3000} onChange={e => setDesc(e.target.value)} />
+            <ReactMde
+              value={desc}
+              onChange={setDesc}
+              selectedTab={selectedTab}
+              onTabChange={setSelectedTab}
+              generateMarkdownPreview={markdown => Promise.resolve(<ReactMarkdown>{markdown}</ReactMarkdown>)}
+              childProps={{
+                writeButton: {
+                  tabIndex: -1
+                }
+              }}
+              paste={{
+                saveImage: save
+              }}
+            />
+            {/* <TextArea rows={5} value={desc} maxLength={3000} onChange={e => setDesc(e.target.value)} /> */}
           </Box>
           <Box className="input-item">
             <span className="label">Voting Options</span>

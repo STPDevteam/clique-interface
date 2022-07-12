@@ -166,6 +166,8 @@
     "react-app-polyfill": "^2.0.0",
     "react-dev-utils": "^11.0.3",
     "react-ga4": "^1.4.1",
+    "react-markdown": "^8.0.3",
+    "react-mde": "^11.5.0",
     "react-refresh": "^0.8.3",
     "resolve": "1.18.1",
     "resolve-url-loader": "^3.1.2",

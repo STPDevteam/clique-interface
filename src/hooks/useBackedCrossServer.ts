@@ -3,7 +3,8 @@ import {
   getCrossBalance,
   getCrossProBlockNum,
   getCrossTokenInfo,
-  getCrossVotingSign
+  getCrossVotingSign,
+  getProposalText
 } from '../utils/fetch/server'
 import { useActiveWeb3React } from '.'
 import { useEffect, useState } from 'react'
@@ -175,4 +176,30 @@ export function useCrossProposalBlockNumber(
   }, [chainId, daoAddress, proposalId, targetChainId])
 
   return block
+}
+
+export function useProposalText(url: string | undefined) {
+  const [result, setResult] = useState()
+  useEffect(() => {
+    ;(async () => {
+      if (!url) {
+        setResult(undefined)
+        return
+      }
+      try {
+        const res = await getProposalText(url)
+        const data = JSON.parse(res.data.data).input
+        if (!data) {
+          setResult(undefined)
+          return
+        }
+        setResult(data)
+      } catch (error) {
+        setResult(undefined)
+        console.error('useProposalText', error)
+      }
+    })()
+  }, [url])
+
+  return result
 }
