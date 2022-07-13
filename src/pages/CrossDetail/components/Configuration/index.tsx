@@ -461,7 +461,7 @@ export default function Configuration({
                   <span>Minutes</span>
                 </div>
               </Box>
-              <Box display={'flex'} alignItems={'center'} gap={5}>
+              <Box display={'flex'} alignItems={'center'} gap={5} color="#808191">
                 <Switch
                   checked={votersCustom}
                   onChange={val => {

@@ -275,7 +275,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                     <span>Minutes</span>
                   </div>
                 </Box>
-                <Box display={'flex'} alignItems={'center'} gap={5}>
+                <Box display={'flex'} alignItems={'center'} gap={5} color="#808191">
                   <Switch
                     checked={rule.votersCustom}
                     onChange={val => {

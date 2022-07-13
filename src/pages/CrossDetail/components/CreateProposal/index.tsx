@@ -24,6 +24,7 @@ import ReactMde from 'react-mde'
 import 'react-mde/lib/styles/css/react-mde-all.css'
 import ReactMarkdown from 'react-markdown'
 import axios from 'axios'
+import { IS_TEST_ENV } from 'constants/chain'
 
 interface Props {
   onBack: () => void
@@ -329,6 +330,10 @@ export default function Index(props: Props) {
                   setStartTime(timeStamp)
                   if (endTimeDIsabled) {
                     setEndTime(timeStamp ? timeStamp + Number(daoInfo?.rule?.communityVotingDuration || 0) : undefined)
+                  } else {
+                    if (endTime) {
+                      setEndTime(undefined)
+                    }
                   }
                 }}
               />
@@ -337,8 +342,16 @@ export default function Index(props: Props) {
               <span className="label">End time</span>
               <DatePicker
                 valueStamp={endTime}
-                disabled={endTimeDIsabled}
-                disabledPassTime={startTime ? startTime * 1000 : new Date()}
+                disabled={endTimeDIsabled || !startTime}
+                disabledPassTime={
+                  IS_TEST_ENV
+                    ? startTime
+                      ? startTime * 1000
+                      : new Date()
+                    : startTime
+                    ? startTime * 1000 + 86400 * 1000
+                    : new Date().getTime() + 86400 * 1000
+                }
                 onChange={timeStamp => setEndTime(timeStamp)}
               />
             </Box>
