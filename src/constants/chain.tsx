@@ -8,7 +8,7 @@ import { ReactComponent as MaticLogo } from '../assets/svg/matic.svg'
 import KlaytnSvg from '../assets/svg/klaytn_logo.svg'
 import { ReactComponent as KlaytnLogo } from '../assets/svg/klaytn_logo.svg'
 
-export const SUPPORTED_CHAIN_IDS = [4, 72, 1001, 80001]
+export const SUPPORTED_CHAIN_IDS = [4, 1001, 80001]
 
 export enum ChainId {
   ETH = 1,
