@@ -154,7 +154,7 @@ export default function ReviewInformation({
                   </div>
 
                   <div className="input-item mt-12">
-                    <span className="label">Minimum total votes</span>
+                    <span className="label">Minimum total votes to pass proposal</span>
                     <span className="value">
                       {toFormatGroup(ruleData.minApprovalNumber, 0)} (
                       {externalTokenInfo.totalSupply

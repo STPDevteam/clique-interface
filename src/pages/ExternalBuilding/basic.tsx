@@ -57,7 +57,7 @@ export default function Basic({ goNext }: { goNext: () => void }) {
             <span className="label">DAO Name *</span>
             <div className="suffix-wrapper">
               <Input
-                placeholder="Membership"
+                placeholder="DAO name"
                 maxLength={30}
                 value={basicData.daoName}
                 onChange={e => updateBasicCall('daoName', e.target.value)}

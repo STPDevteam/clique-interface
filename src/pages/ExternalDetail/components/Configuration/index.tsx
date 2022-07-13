@@ -106,7 +106,10 @@ export default function Configuration({
       ]
     }
     if (minValidNumber !== rule.minimumValidVotes.toSignificant()) {
-      logArr['Minimum total votes'] = [rule.minimumValidVotes.toSignificant(6, { groupSeparator: ',' }), minValidNumber]
+      logArr['Minimum total votes to pass proposal'] = [
+        rule.minimumValidVotes.toSignificant(6, { groupSeparator: ',' }),
+        minValidNumber
+      ]
     }
     if (communityDuration !== rule.communityVotingDuration) {
       const _new = calcTime(Number(communityDuration))
@@ -312,7 +315,7 @@ export default function Configuration({
 
         <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
           <div className="input-item progress">
-            <span className="label">Minimum total votes</span>
+            <span className="label">Minimum total votes to pass proposal</span>
             <div className="progress-wrapper">
               <Slider
                 min={1}

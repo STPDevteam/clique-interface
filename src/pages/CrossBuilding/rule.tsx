@@ -57,7 +57,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
       return 'loading'
     }
     if (new BigNumber(rule.minApprovalNumber).gt(tokenSupply)) {
-      return 'Minimum total votes so large'
+      return 'Minimum total votes to pass proposal so large'
     }
     if (new BigNumber(rule.minCreateProposalNumber).gt(tokenSupply)) {
       return 'Minimum holding to create proposal so large'
@@ -178,7 +178,7 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <div className="input-item progress">
               <Box className="label" display={'flex'} alignItems={'center'}>
-                Minimum total votes
+                Minimum total votes to pass proposal
                 <Tooltip
                   placement="top"
                   title="The minimum number of votes needed to make the result valid. By the end of the proposal, if the sum of
@@ -285,6 +285,11 @@ export default function Rule({ goNext, goBack }: { goNext: () => void; goBack: (
                   <Typography fontSize={14} variant="h6">
                     Custom Duration
                   </Typography>
+                  <Tooltip
+                    title={`If turned on, proposal creators can customize voting duration on the ‘Create Proposal’ page.`}
+                  >
+                    <HelpOutlineIcon />
+                  </Tooltip>
                 </Box>
               </Box>
             </div>
