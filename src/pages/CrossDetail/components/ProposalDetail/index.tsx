@@ -26,7 +26,7 @@ import TimelineStatus from 'pages/DaoDetail/components/ProposalDetail/TimelineSt
 import { getCrossVotingSign } from 'utils/fetch/server'
 import { useCrossBalanceOfAt, useCrossProposalBlockNumber } from 'hooks/useBackedCrossServer'
 import { useTagCompletedTx } from 'state/transactions/hooks'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { ReactComponent as ArrowBackIcon } from 'assets/svg/arrow_back.svg'
 // import { useVotingSignData } from 'hooks/useBackedCrossServer'
 
 export default function Index({
@@ -169,13 +169,13 @@ export default function Index({
       <Box>
         <Typography
           sx={{ cursor: 'pointer' }}
-          fontWeight={500}
+          fontWeight={600}
           mb={40}
           display={'inline-flex'}
           onClick={onBack}
           alignItems="center"
         >
-          <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>All Proposals
+          <ArrowBackIcon style={{ marginRight: 8 }}></ArrowBackIcon>All Proposals
         </Typography>
       </Box>
 

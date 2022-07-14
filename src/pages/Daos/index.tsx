@@ -57,7 +57,7 @@ export default function Index() {
               Discover DAOs and participate in governance activities through proposal voting, crowdfunding and more to
               come!
               <ExternalLink
-                style={{ fontSize: 12, fontWeight: 600, color: 'inherit' }}
+                style={{ fontSize: 14, fontWeight: 600, color: 'inherit' }}
                 href="https://stp-dao.gitbook.io/verse-network/clique/overview-of-clique"
               >
                 {` How it works >`}

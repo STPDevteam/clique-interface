@@ -19,7 +19,7 @@ import { useCreateCrossProposalCallback } from 'hooks/useCreateCommunityProposal
 import { useCreateProposalSignData } from 'hooks/useBackedCrossServer'
 import { TokenAmount } from 'constants/token'
 import { commitErrorMsg, uploadPictureAddress } from 'utils/fetch/server'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { ReactComponent as ArrowBackIcon } from 'assets/svg/arrow_back.svg'
 import ReactMde from 'react-mde'
 import 'react-mde/lib/styles/css/react-mde-all.css'
 import ReactMarkdown from 'react-markdown'
@@ -248,13 +248,13 @@ export default function Index(props: Props) {
       <Box>
         <Typography
           sx={{ cursor: 'pointer' }}
-          fontWeight={500}
+          fontWeight={600}
           mb={20}
           display={'inline-flex'}
           onClick={onBack}
           alignItems="center"
         >
-          <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>All Proposals
+          <ArrowBackIcon style={{ marginRight: 8 }}></ArrowBackIcon>All Proposals
         </Typography>
       </Box>
       <p className={styles.title}>Create Proposal</p>

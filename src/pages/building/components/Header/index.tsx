@@ -3,7 +3,7 @@ import './index.pc.less'
 import 'react'
 import { useHistory } from 'react-router-dom'
 import { Box, Typography } from '@mui/material'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { ReactComponent as ArrowBackIcon } from 'assets/svg/arrow_back.svg'
 
 interface IHeaderProps {
   title?: string
@@ -29,7 +29,7 @@ export default function Index(props: IHeaderProps) {
           onClick={() => history.push('/governance')}
           alignItems="center"
         >
-          <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>Home
+          <ArrowBackIcon style={{ marginRight: 8 }}></ArrowBackIcon>Home
         </Typography>
       </Box>
       <section className="building-header">

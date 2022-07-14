@@ -20,7 +20,7 @@ import { getEtherscanLink } from 'utils'
 import { ReactComponent as Twitter } from 'assets/svg/twitter.svg'
 import { ReactComponent as Discord } from 'assets/svg/discord.svg'
 import CheckSwitchChainMask from 'components/Modal/CheckSwitchChainMask'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { ReactComponent as ArrowBackIcon } from 'assets/svg/arrow_back.svg'
 
 export default function Index() {
   const links = ['Proposal', 'Configuration']
@@ -51,12 +51,12 @@ export default function Index() {
         <Box mt={40} ml={40}>
           <Typography
             sx={{ cursor: 'pointer' }}
-            fontWeight={500}
+            fontWeight={600}
             display={'inline-flex'}
             onClick={() => history.push('/governance')}
             alignItems="center"
           >
-            <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>Back
+            <ArrowBackIcon style={{ marginRight: 8 }}></ArrowBackIcon>Back
           </Typography>
         </Box>
         <CheckSwitchChainMask />

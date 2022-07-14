@@ -29,7 +29,7 @@ import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import Button from 'components/Button/Button'
 import Copy from 'components/essential/Copy'
 import { ShowTokenBalance } from 'pages/DaoDetail/components/Assets'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { ReactComponent as ArrowBackIcon } from 'assets/svg/arrow_back.svg'
 
 const StyledHeader = styled(Box)(({ theme }) => ({
   width: 'calc(100% - 80px)',
@@ -161,12 +161,12 @@ export default function Index() {
         <Box mt={40} mb={-20} ml={40}>
           <Typography
             sx={{ cursor: 'pointer' }}
-            fontWeight={500}
+            fontWeight={600}
             display={'inline-flex'}
             onClick={() => history.push('/governance')}
             alignItems="center"
           >
-            <ArrowBackIcon sx={{ height: 16 }}></ArrowBackIcon>Back
+            <ArrowBackIcon style={{ marginRight: 8 }}></ArrowBackIcon>Back
           </Typography>
         </Box>
       )}

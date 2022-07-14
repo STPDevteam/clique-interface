@@ -19,7 +19,7 @@ export default function Index({ detail, snapshot }: { detail: ProposalInfoProp; 
           <span className={styles['value']}>{shortenAddress(detail.creator)}</span>
         </div>
         <div className={styles['list-item']}>
-          <span className={styles['label']}>Snapshot</span>
+          <span className={styles['label']}>Block height</span>
           <span className={styles['value']}>
             {detail.blkHeight || snapshot || '-'}
             <Link
