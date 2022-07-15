@@ -10,7 +10,7 @@ export function useDaoAddressLists(pageSize = 16) {
   const { chainId } = useActiveWeb3React()
 
   const totalPages = useMemo(() => {
-    return lastId ? Math.ceil(lastId - begin + 1 / pageSize) : 0
+    return lastId ? Math.ceil((lastId - begin + 1) / pageSize) : 0
   }, [lastId, pageSize])
 
   const sortIds = useMemo(() => {
