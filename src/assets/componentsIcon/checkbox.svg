@@ -3,7 +3,7 @@
 <g filter="url(#filter0_i)">
 <rect width="20" height="20" rx="4" fill="black"/>
 </g>
-<rect x="0.5" y="0.5" width="19" height="19" rx="3.5" stroke="#9C6DFF"/>
+<rect x="0.5" y="0.5" width="19" height="19" rx="3.5" stroke="#C60C00"/>
 </g>
 <defs>
 <filter id="filter0_i" x="0" y="0" width="20" height="20" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">

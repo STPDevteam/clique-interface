@@ -3,10 +3,10 @@ import '../building/review.pc.less'
 import { Collapse, Table } from 'antd'
 import IconArrow from '../../assets/images/icon-arrow.svg'
 import { ReactComponent as EditIcon } from 'assets/svg/edit_icon.svg'
-import { Box, styled, Typography } from '@mui/material'
+import { Box, Checkbox, FormControlLabel, Link, styled, Typography } from '@mui/material'
 import { StyledExtraBg } from 'components/styled'
 import { useTrueCreateTokenData, useCreateTokenDataCallback } from 'state/createToken/hooks'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { getPerForAmount } from '../building/function'
 import { shortenAddress } from 'utils'
@@ -50,6 +50,7 @@ export default function ReviewInformation({
   const createERC20 = useCreateERC20Callback()
   const { account, library, chainId } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
+  const [checkoutProtocol, setCheckoutProtocol] = useState(false)
 
   const { basicData, distributionData } = useTrueCreateTokenData()
 
@@ -93,6 +94,9 @@ export default function ReviewInformation({
         </>
       )
     }
+    if (!checkoutProtocol) {
+      return <>Need to read and agree to the Disclaimer of Create Token</>
+    }
     if (chainId !== basicData.baseChainId) {
       return (
         <>
@@ -109,7 +113,7 @@ export default function ReviewInformation({
       )
     }
     return undefined
-  }, [account, basicData.baseChainId, chainId, library, toggleWalletModal])
+  }, [account, basicData.baseChainId, chainId, library, toggleWalletModal, checkoutProtocol])
 
   return (
     <>
@@ -196,6 +200,32 @@ export default function ReviewInformation({
             )}
           </Panel>
         </Collapse>
+        <Box display={'flex'} mt={15} justifyContent="center">
+          <FormControlLabel
+            sx={{ color: theme => theme.palette.error.main }}
+            control={
+              <Checkbox
+                value={checkoutProtocol}
+                onChange={(_, checked) => setCheckoutProtocol(checked)}
+                sx={{
+                  color: theme => theme.palette.error.main,
+                  '&.Mui-checked': {
+                    color: theme => theme.palette.error.main
+                  }
+                }}
+              />
+            }
+            label={
+              <>
+                I have read and agree to the{' '}
+                <Link target="_blank" href="https://stp-dao.gitbook.io/verse-network/clique/overview-of-clique">
+                  Disclaimer
+                </Link>{' '}
+                of Create Token
+              </>
+            }
+          />
+        </Box>
         {createCheck && (
           <Box mt={15}>
             <AlertError>{createCheck}</AlertError>
