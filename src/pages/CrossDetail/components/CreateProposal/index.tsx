@@ -32,7 +32,7 @@ interface Props {
 }
 
 const save = async function*(_: ArrayBuffer, file: Blob) {
-  if (file.size > 1024) {
+  if (file.size > 1024 * 1024 * 2) {
     message.info('Image must smaller than 2M!')
     return false
   }
