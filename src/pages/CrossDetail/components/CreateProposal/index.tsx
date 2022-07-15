@@ -7,7 +7,7 @@ import { BlackButton } from 'components/Button/Button'
 import DatePicker from 'components/DatePicker'
 import InputOptions from 'components/Input/InputOptions'
 import { ExternalDaoInfoProps } from 'hooks/useDAOInfo'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveWeb3React } from 'hooks'
 import { useWalletModalToggle } from 'state/application/hooks'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
@@ -247,6 +247,16 @@ export default function Index(props: Props) {
     usrBalance
   ])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const el = document.querySelector('#markdown .image-tip span')
+      if (el) {
+        el.innerHTML = 'Image files by dragging & dropping, selecting or pasting them to upload, maximum 2m.'
+        clearInterval(interval)
+      }
+    }, 100)
+  }, [])
+
   return (
     <div className={styles.container}>
       <Box>
@@ -268,7 +278,7 @@ export default function Index(props: Props) {
             <span className="label">Title</span>
             <Input placeholder="" value={title} maxLength={120} onChange={e => setTitle(e.target.value)} />
           </Box>
-          <Box className="input-item">
+          <Box className="input-item" id="markdown">
             <span className="label">Description</span>
             <ReactMde
               value={desc}
@@ -285,7 +295,6 @@ export default function Index(props: Props) {
                 saveImage: save
               }}
             />
-            <Typography color={'#808191'}>Support image upload, maximum 2m.</Typography>
             {/* <TextArea rows={5} value={desc} maxLength={3000} onChange={e => setDesc(e.target.value)} /> */}
           </Box>
           <Box className="input-item">
