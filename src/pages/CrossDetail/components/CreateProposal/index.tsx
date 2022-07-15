@@ -1,5 +1,5 @@
 import styles from '../../../DaoDetail/components/CreateProposal/index.module.less'
-import { Input } from 'antd'
+import { Input, message } from 'antd'
 import { Box, Typography } from '@mui/material'
 // import TextArea from 'antd/lib/input/TextArea'
 import OutlineButton from 'components/Button/OutlineButton'
@@ -32,6 +32,10 @@ interface Props {
 }
 
 const save = async function*(_: ArrayBuffer, file: Blob) {
+  if (file.size > 1024) {
+    message.info('Image must smaller than 2M!')
+    return false
+  }
   const upload = () => {
     const params = new FormData()
     params.append('file', file)
@@ -281,6 +285,7 @@ export default function Index(props: Props) {
                 saveImage: save
               }}
             />
+            <Typography color={'#808191'}>Support image upload, maximum 2m.</Typography>
             {/* <TextArea rows={5} value={desc} maxLength={3000} onChange={e => setDesc(e.target.value)} /> */}
           </Box>
           <Box className="input-item">
