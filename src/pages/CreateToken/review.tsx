@@ -202,27 +202,26 @@ export default function ReviewInformation({
         </Collapse>
         <Box display={'flex'} mt={15} justifyContent="center">
           <FormControlLabel
-            sx={{ color: theme => theme.palette.error.main }}
             control={
               <Checkbox
                 value={checkoutProtocol}
                 onChange={(_, checked) => setCheckoutProtocol(checked)}
                 sx={{
-                  color: theme => theme.palette.error.main,
+                  color: theme => theme.palette.text.primary,
                   '&.Mui-checked': {
-                    color: theme => theme.palette.error.main
+                    color: theme => theme.palette.text.primary
                   }
                 }}
               />
             }
             label={
-              <>
+              <Typography sx={{ color: theme => theme.palette.text.primary, fontWeight: 500 }}>
                 I have read and agree to the{' '}
                 <Link target="_blank" href="https://stp-dao.gitbook.io/verse-network/clique/overview-of-clique">
                   Disclaimer
                 </Link>{' '}
                 of Create Token
-              </>
+              </Typography>
             }
           />
         </Box>
