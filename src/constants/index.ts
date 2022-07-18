@@ -8,7 +8,7 @@ import IconTokenSvg from '../assets/images/icon-token.svg'
 import KlaytnTokenSvg from '../assets/svg/klaytn_logo.svg'
 import MATICTokenSvg from '../assets/svg/matic.svg'
 import ETHTokenImg from '../assets/images/token-eth.png'
-// import { isDaoframeSite } from 'utils/dao'
+import { isDaoframeSite } from 'utils/dao'
 
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
@@ -136,8 +136,7 @@ export const DAO_FACTORY_ADDRESS = {
   [ChainId.STP]: '0xDce6c971D06A8b7406Fb5D874469c42814e3374F',
   [ChainId.KLAYTN_BAOBAB]: '0x9c5c378539ed8a7e5946329ee83b66ac42086359',
   [ChainId.POLYGON_TESTNET]: '0xAf64127961e233331aC24e77e6590d8b96c3Da76',
-  [ChainId.MATIC]: '0x8F9271dc3359fBD601593B7Eab9A03861358216C'
-  // [ChainId.MATIC]: '0x71d3D9893EC3F39833aD6148790b310175612cB6'
+  [ChainId.MATIC]: '0x71d3D9893EC3F39833aD6148790b310175612cB6'
 }
 
 export const FARM_STAKING_ADDRESS = {
@@ -271,11 +270,11 @@ export const CROSS_SUPPORT_IMPORT_NETWORK = IS_TEST_ENV ? [4] : [1]
 export const CROSS_SUPPORT_CREATE_NETWORK = IS_TEST_ENV ? [80001] : [137]
 export const SUPPORT_CREATE_TOKEN_NETWORK = IS_TEST_ENV ? [4] : [1]
 export const stpExplorerBaseUrl = 'https://testnet-explorer.stp.network/'
-// export const serverBaseUrl = IS_TEST_ENV
-//   ? 'https://testapi.myclique.io/'
-//   : isDaoframeSite()
-//   ? 'https://api.daoframe.com/'
-//   : 'https://api.myclique.io/'
-export const serverBaseUrl = 'https://api.klique.xyz:8082/'
+export const serverBaseUrl = IS_TEST_ENV
+  ? 'https://testapi.myclique.io/'
+  : isDaoframeSite()
+  ? 'https://api.daoframe.com/'
+  : 'https://api.myclique.io/'
+// export const serverBaseUrl = 'https://api.klique.xyz:8082/'
 export const mycliqueUrl = 'https://myclique.io/'
 export const daoframeUrl = 'https://daoframe.com/'
