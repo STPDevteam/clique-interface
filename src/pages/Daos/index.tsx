@@ -15,6 +15,7 @@ import { DaoTypeProp, useGetDaoTypes, useIsVerifiedDao } from 'hooks/useDAOInfo'
 import { ReactComponent as IconDao } from 'assets/svg/icon-dao.svg'
 // import { ReactComponent as CloseSvg } from 'assets/svg/close.svg'
 import CheckSwitchChainMask from 'components/Modal/CheckSwitchChainMask'
+import { useIsStakeVerifiedDao } from 'hooks/useStakeVerified'
 
 enum TypeTabs {
   DAO,
@@ -147,7 +148,7 @@ export default function Index() {
                           <Typography variant="h6" noWrap maxWidth="80%">
                             {item.daoName}
                           </Typography>
-                          <VerifiedTag address={item.daoAddress} />
+                          <StakeVerifiedTag id={item.id} />
                         </Box>
 
                         <Typography fontWeight={500} fontSize={14} color="#808191">
@@ -258,6 +259,20 @@ function ShowProposalNumber({
 export function VerifiedTag({ address }: { address?: string }) {
   const isVerified = useIsVerifiedDao(address)
   if (!isVerified) return null
+  return (
+    <svg width="16" height="16" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10 20.5C12.6522 20.5 15.1957 19.4464 17.0711 17.5711C18.9464 15.6957 20 13.1522 20 10.5C20 7.84784 18.9464 5.3043 17.0711 3.42893C15.1957 1.55357 12.6522 0.5 10 0.5C7.34784 0.5 4.8043 1.55357 2.92893 3.42893C1.05357 5.3043 0 7.84784 0 10.5C0 13.1522 1.05357 15.6957 2.92893 17.5711C4.8043 19.4464 7.34784 20.5 10 20.5ZM10.315 4.335C10.2441 4.29079 10.1647 4.26195 10.082 4.25033C9.99922 4.23871 9.91495 4.24457 9.83461 4.26754C9.75428 4.29051 9.67965 4.33008 9.61555 4.38368C9.55146 4.43729 9.49932 4.50374 9.4625 4.57875L7.9625 7.61875L4.6075 8.10625C4.49688 8.12195 4.39289 8.16836 4.30731 8.24019C4.22174 8.31202 4.15803 8.40641 4.1234 8.51264C4.08877 8.61886 4.08462 8.73267 4.11142 8.84113C4.13822 8.9496 4.19489 9.04837 4.275 9.12625L6.705 11.4913L6.13 14.8337C6.11105 14.9437 6.12327 15.0568 6.16529 15.1602C6.2073 15.2636 6.27743 15.3531 6.36772 15.4187C6.45801 15.4843 6.56486 15.5232 6.67617 15.5312C6.78748 15.5392 6.89879 15.5158 6.9975 15.4637L10 13.8862L13 15.4625C13.0987 15.5145 13.21 15.5379 13.3213 15.5299C13.4326 15.522 13.5395 15.483 13.6298 15.4174C13.7201 15.3519 13.7902 15.2623 13.8322 15.1589C13.8742 15.0555 13.8865 14.9425 13.8675 14.8325L13.295 11.4913L15.7225 9.125C15.8018 9.04696 15.8577 8.94838 15.8841 8.84033C15.9104 8.73227 15.9062 8.619 15.8718 8.51323C15.8374 8.40745 15.7742 8.31334 15.6894 8.24146C15.6045 8.16958 15.5012 8.12276 15.3912 8.10625L12.035 7.61875L10.535 4.57875C10.4859 4.47855 10.4097 4.39411 10.315 4.335Z"
+        fill="#0049C6"
+      />
+    </svg>
+  )
+}
+
+export function StakeVerifiedTag({ id, address }: { id?: number; address?: string }) {
+  useIsStakeVerifiedDao(id, address)
   return (
     <svg width="16" height="16" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path

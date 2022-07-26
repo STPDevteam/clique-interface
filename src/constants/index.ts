@@ -148,6 +148,11 @@ export const FARM_STAKING_ADDRESS = {
   [ChainId.POLYGON_TESTNET]: ''
 }
 
+export const DAO_VERIFIER_ADDRESS: { [chainId in ChainId]?: string } = {
+  [ChainId.ETH]: '',
+  [ChainId.RINKEBY]: '0x03919e8a7db18b89ac287ddb8ad5de34f44e1e11'
+}
+
 export const CREATE_TOKEN_ADDRESS = {
   [ChainId.ETH]: '0x0B72e0FBDc855C6e15e3d95A31Bb42F45AD8b5De',
   [ChainId.RINKEBY]: '0xa0f37Cff8bb04273a7d18173190C460cBa3A08A4',

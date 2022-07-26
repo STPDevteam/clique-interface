@@ -15,7 +15,7 @@ import { Spin } from 'antd'
 import { useActiveWeb3React } from 'hooks'
 import { Avatar, Box, Link, Typography, useTheme } from '@mui/material'
 import { CROSS_SUPPORT_CREATE_NETWORK } from '../../constants'
-import { VerifiedTag } from 'pages/Daos'
+import { StakeVerifiedTag } from 'pages/Daos'
 import { getEtherscanLink } from 'utils'
 import { ReactComponent as Twitter } from 'assets/svg/twitter.svg'
 import { ReactComponent as Discord } from 'assets/svg/discord.svg'
@@ -66,7 +66,7 @@ export default function Index() {
             <Box ml={'24px'}>
               <Box className={styles['title']} display="flex" alignItems={'center'} gap="5px">
                 {daoInfo?.daoName || '--'}
-                <VerifiedTag address={daoInfo?.daoAddress} />
+                <StakeVerifiedTag address={daoInfo?.daoAddress} />
               </Box>
               <Box display={'flex'} justifyContent="space-between" mb={6}>
                 <Link

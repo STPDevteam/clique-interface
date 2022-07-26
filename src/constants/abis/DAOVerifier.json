@@ -1,0 +1,159 @@
+[
+  {
+    "inputs": [{ "internalType": "address", "name": "stptAddress_", "type": "address" }],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": false, "internalType": "uint8", "name": "version", "type": "uint8" }],
+    "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "MAX_UINT128",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "STPT_ADDRESS",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "amountByDaoId",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "cumulativeStaked",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "account_", "type": "address" }],
+    "name": "getMyStakedDao",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "daoId", "type": "uint256" },
+          { "internalType": "uint256", "name": "verifiedTimestamp", "type": "uint256" },
+          { "internalType": "uint256", "name": "stakedAmount", "type": "uint256" },
+          { "internalType": "uint256", "name": "stakedAmountTotal", "type": "uint256" }
+        ],
+        "internalType": "struct DAOVerifier.StakedDao[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "account_", "type": "address" }],
+    "name": "getVerifiedDao",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "daoId", "type": "uint256" },
+          { "internalType": "uint256", "name": "verifiedTimestamp", "type": "uint256" },
+          { "internalType": "uint256", "name": "stakedAmount", "type": "uint256" },
+          { "internalType": "uint256", "name": "stakedAmountTotal", "type": "uint256" }
+        ],
+        "internalType": "struct DAOVerifier.StakedDao[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256[]", "name": "daoIds_", "type": "uint256[]" },
+      { "internalType": "address", "name": "account_", "type": "address" }
+    ],
+    "name": "getVerifiedDaoByIds",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "daoId", "type": "uint256" },
+          { "internalType": "uint256", "name": "verifiedTimestamp", "type": "uint256" },
+          { "internalType": "uint256", "name": "stakedAmount", "type": "uint256" },
+          { "internalType": "uint256", "name": "stakedAmountTotal", "type": "uint256" }
+        ],
+        "internalType": "struct DAOVerifier.StakedDao[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "verificationThreshold_", "type": "uint256" }],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "daoId_", "type": "uint256" },
+      { "internalType": "uint256", "name": "amount_", "type": "uint256" }
+    ],
+    "name": "stake",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "daoId_", "type": "uint256" },
+      { "internalType": "uint256", "name": "amount_", "type": "uint256" }
+    ],
+    "name": "unstake",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "verificationThreshold",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

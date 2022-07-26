@@ -43,18 +43,26 @@ export function useDaoAddressLists(pageSize = 16) {
       setCurrentPage
     },
     daoAddresss,
+    daoIds: ids,
     loading
   }
 }
 
 export function useHomeDaoList() {
-  const { daoAddresss, page, loading } = useDaoAddressLists()
+  const { daoAddresss, daoIds, page, loading } = useDaoAddressLists()
 
   const { data: daoList, loading: infoLoading } = useMultiDaoBaseInfo(daoAddresss)
+
+  const list = useMemo(() => {
+    return daoList.map((item, index) => ({
+      id: daoIds[index],
+      ...item
+    }))
+  }, [daoIds, daoList])
 
   return {
     page,
     loading: loading || infoLoading,
-    list: daoList
+    list
   }
 }

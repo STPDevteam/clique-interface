@@ -33,6 +33,8 @@ import CrossBuilding from './CrossBuilding'
 import CreateToken from './CreateToken'
 import TokenLaunching from './CreateToken/launching'
 
+import Verify from './Verify'
+
 import BigNumber from 'bignumber.js'
 import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter'
 BigNumber.config({ EXPONENTIAL_AT: [-7, 40] })
@@ -74,6 +76,7 @@ export default function App() {
                     {/* <Route exact strict path="/detail/:address" component={DaoDetail} /> */}
                     {/* <Route exact strict path="/external_detail/:address" component={ExternalDetail} /> */}
                     <Route exact strict path="/cross_detail/:address" component={CrossDetail} />
+                    <Route exact strict path="/verify" component={Verify} />
                     {/* <Route exact strict path="/offering/:address" component={Offering} /> */}
                     <Route exact strict path="/my_wallet" component={MyWallet} />
                     {/* <Route exact strict path="/staking" component={Staking} />
@@ -109,6 +112,7 @@ export default function App() {
 
                     <Route exact strict path="/cross_building" component={CrossBuilding} />
                     <Route exact strict path="/create_token" component={CreateToken} />
+                    <Route exact strict path="/verify" component={Verify} />
                     <Route exact strict path="/create_token/launching/:hash" component={TokenLaunching} />
                     {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}

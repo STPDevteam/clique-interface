@@ -1,45 +1,33 @@
 import { NetworkConnector } from './NetworkConnector'
 import { Web3Provider } from '@ethersproject/providers'
+import { ChainId, SUPPORTED_NETWORKS } from '../constants/chain'
 
 const MainNetwork = new NetworkConnector({
-  urls: { 1: 'https://mainnet.infura.io/v3/169a2f10743f4afdaa0a17e148552867' }
-})
-const RopstenNetwork = new NetworkConnector({
-  urls: { 3: 'https://ropsten.infura.io/v3/ab440a3a67f74b6b8a0a8e8e13a76a52' }
+  urls: {
+    [ChainId.ETH]: 'https://mainnet.infura.io/v3/169a2f10743f4afdaa0a17e148552867'
+  }
 })
 const RinkebyNetwork = new NetworkConnector({
-  urls: { 4: 'https://rinkeby.infura.io/v3/04dc7cbdfe91444fb5127bff1b3f5516' }
-})
-const KovanNetwork = new NetworkConnector({
-  urls: { 42: 'https://kovan.infura.io/v3/ab440a3a67f74b6b8a0a8e8e13a76a52' }
-})
-const VerseTestNetwork = new NetworkConnector({
-  urls: { 72: 'https://test-gearrpc.stp.network' }
-})
-const KlaytnTestNetwork = new NetworkConnector({
-  urls: { 1001: 'https://public-node-api.klaytnapi.com/v1/baobab' }
-})
-const PolygonTestNetwork = new NetworkConnector({
-  urls: { 80001: 'https://matic-mumbai.chainstacklabs.com' }
+  urls: {
+    [ChainId.RINKEBY]: 'https://rinkeby.infura.io/v3/cf75b84907824c98bf013c5de408ff25'
+  }
 })
 
-export function getOtherNetworkLibrary(chainId: number) {
+export function getOtherNetworkLibrary(chainId: ChainId) {
   switch (chainId) {
-    case 1:
+    case ChainId.ETH:
       return new Web3Provider(MainNetwork.provider as any)
-    case 3:
-      return new Web3Provider(RopstenNetwork.provider as any)
-    case 4:
+    case ChainId.RINKEBY:
       return new Web3Provider(RinkebyNetwork.provider as any)
-    case 42:
-      return new Web3Provider(KovanNetwork.provider as any)
-    case 72:
-      return new Web3Provider(VerseTestNetwork.provider as any)
-    case 1001:
-      return new Web3Provider(KlaytnTestNetwork.provider as any)
-    case 80001:
-      return new Web3Provider(PolygonTestNetwork.provider as any)
     default:
+      if (SUPPORTED_NETWORKS?.[chainId]?.rpcUrls.length) {
+        const network = new NetworkConnector({
+          urls: {
+            [chainId]: SUPPORTED_NETWORKS[chainId]?.rpcUrls[0] || ''
+          }
+        })
+        return new Web3Provider(network.provider as any)
+      }
       return undefined
   }
 }

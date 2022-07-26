@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import {
   CREATE_TOKEN_ADDRESS,
   DAO_FACTORY_ADDRESS,
+  DAO_VERIFIER_ADDRESS,
   FARM_STAKING_ADDRESS,
   SUPPORT_CREATE_TOKEN_NETWORK
 } from '../constants'
@@ -16,11 +17,12 @@ import UNISOCKS_ABI from '../constants/abis/unisocks.json'
 import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
-import { ChainId } from '../constants/chain'
+import { ChainId, IS_TEST_ENV } from '../constants/chain'
 import DAO_FACTORY_ABI from '../constants/abis/DAOFactory.json'
 import DAO_ABI from '../constants/abis/DAO.json'
 import STP_TOKEN_ABI from '../constants/abis/DAOToken.json'
 import VOTING_ABI from '../constants/abis/voting.json'
+import DAO_VERIFIER_ABI from '../constants/abis/DAOVerifier.json'
 import ExternalDAO_ABI from '../constants/abis/ExternalDAO.json'
 import ExternalToken_ABI from '../constants/abis/ExternalToken.json'
 import ExternalVoting_ABI from '../constants/abis/ExternalVoting.json'
@@ -28,20 +30,41 @@ import CrossDAO_ABI from '../constants/abis/CrossDAO.json'
 import CrossVoting_ABI from '../constants/abis/CrossVoting.json'
 import FARM_STAKING_ABI from '../constants/abis/farm_staking.json'
 import CREATE_TOKEN_ABI from '../constants/abis/create_token.json'
+import { getOtherNetworkLibrary } from 'connectors/MultiNetworkConnector'
 
 // returns null on errors
-function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-  const { library, account } = useActiveWeb3React()
+function useContract(
+  address: string | undefined,
+  ABI: any,
+  withSignerIfPossible = true,
+  queryChainId?: ChainId
+): Contract | null {
+  const { library, account, chainId } = useActiveWeb3React()
 
   return useMemo(() => {
-    if (!address || !ABI || !library) return null
-    try {
-      return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
-    } catch (error) {
-      console.error('Failed to get contract', error)
-      return null
+    if (!address || !ABI) return null
+    if (!queryChainId && !chainId) return null
+
+    if (queryChainId && chainId !== queryChainId) {
+      const web3Library = getOtherNetworkLibrary(queryChainId)
+      if (!web3Library) return null
+      try {
+        return getContract(address, ABI, web3Library, undefined)
+      } catch (error) {
+        console.error('Failed to get contract', error)
+        return null
+      }
     }
-  }, [address, ABI, library, withSignerIfPossible, account])
+    if (chainId && library) {
+      try {
+        return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
+      } catch (error) {
+        console.error('Failed to get contract', error)
+        return null
+      }
+    }
+    return null
+  }, [ABI, account, address, chainId, library, queryChainId, withSignerIfPossible])
 }
 
 export function useV2MigratorContract(): Contract | null {
@@ -111,8 +134,8 @@ export function useSTPTokenContract(tokenAddress: string | undefined): Contract 
 export function useExternalDaoContract(daoAddress: string | undefined): Contract | null {
   return useContract(daoAddress, ExternalDAO_ABI, true)
 }
-export function useCrossDaoContract(daoAddress: string | undefined): Contract | null {
-  return useContract(daoAddress, CrossDAO_ABI, true)
+export function useCrossDaoContract(daoAddress: string | undefined, chainId?: ChainId): Contract | null {
+  return useContract(daoAddress, CrossDAO_ABI, true, chainId)
 }
 
 export function useExternalVotingContract(votingAddress: string | undefined): Contract | null {
@@ -144,4 +167,15 @@ export function useCreateERC20Contract(): Contract | null {
     CREATE_TOKEN_ABI,
     true
   )
+}
+
+export function useCrossDaoVerifierContract(): Contract | null {
+  const chainId = IS_TEST_ENV ? ChainId.RINKEBY : ChainId.ETH
+  const address = DAO_VERIFIER_ADDRESS[chainId]
+  return useContract(address, DAO_VERIFIER_ABI, true, chainId)
+}
+
+export function useCrossDaoContractForPolygon(daoAddress: string | undefined) {
+  const chainId = IS_TEST_ENV ? ChainId.POLYGON_TESTNET : ChainId.MATIC
+  return useCrossDaoContract(daoAddress, chainId)
 }
