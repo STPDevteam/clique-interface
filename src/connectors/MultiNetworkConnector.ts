@@ -9,7 +9,7 @@ const MainNetwork = new NetworkConnector({
 })
 const RinkebyNetwork = new NetworkConnector({
   urls: {
-    [ChainId.RINKEBY]: 'https://rinkeby.infura.io/v3/cf75b84907824c98bf013c5de408ff25'
+    [ChainId.RINKEBY]: 'https://rinkeby.infura.io/v3/d6f8f688cda54a7aade4e8e4d8ece89b'
   }
 })
 

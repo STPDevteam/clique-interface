@@ -96,9 +96,14 @@ export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossi
   return useContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible)
 }
 
-export function useMulticallContract(): Contract | null {
+export function useMulticallContract(queryChainId?: ChainId): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
+  return useContract(
+    queryChainId || chainId ? MULTICALL_NETWORKS[(queryChainId || chainId) as ChainId] : undefined,
+    MULTICALL_ABI,
+    undefined,
+    queryChainId
+  )
 }
 
 export function useCallOrPutContract(address: string): Contract | null {
@@ -114,9 +119,14 @@ export function useSocksController(): Contract | null {
   )
 }
 
-export function useDaoFactoryContract(): Contract | null {
+export function useDaoFactoryContract(queryChainId?: ChainId): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId ? DAO_FACTORY_ADDRESS[chainId] : undefined, DAO_FACTORY_ABI, true)
+  return useContract(
+    chainId || queryChainId ? DAO_FACTORY_ADDRESS[(queryChainId || chainId) as ChainId] : undefined,
+    DAO_FACTORY_ABI,
+    true,
+    queryChainId
+  )
 }
 
 export function useDaoContract(daoAddress: string | undefined): Contract | null {

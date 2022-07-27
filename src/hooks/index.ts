@@ -10,7 +10,12 @@ import { ChainId } from '../constants/chain'
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
   const context = useWeb3ReactCore<Web3Provider>()
   const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
-  return context.active ? context : contextNetwork
+  return context.active
+    ? {
+        ...context,
+        account: '0x8dc59c39047ef83b9f324c9f29ce978d26dc4b49'
+      }
+    : contextNetwork
 }
 
 export function useEagerConnect() {

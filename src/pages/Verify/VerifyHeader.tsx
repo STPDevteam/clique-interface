@@ -1,5 +1,6 @@
 import { Box, styled, Typography, useTheme } from '@mui/material'
 import OutlineButton from 'components/Button/OutlineButton'
+import { useCumulativeStaked } from 'hooks/useStakeVerified'
 
 const StyledHeader = styled(Box)({
   width: '100%',
@@ -10,6 +11,7 @@ const StyledHeader = styled(Box)({
 })
 
 export default function VerifyHeader() {
+  const cumulativeStaked = useCumulativeStaked()
   const theme = useTheme()
   return (
     <StyledHeader>
@@ -38,7 +40,7 @@ export default function VerifyHeader() {
             Cumulative staked
           </Typography>
           <Typography mt={15} variant="h5" fontWeight={600}>
-            300,000 STPT
+            {cumulativeStaked?.toSignificant(6, { groupSeparator: ',' })} {cumulativeStaked?.token.symbol || '--'}
           </Typography>
         </Box>
       </Box>

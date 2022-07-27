@@ -13,9 +13,9 @@ import { useBlockNumber } from '../application/hooks'
 import useDebounce from '../../hooks/useDebounce'
 import { retry } from '../../utils/retry'
 import { useDispatch, useSelector } from 'react-redux'
-import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import { chunkArray } from '../../utils/chunkArray'
+import { ChainId, SUPPORTED_CHAIN_IDS } from 'constants/chain'
 
 const DEFAULT_GAS_REQUIRED = 1_000_000
 
@@ -137,14 +137,13 @@ export function outdatedListeningKeys(
   })
 }
 
-export default function Updater(): null {
+function UpdaterChain({ chainId }: { chainId: ChainId }) {
   const dispatch = useDispatch<AppDispatch>()
   const state = useSelector<AppState, AppState['multicall']>(state => state.multicall)
   // wait for listeners to settle before triggering updates
   const debouncedListeners = useDebounce(state.callListeners, 100)
-  const latestBlockNumber = useBlockNumber()
-  const { chainId } = useActiveWeb3React()
-  const multicall2Contract = useMulticallContract()
+  const latestBlockNumber = useBlockNumber(chainId)
+  const multicall2Contract = useMulticallContract(chainId)
   const cancellations = useRef<{ blockNumber: number; cancellations: (() => void)[] }>()
 
   const listeningKeys: { [callKey: string]: number } = useMemo(() => {
@@ -254,4 +253,14 @@ export default function Updater(): null {
   }, [chainId, multicall2Contract, dispatch, serializedOutdatedCallKeys, latestBlockNumber])
 
   return null
+}
+
+export default function Updater() {
+  return (
+    <>
+      {SUPPORTED_CHAIN_IDS.map(chainId => (
+        <UpdaterChain key={chainId} chainId={chainId}></UpdaterChain>
+      ))}
+    </>
+  )
 }

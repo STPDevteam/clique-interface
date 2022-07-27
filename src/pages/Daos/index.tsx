@@ -272,7 +272,8 @@ export function VerifiedTag({ address }: { address?: string }) {
 }
 
 export function StakeVerifiedTag({ id, address }: { id?: number; address?: string }) {
-  useIsStakeVerifiedDao(id, address)
+  const isVerified = useIsStakeVerifiedDao(id, address)
+  if (!isVerified) return null
   return (
     <svg width="16" height="16" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path

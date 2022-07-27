@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useActiveWeb3React } from '../../hooks'
 import useDebounce from '../../hooks/useDebounce'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { updateBlockNumber } from './actions'
 import { useDispatch } from 'react-redux'
+import { SUPPORTED_CHAIN_IDS } from 'constants/chain'
+import { getOtherNetworkLibrary } from 'connectors/MultiNetworkConnector'
 
 export default function Updater(): null {
   const { library, chainId } = useActiveWeb3React()
@@ -52,6 +54,17 @@ export default function Updater(): null {
     if (!debouncedState.chainId || !debouncedState.blockNumber || !windowVisible) return
     dispatch(updateBlockNumber({ chainId: debouncedState.chainId, blockNumber: debouncedState.blockNumber }))
   }, [windowVisible, dispatch, debouncedState.blockNumber, debouncedState.chainId])
+
+  const providers = useMemo(() => SUPPORTED_CHAIN_IDS.map(v => getOtherNetworkLibrary(v)), [])
+  const [timeInt, setTimeInt] = useState(0)
+  useEffect(() => {
+    setTimeout(() => setTimeInt(timeInt + 1), 15000)
+    providers.map((provider, index) =>
+      provider
+        ?.getBlockNumber()
+        .then(bn => dispatch(updateBlockNumber({ chainId: SUPPORTED_CHAIN_IDS[index], blockNumber: bn })))
+    )
+  }, [providers, timeInt, dispatch])
 
   return null
 }

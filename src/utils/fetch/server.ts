@@ -134,3 +134,14 @@ export function commitProposalText(input: string) {
 export function getProposalText(url: string) {
   return Axios.get(url)
 }
+
+export function queryDaoIdByDaoAddress(chainId: number, address: string) {
+  return Axios.get(`${serverBaseUrl}${chainId}/DAO/${address}`)
+}
+
+export function queryDaoList(chainId: number, pageNum: number, pageSize: number) {
+  return Axios.get(`${serverBaseUrl}${chainId}/DAO`, {
+    pageNum,
+    pageSize
+  })
+}
