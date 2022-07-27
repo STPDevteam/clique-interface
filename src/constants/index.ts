@@ -283,3 +283,4 @@ export const serverBaseUrl = IS_TEST_ENV
 // export const serverBaseUrl = 'https://api.klique.xyz:8082/'
 export const mycliqueUrl = 'https://myclique.io/'
 export const daoframeUrl = 'https://daoframe.com/'
+export const SUPPORT_STAKE_VERIFY_NETWORK = IS_TEST_ENV ? ChainId.RINKEBY : ChainId.ETH

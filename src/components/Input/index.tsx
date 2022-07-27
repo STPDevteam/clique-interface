@@ -18,13 +18,13 @@ export interface InputProps {
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   [`&.${inputBaseClasses.root}`]: {
-    fontSize: 16,
-    color: '#FFFFFF',
-    fontWeight: 400,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    height: 48,
-    paddingLeft: 20,
-    borderRadius: 14
+    fontSize: 14,
+    // color: '#FFFFFF',
+    fontWeight: 600,
+    // backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    height: 40,
+    paddingLeft: 15,
+    borderRadius: 8
   },
   [`&.${inputBaseClasses.focused}`]: { border: `1px solid ${theme.palette.primary.main} !important` },
   [`& .${inputBaseClasses.input}`]: {
@@ -71,7 +71,7 @@ export default function Input({
         value={value}
         disabled={disabled}
         type={type}
-        endAdornment={endAdornment && <span style={{ paddingRight: 20 }}>{endAdornment}</span>}
+        endAdornment={endAdornment && <span style={{ paddingRight: 15 }}>{endAdornment}</span>}
         {...rest}
       />
     </div>

@@ -1,8 +1,7 @@
 import { InputHTMLAttributes, useCallback } from 'react'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import Input, { InputProps } from './index'
 import { escapeRegExp } from 'utils'
-import SmallButton from 'components/Button/SmallButton'
 import InputLabel from './InputLabel'
 
 const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`) // match escaped "." characters via in a non-capturing group
@@ -40,11 +39,11 @@ export default function NumericalInput({
   return (
     <Box sx={{ position: 'relative', maxWidth: maxWidth ?? 'unset', width: '100%' }}>
       {(label || balance) && (
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" justifyContent="space-between" padding="0 15px">
           <InputLabel>{label}</InputLabel>
           {!!balance && (
             <InputLabel>
-              Available: {balance} {unit ?? 'MATTER'}
+              Balance: {balance} {unit ?? 'MATTER'}
             </InputLabel>
           )}
         </Box>
@@ -54,7 +53,7 @@ export default function NumericalInput({
         maxWidth={maxWidth}
         onChange={handleChange}
         inputMode="decimal"
-        title="Token Amount"
+        title=""
         autoComplete="off"
         autoCorrect="off"
         // text-specific options
@@ -66,8 +65,30 @@ export default function NumericalInput({
         spellCheck="false"
         endAdornment={
           onMax && (
-            <Box gap="20px" display="flex" alignItems="center" paddingLeft="20px" paddingBottom="2px">
-              <SmallButton onClick={onMax}>MAX</SmallButton>
+            <Box display="flex" gap="5px" alignItems="center" paddingLeft="20px">
+              <Box
+                sx={{
+                  background: '#F0F3F6',
+                  borderRadius: '10px',
+                  width: 50,
+                  height: 20,
+                  textAlign: 'center',
+                  color: '#0062DF',
+                  fontSize: 12,
+                  cursor: 'pointer'
+                }}
+                onClick={onMax}
+              >
+                MAX
+              </Box>
+              {unit && (
+                <>
+                  <Typography color="#B2B3BD">|</Typography>
+                  <Typography fontWeight={600} fontSize="14px">
+                    {unit}
+                  </Typography>
+                </>
+              )}
             </Box>
           )
         }

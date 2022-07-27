@@ -36,7 +36,7 @@ export default function VerifyHeader() {
           </OutlineButton>
         </Box>
         <Box>
-          <Typography fontWeight={600} color={theme.palette.text.secondary}>
+          <Typography fontWeight={600} textAlign="right" color={theme.palette.text.secondary}>
             Cumulative staked
           </Typography>
           <Typography mt={15} variant="h5" fontWeight={600}>

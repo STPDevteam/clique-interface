@@ -25,12 +25,7 @@ export function useGasPriceInfo() {
       } catch (error) {
         console.log(error)
         const err = error as any
-        throw new Error(
-          `${err?.data?.message ||
-            err?.error?.message ||
-            err?.message ||
-            'unknown error'}. Please try the substitute RPC if you are experiencing frequent contract execution error,learn more: https://stp-dao.gitbook.io/verse-network/clique/connect-your-wallet`
-        )
+        throw new Error(`${err?.data?.message || err?.error?.message || err?.message || 'unknown error'}.`)
       }
       return {
         gasPrice: calculateGasPriceMargin(gasPrice),

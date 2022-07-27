@@ -106,7 +106,7 @@ export function useUserHasSubmittedClaim(
   const claimTxn = useMemo(() => {
     const txnIndex = Object.keys(allTransactions).find(hash => {
       const tx = allTransactions[hash]
-      return tx.claim && tx.claim.recipient === account
+      return tx.claim && tx.claim.recipient === account && !tx.receipt
     })
     return txnIndex && allTransactions[txnIndex] ? allTransactions[txnIndex] : undefined
   }, [account, allTransactions])

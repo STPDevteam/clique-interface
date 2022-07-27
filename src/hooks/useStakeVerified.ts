@@ -6,9 +6,9 @@ import { Token, TokenAmount } from '../constants/token'
 import { ChainId, IS_TEST_ENV } from 'constants/chain'
 import { queryDaoIdByDaoAddress, queryDaoList } from 'utils/fetch/server'
 import { useActiveWeb3React } from 'hooks'
-import { ZERO_ADDRESS } from '../constants'
+import { SUPPORT_STAKE_VERIFY_NETWORK, ZERO_ADDRESS } from '../constants'
 
-const stakeChainId = IS_TEST_ENV ? ChainId.RINKEBY : ChainId.ETH
+const stakeChainId = SUPPORT_STAKE_VERIFY_NETWORK
 const crossDaoChainId = IS_TEST_ENV ? ChainId.POLYGON_TESTNET : ChainId.MATIC
 
 export function useStakeSTPTToken(): Token | null | undefined {
@@ -78,15 +78,15 @@ export function useCumulativeStaked() {
   }, [res.result, stptToken])
 }
 
-export function useMyStakedDao():
-  | {
-      daoId: number
-      myStakedAmount: TokenAmount
-      daoAddress: string
-      stakedAmountTotal: TokenAmount
-      verifiedTimestamp: number
-    }[]
-  | undefined {
+export interface StakedDaoInfoProp {
+  daoId: number
+  myStakedAmount: TokenAmount
+  daoAddress: string
+  stakedAmountTotal: TokenAmount
+  verifiedTimestamp: number
+}
+
+export function useMyStakedDao(): StakedDaoInfoProp[] | undefined {
   const { account } = useActiveWeb3React()
   const contract = useCrossDaoVerifierContract()
 
@@ -124,16 +124,7 @@ export function useMyStakedDao():
   }, [daoAddressRes, res.result, stptToken])
 }
 
-export function useVerifiedDaoByIds(
-  ids: number[]
-):
-  | {
-      daoId: number
-      myStakedAmount: TokenAmount
-      stakedAmountTotal: TokenAmount
-      verifiedTimestamp: number
-    }[]
-  | undefined {
+export function useVerifiedDaoByIds(ids: number[]): StakedDaoInfoProp[] | undefined {
   const contract = useCrossDaoVerifierContract()
   const { account } = useActiveWeb3React()
   const stptToken = useStakeSTPTToken()
@@ -146,15 +137,34 @@ export function useVerifiedDaoByIds(
     stakeChainId
   )
 
+  const daoFactoryContract = useDaoFactoryContract(crossDaoChainId)
+  const daoAddressRes = useSingleContractMultipleData(
+    ids.length ? daoFactoryContract : null,
+    'daoMap',
+    ids.map(item => [item]),
+    NEVER_RELOAD,
+    crossDaoChainId
+  )
+
   return useMemo(() => {
-    if (!res.result?.[0] || !stptToken) return undefined
-    return res.result[0].map((item: any) => ({
-      daoId: Number(item.daoId.toString()),
-      myStakedAmount: new TokenAmount(stptToken, item.stakedAmount.toString()),
-      stakedAmountTotal: new TokenAmount(stptToken, item.stakedAmountTotal.toString()),
-      verifiedTimestamp: Number(item.verifiedTimestamp.toString())
-    }))
-  }, [res.result, stptToken])
+    if (!res.result?.[0] || !stptToken || !daoAddressRes?.[0]?.result?.[0]) return undefined
+    return res.result[0]
+      .map((item: any, index: number) => {
+        if (
+          !daoAddressRes?.[index]?.result?.[0].toString() ||
+          daoAddressRes?.[index]?.result?.[0].toString() === ZERO_ADDRESS
+        )
+          return undefined
+        return {
+          daoId: Number(item.daoId.toString()),
+          daoAddress: daoAddressRes?.[index]?.result?.[0].toString() || '',
+          myStakedAmount: new TokenAmount(stptToken, item.stakedAmount.toString()),
+          stakedAmountTotal: new TokenAmount(stptToken, item.stakedAmountTotal.toString()),
+          verifiedTimestamp: Number(item.verifiedTimestamp.toString())
+        }
+      })
+      .filter((i: any) => i)
+  }, [daoAddressRes, res.result, stptToken])
 }
 
 export function useStakeDaoList() {
