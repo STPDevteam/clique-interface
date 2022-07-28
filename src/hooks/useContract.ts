@@ -1,5 +1,4 @@
 import { Contract } from '@ethersproject/contracts'
-import ANTIMATTER_ABI from '../constants/abis/antimatter.json'
 import { useMemo } from 'react'
 import {
   CREATE_TOKEN_ADDRESS,
@@ -104,10 +103,6 @@ export function useMulticallContract(queryChainId?: ChainId): Contract | null {
     undefined,
     queryChainId
   )
-}
-
-export function useCallOrPutContract(address: string): Contract | null {
-  return useContract(address, ANTIMATTER_ABI, true)
 }
 
 export function useSocksController(): Contract | null {
