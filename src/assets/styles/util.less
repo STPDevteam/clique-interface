@@ -29,7 +29,7 @@
         padding: 0;
     }
 
-    // body加权，覆盖组件库的基础样式
+    // body，
     body {
         p,
         ul {
@@ -76,7 +76,7 @@
         z-index: 1;
     }
 
-    // 同级多有可能是弹窗一类组件，尽量给高层级
+    // ，
     // #root ~ div,
     // #root ~ section {
     //     position: relative;
@@ -103,15 +103,15 @@
         );
     }
 
-    // 页面级容器
-    // 必须加标签，否则mix-blend-mode失效
+    // 
+    // ，mix-blend-mode
     section[class$='-container'] {
         z-index: 0;
         flex: 1;
     }
 }
 
-// flex布局下增加填充块
+// flex
 .fill {
     display: flex;
     width: 100%;
@@ -155,7 +155,7 @@
     );
 }
 
-// 圆点
+// 
 .dot(@size: 16px, @marginRight: 0px, @bgColor: transparent) {
     display: flex;
     align-items: center;
@@ -176,7 +176,7 @@
     }
 }
 
-// 背景图片基本配置，可用来继承
+// ，
 .bgImage {
     background-position: center;
     background-repeat: no-repeat;
@@ -187,9 +187,9 @@
     flex-grow: 0;
 }
 
-// 背景图片工具集
+// 
 #bgImage {
-    // 基本类型
+    // 
     .background(@bgImage, @bgColor: transparent) {
         background-position: center;
         background-repeat: no-repeat;
@@ -199,7 +199,7 @@
         flex-shrink: 0;
     }
 
-    // 动态背景图。用合成的方式来保持缩放比例不被破坏
+    // 。
     .dinamicBg(@image, @ratio: 50%, @direct: 'horizontal') {
         position: relative;
 
@@ -262,7 +262,7 @@
         }
     }
 
-    // 图标
+    // 
     .icon(@size, @bgImage, @bgColor: transparent, @pure: true) {
         #bgImage.background(@bgImage, @bgColor);
 
@@ -278,7 +278,7 @@
         }
     }
 
-    // 按钮
+    // 
     .button(@bgImage, @bgColor: transparent) {
         #bgImage.background(@bgImage, @bgColor);
 
@@ -323,7 +323,7 @@
     }
 }
 
-// 手机版的页面级别容器
+// 
 .mobile-container(@image: '') {
     #bgImage.background(@image);
     padding-top: @mobileNavHeight;

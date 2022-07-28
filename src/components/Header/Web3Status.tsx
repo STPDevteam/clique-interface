@@ -95,7 +95,7 @@ function Web3StatusInner() {
                 duration={1}
               />
 
-              <span style={{ marginLeft: 10 }}>MATTER</span>
+              <span style={{ marginLeft: 10 }}>USDT</span>
             </Box>
             <Divider orientation={'vertical'} />
           </>

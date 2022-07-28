@@ -1,5 +1,4 @@
 import { Contract } from '@ethersproject/contracts'
-import ANTIMATTER_ABI from '../constants/abis/antimatter.json'
 import { useMemo } from 'react'
 import {
   CREATE_TOKEN_ADDRESS,
@@ -76,10 +75,6 @@ export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossi
 export function useMulticallContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
   return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
-}
-
-export function useCallOrPutContract(address: string): Contract | null {
-  return useContract(address, ANTIMATTER_ABI, true)
 }
 
 export function useSocksController(): Contract | null {
