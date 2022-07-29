@@ -1,2 +1,2 @@
 # STP DAO
-test
+Domain is https://test.myclique.io/
