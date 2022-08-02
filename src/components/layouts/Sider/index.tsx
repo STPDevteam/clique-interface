@@ -59,7 +59,7 @@ export default function Index() {
 
   const createDao = useCallback(() => {
     if (isMycliqueSite()) {
-      window.open(daoframeUrl + '#/create')
+      window.open(daoframeUrl + '/create')
     } else {
       history.push(`/create`)
     }

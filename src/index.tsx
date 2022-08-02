@@ -6,7 +6,8 @@ import ReactDOM from 'react-dom'
 import theme from 'theme/index'
 import ReactGA from 'react-ga4'
 import { Provider } from 'react-redux'
-import { HashRouter } from 'react-router-dom'
+import { Router } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
 import Blocklist from './components/essential/Blocklist'
 import { NetworkContextName } from './constants'
 import App from './pages/App'
@@ -18,6 +19,8 @@ import TransactionUpdater from './state/transactions/updater'
 import getLibrary from './utils/getLibrary'
 import { isMobile } from 'react-device-detect'
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
+
+const browserHistory = createBrowserHistory()
 
 if (!!window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
@@ -53,9 +56,9 @@ ReactDOM.render(
             <StyledEngineProvider injectFirst>
               <MuiThemeProvider theme={theme}>
                 <CssBaseline />
-                <HashRouter>
+                <Router history={browserHistory}>
                   <App />
-                </HashRouter>
+                </Router>
               </MuiThemeProvider>
             </StyledEngineProvider>
           </Provider>

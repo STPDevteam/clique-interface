@@ -1,7 +1,7 @@
 {
   "name": "@stp/dao",
   "description": "STP Dao",
-  "homepage": ".",
+  "homepage": "/",
   "private": true,
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.16.0",
