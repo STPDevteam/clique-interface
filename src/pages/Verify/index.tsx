@@ -31,6 +31,7 @@ import { Dots } from 'theme/components'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import { Rounding } from 'constants/token/constants'
+import { useHistory } from 'react-router-dom'
 
 const StyledAmountPanel = styled(Box)({
   background: '#FBFCFC',
@@ -156,6 +157,7 @@ function ShowDaoName({
   paddingLeft?: string | number
   hideLink?: boolean
 }) {
+  const history = useHistory()
   const info = useStakeDaoBaseInfo(daoId, daoAddress)
   return (
     <Box display={'flex'} alignItems={'center'} gap={5} paddingLeft={paddingLeft || '20%'}>
@@ -165,7 +167,7 @@ function ShowDaoName({
           {info?.daoName || '--'}
         </Typography>
       ) : (
-        <Link href={`/#/cross_detail/${daoAddress}`} underline="none">
+        <Link onClick={() => history.push(`/cross_detail/${daoAddress}`)} underline="none">
           <Typography fontWeight={600}>{info?.daoName || '--'}</Typography>
         </Link>
       )}

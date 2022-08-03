@@ -473,7 +473,7 @@ export default function Offering() {
               </Box>
               <ExternalLink
                 target="self"
-                href={`/#/detail/${daoInfo?.daoAddress}`}
+                href={`/detail/${daoInfo?.daoAddress}`}
                 sx={{
                   display: 'flex'
                 }}
