@@ -31,8 +31,8 @@ import { Dots } from 'theme/components'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import { Rounding } from 'constants/token/constants'
-import { useHistory } from 'react-router-dom'
 import { triggerSwitchChain } from 'utils/triggerSwitchChain'
+import { useHistory } from 'react-router-dom'
 
 const StyledAmountPanel = styled(Box)({
   background: '#FBFCFC',
