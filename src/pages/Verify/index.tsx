@@ -31,6 +31,7 @@ import { Dots } from 'theme/components'
 import { useUserHasSubmittedClaim } from 'state/transactions/hooks'
 import TransactionPendingModal from 'components/Modal/TransactionModals/TransactionPendingModal'
 import { Rounding } from 'constants/token/constants'
+import { triggerSwitchChain } from 'utils/triggerSwitchChain'
 import { useHistory } from 'react-router-dom'
 
 const StyledAmountPanel = styled(Box)({
@@ -93,7 +94,7 @@ export default function Verify() {
           {account && (
             <Typography fontSize={12} fontWeight={500} color={theme.palette.text.secondary}>
               <Switch checked={myStakeOnly} onChange={(_, value) => setMyStakeOnly(value)} />
-              Stake only
+              My staking
             </Typography>
           )}
         </Box>
@@ -106,11 +107,11 @@ export default function Verify() {
               rowKey={'id'}
               pagination={false}
             >
-              <Table.Column title="Name" width={'25%'} dataIndex="name" key="name" align="center" />
-              <Table.Column title="Progress" width={260} align="center" dataIndex="progress" key="Progress" />
-              <Table.Column title="My stake (STPT)" dataIndex="stake" key="stake" align="center" />
+              <Table.Column title="DAO Name" width={'25%'} dataIndex="name" key="name" align="center" />
+              <Table.Column title="Staked Amount" width={260} align="center" dataIndex="progress" key="Progress" />
+              <Table.Column title="My staking (STPT)" dataIndex="stake" key="stake" align="center" />
               <Table.Column title="Verified days" dataIndex="days" key="days" align="center" />
-              <Table.Column title="Action" dataIndex="action" key="action" align="center" />
+              <Table.Column title="Action" width={200} dataIndex="action" key="action" align="center" />
             </Table>
             <Box display={'flex'} justifyContent={'center'} mt={100}>
               <Pagination
@@ -133,11 +134,11 @@ export default function Verify() {
               rowKey={'id'}
               pagination={false}
             >
-              <Table.Column title="Name" width={'25%'} dataIndex="name" key="name" align="center" />
-              <Table.Column title="Progress" width={260} align="center" dataIndex="progress" key="Progress" />
-              <Table.Column title="My stake (STPT)" dataIndex="stake" key="stake" align="center" />
+              <Table.Column title="DAO Name" width={'25%'} dataIndex="name" key="name" align="center" />
+              <Table.Column title="Staked Amount" width={260} align="center" dataIndex="progress" key="Progress" />
+              <Table.Column title="My staking (STPT)" dataIndex="stake" key="stake" align="center" />
               <Table.Column title="Verified days" dataIndex="days" key="days" align="center" />
-              <Table.Column title="Action" dataIndex="action" key="action" align="center" />
+              <Table.Column title="Action" width={200} dataIndex="action" key="action" align="center" />
             </Table>
           </Box>
         )}
@@ -182,23 +183,30 @@ function ShowProgress({ stakedAmountTotal }: { stakedAmountTotal: TokenAmount | 
   const pro = useMemo(() => {
     if (stakedAmountTotal && verificationThreshold) {
       return Number(
-        Number(
-          Number(
-            stakedAmountTotal
-              .divide(verificationThreshold)
-              .toSignificant(4, { groupSeparator: '' }, Rounding.ROUND_DOWN)
-          ) * 100
-        ).toFixed(1)
+        stakedAmountTotal
+          .multiply(JSBI.BigInt(100))
+          .divide(verificationThreshold)
+          .toSignificant(10, { groupSeparator: '' }, Rounding.ROUND_DOWN)
       )
     }
     return 0
   }, [stakedAmountTotal, verificationThreshold])
 
+  const showProgressStr = useMemo(() => {
+    if (pro === 0) {
+      return '0'
+    }
+    if (pro < 1) {
+      return '<1'
+    }
+    return Number(Math.floor(pro))
+  }, [pro])
+
   return (
     <Box display={'flex'}>
-      <Progress percent={pro} style={{ width: 80 }} showInfo={false} />
+      <Progress percent={Number(Math.floor(pro))} style={{ width: 80 }} showInfo={false} />
       <Typography fontSize={13} fontWeight={'400!important'} color={theme.palette.text.secondary}>
-        {pro}%({stakedAmountTotal?.toSignificant(6, { groupSeparator: ',' }) || '--'}/
+        {showProgressStr}%({stakedAmountTotal?.toSignificant(6, { groupSeparator: ',' }) || '--'}/
         {verificationThreshold?.toSignificant(6, { groupSeparator: ',' }) || '--'})
       </Typography>
     </Box>
@@ -219,16 +227,14 @@ function ShowVerifiedDays({ timeStamp }: { timeStamp: number }) {
 
 function StakeAction(data: StakedDaoInfoProp) {
   const { myStakedAmount, daoId } = data
-  const { account, chainId } = useActiveWeb3React()
+  const { account, chainId, library } = useActiveWeb3React()
   const { showModal } = useModal()
   const { claimSubmitted: stakePending } = useUserHasSubmittedClaim(`${account}_stake_verify_${daoId}`)
   const { claimSubmitted: unStakePending } = useUserHasSubmittedClaim(`${account}_unStake_verify_${daoId}`)
+  const toggleWalletModal = useWalletModalToggle()
 
   return (
     <Box
-      display={'flex'}
-      gap={6}
-      justifyContent="center"
       sx={{
         '& *': {
           fontWeight: '500!important',
@@ -239,32 +245,49 @@ function StakeAction(data: StakedDaoInfoProp) {
         }
       }}
     >
-      {account &&
-        chainId === SUPPORT_STAKE_VERIFY_NETWORK &&
-        (stakePending ? (
-          <OutlineButton width={92} height={24} disabled>
-            Stake
-            <Dots />
+      {!account ? (
+        <Box display={'flex'} gap={6} justifyContent="center">
+          <OutlineButton width={120} fontSize={12} height={24} onClick={toggleWalletModal}>
+            Connect Wallet
           </OutlineButton>
-        ) : (
-          <OutlineButton width={92} height={24} onClick={() => showModal(<StakeModal {...data} type="stake" />)}>
-            Stake
+        </Box>
+      ) : chainId === SUPPORT_STAKE_VERIFY_NETWORK ? (
+        <Box display={'flex'} gap={6} width="100%">
+          {stakePending ? (
+            <OutlineButton width={92} height={24} disabled>
+              Stake
+              <Dots />
+            </OutlineButton>
+          ) : (
+            <OutlineButton width={92} height={24} onClick={() => showModal(<StakeModal {...data} type="stake" />)}>
+              Stake
+            </OutlineButton>
+          )}
+          {myStakedAmount &&
+            myStakedAmount.greaterThan(JSBI.BigInt(0)) &&
+            (unStakePending ? (
+              <OutlineButton width={92} height={24} disabled>
+                Unstake
+                <Dots />
+              </OutlineButton>
+            ) : (
+              <OutlineButton width={92} height={24} onClick={() => showModal(<StakeModal {...data} type="unStake" />)}>
+                Unstake
+              </OutlineButton>
+            ))}
+        </Box>
+      ) : (
+        <Box display={'flex'} gap={6} justifyContent="center">
+          <OutlineButton
+            width={120}
+            fontSize={12}
+            height={24}
+            onClick={() => triggerSwitchChain(library, SUPPORT_STAKE_VERIFY_NETWORK, account)}
+          >
+            Switch network
           </OutlineButton>
-        ))}
-      {account &&
-        chainId === SUPPORT_STAKE_VERIFY_NETWORK &&
-        myStakedAmount &&
-        myStakedAmount.greaterThan(JSBI.BigInt(0)) &&
-        (unStakePending ? (
-          <OutlineButton width={92} height={24} disabled>
-            Unstake
-            <Dots />
-          </OutlineButton>
-        ) : (
-          <OutlineButton width={92} height={24} onClick={() => showModal(<StakeModal {...data} type="unStake" />)}>
-            Unstake
-          </OutlineButton>
-        ))}
+        </Box>
+      )}
     </Box>
   )
 }

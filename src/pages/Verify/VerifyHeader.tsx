@@ -18,7 +18,7 @@ export default function VerifyHeader() {
       <Box display={'flex'} justifyContent="space-between">
         <Box>
           <Typography variant="h5" fontWeight={600}>
-            Staking to Verify
+            Stake STPT for your favorite DAOs
           </Typography>
           <Typography variant="body2" mb="24px">
             Validation for DAO by staking STPT (ERC20)
@@ -37,7 +37,7 @@ export default function VerifyHeader() {
         </Box>
         <Box>
           <Typography fontWeight={600} textAlign="right" color={theme.palette.text.secondary}>
-            Cumulative staked
+            Total STPT staked
           </Typography>
           <Typography mt={15} variant="h5" fontWeight={600}>
             {cumulativeStaked?.toSignificant(6, { groupSeparator: ',' })} {cumulativeStaked?.token.symbol || '--'}

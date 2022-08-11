@@ -43,7 +43,7 @@ export default function NumericalInput({
           <InputLabel>{label}</InputLabel>
           {!!balance && (
             <InputLabel>
-              Balance: {balance} {unit ?? 'USDT'}
+              Balance: {balance} {unit ?? 'MATTER'}
             </InputLabel>
           )}
         </Box>

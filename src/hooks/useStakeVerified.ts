@@ -3,13 +3,12 @@ import { useCrossDaoContractForPolygon, useCrossDaoVerifierContract, useDaoFacto
 import { NEVER_RELOAD, useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
 import { useMulticallToken } from '../state/wallet/hooks'
 import { Token, TokenAmount } from '../constants/token'
-import { ChainId, IS_TEST_ENV } from 'constants/chain'
 import { queryDaoIdByDaoAddress, queryDaoList } from 'utils/fetch/server'
 import { useActiveWeb3React } from 'hooks'
-import { SUPPORT_STAKE_VERIFY_NETWORK, ZERO_ADDRESS } from '../constants'
+import { SUPPORT_STAKE_VERIFY_NETWORK, SUPPORT_CROSS_STAKE_VERIFY_NETWORK, ZERO_ADDRESS } from '../constants'
 
 const stakeChainId = SUPPORT_STAKE_VERIFY_NETWORK
-const crossDaoChainId = IS_TEST_ENV ? ChainId.POLYGON_TESTNET : ChainId.MATIC
+const crossDaoChainId = SUPPORT_CROSS_STAKE_VERIFY_NETWORK
 
 export function useStakeSTPTToken(): Token | null | undefined {
   const contract = useCrossDaoVerifierContract()
@@ -237,4 +236,24 @@ export function useStakeDaoBaseInfo(
     daoName: daoNameRes.result?.[0],
     logo: tokenLogoRes.result?.[0]
   }
+}
+
+export function useStakeVerifiedDaoList(): StakedDaoInfoProp[] | undefined {
+  const contract = useCrossDaoVerifierContract()
+  const stptToken = useStakeSTPTToken()
+
+  const res = useSingleCallResult(contract, 'getVerifiedDao', [ZERO_ADDRESS], undefined, stakeChainId)
+
+  return useMemo(() => {
+    if (!res.result?.[0] || !stptToken) return undefined
+    return res.result[0].map((item: any) => {
+      return {
+        daoId: Number(item.daoId.toString()),
+        daoAddress: '',
+        myStakedAmount: new TokenAmount(stptToken, item.stakedAmount.toString()),
+        stakedAmountTotal: new TokenAmount(stptToken, item.stakedAmountTotal.toString()),
+        verifiedTimestamp: Number(item.verifiedTimestamp.toString())
+      }
+    })
+  }, [res.result, stptToken])
 }

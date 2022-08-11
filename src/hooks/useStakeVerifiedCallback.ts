@@ -34,7 +34,7 @@ export function useStakeVerifiedCallback() {
       })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
-            summary: `Stake ${amount.toSignificant(6, { groupSeparator: ',' })} to verify DAO(${daoId})`,
+            summary: `Stake ${amount.toSignificant(6, { groupSeparator: ',' })} to verify DAO`,
             claim: { recipient: `${account}_stake_verify_${daoId}` }
           })
           return response.hash
@@ -86,7 +86,7 @@ export function useUnStakeVerifiedCallback() {
       })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
-            summary: `unStake ${amount.toSignificant(6, { groupSeparator: ',' })} for DAO(${daoId})`,
+            summary: `unStake ${amount.toSignificant(6, { groupSeparator: ',' })} for DAO`,
             claim: { recipient: `${account}_unStake_verify_${daoId}` }
           })
           return response.hash
