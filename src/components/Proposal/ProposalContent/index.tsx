@@ -5,6 +5,7 @@ import { timeStampToFormat } from 'utils/dao'
 import ProposalStatus from '../ProposalStatus'
 import styles from './index.module.less'
 import ReactMarkdown from 'react-markdown'
+import xss from 'xss'
 
 export default function Index({ detail }: { detail: ProposalInfoProp }) {
   // const text = useProposalText(detail.isMarkdown ? detail.content : undefined)
@@ -30,9 +31,11 @@ export default function Index({ detail }: { detail: ProposalInfoProp }) {
         <p
           className={styles['text']}
           dangerouslySetInnerHTML={{
-            __html: detail.content.replace(
-              /((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?)/g,
-              '<a href="$1" target="_blank">$1</a>'
+            __html: xss(
+              detail.content.replace(
+                /((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?)/g,
+                '<a href="$1" target="_blank">$1</a>'
+              )
             )
           }}
         ></p>

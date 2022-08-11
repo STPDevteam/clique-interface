@@ -7,6 +7,7 @@ import { useActiveWeb3React } from 'hooks'
 import { useTokenBalance } from 'state/wallet/hooks'
 import { TokenAmount } from 'constants/token'
 import { useMemo } from 'react'
+import xss from 'xss'
 
 const FlexBetween = styled(Box)({
   display: 'flex',
@@ -59,7 +60,11 @@ export default function Confirm({
             padding: '17px 24px'
           }}
         >
-          <Typography variant="body1" color={'#22304A'} dangerouslySetInnerHTML={{ __html: updateLog }}></Typography>
+          <Typography
+            variant="body1"
+            color={'#22304A'}
+            dangerouslySetInnerHTML={{ __html: xss(updateLog) }}
+          ></Typography>
         </Box>
         <FlexBetween mt={20}>
           <Typography variant="body1">Start time</Typography>
