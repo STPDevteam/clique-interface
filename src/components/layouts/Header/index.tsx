@@ -44,7 +44,7 @@ const StyledTab = styled(Box)(({ theme }) => ({
 const tabs = [
   { name: 'Governance', route: '/governance' },
   { name: 'Creator', route: '/create' },
-  { name: 'Verify', route: '/verify' }
+  { name: 'Stake', route: '/stake' }
 ]
 
 export default function Header() {

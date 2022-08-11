@@ -284,3 +284,4 @@ export const serverBaseUrl = IS_TEST_ENV
 export const mycliqueUrl = 'https://myclique.io/'
 export const daoframeUrl = 'https://daoframe.com/'
 export const SUPPORT_STAKE_VERIFY_NETWORK = IS_TEST_ENV ? ChainId.RINKEBY : ChainId.ETH
+export const SUPPORT_CROSS_STAKE_VERIFY_NETWORK = IS_TEST_ENV ? ChainId.POLYGON_TESTNET : ChainId.MATIC

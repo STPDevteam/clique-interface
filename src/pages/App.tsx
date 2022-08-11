@@ -76,7 +76,7 @@ export default function App() {
                     {/* <Route exact strict path="/detail/:address" component={DaoDetail} /> */}
                     {/* <Route exact strict path="/external_detail/:address" component={ExternalDetail} /> */}
                     <Route exact strict path="/cross_detail/:address" component={CrossDetail} />
-                    <Route exact strict path="/verify" component={Verify} />
+                    <Route exact strict path="/stake" component={Verify} />
                     {/* <Route exact strict path="/offering/:address" component={Offering} /> */}
                     <Route exact strict path="/my_wallet" component={MyWallet} />
                     {/* <Route exact strict path="/staking" component={Staking} />
@@ -112,7 +112,7 @@ export default function App() {
 
                     <Route exact strict path="/cross_building" component={CrossBuilding} />
                     <Route exact strict path="/create_token" component={CreateToken} />
-                    <Route exact strict path="/verify" component={Verify} />
+                    <Route exact strict path="/stake" component={Verify} />
                     <Route exact strict path="/create_token/launching/:hash" component={TokenLaunching} />
                     {/* <Route exact strict path="/staking" component={Staking} />
                     <Route exact strict path="/staking/create" component={StakingCreate} /> */}

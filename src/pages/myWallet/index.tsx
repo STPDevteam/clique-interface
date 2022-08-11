@@ -67,7 +67,7 @@ const { Column } = Table
 
 function GoDaoLink({ address }: { address: string }) {
   return address ? (
-    <ExternalLink target="self" href={'/#/detail/' + address}>
+    <ExternalLink target="self" href={'/detail/' + address}>
       DAO
     </ExternalLink>
   ) : (
