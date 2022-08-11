@@ -9,6 +9,7 @@ import { timeStampToFormat, toFormatGroup } from 'utils/dao'
 import { ProposalInfoProp, useCrossProposalList } from 'hooks/useVoting'
 import { ProposalStatusProp } from 'hooks/useCreateCommunityProposalCallback'
 import { BlackButton } from 'components/Button/Button'
+import xss from 'xss'
 
 interface IProps {
   onSelect: (proposal: ProposalInfoProp) => void
@@ -72,7 +73,7 @@ export default function Index(props: IProps) {
                   >
                     <Box>
                       <p className={styles['title']}>{item.title}</p>
-                      <p className={styles['desc']} dangerouslySetInnerHTML={{ __html: item.content }}></p>
+                      <p className={styles['desc']} dangerouslySetInnerHTML={{ __html: xss(item.content) }}></p>
                     </Box>
                     <div className={styles['footer']}>
                       <ProposalStatus status={item.status} />
